@@ -1,0 +1,134 @@
+package com.sangsolutions.powerbear;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import java.util.ArrayList;
+import java.util.List;
+
+public class SelectDN extends AppCompatActivity {
+
+DatabaseHelper helper;
+List<DONo> list;
+SOAdapter adapter;
+ListView doc_no_lv;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_select_dn);
+        helper = new DatabaseHelper(this);
+        doc_no_lv = findViewById(R.id.doc_no_lv);
+        list= new ArrayList<>();
+        adapter = new SOAdapter(list);
+        Cursor cursor = helper.GetDocNo();
+        list.clear();
+        if(cursor!=null){
+            for (int i = 0; i < cursor.getCount(); i++) {
+                list.add(new DONo(cursor.getString(cursor.getColumnIndex("DocNo")),
+                        Tools.ConvertDate(cursor.getString(cursor.getColumnIndex("DocDate"))),cursor.getString(cursor.getColumnIndex("Cusomer"))));
+            cursor.moveToNext();
+            if(cursor.getCount()==i+1){
+                doc_no_lv.setAdapter(adapter);
+            }
+            }
+        }
+
+        doc_no_lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(SelectDN.this, AddProduct.class);
+                   intent.putExtra("DocNo",parent.getItemAtPosition(position).toString());
+                    startActivity(intent);
+
+                Toast.makeText(SelectDN.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                }
+
+        });
+
+
+    }
+    private class DONo {
+        String DocNo, DocDate, Cusomer;
+
+        public DONo(String docNo, String docDate, String cusomer) {
+            this.DocNo = docNo;
+            this.DocDate = docDate;
+            this.Cusomer = cusomer;
+        }
+
+        public String getDocNo() {
+            return DocNo;
+        }
+
+        public void setDocNo(String docNo) {
+            DocNo = docNo;
+        }
+
+        public String getDocDate() {
+            return DocDate;
+        }
+
+        public void setDocDate(String docDate) {
+            DocDate = docDate;
+        }
+
+        public String getCusomer() {
+            return Cusomer;
+        }
+
+        public void setCusomer(String cusomer) {
+            Cusomer = cusomer;
+        }
+    }
+
+    private class SOAdapter extends BaseAdapter{
+        List<DONo> list;
+
+        public SOAdapter(List<DONo> list) {
+            this.list = list;
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return list.get(position).DocNo;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = LayoutInflater.from(SelectDN.this).inflate(R.layout.dno_item,parent,false);
+            TextView doc_no = view.findViewById(R.id.dno);
+            TextView date = view.findViewById(R.id.date);
+            TextView customer = view.findViewById(R.id.customer);
+            doc_no.setText("Doc No : "+ list.get(position).DocNo);
+            date.setText(list.get(position).DocDate);
+            customer.setText(list.get(position).Cusomer);
+            return view ;
+        }
+    }
+
+}
+
