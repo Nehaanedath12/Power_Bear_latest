@@ -17,7 +17,8 @@ import com.sangsolutions.powerbear.Fragment.HeaderFragment;
 public class StockCountWarehouse extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager viewPager;
-    String warehouse="";
+    String warehouse="",voucherNo="";
+    boolean EditMode = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +26,8 @@ public class StockCountWarehouse extends AppCompatActivity {
         Intent intent =  getIntent();
         if(intent!=null) {
             warehouse = intent.getStringExtra("warehouse");
+            EditMode = intent.getBooleanExtra("EditMode", false);
+            voucherNo = intent.getStringExtra("voucherNo");
         }
         tabLayout = findViewById(R.id.tabLay);
         viewPager = findViewById(R.id.viewpager);
@@ -43,8 +46,8 @@ public class StockCountWarehouse extends AppCompatActivity {
 
     private void setUpViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        adapter.add(new HeaderFragment(), "Header",warehouse);
-        adapter.add(new BodyFragment(), "Body",warehouse);
+        adapter.add(new HeaderFragment(), "Header",warehouse,EditMode,voucherNo);
+        adapter.add(new BodyFragment(), "Body",warehouse,EditMode,voucherNo);
         viewPager.setAdapter(adapter);
     }
 }

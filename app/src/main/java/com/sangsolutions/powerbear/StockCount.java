@@ -53,6 +53,8 @@ WarehouseAdapter adapter;
 
                 Intent intent = new Intent(StockCount.this, StockCountWarehouse.class);
                 intent.putExtra("warehouse",parent.getItemAtPosition(position).toString());
+                intent.putExtra("EditMode",false);
+                intent.putExtra("voucherNo","");
                 startActivity(intent);
 
 

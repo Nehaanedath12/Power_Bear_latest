@@ -251,9 +251,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }else {
             return  null;
         }
-
-
     }
+
+    public String GetProductName(String iProduct){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+NAME+" from "+TABLE_PRODUCT+" where "+MASTER_ID+" = ? ",new String[]{iProduct});
+        if (cursor.moveToFirst()) {
+            return cursor.getString(cursor.getColumnIndex(NAME));
+        }else {
+            return  "";
+        }
+    }
+
+    public String GetProductCode(String iProduct){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+CODE+" from "+TABLE_PRODUCT+" where "+MASTER_ID+" = ? ",new String[]{iProduct});
+        if (cursor.moveToFirst()) {
+            return cursor.getString(cursor.getColumnIndex(CODE));
+        }else {
+            return  "";
+        }
+    }
+
+    public String GetBarcodeFromIProduct(String iProduct) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+BARCODE+" from "+TABLE_PRODUCT+" where "+MASTER_ID+" = ? ",new String[]{iProduct});
+        if (cursor.moveToFirst()) {
+            return cursor.getString(cursor.getColumnIndex(BARCODE));
+        }else {
+            return  "";
+        }
+    }
+
 
     public Cursor SearchProduct(String keyword) {
      this.db = getReadableDatabase();
@@ -373,8 +402,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
-
-public boolean InsertStockCount(StockCount s){
+//stock count
+    public boolean InsertStockCount(StockCount s){
     this.db = getWritableDatabase();
     float status = -1;
     ContentValues cv = new ContentValues();
@@ -395,7 +424,15 @@ public boolean InsertStockCount(StockCount s){
 }
 
 
-public String GetNewVoucherNo(){
+public boolean DeleteStockCount(String voucherNo){
+        this.db = getWritableDatabase();
+        db.delete(TABLE_STOCK_COUNT,I_VOUCHER_NO+" = ? ",new String[]{voucherNo});
+        return true;
+}
+
+
+
+    public String GetNewVoucherNo(){
     this.db = getReadableDatabase();
     Cursor cursor = db.rawQuery("select "+I_VOUCHER_NO+" from "+TABLE_STOCK_COUNT  ,null);
     if(cursor.moveToFirst()){
@@ -405,6 +442,50 @@ public String GetNewVoucherNo(){
     return "1";
 }
 
+
+    public Cursor GetStockCountList() {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT iVoucherNo,iWarehouse,dDate,sum(fQty) as SumQty FROM tbl_StockCount GROUP BY iVoucherNo",null);
+        if(cursor.moveToFirst())
+            return cursor;
+        else
+            return null;
+    }
+
+    public String GetWarehouse(String id) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select " + NAME + " from " + TABLE_WAREHOUSE + " where " + MASTER_ID + " = ?", new String[]{id});
+
+        if (cursor.moveToFirst()) {
+            return cursor.getString(0);
+        } else {
+            return "";
+        }
+
+    }
+
+
+    public Cursor GetHeaderData(String voucherNo) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT "+D_DATE+","+I_WAREHOUSE+","+I_VOUCHER_NO+","+S_REMARKS+" FROM "+TABLE_STOCK_COUNT+" where "+I_VOUCHER_NO+" = ? ", new String[]{voucherNo});
+        if (cursor.moveToFirst()) {
+            return cursor;
+        } else {
+            return null;
+        }
+
+    }
+
+    public Cursor GetBodyData(String voucherNo) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_STOCK_COUNT+" where "+I_VOUCHER_NO+" = ? ", new String[]{voucherNo});
+        if (cursor.moveToFirst()) {
+            return cursor;
+        } else {
+            return null;
+        }
+
+    }
 
 
 }

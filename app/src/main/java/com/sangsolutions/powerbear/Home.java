@@ -152,7 +152,7 @@ public void syncDeliveryNote(){
     stock_count.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(Home.this,StockCount.class));
+            startActivity(new Intent(Home.this,StockCountList.class));
         }
     });
 

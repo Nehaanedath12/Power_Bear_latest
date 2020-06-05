@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,21 +38,32 @@ public class HeaderFragment extends Fragment {
 EditText date,remarks;
 TextView warehouse,VoucherNo;
 DatabaseHelper helper;
-String warehouse_id = "";
+String warehouse_id = "",voucherNo="",Date ="" ,Remarks="";
 Button save,close;
-    Date c;
+Date c;
+
+boolean EditMode = false;
+
     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
 private void Save(){
     List<ListProduct> list = StockCountSingleton.getInstance().getList();
 if(!remarks.getText().toString().isEmpty()&&!date.getText().toString().isEmpty()&&!list.isEmpty())
 {
     String s_date,s_voucher_no,s_remarks;
-
+    if(!EditMode){
     s_date = date.getText().toString();
     s_voucher_no = helper.GetNewVoucherNo();
     s_remarks = remarks.getText().toString();
+    }else {
+        s_date = date.getText().toString();
+        s_voucher_no = voucherNo;
+        s_remarks = remarks.getText().toString();
+    }
     StockCount s = new StockCount();
-    for(int i = 0 ; i < list.size(); i ++){
+   if(EditMode) {
+       helper.DeleteStockCount(voucherNo);
+   }
+   for(int i = 0 ; i < list.size(); i ++){
         s.setiVoucherNo(s_voucher_no);
         s.setdDate(s_date);
         s.setiWarehouse(warehouse_id);
@@ -61,7 +73,9 @@ if(!remarks.getText().toString().isEmpty()&&!date.getText().toString().isEmpty()
         s.setsRemarks(s_remarks);
         s.setdProcessedDate(df.format(c));
         s.setiStatus("0");
-        helper.InsertStockCount(s);
+
+            helper.InsertStockCount(s);
+
 
         if(list.size()==i+1){
             Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
@@ -120,6 +134,22 @@ private void CloseAlert(){
 }
 
 
+private void setDataForEditing(String voucherNo){
+    Cursor cursor = helper.GetHeaderData(voucherNo);
+
+    if(cursor!=null && cursor.moveToFirst()){
+                warehouse_id = cursor.getString(cursor.getColumnIndex("iWarehouse"));
+                voucherNo = cursor.getString(cursor.getColumnIndex("iVoucherNo"));
+                Date  = cursor.getString(cursor.getColumnIndex("dDate"));
+        Remarks  = cursor.getString(cursor.getColumnIndex("sRemarks"));
+        date.setText(Date);
+        warehouse.setText(helper.GetWarehouseById(warehouse_id));
+        VoucherNo.setText("Voucher No :"+voucherNo);
+        remarks.setText(Remarks);
+    }
+
+}
+
 @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -131,19 +161,33 @@ private void CloseAlert(){
         VoucherNo = view.findViewById(R.id.voucher_no);
          remarks = view.findViewById(R.id.remarks);
         helper = new DatabaseHelper(getActivity());
-        VoucherNo.setText("Voucher No :"+helper.GetNewVoucherNo());
+
+    c = Calendar.getInstance().getTime();
+    df = new SimpleDateFormat("yyyy-MM-dd");
 
     if(getArguments() != null) {
         warehouse_id = getArguments().getString("warehouse");
-    }
+        EditMode = getArguments().getBoolean("EditMode");
+        voucherNo = getArguments().getString("voucherNo");
+
+        if(!EditMode){
+
         if(!helper.GetWarehouseById(warehouse_id).equals("")){
             warehouse.setText(helper.GetWarehouseById(warehouse_id));
         }else{
             Objects.requireNonNull(getActivity()).finish();
         }
-         c = Calendar.getInstance().getTime();
-         df = new SimpleDateFormat("yyyy-MM-dd");
-        date.setText(df.format(c));
+            VoucherNo.setText("Voucher No :"+helper.GetNewVoucherNo());
+            date.setText(df.format(c));
+
+        }else {
+            setDataForEditing(voucherNo);
+        }
+    }else {
+        Toast.makeText(getActivity(), "Didn't have data to load!", Toast.LENGTH_SHORT).show();
+    Objects.requireNonNull(getActivity()).finish();
+    }
+
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -13,11 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".StockCountWarehouse"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            />
-        <activity android:name=".StockCount"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".StockCountList"></activity>
+        <activity
+            android:name=".StockCountWarehouse"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".StockCount"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".AddProduct"
             android:configChanges="keyboardHidden|orientation|screenSize" />

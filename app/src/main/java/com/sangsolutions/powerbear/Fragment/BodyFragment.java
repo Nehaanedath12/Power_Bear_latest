@@ -3,6 +3,8 @@ package com.sangsolutions.powerbear.Fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -12,6 +14,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -22,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,7 +78,9 @@ public class BodyFragment extends Fragment {
     private List<ListProduct> list;
     private ImageView add_new;
     private String DocNo = "";
-
+    private boolean EditMode = false;
+    private String voucherNo = "";
+    private int EditPosition = -1;
     private static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -99,9 +105,14 @@ public class BodyFragment extends Fragment {
 
         Qty = map.get("Qty");
 
-
-        list.add(new ListProduct(map.get("Name"),map.get("Code"),Qty,map.get("Unit"),map.get("iProduct")));
-
+if(!EditMode) {
+    list.add(new ListProduct(map.get("Name"), map.get("Code"), Qty, map.get("Unit"), map.get("iProduct")));
+}else {
+    if(EditPosition!= -1)
+    list.set(EditPosition,new ListProduct(map.get("Name"), map.get("Code"), Qty, map.get("Unit"), map.get("iProduct")));
+    EditMode = false;
+    EditPosition = -1 ;
+}
         rl_showProductInfo.setVisibility(View.GONE);
         qty.setText("");
         et_barcode.setText("");
@@ -110,6 +121,57 @@ public class BodyFragment extends Fragment {
         StockCountSingleton.getInstance().setList(list);
     }
 
+    private void SetRecyclerFromDB(String voucherNo) {
+        Cursor cursor = helper.GetBodyData(voucherNo);
+        String name,qty,code,iProduct,unit;
+        if(cursor!=null){
+            if(cursor.moveToFirst()) {
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    iProduct = cursor.getString(cursor.getColumnIndex("iProduct"));
+                    name = helper.GetProductName(iProduct);
+                    code = helper.GetProductCode(iProduct);
+                    qty = cursor.getString(cursor.getColumnIndex("fQty"));
+                    unit = cursor.getString(cursor.getColumnIndex("sUnit"));
+
+                    list.add(new ListProduct(name, code, qty, unit, iProduct));
+                    cursor.moveToNext();
+
+                    if (cursor.getCount() == i + 1) {
+                        adapter.notifyDataSetChanged();
+                        StockCountSingleton.getInstance().setList(list);
+                    }
+                }
+            }else {
+                Objects.requireNonNull(getActivity()).finish();
+                Log.d("error","Body have no data to load!");
+            }
+        }
+    }
+
+    private void SetDataToEdit(ListProduct product, int pos) {
+    et_barcode.setText(helper.GetBarcodeFromIProduct(product.getiProduct()));
+    qty.setText(product.getQty());
+    EditPosition = pos;
+    }
+    private void DeleteStockCountItemAlert(final ListProduct product, final int pos) {
+        AlertDialog.Builder builder= new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        builder.setTitle("Delete Product!")
+                .setMessage("Do you want to delete this product?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        list.remove(pos);
+                        StockCountSingleton.getInstance().setList(list);
+                        listProductAdapter.notifyDataSetChanged();
+
+                    }
+                }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+           dialog.dismiss();
+            }
+        }).create().show();
+    }
     private void InitialiseDetectorsAndSources() {
         barcodeDetector = new BarcodeDetector.Builder(getActivity())
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
@@ -239,6 +301,11 @@ public class BodyFragment extends Fragment {
         product_code = view.findViewById(R.id.product_code);
         qty = view.findViewById(R.id.qty);
         add_new = view.findViewById(R.id.add_new);
+        rv_product = view.findViewById(R.id.rv_product);
+        rv_product.setLayoutManager(new LinearLayoutManager(getActivity()));
+        map = new HashMap<>();
+
+
 
         helper = new DatabaseHelper(getActivity());
         rl_showProductInfo = view.findViewById(R.id.details);
@@ -248,11 +315,41 @@ public class BodyFragment extends Fragment {
         listProductAdapter = new ListProductAdapter(getActivity(),list);
 
 
-        rv_product = view.findViewById(R.id.rv_product);
-        rv_product.setLayoutManager(new LinearLayoutManager(getActivity()));
-        map = new HashMap<>();
+        if(getArguments() != null) {
+           boolean EditMode = getArguments().getBoolean("EditMode");
+            voucherNo = getArguments().getString("voucherNo");
+
+            if (EditMode) {
+                SetRecyclerFromDB(voucherNo);
+            }
+        }
+
 
         rv_product.setAdapter(listProductAdapter);
+
+        listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
+            @Override
+            public void onItemClick(View view,final ListProduct product,final int pos) {
+                PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+                popupMenu.inflate(R.menu.edit_delete_menu);
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.delete) {
+                          DeleteStockCountItemAlert(product, pos);
+                        } else if (item.getItemId() == R.id.edit) {
+
+                            SetDataToEdit(product,pos);
+                            EditMode = true;
+                        }
+
+                        return true;
+
+                    }
+                });
+            }
+        });
 
 
         fab_controller.setOnClickListener(new View.OnClickListener() {
@@ -280,6 +377,7 @@ public class BodyFragment extends Fragment {
                 }
             }
         });
+
 
         et_barcode.addTextChangedListener(new TextWatcher() {
             @Override
@@ -391,4 +489,8 @@ public class BodyFragment extends Fragment {
 
         return view;
     }
+
+
+
+
 }
