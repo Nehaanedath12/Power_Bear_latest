@@ -13,7 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".StockCountList"></activity>
+        <activity android:name=".GoodsReceipt"></activity>
+        <activity android:name=".PendingPO" />
+        <activity
+            android:name=".StockCountList"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".StockCountWarehouse"
             android:configChanges="keyboardHidden|orientation|screenSize" />

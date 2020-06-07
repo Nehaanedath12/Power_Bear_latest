@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Home extends AppCompatActivity {
-ImageButton sync_btn,delivery_btn,stock_count;
+ImageButton sync_btn,delivery_btn,stock_count_btn,goods_btn;
 DatabaseHelper helper;
 HashMap<String,String> map;
 int count = 0;
@@ -146,10 +146,11 @@ public void syncDeliveryNote(){
         setContentView(R.layout.activity_home);
         sync_btn= findViewById(R.id.sync);
         delivery_btn= findViewById(R.id.delivery);
-        stock_count = findViewById(R.id.stock_count);
+        stock_count_btn = findViewById(R.id.stock_count);
+        goods_btn = findViewById(R.id.goods);
         helper = new DatabaseHelper(this);
         map = new HashMap<>();
-    stock_count.setOnClickListener(new View.OnClickListener() {
+    stock_count_btn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             startActivity(new Intent(Home.this,StockCountList.class));
@@ -162,6 +163,14 @@ public void syncDeliveryNote(){
                 syncDeliveryNote();
             }
         });
+
+    goods_btn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(Home.this,PendingPO.class);
+            startActivity(intent);
+        }
+    });
 
         delivery_btn.setOnClickListener(new View.OnClickListener() {
             @Override

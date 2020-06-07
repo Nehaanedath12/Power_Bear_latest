@@ -11,5 +11,5 @@ public class URLs {
     public static final String PostDeliveryNote = domain + "PostDeliveryNote.php";
     public static final String GetWarehouse = domain + "GetWarehouse.php";
     public static final String PostGoodsReceiptNote = domain + "PostGoodsReceiptNote.php";
-
+    public static final String GetPendingPO = domain + "GetPendingPO.php";
 }
