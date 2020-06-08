@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".GoodsReceipt"></activity>
+        <activity android:name=".goodsReceiptList"></activity>
+        <activity android:name=".GoodsReceipt" />
         <activity android:name=".PendingPO" />
         <activity
             android:name=".StockCountList"
@@ -58,6 +59,9 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".Services.GetWareHouse"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".Services.GetPendingPOService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 

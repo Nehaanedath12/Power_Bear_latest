@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi;
 import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.Warehouse;
+import com.sangsolutions.powerbear.ScheduleJob;
 import com.sangsolutions.powerbear.URLs;
 
 import org.json.JSONArray;
@@ -78,6 +79,7 @@ public class GetWareHouse extends JobService {
 
                 Log.d("Status:", "data synced");
 
+                new ScheduleJob().SyncPendingPO(GetWareHouse.this);
 
                 jobFinished(params,false);
             }

@@ -18,14 +18,14 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.PendingSO;
-import com.sangsolutions.powerbear.ScheduleJob;
 import com.sangsolutions.powerbear.URLs;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class GetPendingSoService extends JobService {
+public class GetPendingPOService extends JobService {
     DatabaseHelper helper;
     PendingSO p;
     JobParameters params;
@@ -45,7 +45,7 @@ public class GetPendingSoService extends JobService {
                 try {
                     int dataCount = 0;
                     JSONArray jsonArray = new JSONArray(response.getString("data"));
-                    if(helper.DeleteOldPendingSO()) {
+                    if(helper.DeleteOldPendingPO()) {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             p.setDocNo(jsonObject.getString("DocNo"));
@@ -56,13 +56,13 @@ public class GetPendingSoService extends JobService {
                             p.setProduct(jsonObject.getString("Product"));
                             p.setQty(jsonObject.getString("Qty"));
                             p.setUnit(jsonObject.getString("unit"));
-                            boolean status = helper.InsertPendingSO(p);
+                            boolean status = helper.InsertPendingPO(p);
 
                             if(jsonArray.length()==i+1){
                                 Handler handler = new Handler(Looper.getMainLooper());
                                 handler.post(new Runnable() {
                                     public void run() {
-                                        Toast.makeText(GetPendingSoService.this, "Pending PO Synced", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(GetPendingPOService.this, "Pending SO Synced", Toast.LENGTH_SHORT).show();
                                         jobFinished(params,false);
 
                                     }
@@ -90,14 +90,14 @@ public class GetPendingSoService extends JobService {
             @Override
             protected void onPostExecute(Void aVoid) {
 
-                new ScheduleJob().SyncWarehouse(getApplicationContext());
+
             }
         };
         asyncTask.execute();
     }
 
     public void GetProduct() {
-        AndroidNetworking.get(URLs.GePendingSO)
+        AndroidNetworking.get(URLs.GetPendingPO)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {

@@ -8,6 +8,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.sangsolutions.powerbear.Services.GetPendingPOService;
 import com.sangsolutions.powerbear.Services.GetPendingSoService;
 import com.sangsolutions.powerbear.Services.GetProductService;
 import com.sangsolutions.powerbear.Services.GetUserService;
@@ -60,6 +61,17 @@ public class ScheduleJob {
         JobInfo job = new JobInfo.Builder(
                 MY_BACKGROUND_JOB,
                 new ComponentName(context, GetWareHouse.class))
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .build();
+        assert js != null;
+        js.schedule(job);
+    }
+    public void SyncPendingPO(Context context) {
+        JobScheduler js =
+                (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        JobInfo job = new JobInfo.Builder(
+                MY_BACKGROUND_JOB,
+                new ComponentName(context, GetPendingPOService.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();
         assert js != null;

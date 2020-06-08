@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -123,9 +125,16 @@ ListView doc_no_lv;
             TextView doc_no = view.findViewById(R.id.dno);
             TextView date = view.findViewById(R.id.date);
             TextView customer = view.findViewById(R.id.customer);
+            RelativeLayout lyt_parent= view.findViewById(R.id.lay_parent);
             doc_no.setText("Doc No : "+ list.get(position).DocNo);
             date.setText(list.get(position).DocDate);
             customer.setText(list.get(position).Cusomer);
+            if (position % 2 == 0) {
+                lyt_parent.setBackgroundColor(Color.rgb(234, 234, 234));
+            } else {
+
+                lyt_parent.setBackgroundColor(Color.rgb(255, 255, 255));
+            }
             return view ;
         }
     }

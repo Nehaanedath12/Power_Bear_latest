@@ -22,6 +22,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_CURRENT_LOGIN = "current_login";
     private static final String TABLE_WAREHOUSE = "tbl_warehouse";
     private static final String TABLE_STOCK_COUNT = "tbl_StockCount";
+    private static final String TABLE_PENDING_PO = "tbl_PendingPO";
+    private static final String TABLE_GOODS_RECEIPT = "tbl_GoodsReceipt";
 
     //Product
     private static final String MASTER_ID = "MasterId";
@@ -58,8 +60,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static  final String S_UNIT = "sUnit";
     private static  final String S_REMARKS = "sRemarks";
     private static  final String D_PROCESSED_DATE ="dProcessedDate";
-
-
 
 
 
@@ -124,6 +124,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ")";
 
 
+    private static final String CREATE_TABLE_GOODS_RECEIPT = "CREATE TABLE " + TABLE_GOODS_RECEIPT + " (" +
+            "" + HEADER_ID + "  INTEGER DEFAULT 0," +
+            "" + SI_NO + "  INTEGER DEFAULT 0," +
+            "" + PRODUCT + "  INTEGER DEFAULT 0," +
+            "" + QTY + "  TEXT(10) DEFAULT null," +
+            "" + I_STATUS + "  INTEGER DEFAULT 0" +
+            ")";
+
+
+    private static final String CREATE_TABLE_PENDING_PO = "CREATE TABLE " + TABLE_PENDING_PO + " (" +
+            "" + DOC_NO + " TEXT(30) DEFAULT null ," +
+            "" + DOC_DATE + " TEXT(10) DEFAULT null ," +
+            "" + HEADER_ID + "  INTEGER DEFAULT 0," +
+            "" + SI_NO + "  INTEGER DEFAULT 0," +
+            "" + PRODUCT + "  INTEGER DEFAULT 0," +
+            "" + QTY + "  TEXT(10) DEFAULT null," +
+            "" + CUSTOMER + "  TEXT(20) DEFAULT null," +
+            "" + UNIT + " TEXT(15) DEFAULT null" +
+            ")";
+
     private SQLiteDatabase db;
 
     public DatabaseHelper(@Nullable Context context) {
@@ -141,6 +161,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_CURRENT_LOGIN);
         db.execSQL(CREATE_TABLE_WAREHOUSE);
         db.execSQL(CREATE_TABLE_STOCK_COUNT);
+        db.execSQL(CREATE_TABLE_PENDING_PO);
+        db.execSQL(CREATE_TABLE_GOODS_RECEIPT);
     }
 
     @Override
@@ -487,4 +509,80 @@ public boolean DeleteStockCount(String voucherNo){
     }
 
 
+    // insert goods receipt
+    public boolean InsertGoodsReceipt(DeliveryNote d){
+        this.db = getWritableDatabase();
+        float status = -1;
+        ContentValues cv = new ContentValues();
+        cv.put(HEADER_ID,d.getHeaderId() );
+        cv.put(SI_NO, d.getSiNo());
+        cv.put(PRODUCT, d.getProduct());
+        cv.put(QTY,d.getQty());
+        cv.put(I_STATUS, d.getiStatus());
+
+        status = db.insert(TABLE_DELIVERY_NOTE, null, cv);
+
+        return status != -1;
+    }
+
+    // Insert Pending PO
+
+    public boolean InsertPendingPO(PendingSO p){
+        this.db = getWritableDatabase();
+        float status = -1;
+
+        ContentValues cv = new ContentValues();
+        cv.put(DOC_NO, p.getDocNo());
+        cv.put(DOC_DATE, p.getDocDate());
+        cv.put(HEADER_ID, p.getHeaderId());
+        cv.put(SI_NO, p.getSiNo());
+        cv.put(PRODUCT,p.getProduct());
+        cv.put(CUSTOMER,p.getCustomer());
+        cv.put(QTY,p.getQty());
+        cv.put(UNIT,p.getUnit());
+        status = db.insert(TABLE_PENDING_PO, null, cv);
+
+        return status != -1;
+    }
+
+    public boolean DeleteOldPendingPO() {
+        this.db = getWritableDatabase();
+        db.execSQL("delete from "+ TABLE_PENDING_PO);
+        return true;
+    }
+
+    public Cursor GetDocNoForPO(){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DISTINCT "+DOC_NO+","+CUSTOMER+","+DOC_DATE+" FROM "+TABLE_PENDING_PO,null);
+        if(cursor.moveToFirst()){
+            return cursor;
+        }else {
+            return null;
+        }
+    }
+    public Cursor GetAllPendingPO(String DocNo) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * from tbl_PendingPO LEFT JOIN tbl_Product WHERE tbl_PendingPO.Product = tbl_Product.MasterId and DocNo = ? ", new String[]{DocNo});
+        if(cursor.moveToFirst()){
+            return cursor;
+        }else {
+            return null;
+        }
+    }
+
+
+    public boolean InsertGoodsReceipt(GoodsReceipt g){
+        this.db = getWritableDatabase();
+        float status = -1;
+        ContentValues cv = new ContentValues();
+        cv.put(HEADER_ID,g.getHeaderId() );
+        cv.put(SI_NO, g.getSiNo());
+        cv.put(PRODUCT, g.getProduct());
+        cv.put(QTY,g.getQty());
+        cv.put(I_STATUS, g.getiStatus());
+
+        status = db.insert(TABLE_GOODS_RECEIPT, null, cv);
+
+        return status != -1;
+    }
 }

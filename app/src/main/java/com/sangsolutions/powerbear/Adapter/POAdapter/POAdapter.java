@@ -5,88 +5,56 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.sangsolutions.powerbear.Adapter.ListProduct2.ListProduct;
 import com.sangsolutions.powerbear.R;
-import com.sangsolutions.powerbear.Tools;
 
 import java.util.List;
 
-public class POAdapter extends RecyclerView.Adapter<POAdapter.ViewHolder>{
-    private OnClickListener onClickListener;
-    private Context context;
-    private List<PO> list;
-
-
-    public POAdapter(Context context, List<PO> list) {
-        this.context = context;
-        this.list = list;
-    }
-
-    public void setOnClickListener(OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-    }
-
-
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.pono_item, parent, false);
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        final PO po = list.get(position);
-
-        holder.DocNo.setText("Doc No:"+list.get(position).DocNo);
-        holder.DocDate.setText("Doc Date:"+ Tools.ConvertDate(list.get(position).DocDate));
-        if (position % 2 == 0) {
-            holder.lyt_parent.setBackgroundColor(Color.rgb(234, 234, 234));
-        } else {
-
-            holder.lyt_parent.setBackgroundColor(Color.rgb(255, 255, 255));
+public class POAdapter  extends BaseAdapter {
+        List<PO> list;
+        Context context;
+        public POAdapter(List<PO> list,Context context) {
+            this.list = list;
+            this.context = context;
         }
 
-        holder.lyt_parent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onClickListener == null) return;
-                onClickListener.onItemClick(v, po, position);
+        @Override
+        public int getCount() {
+            return list.size();
+        }
 
+        @Override
+        public Object getItem(int position) {
+            return list.get(position).DocNo;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = LayoutInflater.from(context).inflate(R.layout.dno_item,parent,false);
+
+            TextView doc_no = view.findViewById(R.id.dno);
+            TextView date = view.findViewById(R.id.date);
+            RelativeLayout lyt_parent= view.findViewById(R.id.lay_parent);
+            TextView customer = view.findViewById(R.id.customer);
+            doc_no.setText("Doc No : "+ list.get(position).DocNo);
+            date.setText(list.get(position).DocDate);
+            customer.setText(list.get(position).Cusomer);
+
+            if (position % 2 == 0) {
+               lyt_parent.setBackgroundColor(Color.rgb(234, 234, 234));
+            } else {
+
+                lyt_parent.setBackgroundColor(Color.rgb(255, 255, 255));
             }
-        });
-
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
-
-    public interface OnClickListener {
-        void onItemClick(View view, PO po, int pos);
-
-    }
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        TextView DocNo, DocDate;
-        LinearLayout lyt_parent;
-
-
-        ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            DocNo = itemView.findViewById(R.id.PONo);
-            DocDate = itemView.findViewById(R.id.PODate);
-            lyt_parent = itemView.findViewById(R.id.lyt_parent);
+            return view ;
         }
-    }
 
 }
