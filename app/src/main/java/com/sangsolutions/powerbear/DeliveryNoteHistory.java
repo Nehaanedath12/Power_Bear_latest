@@ -137,8 +137,8 @@ public class DeliveryNoteHistory extends AppCompatActivity {
                         if (item.getItemId() == R.id.delete) {
                             DeleteStockCountItemAlert(deliveryNoteHistory, pos);
                         } else if (item.getItemId() == R.id.edit) {
-                            Intent intent1 = new Intent(DeliveryNoteHistory.this,StockCountWarehouse.class);
-                            intent1.putExtra("header_id",deliveryNoteHistory.getHeaderId());
+                            Intent intent1 = new Intent(DeliveryNoteHistory.this,AddProduct.class);
+                            intent1.putExtra("DocNo",deliveryNoteHistory.getHeaderId());
                             intent1.putExtra("EditMode", true);
                             startActivity(intent1);
                         }

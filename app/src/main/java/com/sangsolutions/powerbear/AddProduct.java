@@ -72,7 +72,7 @@ public class AddProduct extends AppCompatActivity {
     private List<ListProduct> list;
     private ImageView add_new, save;
     private String DocNo = "";
-
+    private boolean EditMode = false;
     private static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -144,42 +144,53 @@ public class AddProduct extends AppCompatActivity {
 
     public void SaveDataToDB() {
         DeliveryNote d = new DeliveryNote();
-        for (int i = 0; i < list.size(); i++) {
-            d.setSiNo(list.get(i).getSiNo());
-            d.setHeaderId(list.get(i).getHeaderId());
-            d.setProduct(list.get(i).getProduct());
-            d.setQty(list.get(i).getPickedQty());
-            d.setiStatus("0");
-            helper.InsertDelivery(d);
+        if(helper.DeleteDeliveryNote(DocNo)) {
+            for (int i = 0; i < list.size(); i++) {
+                d.setSiNo(list.get(i).getSiNo());
+                d.setHeaderId(list.get(i).getHeaderId());
+                d.setProduct(list.get(i).getProduct());
+                d.setQty(list.get(i).getPickedQty());
+                d.setiStatus("0");
+                helper.InsertDelivery(d);
 
 
-            if (list.size() == i + 1) {
-                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
-                finish();
+                if (list.size() == i + 1) {
+                    Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+
             }
-
         }
 
     }
 
 
-    public void setRecyclerViewFromDB(String DocNo) {
+    public void setRecyclerViewFromDB(String DocNo,boolean EditMode) {
         String Name, Code, Qty, PickedQty, HeaderId, Product, SiNo;
         Log.d("docno", DocNo);
-        Cursor cursor = helper.GetAllPendingDN(DocNo);
-
+        Cursor cursor;
+        if(!EditMode) {
+             cursor = helper.GetAllPendingDN(DocNo);
+        }else {
+             cursor = helper.GetAllDeliveryNote(DocNo);
+        }
         if (cursor != null) {
             cursor.moveToFirst();
 
             for (int i = 0; i < cursor.getCount(); i++) {
                 Qty = cursor.getString(cursor.getColumnIndex("Qty"));
+                if(EditMode)
+                PickedQty = cursor.getString(cursor.getColumnIndex("PickedQty"));
+                else
+                PickedQty = "0";
                 Name = cursor.getString(cursor.getColumnIndex("Name"));
                 Code = cursor.getString(cursor.getColumnIndex("Code"));
                 HeaderId = cursor.getString(cursor.getColumnIndex("HeaderId"));
                 Product = cursor.getString(cursor.getColumnIndex("Product"));
                 SiNo = cursor.getString(cursor.getColumnIndex("SiNo"));
-                Log.d("Qty", Qty);
-                list.add(new ListProduct(Name, Code, Qty, "0", HeaderId, Product, SiNo));
+
+                list.add(new ListProduct(Name, Code, Qty, PickedQty, HeaderId, Product, SiNo));
+
                 listProductAdapter.notifyDataSetChanged();
                 cursor.moveToNext();
 
@@ -336,9 +347,12 @@ public class AddProduct extends AppCompatActivity {
         rv_product.setAdapter(listProductAdapter);
 
         Intent intent = getIntent();
-        DocNo = intent.getStringExtra("DocNo");
+        if(intent!=null) {
+            DocNo = intent.getStringExtra("DocNo");
+            EditMode = intent.getBooleanExtra("EditMode", false);
+        }
         if (DocNo != null && !DocNo.equals("")) {
-            setRecyclerViewFromDB(DocNo);
+            setRecyclerViewFromDB(DocNo,EditMode);
         }
 
         fab_controller.setOnClickListener(new View.OnClickListener() {
@@ -448,7 +462,7 @@ public class AddProduct extends AppCompatActivity {
                 et_search_input = view.findViewById(R.id.search_edit);
                 rv_search = view.findViewById(R.id.search_recycler);
                 rv_search.setLayoutManager(new LinearLayoutManager(AddProduct.this));
-                AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(AddProduct.this));
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddProduct.this);
                 builder.setView(view);
                 dialog = builder.create();
                 dialog.show();

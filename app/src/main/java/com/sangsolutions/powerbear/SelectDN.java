@@ -54,6 +54,7 @@ ListView doc_no_lv;
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(SelectDN.this, AddProduct.class);
                    intent.putExtra("DocNo",parent.getItemAtPosition(position).toString());
+                intent.putExtra("EditMode",false);
                     startActivity(intent);
 
                 Toast.makeText(SelectDN.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();

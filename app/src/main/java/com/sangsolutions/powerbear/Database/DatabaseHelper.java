@@ -403,6 +403,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+
+    public Cursor GetAllDeliveryNote(String DocNo) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT d.HeaderId,d.SiNo,p.MasterId as Product,p.Name,p.Code,p.Unit, d.Qty PickedQty,so.Qty Qty FROM tbl_DeliveryNote d " +
+                "INNER JOIN tbl_PendingSO so on d.HeaderId = so.HeaderId and d.sino=so.sino " +
+                "INNER JOIN tbl_Product p on d.product=p.masterid " +
+                " " +
+                "WHERE d.HeaderId = ? " +
+                "", new String[]{DocNo});
+        if(cursor.moveToFirst()){
+            return cursor;
+        }else {
+            return null;
+        }
+    }
+
     //Warehouse
     public boolean InsertWarehouse(Warehouse w){
         this.db = getWritableDatabase();
