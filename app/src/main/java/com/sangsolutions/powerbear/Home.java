@@ -175,7 +175,7 @@ public void syncDeliveryNote(){
         delivery_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Home.this,SelectDN.class);
+                Intent intent = new Intent(Home.this,DeliveryNoteHistory.class);
                 startActivity(intent);
             }
         });

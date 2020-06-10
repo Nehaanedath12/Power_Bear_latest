@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".goodsReceiptList"></activity>
+        <activity android:name=".DeliveryNoteHistory"></activity>
+        <activity android:name=".goodsReceiptList" />
         <activity android:name=".GoodsReceipt" />
         <activity android:name=".PendingPO" />
         <activity

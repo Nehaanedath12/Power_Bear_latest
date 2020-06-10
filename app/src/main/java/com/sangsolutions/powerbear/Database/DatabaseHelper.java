@@ -388,6 +388,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public Cursor GetDeliveryNoteList() {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT sum(Qty) as Qty,HeaderId from tbl_DeliveryNote  GROUP BY HeaderId",null);
+        if(cursor.moveToFirst())
+            return cursor;
+        else
+            return null;
+    }
+
+    public boolean DeleteDeliveryNote(String id){
+        this.db = getWritableDatabase();
+        db.delete(TABLE_DELIVERY_NOTE,HEADER_ID+" = ? ",new String[]{id});
+        return true;
+    }
+
     //Warehouse
     public boolean InsertWarehouse(Warehouse w){
         this.db = getWritableDatabase();
