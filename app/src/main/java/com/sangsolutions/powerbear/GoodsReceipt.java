@@ -44,7 +44,6 @@ import com.sangsolutions.powerbear.Adapter.ListProduct.ListProductAdapter;
 import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProduct;
 import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProductAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
-import com.sangsolutions.powerbear.Database.DeliveryNote;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,6 +71,7 @@ public class GoodsReceipt extends AppCompatActivity {
     private List<ListProduct> list;
     private ImageView add_new, save;
     private String DocNo = "";
+    private boolean EditMode = false;
 
     private static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
@@ -144,6 +144,7 @@ public class GoodsReceipt extends AppCompatActivity {
 
     public void SaveDataToDB() {
         com.sangsolutions.powerbear.Database.GoodsReceipt g = new com.sangsolutions.powerbear.Database.GoodsReceipt();
+        if(helper.DeleteGoodsReceipt(DocNo)){
         for (int i = 0; i < list.size(); i++) {
             g.setSiNo(list.get(i).getSiNo());
             g.setHeaderId(list.get(i).getHeaderId());
@@ -157,29 +158,37 @@ public class GoodsReceipt extends AppCompatActivity {
                 Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
                 finish();
             }
-
+        }
         }
 
     }
 
 
-    public void setRecyclerViewFromDB(String DocNo) {
+    public void setRecyclerViewFromDB(String DocNo,boolean EditMode) {
         String Name, Code, Qty, PickedQty, HeaderId, Product, SiNo;
         Log.d("docno", DocNo);
-        Cursor cursor = helper.GetAllPendingPO(DocNo);
-
+        Cursor cursor;
+        if(!EditMode) {
+            cursor = helper.GetAllPendingPO(DocNo);
+        }else {
+            cursor = helper.GetAllGoodsReceiptNote(DocNo);
+        }
         if (cursor != null) {
             cursor.moveToFirst();
 
             for (int i = 0; i < cursor.getCount(); i++) {
                 Qty = cursor.getString(cursor.getColumnIndex("Qty"));
+                if(EditMode)
+                    PickedQty = cursor.getString(cursor.getColumnIndex("PickedQty"));
+                else
+                    PickedQty = "0";
                 Name = cursor.getString(cursor.getColumnIndex("Name"));
                 Code = cursor.getString(cursor.getColumnIndex("Code"));
                 HeaderId = cursor.getString(cursor.getColumnIndex("HeaderId"));
                 Product = cursor.getString(cursor.getColumnIndex("Product"));
                 SiNo = cursor.getString(cursor.getColumnIndex("SiNo"));
                 Log.d("Qty", Qty);
-                list.add(new ListProduct(Name, Code, Qty, "0", HeaderId, Product, SiNo));
+                list.add(new ListProduct(Name, Code, Qty, PickedQty, HeaderId, Product, SiNo));
                 listProductAdapter.notifyDataSetChanged();
                 cursor.moveToNext();
 
@@ -336,9 +345,12 @@ public class GoodsReceipt extends AppCompatActivity {
         rv_product.setAdapter(listProductAdapter);
 
         Intent intent = getIntent();
-        DocNo = intent.getStringExtra("DocNo");
+        if(intent!=null) {
+            DocNo = intent.getStringExtra("DocNo");
+            EditMode = intent.getBooleanExtra("EditMode", false);
+        }
         if (DocNo != null && !DocNo.equals("")) {
-            setRecyclerViewFromDB(DocNo);
+            setRecyclerViewFromDB(DocNo,EditMode);
         }
 
         fab_controller.setOnClickListener(new View.OnClickListener() {

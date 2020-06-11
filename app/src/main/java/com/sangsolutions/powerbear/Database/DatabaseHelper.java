@@ -540,20 +540,25 @@ public boolean DeleteStockCount(String voucherNo){
     }
 
 
-    // insert goods receipt
-    public boolean InsertGoodsReceipt(DeliveryNote d){
+    //  goods receipt
+
+
+    public Cursor GetAllGoodsReceiptNote(String DocNo) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT g.HeaderId,g.SiNo,p.MasterId as Product,p.Name,p.Code,p.Unit, g.Qty PickedQty,po.Qty Qty FROM tbl_GoodsReceipt g " +
+                "INNER JOIN tbl_PendingPO po on g.HeaderId = po.HeaderId and g.sino=po.sino " +
+                "INNER JOIN tbl_Product p on g.product=p.masterid " +
+                "WHERE g.HeaderId = ?  ", new String[]{DocNo});
+        if(cursor.moveToFirst()){
+            return cursor;
+        }else {
+            return null;
+        }
+    }
+    public boolean DeleteGoodsReceipt(String id){
         this.db = getWritableDatabase();
-        float status = -1;
-        ContentValues cv = new ContentValues();
-        cv.put(HEADER_ID,d.getHeaderId() );
-        cv.put(SI_NO, d.getSiNo());
-        cv.put(PRODUCT, d.getProduct());
-        cv.put(QTY,d.getQty());
-        cv.put(I_STATUS, d.getiStatus());
-
-        status = db.insert(TABLE_DELIVERY_NOTE, null, cv);
-
-        return status != -1;
+        db.delete(TABLE_GOODS_RECEIPT,HEADER_ID+" = ? ",new String[]{id});
+        return true;
     }
 
     // Insert Pending PO
@@ -593,12 +598,24 @@ public boolean DeleteStockCount(String voucherNo){
     }
     public Cursor GetAllPendingPO(String DocNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * from tbl_PendingPO LEFT JOIN tbl_Product WHERE tbl_PendingPO.Product = tbl_Product.MasterId and DocNo = ? ", new String[]{DocNo});
+        Cursor cursor = db.rawQuery("SELECT * from tbl_PendingPO " +
+                "LEFT JOIN tbl_Product " +
+                "WHERE " +
+                "tbl_PendingPO.Product = tbl_Product.MasterId and DocNo = ? ", new String[]{DocNo});
         if(cursor.moveToFirst()){
             return cursor;
         }else {
             return null;
         }
+    }
+
+    public Cursor GetAllGoodsReceipt() {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT sum(Qty) as Qty,HeaderId from "+TABLE_GOODS_RECEIPT+ " GROUP BY HeaderId",null);
+        if(cursor.moveToFirst())
+            return cursor;
+        else
+            return null;
     }
 
 
@@ -616,4 +633,8 @@ public boolean DeleteStockCount(String voucherNo){
 
         return status != -1;
     }
+
+
+
+
 }

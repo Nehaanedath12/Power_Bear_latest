@@ -56,6 +56,7 @@ public class PendingPO extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(PendingPO.this, GoodsReceipt.class);
                 intent.putExtra("DocNo",parent.getItemAtPosition(position).toString());
+                intent.putExtra("EditMode",false);
                 startActivity(intent);
 
                 Toast.makeText(PendingPO.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
