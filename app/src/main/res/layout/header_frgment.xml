@@ -16,6 +16,7 @@
         android:background="@color/colorAccent"
         android:text="ABC warehouse"
         android:textSize="24sp"
+        android:textColor="@color/color_white"
         android:textStyle="bold" />
 
 

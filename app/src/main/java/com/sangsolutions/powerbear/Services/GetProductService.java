@@ -23,11 +23,11 @@ import org.json.JSONObject;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class GetProductService extends JobService {
+    JobParameters params;
     DatabaseHelper helper;
     Product p;
     String response = "";
     AsyncConnection connection;
-    JobParameters params;
 
     private void asyncProduct() {
 
@@ -57,7 +57,7 @@ public class GetProductService extends JobService {
                             handler.post(new Runnable() {
                                 public void run() {
                                     Toast.makeText(GetProductService.this, "Product Synced", Toast.LENGTH_SHORT).show();
-                                    jobFinished(params,false);
+
                                 }
                             });
                                 }
@@ -80,6 +80,7 @@ public class GetProductService extends JobService {
             @Override
             protected void onPostExecute(Void aVoid) {
 new ScheduleJob().SyncPendingSOData(getApplicationContext());
+                jobFinished(params,false);
             }
         };
         asyncTask.execute();

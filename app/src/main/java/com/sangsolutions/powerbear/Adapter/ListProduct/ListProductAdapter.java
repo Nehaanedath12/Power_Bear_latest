@@ -41,7 +41,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         holder.Code.setText(list.get(position).getCode());
         holder.Qty.setText(list.get(position).getQty());
         holder.PickedQty.setText(list.get(position).getPickedQty());
-
+        holder.Unit.setText(list.get(position).getUnit());
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView Name, Code, Qty,PickedQty;
+        TextView Name, Code, Qty,PickedQty,Unit;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -58,6 +58,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
 Name = itemView.findViewById(R.id.product_name);
 Code = itemView.findViewById(R.id.product_code);
 Qty = itemView .findViewById(R.id.product_qty);
+Unit = itemView.findViewById(R.id.product_unit);
 PickedQty = itemView.findViewById(R.id.product_picked_qty);
         }
     }

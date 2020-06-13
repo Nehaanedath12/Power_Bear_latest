@@ -1,16 +1,17 @@
 package com.sangsolutions.powerbear.Adapter.ListProduct;
 
 public class ListProduct {
-    String Name,Code,Qty,PickedQty,HeaderId,Product,SiNo;
+    String Name,Code,Qty,PickedQty,HeaderId,Product,SiNo,Unit;
 
-    public ListProduct(String name, String code, String qty, String pickedQty, String headerId, String product, String siNo) {
-        Name = name;
-        Code = code;
-        Qty = qty;
-        PickedQty = pickedQty;
-        HeaderId = headerId;
-        Product = product;
-        SiNo = siNo;
+    public ListProduct(String name, String code, String qty, String pickedQty, String headerId, String product, String siNo, String unit) {
+        this.Name = name;
+        this.Code = code;
+        this.Qty = qty;
+        this.PickedQty = pickedQty;
+        this.HeaderId = headerId;
+        this.Product = product;
+        this.SiNo = siNo;
+        this.Unit = unit;
     }
 
     public String getName() {
@@ -67,5 +68,13 @@ public class ListProduct {
 
     public void setSiNo(String siNo) {
         SiNo = siNo;
+    }
+
+    public String getUnit() {
+        return Unit;
+    }
+
+    public void setUnit(String unit) {
+        Unit = unit;
     }
 }

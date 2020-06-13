@@ -24,6 +24,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="12423121"
+                android:textColor="@color/color_white"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 

@@ -97,7 +97,8 @@ public class GoodsReceipt extends AppCompatActivity {
                     Qty,
                     list.get(position).getHeaderId(),
                     list.get(position).getProduct(),
-                    list.get(position).getSiNo()
+                    list.get(position).getSiNo(),
+                    list.get(position).getUnit()
             ));
             Toast.makeText(this, "Added!", Toast.LENGTH_SHORT).show();
         } else {
@@ -165,7 +166,7 @@ public class GoodsReceipt extends AppCompatActivity {
 
 
     public void setRecyclerViewFromDB(String DocNo,boolean EditMode) {
-        String Name, Code, Qty, PickedQty, HeaderId, Product, SiNo;
+        String Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit;
         Log.d("docno", DocNo);
         Cursor cursor;
         if(!EditMode) {
@@ -187,8 +188,9 @@ public class GoodsReceipt extends AppCompatActivity {
                 HeaderId = cursor.getString(cursor.getColumnIndex("HeaderId"));
                 Product = cursor.getString(cursor.getColumnIndex("Product"));
                 SiNo = cursor.getString(cursor.getColumnIndex("SiNo"));
+                Unit = cursor.getString(cursor.getColumnIndex("Unit"));
                 Log.d("Qty", Qty);
-                list.add(new ListProduct(Name, Code, Qty, PickedQty, HeaderId, Product, SiNo));
+                list.add(new ListProduct(Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit));
                 listProductAdapter.notifyDataSetChanged();
                 cursor.moveToNext();
 

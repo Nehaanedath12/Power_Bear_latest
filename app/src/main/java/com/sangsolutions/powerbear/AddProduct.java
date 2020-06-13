@@ -97,7 +97,8 @@ public class AddProduct extends AppCompatActivity {
                     Qty,
                     list.get(position).getHeaderId(),
                     list.get(position).getProduct(),
-                    list.get(position).getSiNo()
+                    list.get(position).getSiNo(),
+                    list.get(position).getUnit()
             ));
             Toast.makeText(this, "Added!", Toast.LENGTH_SHORT).show();
         } else {
@@ -166,7 +167,7 @@ public class AddProduct extends AppCompatActivity {
 
 
     public void setRecyclerViewFromDB(String DocNo,boolean EditMode) {
-        String Name, Code, Qty, PickedQty, HeaderId, Product, SiNo;
+        String Name, Code, Qty, PickedQty, HeaderId, Product, SiNo ,Unit;
         Log.d("docno", DocNo);
         Cursor cursor;
         if(!EditMode) {
@@ -185,11 +186,12 @@ public class AddProduct extends AppCompatActivity {
                 PickedQty = "0";
                 Name = cursor.getString(cursor.getColumnIndex("Name"));
                 Code = cursor.getString(cursor.getColumnIndex("Code"));
+                Unit = cursor.getString(cursor.getColumnIndex("Unit"));
                 HeaderId = cursor.getString(cursor.getColumnIndex("HeaderId"));
                 Product = cursor.getString(cursor.getColumnIndex("Product"));
                 SiNo = cursor.getString(cursor.getColumnIndex("SiNo"));
 
-                list.add(new ListProduct(Name, Code, Qty, PickedQty, HeaderId, Product, SiNo));
+                list.add(new ListProduct(Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit));
 
                 listProductAdapter.notifyDataSetChanged();
                 cursor.moveToNext();
@@ -305,6 +307,7 @@ public class AddProduct extends AppCompatActivity {
             cursor.moveToFirst();
             map.put("Name",cursor.getString(cursor.getColumnIndex("Name")));
             map.put("Code",cursor.getString(cursor.getColumnIndex("Code")));
+            map.put("Unit",cursor.getString(cursor.getColumnIndex("Unit")));
             product_name.setText("Name : "+map.get("Name"));
             product_code.setText(map.get("Code"));
         }else {

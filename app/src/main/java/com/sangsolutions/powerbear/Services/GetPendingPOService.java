@@ -63,7 +63,7 @@ public class GetPendingPOService extends JobService {
                                 handler.post(new Runnable() {
                                     public void run() {
                                         Toast.makeText(GetPendingPOService.this, "Pending SO Synced", Toast.LENGTH_SHORT).show();
-                                        jobFinished(params,false);
+
 
                                     }
                                 });
@@ -89,8 +89,7 @@ public class GetPendingPOService extends JobService {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-
-
+                jobFinished(params,false);
             }
         };
         asyncTask.execute();

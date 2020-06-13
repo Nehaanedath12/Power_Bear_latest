@@ -20,18 +20,8 @@
         android:layout_below="@id/surfaceView"
         android:id="@+id/ListTitle"
         android:layout_marginBottom="5dp"
-        android:background="@color/color_dark_blue"
+        android:background="@color/colorAccent"
         >
-
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name"
-            android:gravity="center"
-            android:textColor="@color/color_white"
-            android:textStyle="bold"
-            />
         <TextView
             android:layout_weight="1"
             android:layout_width="wrap_content"
@@ -41,12 +31,31 @@
             android:textColor="@color/color_white"
             android:textStyle="bold"
             />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:gravity="center"
+            android:textColor="@color/color_white"
+            android:textStyle="bold"
+            />
 
         <TextView
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Quantity"
+            android:text="Unit"
+            android:gravity="center"
+            android:textColor="@color/color_white"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Qty"
             android:gravity="center"
             android:textColor="@color/color_white"
             android:textStyle="bold"
@@ -176,6 +185,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
             android:textSize="18sp"
+            android:textColor="@color/color_white"
             android:textStyle="bold" />
 
         <TextView
@@ -185,7 +195,8 @@
             android:layout_below="@+id/product_name"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
-            android:textSize="35sp"
+            android:textSize="30sp"
+            android:textColor="@color/color_white"
             android:textStyle="bold" />
 
     </RelativeLayout>

@@ -65,38 +65,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 //create table Product
-    private static final String CREATE_TABLE_PRODUCT = "CREATE TABLE " + TABLE_PRODUCT + " (" +
+    private static final String CREATE_TABLE_PRODUCT = "create table if not exists  " + TABLE_PRODUCT + " (" +
             "" + MASTER_ID + " INTEGER PRIMARY KEY ," +
             "" + NAME + " TEXT(65) DEFAULT null ," +
             "" + CODE + "  TEXT(40) DEFAULT null," +
             "" + BARCODE + "  TEXT(30) DEFAULT null," +
             "" + UNIT + " TEXT(20) DEFAULT null" +
             ")";
-    private static final String CREATE_CURRENT_LOGIN = "CREATE TABLE " + TABLE_CURRENT_LOGIN + " (" +
+    private static final String CREATE_CURRENT_LOGIN = "create table if not exists  " + TABLE_CURRENT_LOGIN + " (" +
             "" + I_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "" + USER_ID + " INTEGER DEFAULT null)";
 
 
-    //create table Product
-    private static final String CREATE_TABLE_PENDING_SO = "CREATE TABLE " + TABLE_PENDING_SO + " (" +
-            "" + DOC_NO + " TEXT(30) DEFAULT null ," +
-            "" + DOC_DATE + " TEXT(10) DEFAULT null ," +
-            "" + HEADER_ID + "  INTEGER DEFAULT 0," +
-            "" + SI_NO + "  INTEGER DEFAULT 0," +
-            "" + PRODUCT + "  INTEGER DEFAULT 0," +
-            "" + QTY + "  TEXT(10) DEFAULT null," +
-            "" + CUSTOMER + "  TEXT(20) DEFAULT null," +
-            "" + UNIT + " TEXT(15) DEFAULT null" +
-            ")";
+
 
     //create table User
-    private static final String CREATE_TABLE_USER = "CREATE TABLE " + TABLE_USER + " (" +
+    private static final String CREATE_TABLE_USER = "create table if not exists  " + TABLE_USER + " (" +
             "" + I_ID + " INTEGER DEFAULT 0, " +
             "" + S_LOGIN_NAME + " TEXT DEFAULT null," +
             "" + S_PASSWORD + " TEXT DEFAULT null" + ");";
 
     //create table DeliveryNote
-    private static final String CREATE_TABLE_DELIVERY_NOTE = "CREATE TABLE " + TABLE_DELIVERY_NOTE + " (" +
+    private static final String CREATE_TABLE_DELIVERY_NOTE = "create table if not exists  " + TABLE_DELIVERY_NOTE + " (" +
             "" + HEADER_ID + "  INTEGER DEFAULT 0," +
             "" + SI_NO + "  INTEGER DEFAULT 0," +
             "" + PRODUCT + "  INTEGER DEFAULT 0," +
@@ -105,13 +95,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ")";
 
     //create table warehouse
-    private static final String CREATE_TABLE_WAREHOUSE = "CREATE TABLE " + TABLE_WAREHOUSE + " (" +
+    private static final String CREATE_TABLE_WAREHOUSE = "create table if not exists  " + TABLE_WAREHOUSE + " (" +
             "" + MASTER_ID + " TEXT DEFAULT null," +
             "" + NAME + " TEXT(60) DEFAULT null" + ");";
 
 
     //create table StockCount
-    private static final String CREATE_TABLE_STOCK_COUNT = "CREATE TABLE " + TABLE_STOCK_COUNT + " (" +
+    private static final String CREATE_TABLE_STOCK_COUNT = "create table if not exists " + TABLE_STOCK_COUNT + " (" +
             "" + I_VOUCHER_NO + "  INTEGER DEFAULT 0," +
             "" + D_DATE + "  TEXT(10) DEFAULT null," +
             "" + I_WAREHOUSE + "  INTEGER DEFAULT 0," +
@@ -124,7 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ")";
 
 
-    private static final String CREATE_TABLE_GOODS_RECEIPT = "CREATE TABLE " + TABLE_GOODS_RECEIPT + " (" +
+    private static final String CREATE_TABLE_GOODS_RECEIPT = "create table if not exists  " + TABLE_GOODS_RECEIPT + " (" +
             "" + HEADER_ID + "  INTEGER DEFAULT 0," +
             "" + SI_NO + "  INTEGER DEFAULT 0," +
             "" + PRODUCT + "  INTEGER DEFAULT 0," +
@@ -132,8 +122,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + I_STATUS + "  INTEGER DEFAULT 0" +
             ")";
 
-
-    private static final String CREATE_TABLE_PENDING_PO = "CREATE TABLE " + TABLE_PENDING_PO + " (" +
+    //create table Pending SO
+    private static final String CREATE_TABLE_PENDING_SO = "create table if not exists  " + TABLE_PENDING_SO + " (" +
+            "" + DOC_NO + " TEXT(30) DEFAULT null ," +
+            "" + DOC_DATE + " TEXT(10) DEFAULT null ," +
+            "" + HEADER_ID + "  INTEGER DEFAULT 0," +
+            "" + SI_NO + "  INTEGER DEFAULT 0," +
+            "" + PRODUCT + "  INTEGER DEFAULT 0," +
+            "" + QTY + "  TEXT(10) DEFAULT null," +
+            "" + CUSTOMER + "  TEXT(20) DEFAULT null," +
+            "" + UNIT + " TEXT(15) DEFAULT null" +
+            ")";
+    //create table Pending PO
+    private static final String CREATE_TABLE_PENDING_PO = "create table if not exists " + TABLE_PENDING_PO + " (" +
             "" + DOC_NO + " TEXT(30) DEFAULT null ," +
             "" + DOC_DATE + " TEXT(10) DEFAULT null ," +
             "" + HEADER_ID + "  INTEGER DEFAULT 0," +
@@ -156,12 +157,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.db=db;
         db.execSQL(CREATE_TABLE_PRODUCT);
         db.execSQL(CREATE_TABLE_PENDING_SO);
+        db.execSQL(CREATE_TABLE_PENDING_PO);
         db.execSQL(CREATE_TABLE_DELIVERY_NOTE);
         db.execSQL(CREATE_TABLE_USER);
         db.execSQL(CREATE_CURRENT_LOGIN);
         db.execSQL(CREATE_TABLE_WAREHOUSE);
         db.execSQL(CREATE_TABLE_STOCK_COUNT);
-        db.execSQL(CREATE_TABLE_PENDING_PO);
         db.execSQL(CREATE_TABLE_GOODS_RECEIPT);
     }
 
@@ -321,12 +322,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //Pending SO
     public boolean DeleteOldPendingSO() {
         this.db = getWritableDatabase();
+        db.execSQL(CREATE_TABLE_PENDING_SO);
          db.execSQL("delete from "+ TABLE_PENDING_SO);
     return true;
     }
 
     public boolean InsertPendingSO(PendingSO p){
         this.db = getWritableDatabase();
+        db.execSQL(CREATE_TABLE_PENDING_SO);
         float status = -1;
 
             ContentValues cv = new ContentValues();
@@ -565,6 +568,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public boolean InsertPendingPO(PendingSO p){
         this.db = getWritableDatabase();
+        db.execSQL(CREATE_TABLE_PENDING_PO);
         float status = -1;
 
         ContentValues cv = new ContentValues();
@@ -583,7 +587,8 @@ public boolean DeleteStockCount(String voucherNo){
 
     public boolean DeleteOldPendingPO() {
         this.db = getWritableDatabase();
-        db.execSQL("delete from "+ TABLE_PENDING_PO);
+        db.execSQL(CREATE_TABLE_PENDING_PO);
+        db.delete(TABLE_PENDING_PO,null,null);
         return true;
     }
 
