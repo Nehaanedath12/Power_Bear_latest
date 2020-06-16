@@ -264,7 +264,13 @@ public class AddProduct extends AppCompatActivity {
     private void ProductSearch(String keyword) {
         productList.clear();
         if (dialog.isShowing()) {
-            Cursor cursor = helper.SearchProduct(keyword);
+            Cursor cursor ;
+            if(!EditMode){
+                cursor =  helper.SearchProductPendingSO(keyword,DocNo);;
+            }else {
+                cursor =  helper.SearchProductDeliveryNote(keyword,DocNo);
+            }
+
             if (cursor != null&&!keyword.equals("")) {
                 cursor.moveToFirst();
                 for (int i = 0; i < cursor.getCount(); i++) {

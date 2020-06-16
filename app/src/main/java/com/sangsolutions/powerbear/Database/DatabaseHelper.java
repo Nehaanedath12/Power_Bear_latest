@@ -318,6 +318,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+   public Cursor SearchProductPendingPO(String keyword,String DocNo) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select Name,Code,Barcode from tbl_Product p " +
+                "INNER JOIN tbl_PendingPO po " +
+                "on po.Product = p.MasterId " +
+                "where instr(upper(Code),upper(?)) and po.DocNo = ? limit 10",new String[]{keyword,DocNo});
+
+        if (cursor.moveToFirst()) {
+            return cursor;
+        } else {
+            return null;
+        }
+
+    }
+
+    public Cursor SearchProductPendingSO(String keyword,String DocNo) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select Name,Code,Barcode from tbl_Product p " +
+                "INNER JOIN tbl_PendingSO so " +
+                "on so.Product = p.MasterId " +
+                "where instr(upper(Code),upper(?)) and so.DocNo = ? limit 10",new String[]{keyword,DocNo});
+
+        if (cursor.moveToFirst()) {
+            return cursor;
+        } else {
+            return null;
+        }
+
+    }
+
+    public Cursor SearchProductDeliveryNote(String keyword,String HeaderId) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select Name,Code,Barcode from tbl_Product p " +
+                "INNER JOIN tbl_DeliveryNote d " +
+                "on d.Product = p.MasterId " +
+                "where instr(upper(Code),upper( ? )) and d.HeaderId = ? limit 10",new String[]{keyword,HeaderId});
+
+        if (cursor.moveToFirst()) {
+            return cursor;
+        } else {
+            return null;
+        }
+
+    }
+
+    public Cursor SearchProductGoodsReceipt(String keyword,String HeaderId) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select Name,Code,Barcode from tbl_Product p " +
+                "INNER JOIN tbl_GoodsReceipt g " +
+                "on g.Product = p.MasterId " +
+                "where instr(upper(Code),upper( ? )) and g.HeaderId = ? limit 10",new String[]{keyword,HeaderId});
+
+        if (cursor.moveToFirst()) {
+            return cursor;
+        } else {
+            return null;
+        }
+
+    }
 
     //Pending SO
     public boolean DeleteOldPendingSO() {
