@@ -138,7 +138,12 @@
                 android:layout_height="60dp"
                 android:padding="10dp"
                 android:src="@drawable/ic_add_circle" />
-
+            <ImageView
+                android:id="@+id/save"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_save" />
         </LinearLayout>
     </RelativeLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
