@@ -104,7 +104,7 @@ public class AddProduct extends AppCompatActivity {
             ));
             Toast.makeText(this, "Added!", Toast.LENGTH_SHORT).show();
         } else {
-
+            Toast.makeText(this, "Picked Qty should not exceed Qty ", Toast.LENGTH_SHORT).show();
         }
 
 
