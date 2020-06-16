@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.vision.barcode.Barcode;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     Context context;
@@ -359,6 +361,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return cursor;
         } else {
             return null;
+        }
+
+    }
+
+
+    public String GetProductBarcode(String barcode) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+ BARCODE +"  from "+TABLE_PRODUCT+" where "+CODE+" = ? ",new String[]{barcode});
+
+        if (cursor.moveToFirst()) {
+            return cursor.getString(cursor.getColumnIndex("Barcode"));
+        } else {
+            return "";
         }
 
     }

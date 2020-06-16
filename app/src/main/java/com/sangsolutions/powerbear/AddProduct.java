@@ -21,6 +21,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -30,6 +31,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -363,6 +365,29 @@ public class AddProduct extends AppCompatActivity {
         if (DocNo != null && !DocNo.equals("")) {
             setRecyclerViewFromDB(DocNo,EditMode);
         }
+
+
+
+        listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
+            @Override
+            public void onItemClick(View view, final ListProduct listProduct, int pos) {
+                PopupMenu popupMenu = new PopupMenu(AddProduct.this, view);
+                popupMenu.inflate(R.menu.edit_menu);
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                      if (item.getItemId() == R.id.edit) {
+                          qty.setText(listProduct.getPickedQty());
+                          et_barcode.setText(helper.GetProductBarcode(listProduct.getCode()));
+                        }
+                        return true;
+                    }
+                });
+            }
+        });
+
+
 
         fab_controller.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
