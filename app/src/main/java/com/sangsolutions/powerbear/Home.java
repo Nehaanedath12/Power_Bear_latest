@@ -119,6 +119,8 @@ public void UploadDeliveryNote(final HashMap<String,String> map){
 
 }
 
+
+
 public void syncDeliveryNote(){
     Cursor cursor = helper.GetDeliveryNote();
     if(cursor!=null) {
