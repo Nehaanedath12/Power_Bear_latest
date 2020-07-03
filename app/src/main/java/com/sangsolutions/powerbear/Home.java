@@ -61,7 +61,7 @@ public void UploadDeliveryNote(final HashMap<String,String> map){
             list.add(new BasicNameValuePair("dDate", df.format(c)));
             list.add(new BasicNameValuePair("iUser",helper.GetUserId()));
 
-            connection = new AsyncConnection(list,URLs.PostGoodsReceiptNote);
+            connection = new AsyncConnection(list,URLs.PostRecieptNote);
 
             pd=new ProgressDialog(Home.this);
             pd.setMessage("please wait..");

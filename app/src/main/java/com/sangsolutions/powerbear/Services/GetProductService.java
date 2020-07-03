@@ -11,6 +11,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.Product;
@@ -26,24 +31,40 @@ public class GetProductService extends JobService {
     JobParameters params;
     DatabaseHelper helper;
     Product p;
-    String response = "";
-    AsyncConnection connection;
 
-    private void asyncProduct() {
+
+
+    public void GetProduct() {
+        AndroidNetworking.get(URLs.GeProducts)
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        asyncProduct(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.d("error",anError.getErrorBody());
+                    }
+                });
+    }
+
+    private void asyncProduct(final JSONObject response) {
 
         @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
 
             @Override
             protected void onPreExecute() {
-                connection = new AsyncConnection(URLs.GeProducts);
+
             }
 
             @Override
             protected Void doInBackground(Void... voids) {
-                response = connection.execute();
                 try {
                     int dataCount = 0;
-                    JSONArray jsonArray = new JSONArray(new JSONObject(response).getString("data"));
+                    JSONArray jsonArray = new JSONArray(response.getString("Products"));
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         p.setMasterId(jsonObject.getString("MasterId"));
@@ -79,7 +100,7 @@ public class GetProductService extends JobService {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-new ScheduleJob().SyncPendingSOData(getApplicationContext());
+            new ScheduleJob().SyncPendingSOData(getApplicationContext());
                 jobFinished(params,false);
             }
         };
@@ -95,8 +116,9 @@ new ScheduleJob().SyncPendingSOData(getApplicationContext());
     @Override
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
+        AndroidNetworking.initialize(getApplicationContext());
         p = new Product();
-        asyncProduct();
+        GetProduct();
         this.params = params;
         return true;
     }

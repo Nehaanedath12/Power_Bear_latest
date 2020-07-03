@@ -7,6 +7,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 import androidx.annotation.RequiresApi;
+
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.Warehouse;
@@ -20,12 +25,29 @@ import org.json.JSONObject;
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class GetWareHouse extends JobService {
     JobParameters params;
-    String response;
     DatabaseHelper helper;
-    AsyncConnection connection = new AsyncConnection(URLs.GetWarehouse);
 
 
-    private void asyncPOST() {
+
+    public void GetProduct() {
+        AndroidNetworking.get(URLs.GetWarehouse)
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        asyncPOST(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                Log.d("error",anError.getErrorDetail());
+                    }
+                });
+    }
+
+
+    private void asyncPOST(final JSONObject response) {
 
         @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
 
@@ -36,10 +58,9 @@ public class GetWareHouse extends JobService {
 
             @Override
             protected Void doInBackground(Void... voids) {
-                response = connection.execute();
                 Warehouse w = new Warehouse();
                 try {
-                    JSONArray jsonArray = new JSONArray(new JSONObject(response).getString("data"));
+                    JSONArray jsonArray = new JSONArray(response.getString("Warehouse"));
 
                     //TODO Change to warehouse
 
@@ -91,8 +112,9 @@ public class GetWareHouse extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
+        AndroidNetworking.initialize(getApplicationContext());
         this.params = params;
-        asyncPOST();
+        GetProduct();
         return true;
     }
 

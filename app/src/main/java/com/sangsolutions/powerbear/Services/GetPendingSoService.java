@@ -44,7 +44,7 @@ public class GetPendingSoService extends JobService {
 
                 try {
                     int dataCount = 0;
-                    JSONArray jsonArray = new JSONArray(response.getString("data"));
+                    JSONArray jsonArray = new JSONArray(response.getString("PendingSO"));
                     if(helper.DeleteOldPendingSO()) {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -97,7 +97,7 @@ public class GetPendingSoService extends JobService {
     }
 
     public void GetProduct() {
-        AndroidNetworking.get(URLs.GePendingSO)
+        AndroidNetworking.get(URLs.GetPendingSo)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
@@ -108,7 +108,7 @@ public class GetPendingSoService extends JobService {
 
                     @Override
                     public void onError(ANError anError) {
-
+                        Log.d("error",anError.getErrorDetail());
                     }
                 });
 
@@ -119,6 +119,7 @@ public class GetPendingSoService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
+        AndroidNetworking.initialize(getApplicationContext());
         p = new PendingSO();
         GetProduct();
         this.params = params;

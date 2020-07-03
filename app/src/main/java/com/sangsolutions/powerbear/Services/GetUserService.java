@@ -9,6 +9,10 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.User;
@@ -22,12 +26,10 @@ import org.json.JSONObject;
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class GetUserService extends JobService {
     JobParameters params;
-    String response;
     DatabaseHelper helper;
-    AsyncConnection connection = new AsyncConnection(URLs.GetUsers);
 
 
-    private void asyncPOST() {
+    private void asyncPOST(final JSONObject response) {
 
         @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
 
@@ -38,10 +40,9 @@ public class GetUserService extends JobService {
 
             @Override
             protected Void doInBackground(Void... voids) {
-                response = connection.execute();
                 User u = new User();
                 try {
-                    JSONArray jsonArray = new JSONArray(new JSONObject(response).getString("data"));
+                    JSONArray jsonArray = new JSONArray(response.getString("Users"));
                     if(helper.DeleteUser()) {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -86,11 +87,28 @@ public class GetUserService extends JobService {
         asyncTask.execute();
     }
 
+    public void GetProduct() {
+        AndroidNetworking.get(URLs.GetUser)
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        asyncPOST(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.d("error",anError.getErrorDetail());
+                    }
+                });
+    }
     @Override
     public boolean onStartJob(JobParameters params) {
+        AndroidNetworking.initialize(getApplicationContext());
         helper = new DatabaseHelper(this);
         this.params = params;
-        asyncPOST();
+        GetProduct();
         return true;
     }
 

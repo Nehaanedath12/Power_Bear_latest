@@ -33,18 +33,15 @@ public class GetPendingPOService extends JobService {
     private void asyncPendingSO(final JSONObject response) {
 
         @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-
             @Override
             protected void onPreExecute() {
-
             }
 
             @Override
             protected Void doInBackground(Void... voids) {
-
                 try {
                     int dataCount = 0;
-                    JSONArray jsonArray = new JSONArray(response.getString("data"));
+                    JSONArray jsonArray = new JSONArray(response.getString("PendingPO"));
                     if(helper.DeleteOldPendingPO()) {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -95,8 +92,8 @@ public class GetPendingPOService extends JobService {
         asyncTask.execute();
     }
 
-    public void GetProduct() {
-        AndroidNetworking.get(URLs.GetPendingPO)
+    public void PendingSO() {
+        AndroidNetworking.get(URLs.GetPendingPo)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
@@ -107,7 +104,7 @@ public class GetPendingPOService extends JobService {
 
                     @Override
                     public void onError(ANError anError) {
-
+                        Log.d("error",anError.getErrorDetail());
                     }
                 });
 
@@ -118,8 +115,9 @@ public class GetPendingPOService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
+        AndroidNetworking.initialize(getApplicationContext());
         p = new PendingSO();
-        GetProduct();
+        PendingSO();
         this.params = params;
         return true;
     }
