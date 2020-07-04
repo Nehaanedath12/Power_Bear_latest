@@ -21,7 +21,7 @@ public class AsyncConnection {
     private List<NameValuePair> list;
     private String m = "", line, URL;
 
-    AsyncConnection(List<NameValuePair> list, String URL) {
+    public AsyncConnection(List<NameValuePair> list, String URL) {
 
         this.list = list;
         this.URL = URL;

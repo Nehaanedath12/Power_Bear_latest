@@ -366,6 +366,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public boolean DeleteDeliveryNote(String header_id, String sino){
+        this.db = getWritableDatabase();
+        float status;
+        status = db.delete(TABLE_DELIVERY_NOTE,HEADER_ID+" =  ? and "+SI_NO+" = ?",new String[]{header_id,sino});
+        return status != -1;
+
+    }
+
     public String GetProductBarcode(String barcode) {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select "+ BARCODE +"  from "+TABLE_PRODUCT+" where "+CODE+" = ? ",new String[]{barcode});
@@ -458,7 +466,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor GetDeliveryNote(){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from "+TABLE_DELIVERY_NOTE,null);
+        Cursor cursor = db.rawQuery("select * from "+TABLE_DELIVERY_NOTE+" where "+I_STATUS+" = ? ",new String[]{"0"});
         if(cursor.moveToFirst()){
             return cursor;
         }
@@ -581,6 +589,23 @@ public boolean DeleteStockCount(String voucherNo){
             return null;
     }
 
+    public Cursor GetAllStockCount() {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM tbl_StockCount where "+I_STATUS+" = ?  GROUP BY iVoucherNo ",new String[]{"0"});
+        if(cursor.moveToFirst())
+            return cursor;
+        else
+            return null;
+    }
+
+    public boolean DeleteStockCount(String vno, String product){
+        this.db = getWritableDatabase();
+        float status;
+        status = db.delete(TABLE_STOCK_COUNT,I_VOUCHER_NO+" =  ? and "+I_PRODUCT+" = ?",new String[]{vno,product});
+        return status != -1;
+
+    }
+
     public String GetWarehouse(String id) {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select " + NAME + " from " + TABLE_WAREHOUSE + " where " + MASTER_ID + " = ?", new String[]{id});
@@ -638,6 +663,13 @@ public boolean DeleteStockCount(String voucherNo){
         return true;
     }
 
+    public boolean DeleteGoods(String header_id, String sino){
+        this.db = getWritableDatabase();
+        float status;
+        status  =  db.delete(TABLE_GOODS_RECEIPT,HEADER_ID+" =  ? and "+SI_NO+" = ?",new String[]{header_id,sino});
+
+        return status != -1;
+    }
     // Insert Pending PO
 
     public boolean InsertPendingPO(PendingSO p){
@@ -697,6 +729,14 @@ public boolean DeleteStockCount(String voucherNo){
             return null;
     }
 
+    public Cursor GetGoodsReceipt() {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * from "+TABLE_GOODS_RECEIPT +" where "+I_STATUS+" = ?  GROUP BY "+HEADER_ID,new String[]{"0"});
+        if(cursor.moveToFirst())
+            return cursor;
+        else
+            return null;
+    }
 
     public boolean InsertGoodsReceipt(GoodsReceipt g){
         this.db = getWritableDatabase();

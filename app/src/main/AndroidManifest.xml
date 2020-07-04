@@ -36,8 +36,11 @@
         <activity
             android:name=".SelectDN"
             android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity android:name=".Home" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".Home"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            />
+        <activity android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -67,6 +70,15 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".Services.GetPendingPOService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".Services.PostDeliveryNote"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".Services.PostGoodsReceipt"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".Services.PostStockCount"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
