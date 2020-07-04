@@ -1,7 +1,6 @@
 package com.sangsolutions.powerbear.Fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -22,20 +21,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.sangsolutions.powerbear.Adapter.ListProduct2.ListProduct;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
-import com.sangsolutions.powerbear.Database.StockCount;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
 import com.sangsolutions.powerbear.Tools;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 public class HeaderFragment extends Fragment {
@@ -99,7 +93,7 @@ private void setDataForEditing(String voucherNo){
     date =   view.findViewById(R.id.date);
     remarks = view.findViewById(R.id.remarks);
         warehouse = view.findViewById(R.id.warehouse_name);
-        close = view.findViewById(R.id.close);
+        close = view.findViewById(R.id.goods_receipt);
         VoucherNo = view.findViewById(R.id.voucher_no);
 
         helper = new DatabaseHelper(getActivity());

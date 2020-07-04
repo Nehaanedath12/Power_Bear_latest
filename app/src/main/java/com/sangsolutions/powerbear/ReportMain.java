@@ -1,0 +1,60 @@
+package com.sangsolutions.powerbear;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+
+public class ReportMain extends AppCompatActivity implements View.OnClickListener {
+CardView card_pendingPO,card_pendingSO,card_deliveryNote,card_goodsReceipt,card_stockCount;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_report_main);
+        card_pendingPO = findViewById(R.id.pending_po);
+        card_pendingSO = findViewById(R.id.pending_so);
+        card_deliveryNote = findViewById(R.id.delivery_note);
+        card_goodsReceipt = findViewById(R.id.goods_receipt);
+        card_stockCount = findViewById(R.id.stock_count);
+
+        card_pendingPO.setOnClickListener(this);
+        card_pendingSO.setOnClickListener(this);
+        card_deliveryNote.setOnClickListener(this);
+        card_goodsReceipt.setOnClickListener(this);
+        card_stockCount.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.pending_po:
+                Intent intent = new Intent(ReportMain.this,SelectCustomer.class);
+                intent.putExtra("report_type","pending_po");
+                startActivity(intent);
+                break;
+            case R.id.pending_so:
+                Intent intent2 = new Intent(ReportMain.this,SelectCustomer.class);
+                intent2.putExtra("report_type","pending_so");
+                startActivity(intent2);
+                break;
+            case R.id.delivery_note:
+                Intent intent3 = new Intent(ReportMain.this,SelectCustomer.class);
+                intent3.putExtra("report_type","delivery_note");
+                startActivity(intent3);
+                break;
+            case R.id.goods_receipt:
+                Intent intent4 = new Intent(ReportMain.this,SelectCustomer.class);
+                intent4.putExtra("report_type","goods_receipt");
+                startActivity(intent4);
+                break;
+            case R.id.stock_count:
+                Intent intent5 = new Intent(ReportMain.this,SelectCustomer.class);
+                intent5.putExtra("report_type","stock_count");
+                startActivity(intent5);
+                break;
+        }
+    }
+}

@@ -24,7 +24,6 @@ public class URLs {
     public static final String GetPendingPo = domain + "GetPendingPo";
     public static final String GeProducts = domain + "GetProducts";
     public static final String GetPendingSo = domain + "GetPendingSo";
-    public static final String GetProducts = domain + "GetProducts";
     public static final String GetUser = domain + "GetUser";
     public static final String GetCustomer = domain + "GetCustomer";
     public static final String GetPendingSODetails = domain + "GetPendingSODetails";

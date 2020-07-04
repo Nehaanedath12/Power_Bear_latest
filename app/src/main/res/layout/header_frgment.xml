@@ -81,7 +81,7 @@
         android:background="@color/color_red_dark1"
         android:text="CLOSE"
         android:textColor="#fff"
-        android:id="@+id/close"
+        android:id="@+id/goods_receipt"
         android:layout_marginTop="30dp"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"

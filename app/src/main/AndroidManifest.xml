@@ -13,14 +13,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".GoodsReceiptHistory"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
-        <activity android:name=".DeliveryNoteHistory"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
-        <activity android:name=".GoodsReceipt"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
-        <activity android:name=".PendingPO"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".ReportOPAndSO"></activity>
+        <activity android:name=".ReportGoods_Stock_Delivery" />
+        <activity android:name=".SelectCustomer" />
+        <activity android:name=".ReportMain" />
+        <activity
+            android:name=".GoodsReceiptHistory"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".DeliveryNoteHistory"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".GoodsReceipt"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".PendingPO"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".StockCountList"
             android:configChanges="keyboardHidden|orientation|screenSize" />
@@ -36,11 +44,12 @@
         <activity
             android:name=".SelectDN"
             android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity android:name=".Home"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            />
-        <activity android:name=".MainActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+        <activity
+            android:name=".Home"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
