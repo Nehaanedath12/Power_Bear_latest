@@ -1,9 +1,10 @@
 package com.sangsolutions.powerbear.Adapter.ListProduct;
 
 public class ListProduct {
-    String Name,Code,Qty,PickedQty,HeaderId,Product,SiNo,Unit;
+    String iVoucherNo,Name,Code,Qty,PickedQty,HeaderId,Product,SiNo,Unit;
 
-    public ListProduct(String name, String code, String qty, String pickedQty, String headerId, String product, String siNo, String unit) {
+    public ListProduct(String iVoucherNo,String name, String code, String qty, String pickedQty, String headerId, String product, String siNo, String unit) {
+        this.iVoucherNo =iVoucherNo;
         this.Name = name;
         this.Code = code;
         this.Qty = qty;
@@ -12,6 +13,14 @@ public class ListProduct {
         this.Product = product;
         this.SiNo = siNo;
         this.Unit = unit;
+    }
+
+    public String getiVoucherNo() {
+        return iVoucherNo;
+    }
+
+    public void setiVoucherNo(String iVoucherNo) {
+        this.iVoucherNo = iVoucherNo;
     }
 
     public String getName() {

@@ -75,6 +75,7 @@ public class AddProduct extends AppCompatActivity {
     private ImageView add_new, save;
     private String DocNo = "";
     private boolean EditMode = false;
+    private String iVoucherNo;
     private static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -93,6 +94,7 @@ public class AddProduct extends AppCompatActivity {
 
         if (Integer.parseInt(list.get(position).getQty()) >= Integer.parseInt(Qty)) {
             list.set(position, new ListProduct(
+                    list.get(position).getiVoucherNo(),
                     list.get(position).getName(),
                     list.get(position).getCode(),
                     list.get(position).getQty(),
@@ -149,6 +151,7 @@ public class AddProduct extends AppCompatActivity {
         DeliveryNote d = new DeliveryNote();
         if(helper.DeleteDeliveryNote(DocNo)) {
             for (int i = 0; i < list.size(); i++) {
+                d.setiVoucherNo(iVoucherNo);
                 d.setSiNo(list.get(i).getSiNo());
                 d.setHeaderId(list.get(i).getHeaderId());
                 d.setProduct(list.get(i).getProduct());
@@ -182,8 +185,10 @@ public class AddProduct extends AppCompatActivity {
 
             for (int i = 0; i < cursor.getCount(); i++) {
                 Qty = cursor.getString(cursor.getColumnIndex("Qty"));
-                if(EditMode)
-                PickedQty = cursor.getString(cursor.getColumnIndex("PickedQty"));
+                if(EditMode) {
+                    PickedQty = cursor.getString(cursor.getColumnIndex("PickedQty"));
+                    iVoucherNo = cursor.getString(cursor.getColumnIndex("iVoucherNo"));
+                }
                 else
                 PickedQty = "0";
                 Name = cursor.getString(cursor.getColumnIndex("Name"));
@@ -193,7 +198,7 @@ public class AddProduct extends AppCompatActivity {
                 Product = cursor.getString(cursor.getColumnIndex("Product"));
                 SiNo = cursor.getString(cursor.getColumnIndex("SiNo"));
 
-                list.add(new ListProduct(Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit));
+                list.add(new ListProduct(iVoucherNo,Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit));
 
                 listProductAdapter.notifyDataSetChanged();
                 cursor.moveToNext();
@@ -343,7 +348,7 @@ public class AddProduct extends AppCompatActivity {
 
         helper = new DatabaseHelper(this);
 
-
+        iVoucherNo = Objects.requireNonNull(helper).GetDeliveryNoteVoucherNo();
 
         rv_product = findViewById(R.id.rv_product);
         rv_product.setLayoutManager(new LinearLayoutManager(this));

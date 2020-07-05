@@ -74,7 +74,7 @@ public class GoodsReceipt extends AppCompatActivity {
     private ImageView add_new, save;
     private String DocNo = "";
     private boolean EditMode = false;
-
+String iVoucherNo;
     private static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -93,6 +93,7 @@ public class GoodsReceipt extends AppCompatActivity {
 
         if (Integer.parseInt(list.get(position).getQty()) >= Integer.parseInt(Qty)) {
             list.set(position, new ListProduct(
+                    list.get(position).getiVoucherNo(),
                     list.get(position).getName(),
                     list.get(position).getCode(),
                     list.get(position).getQty(),
@@ -149,6 +150,7 @@ public class GoodsReceipt extends AppCompatActivity {
         com.sangsolutions.powerbear.Database.GoodsReceipt g = new com.sangsolutions.powerbear.Database.GoodsReceipt();
         if(helper.DeleteGoodsReceipt(DocNo)){
         for (int i = 0; i < list.size(); i++) {
+            g.setiVoucherNo(iVoucherNo);
             g.setSiNo(list.get(i).getSiNo());
             g.setHeaderId(list.get(i).getHeaderId());
             g.setProduct(list.get(i).getProduct());
@@ -181,10 +183,12 @@ public class GoodsReceipt extends AppCompatActivity {
 
             for (int i = 0; i < cursor.getCount(); i++) {
                 Qty = cursor.getString(cursor.getColumnIndex("Qty"));
-                if(EditMode)
+                if(EditMode) {
                     PickedQty = cursor.getString(cursor.getColumnIndex("PickedQty"));
-                else
+                    iVoucherNo = cursor.getString(cursor.getColumnIndex("iVoucherNo"));
+                }else {
                     PickedQty = "0";
+                }
                 Name = cursor.getString(cursor.getColumnIndex("Name"));
                 Code = cursor.getString(cursor.getColumnIndex("Code"));
                 HeaderId = cursor.getString(cursor.getColumnIndex("HeaderId"));
@@ -192,7 +196,7 @@ public class GoodsReceipt extends AppCompatActivity {
                 SiNo = cursor.getString(cursor.getColumnIndex("SiNo"));
                 Unit = cursor.getString(cursor.getColumnIndex("Unit"));
                 Log.d("Qty", Qty);
-                list.add(new ListProduct(Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit));
+                list.add(new ListProduct(iVoucherNo,Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit));
                 listProductAdapter.notifyDataSetChanged();
                 cursor.moveToNext();
 
@@ -340,7 +344,7 @@ public class GoodsReceipt extends AppCompatActivity {
 
         helper = new DatabaseHelper(this);
 
-
+        iVoucherNo = Objects.requireNonNull(helper).GetGoodsReceiptVoucherNo();
 
         rv_product = findViewById(R.id.rv_product);
         rv_product.setLayoutManager(new LinearLayoutManager(this));

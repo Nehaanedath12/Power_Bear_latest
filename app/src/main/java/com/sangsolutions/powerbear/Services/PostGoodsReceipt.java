@@ -34,7 +34,7 @@ public class PostGoodsReceipt extends JobService {
     HashMap<String,String> map;
     String response = "";
     AsyncConnection connection;
-
+    Cursor cursor;
 
 
     public void UploadGoodsReceipt(final HashMap<String,String> map){
@@ -46,9 +46,10 @@ public class PostGoodsReceipt extends JobService {
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
                 List<NameValuePair> list = new ArrayList<>();
+                list.add(new BasicNameValuePair("iVoucherNo",map.get("iVoucherNo")));
                 list.add(new BasicNameValuePair("iHeaderId",map.get("iHeaderId")));
                 list.add(new BasicNameValuePair("iLinkId",map.get("SiNo")));
-                list.add(new BasicNameValuePair("iRowId","0"));
+                list.add(new BasicNameValuePair("iRowId",map.get("iRowId")));
                 list.add(new BasicNameValuePair("iProduct",map.get("iProduct")));
                 list.add(new BasicNameValuePair("fQty",map.get("fQty")));
                 list.add(new BasicNameValuePair("iStatus",map.get("iStatus")));
@@ -87,14 +88,12 @@ public class PostGoodsReceipt extends JobService {
 
 
     public void syncGoodsReceipt(){
-
-        Cursor cursor = helper.GetGoodsReceipt();
         if(cursor!=null) {
-            cursor.moveToFirst();
             if (cursor.getCount()>ReceiptCount) {
+                map.put("iVoucherNo", cursor.getString(cursor.getColumnIndex("iVoucherNo")));
                 map.put("iHeaderId", cursor.getString(cursor.getColumnIndex("HeaderId")));
                 //map.put("iRowId",cursor.getString(cursor.getColumnIndex("iRowId")));
-                map.put("iRowId", "0");
+                map.put("iRowId", String.valueOf(ReceiptCount));
                 map.put("iProduct", cursor.getString(cursor.getColumnIndex("Product")));
                 map.put("fQty", cursor.getString(cursor.getColumnIndex("Qty")));
                 map.put("iStatus", cursor.getString(cursor.getColumnIndex("iStatus")));
@@ -118,6 +117,10 @@ public class PostGoodsReceipt extends JobService {
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
         this.params = params;
+         cursor = helper.GetGoodsReceipt();
+        if(cursor!=null) {
+            cursor.moveToFirst();
+        }
         map = new HashMap<>();
         syncGoodsReceipt();
         return true;

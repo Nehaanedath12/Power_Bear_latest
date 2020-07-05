@@ -30,6 +30,7 @@ public class PostStockCount extends JobService {
     JobParameters params;
     DatabaseHelper helper;
     HashMap<String,String> map;
+    Cursor cursor;
     String response = "";
     AsyncConnection connection;
     int stockCount  = 0;
@@ -88,9 +89,8 @@ public class PostStockCount extends JobService {
 
 
     public void syncStockCount(){
-        Cursor cursor = helper.GetAllStockCount();
+
         if(cursor!=null) {
-            cursor.moveToFirst();
             if (cursor.getCount()>stockCount) {
                 map.put("iVoucherNo", cursor.getString(cursor.getColumnIndex("iVoucherNo")));
                 map.put("iWarehouse", cursor.getString(cursor.getColumnIndex("iWarehouse")));
@@ -102,8 +102,8 @@ public class PostStockCount extends JobService {
                 map.put("iStatus", cursor.getString(cursor.getColumnIndex("iStatus")));
 
                 UploadStockCount(map);
-                stockCount++;
                 cursor.moveToNext();
+                stockCount++;
                 if(cursor.getCount()<=stockCount){
                     jobFinished(params,false);
 
@@ -123,6 +123,10 @@ public class PostStockCount extends JobService {
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
         this.params = params;
+         cursor = helper.GetAllStockCount();
+        if(cursor!=null) {
+            cursor.moveToFirst();
+        }
         map = new HashMap<>();
         syncStockCount();
         return true;

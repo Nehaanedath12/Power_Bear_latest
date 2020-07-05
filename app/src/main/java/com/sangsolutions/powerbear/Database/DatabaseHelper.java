@@ -89,6 +89,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //create table DeliveryNote
     private static final String CREATE_TABLE_DELIVERY_NOTE = "create table if not exists  " + TABLE_DELIVERY_NOTE + " (" +
+            "" + I_VOUCHER_NO + "  INTEGER DEFAULT 0," +
             "" + HEADER_ID + "  INTEGER DEFAULT 0," +
             "" + SI_NO + "  INTEGER DEFAULT 0," +
             "" + PRODUCT + "  INTEGER DEFAULT 0," +
@@ -117,6 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     private static final String CREATE_TABLE_GOODS_RECEIPT = "create table if not exists  " + TABLE_GOODS_RECEIPT + " (" +
+            "" + I_VOUCHER_NO + "  INTEGER DEFAULT 0," +
             "" + HEADER_ID + "  INTEGER DEFAULT 0," +
             "" + SI_NO + "  INTEGER DEFAULT 0," +
             "" + PRODUCT + "  INTEGER DEFAULT 0," +
@@ -375,6 +377,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public String GetDeliveryNoteVoucherNo(){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+I_VOUCHER_NO+" from  "+TABLE_DELIVERY_NOTE,null);
+        if(cursor!=null){
+            if(cursor.moveToLast()){
+                return String.valueOf(cursor.getInt(cursor.getColumnIndex(I_VOUCHER_NO))+1);
+            }
+        }
+        return "1";
+    }
+
+
 
     public boolean DeleteDeliveryNote(String header_id, String sino){
         this.db = getWritableDatabase();
@@ -463,6 +477,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.db = getWritableDatabase();
         float status = -1;
             ContentValues cv = new ContentValues();
+            cv.put(I_VOUCHER_NO,d.getiVoucherNo() );
             cv.put(HEADER_ID,d.getHeaderId() );
             cv.put(SI_NO, d.getSiNo());
             cv.put(PRODUCT, d.getProduct());
@@ -501,7 +516,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor GetAllDeliveryNote(String DocNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT d.HeaderId,d.SiNo,p.MasterId as Product,p.Name,p.Code,p.Unit, d.Qty PickedQty,so.Qty Qty FROM tbl_DeliveryNote d " +
+        Cursor cursor = db.rawQuery("SELECT d.HeaderId,d.SiNo,p.MasterId as Product,p.Name,p.Code,p.Unit,d.iVoucherNo iVoucherNo , d.Qty PickedQty,so.Qty Qty FROM tbl_DeliveryNote d " +
                 "INNER JOIN tbl_PendingSO so on d.HeaderId = so.HeaderId and d.sino=so.sino " +
                 "INNER JOIN tbl_Product p on d.product=p.masterid " +
                 " " +
@@ -657,7 +672,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetAllGoodsReceiptNote(String DocNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT g.HeaderId,g.SiNo,p.MasterId as Product,p.Name,p.Code,p.Unit, g.Qty PickedQty,po.Qty Qty FROM tbl_GoodsReceipt g " +
+        Cursor cursor = db.rawQuery("SELECT g.HeaderId,g.SiNo,p.MasterId as Product,g.iVoucherNo iVoucherNo,p.Name,p.Code,p.Unit, g.Qty PickedQty,po.Qty Qty FROM tbl_GoodsReceipt g " +
                 "INNER JOIN tbl_PendingPO po on g.HeaderId = po.HeaderId and g.sino=po.sino " +
                 "INNER JOIN tbl_Product p on g.product=p.masterid " +
                 "WHERE g.HeaderId = ?  ", new String[]{DocNo});
@@ -752,6 +767,7 @@ public boolean DeleteStockCount(String voucherNo){
         this.db = getWritableDatabase();
         float status = -1;
         ContentValues cv = new ContentValues();
+        cv.put(I_VOUCHER_NO,g.getiVoucherNo() );
         cv.put(HEADER_ID,g.getHeaderId() );
         cv.put(SI_NO, g.getSiNo());
         cv.put(PRODUCT, g.getProduct());
@@ -763,6 +779,17 @@ public boolean DeleteStockCount(String voucherNo){
         return status != -1;
     }
 
+
+    public String GetGoodsReceiptVoucherNo(){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+I_VOUCHER_NO+" from  "+TABLE_GOODS_RECEIPT,null);
+        if(cursor!=null){
+            if(cursor.moveToLast()){
+                return String.valueOf(cursor.getInt(cursor.getColumnIndex(I_VOUCHER_NO))+1);
+            }
+        }
+        return "1";
+    }
 
 
 

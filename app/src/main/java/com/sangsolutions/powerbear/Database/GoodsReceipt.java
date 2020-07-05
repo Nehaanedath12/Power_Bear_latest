@@ -2,7 +2,15 @@ package com.sangsolutions.powerbear.Database;
 
 public class GoodsReceipt {
 
-    String HeaderId,SiNo,Product,Qty,iStatus;
+    String HeaderId,SiNo,Product,Qty,iStatus,iVoucherNo;
+
+    public String getiVoucherNo() {
+        return iVoucherNo;
+    }
+
+    public void setiVoucherNo(String iVoucherNo) {
+        this.iVoucherNo = iVoucherNo;
+    }
 
     public String getHeaderId() {
         return HeaderId;
