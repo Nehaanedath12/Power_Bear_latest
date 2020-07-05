@@ -277,6 +277,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Cursor GetProduct(){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+NAME+","+CODE+","+MASTER_ID+" from "+TABLE_PRODUCT,null);
+        if (cursor.moveToFirst()) {
+            return cursor;
+        }else {
+            return  null;
+        }
+    }
+
     public String GetProductName(String iProduct){
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select "+NAME+" from "+TABLE_PRODUCT+" where "+MASTER_ID+" = ? ",new String[]{iProduct});

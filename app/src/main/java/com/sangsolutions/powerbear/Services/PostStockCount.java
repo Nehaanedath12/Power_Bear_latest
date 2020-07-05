@@ -47,7 +47,7 @@ public class PostStockCount extends JobService {
                 list.add(new BasicNameValuePair("iVoucherNo",map.get("iVoucherNo")));
                 list.add(new BasicNameValuePair("dDate", df.format(c)));
                 list.add(new BasicNameValuePair("iWarehouse",map.get("iWarehouse")));
-                list.add(new BasicNameValuePair("iProduct","iProduct"));
+                list.add(new BasicNameValuePair("iProduct",map.get("iProduct")));
                 list.add(new BasicNameValuePair("fQty",map.get("fQty")));
                 list.add(new BasicNameValuePair("sUnit",map.get("sUnit")));
                 list.add(new BasicNameValuePair("sRemarks",map.get("sRemarks")));

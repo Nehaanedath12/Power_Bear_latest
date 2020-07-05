@@ -29,7 +29,7 @@ public class URLs {
     public static final String GetPendingSODetails = domain + "GetPendingSODetails";
     public static final String GetPendingPODetails = domain + "GetPendingPODetails";
     public static final String GetDeliveryNote = domain + "GetDeliveryNote";
-    public static final String GetGRNote = domain + "GetDeliveryNote";
+    public static final String GetGRNote = domain + "GetGRNote";
     public static final String GetStockCount= domain +"GetStockCount";
 
 }

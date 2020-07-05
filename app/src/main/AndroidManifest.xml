@@ -15,7 +15,7 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".ReportOPAndSO"></activity>
         <activity android:name=".ReportGoods_Stock_Delivery" />
-        <activity android:name=".SelectCustomer" />
+        <activity android:name=".SelectCustomerOrProduct" />
         <activity android:name=".ReportMain" />
         <activity
             android:name=".GoodsReceiptHistory"

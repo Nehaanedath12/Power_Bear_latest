@@ -1,0 +1,69 @@
+package com.sangsolutions.powerbear.Adapter.StockCountReportAdapter;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.sangsolutions.powerbear.R;
+
+import java.util.List;
+
+public class StockCountReportAdapter extends RecyclerView.Adapter<StockCountReportAdapter.ViewHolder> {
+    List<StockCountReport> list;
+    Context context;
+
+
+    public StockCountReportAdapter(List<StockCountReport> list, Context context) {
+        this.list = list;
+        this.context = context;
+    }
+
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.stock_count_report_item,parent,false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.vno.setText(list.get(position).getiVoucherNo());
+        holder.doc_date.setText(list.get(position).getDocDate());
+        holder.warehouse.setText(list.get(position).getWaehouse());
+        holder.name.setText(list.get(position).getName());
+        holder.code.setText(list.get(position).getCode());
+        holder.qty.setText(list.get(position).getfQty());
+        holder.unit.setText(list.get(position).getsUnit());
+        holder.remarks.setText(list.get(position).getsRemarks());
+
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView vno,doc_date,warehouse,name,code,qty,unit,remarks;
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            vno = itemView.findViewById(R.id.vno);
+            doc_date = itemView.findViewById(R.id.doc_date);
+            warehouse = itemView.findViewById(R.id.warehouse);
+            name = itemView.findViewById(R.id.name);
+            code = itemView.findViewById(R.id.code);
+            qty = itemView.findViewById(R.id.qty);
+            unit = itemView.findViewById(R.id.unit);
+            remarks = itemView.findViewById(R.id.remarks);
+
+
+        }
+    }
+}

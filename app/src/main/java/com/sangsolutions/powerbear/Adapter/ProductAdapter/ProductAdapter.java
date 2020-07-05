@@ -1,4 +1,4 @@
-package com.sangsolutions.powerbear.Adapter.CustomerAdapter;
+package com.sangsolutions.powerbear.Adapter.ProductAdapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,19 +9,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.sangsolutions.powerbear.R;
 
 import java.util.List;
 
-public class CustomerAdapter extends BaseAdapter {
+public class ProductAdapter extends BaseAdapter {
 
 
-    private List<Customer> list;
+    private List<Product> list;
     private Context context;
 
 
-    public CustomerAdapter(List<Customer> list, Context context) {
+    public ProductAdapter(List<Product> list, Context context) {
         this.list = list;
         this.context = context;
     }

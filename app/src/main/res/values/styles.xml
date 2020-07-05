@@ -7,5 +7,7 @@
         <item name="colorPrimaryDark">@color/color_cyan</item>
         <item name="colorAccent">@color/color_lite_violet</item>
     </style>
-
+    <style name="datepicker" parent="Theme.AppCompat.Light.Dialog.MinWidth">
+        <item name="colorAccent">#7E57C2</item>
+    </style>
 </resources>

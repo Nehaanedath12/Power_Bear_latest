@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    >
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="product"
+        android:layout_weight="1"
+        android:id="@+id/product"
+        android:gravity="center"
+        />
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/code"
+            android:text="Code"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/customer"
+            android:text="Customer"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:id="@+id/qty"
+            android:text="Qty"
+            />
+</LinearLayout>
+</RelativeLayout>
