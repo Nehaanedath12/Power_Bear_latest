@@ -1,45 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ReportOPAndSO">
-
-    <FrameLayout
-        android:id="@+id/empty_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible"
-       >
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-
-            <ImageView
-                android:id="@+id/empty_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/empty_icon_128px" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/empty_icon"
-                android:text="No Collections yet!"
-                android:textSize="25dp" />
-        </RelativeLayout>
-    </FrameLayout>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/ll_pending_so_po"
         android:visibility="visible"
-        android:background="@color/color_lite_violet"
         >
         <TextView
             android:layout_width="80dp"
@@ -48,7 +16,6 @@
             android:layout_weight="1"
             android:id="@+id/DocNo"
             android:gravity="center"
-            android:textColor="@color/color_white"
             />
         <TextView
             android:layout_width="80dp"
@@ -57,7 +24,6 @@
             android:text="Doc Date"
             android:id="@+id/DocDate"
             android:gravity="center"
-            android:textColor="@color/color_white"
             />
         <TextView
             android:layout_width="80dp"
@@ -66,7 +32,6 @@
             android:text="Customer"
             android:id="@+id/Customer"
             android:gravity="center"
-            android:textColor="@color/color_white"
             />
 
         <TextView
@@ -76,7 +41,6 @@
             android:gravity="center"
             android:id="@+id/SINo"
             android:text="SINo"
-            android:textColor="@color/color_white"
             />
         <TextView
             android:layout_width="80dp"
@@ -85,7 +49,6 @@
             android:gravity="center"
             android:id="@+id/ProductName"
             android:text="Name"
-            android:textColor="@color/color_white"
             />
         <TextView
             android:layout_width="80dp"
@@ -94,7 +57,6 @@
             android:gravity="center"
             android:id="@+id/ProductCode"
             android:text="Code"
-            android:textColor="@color/color_white"
             />
         <TextView
             android:layout_width="80dp"
@@ -103,7 +65,6 @@
             android:gravity="center"
             android:id="@+id/Qty"
             android:text="Qty"
-            android:textColor="@color/color_white"
             />
         <TextView
             android:layout_width="80dp"
@@ -111,14 +72,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:id="@+id/unit"
-            android:textColor="@color/color_white"
             android:text="unit"
             />
     </LinearLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_below="@id/ll_pending_so_po"
-        android:layout_height="match_parent"
-        android:id="@+id/recycler" />
-
 </RelativeLayout>
