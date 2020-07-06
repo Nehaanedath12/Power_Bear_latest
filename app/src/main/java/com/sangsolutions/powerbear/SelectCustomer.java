@@ -20,7 +20,7 @@ import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectDN extends AppCompatActivity {
+public class SelectCustomer extends AppCompatActivity {
 
 DatabaseHelper helper;
 List<DONo> list;
@@ -31,7 +31,7 @@ ListView doc_no_lv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_dn);
+        setContentView(R.layout.activity_select_customer);
         helper = new DatabaseHelper(this);
         doc_no_lv = findViewById(R.id.doc_no_lv);
         list= new ArrayList<>();
@@ -52,12 +52,12 @@ ListView doc_no_lv;
         doc_no_lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(SelectDN.this, AddProduct.class);
+                    Intent intent = new Intent(SelectCustomer.this, AddDeliveryNote.class);
                    intent.putExtra("DocNo",parent.getItemAtPosition(position).toString());
                 intent.putExtra("EditMode",false);
                     startActivity(intent);
 
-                Toast.makeText(SelectDN.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(SelectCustomer.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
                 }
 
         });
@@ -122,7 +122,7 @@ ListView doc_no_lv;
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View view = LayoutInflater.from(SelectDN.this).inflate(R.layout.dno_item,parent,false);
+            View view = LayoutInflater.from(SelectCustomer.this).inflate(R.layout.dno_item,parent,false);
             TextView doc_no = view.findViewById(R.id.dno);
             TextView date = view.findViewById(R.id.date);
             TextView customer = view.findViewById(R.id.customer);

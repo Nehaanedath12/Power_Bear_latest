@@ -110,7 +110,8 @@ public class StockCountList extends AppCompatActivity {
         helper = new DatabaseHelper(this);
 
 
-        date.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
+       // date.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
+        date.setText("Stock Count");
         list = new ArrayList<>();
         adapter = new StockCountListAdapter(list,this);
         rv = findViewById(R.id.rv_summary);

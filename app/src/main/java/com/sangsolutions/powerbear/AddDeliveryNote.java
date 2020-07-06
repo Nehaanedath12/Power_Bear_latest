@@ -54,7 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-public class AddProduct extends AppCompatActivity {
+public class AddDeliveryNote extends AppCompatActivity {
     private FloatingActionButton fab_controller;
     private LinearLayout barcodeLinear, linear_search;
     private BarcodeDetector barcodeDetector;
@@ -257,7 +257,7 @@ public class AddProduct extends AppCompatActivity {
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> barcode = detections.getDetectedItems();
                 if (barcode.size() > 0) {
-                    AddProduct.this.runOnUiThread(new Runnable() {
+                    AddDeliveryNote.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             et_barcode.setText(barcode.valueAt(0).displayValue);
@@ -334,7 +334,7 @@ public class AddProduct extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_product);
+        setContentView(R.layout.activity_add_delivery_note);
         fab_controller = findViewById(R.id.fab_controller);
         barcodeLinear = findViewById(R.id.linear_scan);
         linear_search = findViewById(R.id.linear_search);
@@ -357,7 +357,7 @@ public class AddProduct extends AppCompatActivity {
         helper = new DatabaseHelper(this);
         rl_showProductInfo = findViewById(R.id.details);
         productList = new ArrayList<>();
-        adapter = new SearchProductAdapter(AddProduct.this, productList);
+        adapter = new SearchProductAdapter(AddDeliveryNote.this, productList);
         list = new ArrayList<>();
         listProductAdapter = new ListProductAdapter(this,list);
         rv_product.setAdapter(listProductAdapter);
@@ -376,7 +376,7 @@ public class AddProduct extends AppCompatActivity {
         listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
             @Override
             public void onItemClick(View view, final ListProduct listProduct, int pos) {
-                PopupMenu popupMenu = new PopupMenu(AddProduct.this, view);
+                PopupMenu popupMenu = new PopupMenu(AddDeliveryNote.this, view);
                 popupMenu.inflate(R.menu.edit_menu);
                 popupMenu.show();
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -453,8 +453,8 @@ public class AddProduct extends AppCompatActivity {
                     surfaceView.setVisibility(View.GONE);
                 } else {
                     surfaceView.setVisibility(View.VISIBLE);
-                    if (!hasPermissions(AddProduct.this, PERMISSIONS)) {
-                        ActivityCompat.requestPermissions(AddProduct.this, PERMISSIONS, 100);
+                    if (!hasPermissions(AddDeliveryNote.this, PERMISSIONS)) {
+                        ActivityCompat.requestPermissions(AddDeliveryNote.this, PERMISSIONS, 100);
                     } else {
                         InitialiseDetectorsAndSources();
                     }
@@ -475,10 +475,10 @@ public class AddProduct extends AppCompatActivity {
                     }
                 }else {
                     if (map.isEmpty()) {
-                        Toast.makeText(AddProduct.this, "No product", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddDeliveryNote.this, "No product", Toast.LENGTH_SHORT).show();
                     }
                     if (qty.getText().toString().isEmpty()) {
-                        Toast.makeText(AddProduct.this, "Enter Quantity", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddDeliveryNote.this, "Enter Quantity", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -497,11 +497,11 @@ public class AddProduct extends AppCompatActivity {
         linear_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                View view = LayoutInflater.from(AddProduct.this).inflate(R.layout.search_layout, null);
+                View view = LayoutInflater.from(AddDeliveryNote.this).inflate(R.layout.search_layout, null);
                 et_search_input = view.findViewById(R.id.search_edit);
                 rv_search = view.findViewById(R.id.search_recycler);
-                rv_search.setLayoutManager(new LinearLayoutManager(AddProduct.this));
-                AlertDialog.Builder builder = new AlertDialog.Builder(AddProduct.this);
+                rv_search.setLayoutManager(new LinearLayoutManager(AddDeliveryNote.this));
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddDeliveryNote.this);
                 builder.setView(view);
                 dialog = builder.create();
                 dialog.show();
@@ -514,7 +514,7 @@ public class AddProduct extends AppCompatActivity {
                             et_search_input.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    InputMethodManager inputMethodManager = (InputMethodManager) AddProduct.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    InputMethodManager inputMethodManager = (InputMethodManager) AddDeliveryNote.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                                     Objects.requireNonNull(inputMethodManager).showSoftInput(et_search_input, InputMethodManager.SHOW_IMPLICIT);
                                 }
                             });

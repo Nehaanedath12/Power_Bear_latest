@@ -17,7 +17,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="10dp"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/logo"/>
     <androidx.cardview.widget.CardView
         android:layout_below="@id/logo"
         android:layout_width="match_parent"
@@ -38,21 +38,25 @@
                 android:orientation="horizontal"
                 android:id="@+id/row_1"
                 >
-                <ImageButton
+                <Button
                     android:layout_width="wrap_content"
                     android:layout_height="100dp"
-                    android:src="@drawable/ic_truck"
-                    android:layout_weight="1"
+                    android:drawableTop="@drawable/ic_truck"
+                    android:ems="11"
                     android:layout_marginTop="30dp"
                     android:background="#57000000"
                     android:id="@+id/delivery"
+                    android:text="Delivery Note"
+                    android:textColor="@color/color_white"
                     android:layout_marginStart="5dp"
                     />
-                <ImageButton
+                <Button
                 android:layout_width="wrap_content"
                 android:layout_height="100dp"
-                android:src="@drawable/ic_sync"
-                android:layout_weight="1"
+                android:drawableTop="@drawable/ic_sync"
+                    android:ems="11"
+                    android:textColor="@color/color_white"
+                    android:text="sync"
                 android:background="#57000000"
                 android:layout_marginTop="30dp"
                     android:id="@+id/sync"
@@ -67,22 +71,26 @@
                 android:layout_below="@+id/row_1"
                 android:id="@+id/row_2"
                 >
-                <ImageButton
+                <Button
                     android:layout_width="wrap_content"
                     android:layout_height="100dp"
-                    android:src="@drawable/ic_stock_count"
-                    android:layout_weight="1"
+                    android:drawableTop="@drawable/ic_stock_count"
+                    android:textColor="@color/color_white"
+                    android:text="Stock Count"
+                    android:ems="11"
                     android:background="#57000000"
                     android:layout_marginTop="30dp"
                     android:id="@+id/stock_count"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     />
-                <ImageButton
+                <Button
                     android:layout_width="wrap_content"
                     android:layout_height="100dp"
-                    android:src="@drawable/ic_stock_count"
-                    android:layout_weight="1"
+                    android:drawableTop="@drawable/ic_stock_count"
+                    android:textColor="@color/color_white"
+                    android:text="Goods Receipt"
+                    android:ems="11"
                     android:background="#57000000"
                     android:layout_marginTop="30dp"
                     android:layout_marginEnd="5dp"
@@ -95,11 +103,13 @@
                 android:layout_below="@+id/row_2"
                 android:id="@+id/row_3"
                 >
-                <ImageButton
+                <Button
                     android:layout_width="wrap_content"
                     android:layout_height="100dp"
-                    android:src="@drawable/ic_report"
+                    android:drawableTop="@drawable/ic_report"
                     android:layout_weight="1"
+                    android:textColor="@color/color_white"
+                    android:text="Report"
                     android:background="#57000000"
                     android:layout_marginTop="30dp"
                     android:id="@+id/delivery_note"

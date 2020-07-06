@@ -6,12 +6,13 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 
 public class Home extends AppCompatActivity {
-ImageButton sync_btn,delivery_btn,stock_count_btn,goods_btn,report_btn;
+Button sync_btn,delivery_btn,stock_count_btn,goods_btn,report_btn;
 DatabaseHelper helper;
 
 

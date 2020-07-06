@@ -21,11 +21,8 @@ import com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNot
 
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class DeliveryNoteHistory extends AppCompatActivity {
     ImageView add_new;
@@ -106,7 +103,8 @@ public class DeliveryNoteHistory extends AppCompatActivity {
         helper = new DatabaseHelper(this);
 
 
-        date.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
+     /*   date.setText("Delivery Note    "+new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));*/
+        date.setText("Delivery Note");
         list = new ArrayList<>();
         adapter = new DeliveryNoteHistoryAdapter(list,this);
         rv = findViewById(R.id.rv_summary);
@@ -119,7 +117,7 @@ public class DeliveryNoteHistory extends AppCompatActivity {
         add_new.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DeliveryNoteHistory.this,SelectDN.class));
+                startActivity(new Intent(DeliveryNoteHistory.this, SelectCustomer.class));
             }
         });
 
@@ -137,7 +135,7 @@ public class DeliveryNoteHistory extends AppCompatActivity {
                         if (item.getItemId() == R.id.delete) {
                             DeleteStockCountItemAlert(deliveryNoteHistory, pos);
                         } else if (item.getItemId() == R.id.edit) {
-                            Intent intent1 = new Intent(DeliveryNoteHistory.this,AddProduct.class);
+                            Intent intent1 = new Intent(DeliveryNoteHistory.this, AddDeliveryNote.class);
                             intent1.putExtra("DocNo",deliveryNoteHistory.getHeaderId());
                             intent1.putExtra("EditMode", true);
                             startActivity(intent1);

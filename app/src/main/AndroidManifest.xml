@@ -39,10 +39,10 @@
             android:name=".StockCount"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name=".AddProduct"
+            android:name=".AddDeliveryNote"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name=".SelectDN"
+            android:name=".SelectCustomer"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".Home"
