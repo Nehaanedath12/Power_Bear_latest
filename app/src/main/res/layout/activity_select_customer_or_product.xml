@@ -16,7 +16,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/card1"
                 android:layout_width="375dp"
-                android:layout_height="268dp"
+                android:layout_height="300dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginStart="5dp"
                 android:layout_marginLeft="5dp"
@@ -24,17 +24,108 @@
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
-                android:background="#fff"
+                android:background="@color/color_cyan"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="3dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
+<androidx.appcompat.widget.Toolbar
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/actionBarSize"
+    android:background="@color/colorAccent"
+    android:id="@+id/toolbar"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_white"
+        android:text="Title"
+        android:layout_marginStart="20dp"
+        android:id="@+id/title"
+        android:textSize="20dp"
+        />
+</androidx.appcompat.widget.Toolbar>
 
-                <Spinner
-                    android:id="@+id/customer"
+                <EditText
+                    android:id="@+id/customer_or_product"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="30dp"
-                    android:layout_marginEnd="40dp" />
+                    android:layout_marginEnd="40dp"
+                    android:focusable="false"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    android:layout_below="@id/toolbar"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rel_1"
+                        android:layout_below="@id/customer_or_product"
+                        >
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginStart="20dp"
+                            app:hintTextColor="@color/color_white"
+                            android:id="@+id/il_from"
+                            >
+                            <EditText
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:ems="10"
+                                android:drawableRight="@drawable/ic_date"
+                                android:padding="10dp"
+                                android:background="@color/color_white"
+                                android:hint="FROM"
+                                android:focusable="false"
+                                android:id="@+id/from"
+                                />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginStart="20dp"
+                            android:id="@+id/il_to"
+                            android:layout_below="@+id/il_from"
+                            app:hintTextColor="@color/color_white"
+                            android:layout_marginBottom="20dp"
+                            >
+                            <EditText
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:ems="10"
+                                android:padding="10dp"
+                                android:hint="TO"
+                                android:drawableRight="@drawable/ic_date"
+                                android:id="@+id/to"
+                                android:focusable="false"
+                                android:background="@color/color_white"
+                                />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="search"
+                            android:ems="7"
+                            android:id="@+id/search"
+                            android:drawableEnd="@drawable/ic_search"
+                            android:background="@color/color_dark_blue"
+                            android:textColor="@color/color_white"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="30dp"
+                            android:layout_marginEnd="10dp"
+                            />
+                    </RelativeLayout>
+                </RelativeLayout>
             </androidx.cardview.widget.CardView>
         </RelativeLayout>
     </ScrollView>

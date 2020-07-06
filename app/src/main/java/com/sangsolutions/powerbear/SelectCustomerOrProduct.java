@@ -1,98 +1,125 @@
 package com.sangsolutions.powerbear;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Spinner;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.sangsolutions.powerbear.Adapter.CustomerAdapter.Customer;
-import com.sangsolutions.powerbear.Adapter.CustomerAdapter.CustomerAdapter;
-import com.sangsolutions.powerbear.Adapter.ProductAdapter.Product;
-import com.sangsolutions.powerbear.Adapter.ProductAdapter.ProductAdapter;
+import com.google.android.material.textfield.TextInputLayout;
+import com.sangsolutions.powerbear.Adapter.CustomerAdapter.SearchCustomer;
+import com.sangsolutions.powerbear.Adapter.CustomerAdapter.SearchCustomerAdapter;
+import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProduct;
+import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProductAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class SelectCustomerOrProduct extends AppCompatActivity {
-Spinner sp_customer_product;
-CustomerAdapter customerAdapter;
-ProductAdapter productAdapter;
-List<Customer> list;
-List<Product> list2;
-ProgressDialog pd;
+EditText et_customer_product,from,to;
+SearchCustomerAdapter customerAdapter;
+SearchProductAdapter productAdapter;
+List<SearchCustomer> list;
+List<SearchProduct> list2;
+TextView title;
+TextInputLayout il_from,il_to;
 DatabaseHelper helper = new DatabaseHelper(this);
-public void LoadCustomer(String report_type) {
+Button btn_search;
+String customer = "0";
+    AlertDialog alertDialog;
+    RecyclerView rv_search;
+    View view;
 
-    list.clear();
-    list2.clear();
 
-    if (report_type.equals("stock_count")) {
-        Cursor cursor = helper.GetProduct();
+    private void ProductSearch(String keyword) {
+            Cursor cursor ;
+                cursor =  helper.SearchProduct2(keyword);;
 
-        if(cursor!=null){
-            if(cursor.moveToFirst()){
-                pd.show();
-                list2.add(new Product("select product", "", ""));
-                for(int i = 0 ;i<cursor.getCount();i++){
-                    String name = cursor.getString(cursor.getColumnIndex("Name"));
-                    String code = cursor.getString(cursor.getColumnIndex("Code"));
-                    String master_id = cursor.getString(cursor.getColumnIndex("MasterId"));
+            if (cursor != null&&!keyword.equals("")) {
+                cursor.moveToFirst();
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    String Name = cursor.getString(cursor.getColumnIndex("Name"));
+                    String Code = cursor.getString(cursor.getColumnIndex("Code"));
+                    String MasterId = cursor.getString(cursor.getColumnIndex("MasterId"));
+                    list2.add(new SearchProduct(Name,Code,MasterId));
+                    cursor.moveToNext();
 
-                list2.add(new Product("Name :"+name,"Code :"+code,master_id));
-
-                cursor.moveToNext();
-
-                if(cursor.getCount()==i+1){
-                    sp_customer_product.setAdapter(productAdapter);
-                    if (pd.isShowing()) {
-                        pd.dismiss();
+                    if (i + 1 == cursor.getCount()) {
+                        rv_search.setAdapter(productAdapter);
                     }
+
+                      productAdapter.setOnClickListener(new SearchProductAdapter.OnClickListener() {
+                        @Override
+                        public void onItemClick(View view, SearchProduct search_item, int pos) {
+                            et_customer_product.setText(search_item.getName());
+                            alertDialog.dismiss();
+                            customer = search_item.getBarcode();
+                        }
+                    });
                 }
-                }
+
+            } else {
+                list2.clear();
+                list2.add(new SearchProduct("No Products available!", "",""));
+                rv_search.setAdapter(productAdapter);
+
             }
+
         }
 
-    } else {
-        pd.show();
+    private void CustomerSearch(String keyword) {
         AndroidNetworking.get(URLs.GetCustomer)
+                .addQueryParameter("condition",keyword)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
-
                     @Override
                     public void onResponse(JSONObject response) {
-                        if (pd.isShowing()) {
-                            pd.dismiss();
-                        }
-
                         try {
+                            list.clear();
                             JSONArray jsonArray = new JSONArray(response.getString("CustomerDetails"));
-                            list.add(new Customer("", "select customer", ""));
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                                 String name = jsonObject.getString("Name");
                                 String code = jsonObject.getString("Code");
                                 String MasterId = jsonObject.getString("MasterId");
 
-                                list.add(new Customer(MasterId, "Name :"+name, "Code :"+code));
+                                list.add(new SearchCustomer(MasterId, name, code));
 
                                 if (jsonArray.length() == i + 1) {
-                                    sp_customer_product.setAdapter(customerAdapter);
+                                    rv_search.setAdapter(customerAdapter);
                                 }
                             }
 
@@ -104,60 +131,226 @@ public void LoadCustomer(String report_type) {
                     @Override
                     public void onError(ANError anError) {
                         Log.d("error", anError.getErrorBody());
-                        if (pd.isShowing()) {
-                            pd.dismiss();
-                        }
+                        list.clear();
+                        list.add(new SearchCustomer("", "No Products available!",""));
+                        rv_search.setAdapter(customerAdapter);
                     }
                 });
+
+
+        customerAdapter.setOnClickListener(new SearchCustomerAdapter.OnClickListener() {
+            @Override
+            public void onItemClick(View view, SearchCustomer search_item, int pos) {
+                et_customer_product.setText(search_item.getName());
+                alertDialog.dismiss();
+                customer = search_item.getMasterId();
+            }
+        });
+
+
     }
-}
+
+
+    public void SearchAlert(final String report_type) {
+        view = LayoutInflater.from(this).inflate(R.layout.search_layout, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Search " + report_type)
+                .setView(view);
+        alertDialog = builder.create();
+        alertDialog.show();
+
+
+        EditText search_edit = view.findViewById(R.id.search_edit);
+        rv_search = view.findViewById(R.id.search_recycler);
+        rv_search.setLayoutManager(new LinearLayoutManager(this));
+
+
+
+
+        search_edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if(report_type.equals("stock_count")) {
+                    ProductSearch(editable.toString());
+                }else {
+                    CustomerSearch(editable.toString());
+                }
+            }
+
+
+        });
+
+    }
+
+@RequiresApi(api = Build.VERSION_CODES.O)
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_customer_or_product);
-    sp_customer_product = findViewById(R.id.customer);
+    et_customer_product = findViewById(R.id.customer_or_product);
     list= new ArrayList<>();
     list2 = new ArrayList<>();
+    title = findViewById(R.id.title);
+    from = findViewById(R.id.from);
+    to = findViewById(R.id.to);
+    il_from = findViewById(R.id.il_from);
+    il_to = findViewById(R.id.il_to);
+    btn_search = findViewById(R.id.search);
 
-    customerAdapter = new CustomerAdapter(list,this);
-    productAdapter = new ProductAdapter(list2,this);
+
+
+    customerAdapter = new SearchCustomerAdapter(this,list);
+    productAdapter = new SearchProductAdapter(this,list2);
+
     final Intent intent = getIntent();
     final String report_type = intent.getStringExtra("report_type");
 
-    pd = new ProgressDialog(SelectCustomerOrProduct.this);
-    pd.setMessage("please wait..");
-    pd.setCancelable(false);
-    pd.setIndeterminate(true);
-
     assert report_type != null;
-    LoadCustomer(report_type);
 
-    sp_customer_product.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    Date c = Calendar.getInstance().getTime();
+    @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+    final String date = df.format(c);
+
+    if(report_type.equals("stock_count")){
+
+    et_customer_product.setHint("Select Product");
+    title.setText("Stock count");
+    from.setText(date);
+    to.setText(date);
+
+
+    }else if (report_type.equals("delivery_note")){
+
+        et_customer_product.setHint("Select Vendor");
+        title.setText("Delivery note");
+        from.setText(date);
+        to.setText(date);
+
+    }else if(report_type.equals("goods_receipt")){
+
+        et_customer_product.setHint("Select Customer");
+        title.setText("Goods receipt");
+
+        from.setText(date);
+        to.setText(date);
+    }else if(report_type.equals("pending_po")){
+
+        et_customer_product.setHint("Select Vendor");
+        title.setText("Pending po");
+        from.setVisibility(View.INVISIBLE);
+        to.setVisibility(View.INVISIBLE);
+        il_from.setVisibility(View.INVISIBLE);
+        il_to.setVisibility(View.INVISIBLE);
+    }else if(report_type.equals("pending_so")){
+
+        et_customer_product.setHint("Select Customer");
+        title.setText("Pending so");
+
+        from.setVisibility(View.INVISIBLE);
+        to.setVisibility(View.INVISIBLE);
+        il_from.setVisibility(View.INVISIBLE);
+        il_to.setVisibility(View.INVISIBLE);
+    }
+
+
+    btn_search.setOnClickListener(new View.OnClickListener() {
         @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            if (!adapterView.getSelectedItem().toString().equals("")) {
-                if(report_type.equals("pending_so")||report_type.equals("pending_po")) {
-                    Intent intent1 = new Intent(SelectCustomerOrProduct.this, ReportOPAndSO.class);
-                    intent1.putExtra("report_type", report_type);
-                    intent1.putExtra("customer", adapterView.getSelectedItem().toString());
-                    startActivity(intent1);
-                }else if(report_type.equals("stock_count")){
-                    Intent intent1 = new Intent(SelectCustomerOrProduct.this, ReportGoods_Stock_Delivery.class);
-                    intent1.putExtra("report_type", report_type);
-                    intent1.putExtra("customer", adapterView.getSelectedItem().toString());
-                    startActivity(intent1);
-                }else{
-                    Intent intent2 = new Intent(SelectCustomerOrProduct.this,ReportGoods_Stock_Delivery.class);
-                    intent2.putExtra("report_type",report_type);
-                    intent2.putExtra("customer",adapterView.getSelectedItem().toString());
-                    startActivity(intent2);
-                }
+        public void onClick(View view) {
+            if(report_type.equals("pending_so")||report_type.equals("pending_po")) {
+                Intent intent1 = new Intent(SelectCustomerOrProduct.this, ReportOPAndSO.class);
+                intent1.putExtra("report_type", report_type);
+                intent1.putExtra("customer", customer);
+                startActivity(intent1);
+            }else{
+                Intent intent1 = new Intent(SelectCustomerOrProduct.this, ReportGoods_Stock_Delivery.class);
+                intent1.putExtra("report_type", report_type);
+                intent1.putExtra("customer", customer);
+                intent1.putExtra("from", from.getText().toString());
+                intent1.putExtra("to", to.getText().toString());
+                startActivity(intent1);
             }
         }
+    });
 
+
+
+    et_customer_product.setOnClickListener(new View.OnClickListener() {
         @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
+        public void onClick(View view) {
+            if(report_type.equals("stock_count")){
+                SearchAlert("Product");
+            }else if (report_type.equals("delivery_note")){
+                SearchAlert("Vendor");
+            }else if(report_type.equals("goods_receipt")){
+                SearchAlert("Customer");
+            }else if(report_type.equals("pending_po")){
+                SearchAlert("Vendor");
+            }else if(report_type.equals("pending_so")){
+                SearchAlert("Customer");
+            }
 
+        }
+    });
+
+
+    from.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                    String StringDate = year +
+                            "-" +
+                            Tools.checkDigit(month + 1) +
+                            "-" +
+                            Tools.checkDigit(dayOfMonth);
+                    from.setText(StringDate);
+                }
+            };
+            Calendar now = Calendar.getInstance();
+            int year = now.get(Calendar.YEAR);
+            int month = now.get(Calendar.MONTH);
+            int day = now.get(Calendar.DAY_OF_MONTH);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(SelectCustomerOrProduct.this, R.style.datepicker, onDateSetListener, year, month, day);
+            datePickerDialog.setTitle("Select Date");
+            datePickerDialog.show();
+        }
+    });
+
+    to.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                    String StringDate = year +
+                            "-" +
+                            Tools.checkDigit(month + 1) +
+                            "-" +
+                            Tools.checkDigit(dayOfMonth);
+                    to.setText(StringDate);
+                }
+            };
+            Calendar now = Calendar.getInstance();
+            int year = now.get(Calendar.YEAR);
+            int month = now.get(Calendar.MONTH);
+            int day = now.get(Calendar.DAY_OF_MONTH);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(SelectCustomerOrProduct.this, R.style.datepicker, onDateSetListener, year, month, day);
+            datePickerDialog.setTitle("Select Date");
+            datePickerDialog.show();
         }
     });
 

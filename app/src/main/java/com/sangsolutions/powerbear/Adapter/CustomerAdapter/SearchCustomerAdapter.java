@@ -1,23 +1,25 @@
-package com.sangsolutions.powerbear.Adapter.SearchProduct;
+package com.sangsolutions.powerbear.Adapter.CustomerAdapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.sangsolutions.powerbear.R;
 
 import java.util.List;
 
-public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdapter.ViewHolder> {
+public class SearchCustomerAdapter extends RecyclerView.Adapter<SearchCustomerAdapter.ViewHolder> {
     private Context context;
-    private List<SearchProduct> list;
+    private List<SearchCustomer> list;
     private OnClickListener onClickListener;
 
-    public SearchProductAdapter(Context context, List<SearchProduct> list) {
+    public SearchCustomerAdapter(Context context, List<SearchCustomer> list) {
         this.context = context;
         this.list = list;
     }
@@ -35,7 +37,7 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        final SearchProduct search_item = list.get(position);
+        final SearchCustomer search_item = list.get(position);
         holder.Name.setText(list.get(position).Name);
         holder.Code.setText(list.get(position).Code);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +56,7 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
     }
 
     public interface OnClickListener {
-        void onItemClick(View view, SearchProduct search_item, int pos);
+        void onItemClick(View view, SearchCustomer search_item, int pos);
 
     }
 

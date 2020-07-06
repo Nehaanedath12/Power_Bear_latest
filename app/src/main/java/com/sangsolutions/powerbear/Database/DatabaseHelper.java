@@ -332,6 +332,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public Cursor SearchProduct2(String keyword) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+NAME+","+CODE+","+MASTER_ID+" from "+TABLE_PRODUCT+" where instr(upper(Code),upper(?)) limit 10",new String[]{keyword});
+
+        if (cursor.moveToFirst()) {
+            return cursor;
+        } else {
+            return null;
+        }
+
+    }
+
    public Cursor SearchProductPendingPO(String keyword,String DocNo) {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select Name,Code,Barcode from tbl_Product p " +

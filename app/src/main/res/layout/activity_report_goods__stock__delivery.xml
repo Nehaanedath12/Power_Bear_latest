@@ -5,77 +5,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ReportGoods_Stock_Delivery">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/app_bg"
-        android:id="@+id/rel_1"
-        >
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="20dp"
-        app:hintTextColor="@color/color_white"
-        android:id="@+id/il_from"
-        >
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:ems="10"
-        android:drawableRight="@drawable/ic_date"
-        android:padding="10dp"
-        android:background="@color/color_white"
-        android:hint="FROM"
-        android:focusable="false"
-        android:id="@+id/from"
-        />
-    </com.google.android.material.textfield.TextInputLayout>
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_below="@+id/il_from"
-        app:hintTextColor="@color/color_white"
-        android:layout_marginBottom="20dp"
-        >
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:ems="10"
-            android:padding="10dp"
-            android:hint="TO"
-            android:drawableRight="@drawable/ic_date"
-            android:id="@+id/to"
-            android:focusable="false"
-            android:background="@color/color_white"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="search"
-            android:ems="7"
-            android:id="@+id/search"
-            android:drawableEnd="@drawable/ic_search"
-            android:background="@color/color_dark_blue"
-            android:textColor="@color/color_white"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="10dp"
-            />
-    </RelativeLayout>
     <FrameLayout
         android:id="@+id/empty_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"
-        android:layout_below="@id/rel_1">
+        >
 
         <RelativeLayout
             android:layout_width="wrap_content"

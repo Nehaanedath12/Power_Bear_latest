@@ -39,9 +39,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ReportGoods_Stock_Delivery extends AppCompatActivity {
-    String report_type="",customer="";
-    EditText from,to;
-    Button search;
+    String report_type="",customer="",from="",to="";
     FrameLayout empty_frame;
     RecyclerView recyclerView;
     Goods_Delivery_Adapter goods_delivery_adapter;
@@ -87,7 +85,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
 
                         @Override
                         public void onError(ANError anError) {
-                            Log.d("error data",anError.getErrorBody());
+                            Log.d("error data",anError.getErrorDetail());
                         empty_frame.setVisibility(View.VISIBLE);
                         }
                     });
@@ -127,7 +125,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
                         @Override
                         public void onError(ANError anError) {
                             empty_frame.setVisibility(View.VISIBLE);
-                            Log.d("error",anError.getErrorBody());
+                            Log.d("error",anError.getErrorDetail());
                         }
                     });
         }
@@ -170,7 +168,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
                         @Override
                         public void onError(ANError anError) {
                             empty_frame.setVisibility(View.VISIBLE);
-                            Log.d("error",anError.getErrorBody());
+                            Log.d("error",anError.getErrorDetail());
                         }
                     });
         }
@@ -187,10 +185,10 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
         if(intent!=null) {
             report_type = intent.getStringExtra("report_type");
             customer = intent.getStringExtra("customer");
+            from = intent.getStringExtra("from");
+            to = intent.getStringExtra("to");
+            Toast.makeText(this, customer+" "+to+" "+" "+from, Toast.LENGTH_SHORT).show();
         }
-        from = findViewById(R.id.from);
-        to = findViewById(R.id.to);
-        search = findViewById(R.id.search);
         empty_frame = findViewById(R.id.empty_frame);
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -200,12 +198,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
         stockCountReportAdapter = new StockCountReportAdapter(list2,this);
         ll_stock = findViewById(R.id.ll_stock_count);
         ll_goods_delivery = findViewById(R.id.ll_goods_delivery);
-        Date c = Calendar.getInstance().getTime();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        final String date = df.format(c);
 
-        from.setText(date);
-        to.setText(date);
 
         if(report_type.equals("stock_count")){
             ll_stock.setVisibility(View.VISIBLE);
@@ -214,68 +207,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
             ll_stock.setVisibility(View.GONE);
             ll_goods_delivery.setVisibility(View.VISIBLE);
         }
+                    LoadRecycler(from, to, report_type, customer);
 
-        LoadRecycler(date,date,report_type,customer);
-
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!report_type.equals("")&&!customer.equals("")) {
-                    LoadRecycler(from.getText().toString(), to.getText().toString(), report_type, customer);
-                }
-            }
-        });
-
-        from.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
-                        String StringDate = year +
-                                "-" +
-                                Tools.checkDigit(month + 1) +
-                                "-" +
-                                Tools.checkDigit(dayOfMonth);
-                        from.setText(StringDate);
-                    }
-                };
-                Calendar now = Calendar.getInstance();
-                int year = now.get(Calendar.YEAR);
-                int month = now.get(Calendar.MONTH);
-                int day = now.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(ReportGoods_Stock_Delivery.this, R.style.datepicker, onDateSetListener, year, month, day);
-                datePickerDialog.setTitle("Select Date");
-                datePickerDialog.show();
-            }
-
-        });
-
-        to.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
-                        String StringDate = year +
-                                "-" +
-                                Tools.checkDigit(month + 1) +
-                                "-" +
-                                Tools.checkDigit(dayOfMonth);
-                        to.setText(StringDate);
-                    }
-                };
-                Calendar now = Calendar.getInstance();
-                int year = now.get(Calendar.YEAR);
-                int month = now.get(Calendar.MONTH);
-                int day = now.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(ReportGoods_Stock_Delivery.this, R.style.datepicker, onDateSetListener, year, month, day);
-                datePickerDialog.setTitle("Select Date");
-                datePickerDialog.show();
-            }
-
-        });
     }
 }

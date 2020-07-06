@@ -1,11 +1,11 @@
 package com.sangsolutions.powerbear.Adapter.CustomerAdapter;
 
-public class Customer {
+public class SearchCustomer {
 
     String MasterId,Name,Code;
 
 
-    public Customer(String masterId, String name, String code) {
+    public SearchCustomer(String masterId, String name, String code) {
         this.MasterId = masterId;
         this. Name = name;
         this. Code = code;
