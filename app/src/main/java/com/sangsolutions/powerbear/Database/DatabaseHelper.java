@@ -487,17 +487,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //Delivery Note
     public boolean InsertDelivery(DeliveryNote d){
         this.db = getWritableDatabase();
+        this.db = getReadableDatabase();
         float status = -1;
-            ContentValues cv = new ContentValues();
-            cv.put(I_VOUCHER_NO,d.getiVoucherNo() );
-            cv.put(HEADER_ID,d.getHeaderId() );
-            cv.put(SI_NO, d.getSiNo());
-            cv.put(PRODUCT, d.getProduct());
-            cv.put(QTY,d.getQty());
-            cv.put(I_STATUS, d.getiStatus());
 
-            status = db.insert(TABLE_DELIVERY_NOTE, null, cv);
+Cursor cursor= db.rawQuery("select "+HEADER_ID+" from "+TABLE_DELIVERY_NOTE+" where "+HEADER_ID+" = ? ",new String[]{d.getHeaderId()});
 
+        ContentValues cv = new ContentValues();
+        cv.put(I_VOUCHER_NO, d.getiVoucherNo());
+        cv.put(HEADER_ID, d.getHeaderId());
+        cv.put(SI_NO, d.getSiNo());
+        cv.put(PRODUCT, d.getProduct());
+        cv.put(QTY, d.getQty());
+        cv.put(I_STATUS, d.getiStatus());
+        cursor.moveToFirst();
+           if(cursor.getCount()==0) {
+                status = db.insert(TABLE_DELIVERY_NOTE, null, cv);
+            } else {
+            status = db.update(TABLE_DELIVERY_NOTE,  cv,HEADER_ID+" = ? and "+SI_NO+" = ? ",new String[]{d.getHeaderId(),d.getSiNo()} );
+        }
         return status != -1;
     }
 
@@ -578,8 +585,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 //stock count
     public boolean InsertStockCount(StockCount s){
-    this.db = getWritableDatabase();
-    float status = -1;
+        this.db = getWritableDatabase();
+        float status = -1;
+
     ContentValues cv = new ContentValues();
     cv.put(I_VOUCHER_NO,s.getiVoucherNo());
     cv.put(D_DATE,s.getdDate());
@@ -776,18 +784,25 @@ public boolean DeleteStockCount(String voucherNo){
     }
 
     public boolean InsertGoodsReceipt(GoodsReceipt g){
-        this.db = getWritableDatabase();
+        this.db = getReadableDatabase();
         float status = -1;
+
+        Cursor cursor= db.rawQuery("select "+HEADER_ID+" from "+TABLE_GOODS_RECEIPT+" where "+HEADER_ID+" = ? ",new String[]{g.getHeaderId()});
+
         ContentValues cv = new ContentValues();
-        cv.put(I_VOUCHER_NO,g.getiVoucherNo() );
-        cv.put(HEADER_ID,g.getHeaderId() );
+        cv.put(I_VOUCHER_NO, g.getiVoucherNo());
+        cv.put(HEADER_ID, g.getHeaderId());
         cv.put(SI_NO, g.getSiNo());
         cv.put(PRODUCT, g.getProduct());
-        cv.put(QTY,g.getQty());
+        cv.put(QTY, g.getQty());
         cv.put(I_STATUS, g.getiStatus());
-
-        status = db.insert(TABLE_GOODS_RECEIPT, null, cv);
-
+        cursor.moveToFirst();
+        if(cursor.getCount()==0) {
+           status = db.insert(TABLE_GOODS_RECEIPT, null, cv);
+       }else {
+            status = db.update(TABLE_GOODS_RECEIPT,  cv,HEADER_ID+" = ? and "+SI_NO+" = ? ",new String[]{g.getHeaderId(),g.getSiNo()} );
+       }
+        cursor.close();
         return status != -1;
     }
 
