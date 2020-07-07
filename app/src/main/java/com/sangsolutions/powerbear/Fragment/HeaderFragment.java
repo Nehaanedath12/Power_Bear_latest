@@ -73,7 +73,7 @@ private void setDataForEditing(String voucherNo){
     if(cursor!=null && cursor.moveToFirst()){
                 warehouse_id = cursor.getString(cursor.getColumnIndex("iWarehouse"));
                 voucherNo = cursor.getString(cursor.getColumnIndex("iVoucherNo"));
-                Date  = cursor.getString(cursor.getColumnIndex("dDate"));
+                Date  = Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("dDate")));
         Remarks  = cursor.getString(cursor.getColumnIndex("sRemarks"));
         date.setText(Date);
        PublicData.date = Date;
@@ -90,7 +90,7 @@ private void setDataForEditing(String voucherNo){
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.header_frgment, container, false);
-    date =   view.findViewById(R.id.date);
+    date =   view.findViewById(R.id.title2);
     remarks = view.findViewById(R.id.remarks);
         warehouse = view.findViewById(R.id.warehouse_name);
         close = view.findViewById(R.id.goods_receipt);
@@ -98,7 +98,7 @@ private void setDataForEditing(String voucherNo){
 
         helper = new DatabaseHelper(getActivity());
     c = Calendar.getInstance().getTime();
-    df = new SimpleDateFormat("yyyy-MM-dd");
+    df = new SimpleDateFormat("dd-MM-yyyy");
 
 
     if(getArguments() != null) {
@@ -131,19 +131,15 @@ private void setDataForEditing(String voucherNo){
                 DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                       /* String StringDate = checkDigit(dayOfMonth) +
-                                "-" +
-                                checkDigit(month + 1) +
-                                "-" +
-                                year;*/
 
-                        String StringDate = year +
+
+                        String StringDate = Tools.checkDigit(dayOfMonth)+
                                 "-" +
                                 Tools.checkDigit(month + 1) +
-                                "-" +
-                                Tools.checkDigit(dayOfMonth);
+                                "-"+
+                                year;
                         date.setText(StringDate);
-                       PublicData.date=df.format(c);
+                       PublicData.date=Tools.dateFormat(StringDate);
                     }
                 };
                 Calendar now = Calendar.getInstance();

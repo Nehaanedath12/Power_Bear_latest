@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -104,6 +105,7 @@ public class PostGoodsReceipt extends JobService {
                 if(cursor.getCount()<=ReceiptCount){
                     jobFinished(params,false);
                     new ScheduleJob().SyncDeliveryNote(getApplicationContext());
+                    Toast.makeText(this, "Goods receipt uploaded!", Toast.LENGTH_SHORT).show();
                 }
             }
         }else {

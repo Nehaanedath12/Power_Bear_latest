@@ -75,6 +75,8 @@ public class GoodsReceipt extends AppCompatActivity {
     private String DocNo = "";
     private boolean EditMode = false;
 String iVoucherNo;
+ImageView img_home;
+TextView title;
     private static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -341,6 +343,17 @@ String iVoucherNo;
         qty = findViewById(R.id.qty);
         add_new = findViewById(R.id.add_new);
         save = findViewById(R.id.save);
+
+        img_home = findViewById(R.id.home);
+        title = findViewById(R.id.title);
+        title.setText("Goods Receipt");
+        img_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(GoodsReceipt.this,Home.class));
+                finishAffinity();
+            }
+        });
 
         helper = new DatabaseHelper(this);
 

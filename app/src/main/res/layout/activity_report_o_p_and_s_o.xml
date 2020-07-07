@@ -5,7 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ReportOPAndSO">
+<androidx.appcompat.widget.Toolbar
+    android:layout_width="wrap_content"
+    android:layout_height="?android:attr/actionBarSize"
+    android:id="@+id/toolbar"
+    android:background="@color/colorAccent">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_white"
+            android:text="Title"
+            android:layout_marginStart="20dp"
+            android:id="@+id/title"
+            android:textSize="20dp"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/home"
+            android:src="@drawable/ic_home"
+            android:layout_marginEnd="20dp"
+            android:layout_alignParentEnd="true"
+            />
+    </RelativeLayout>
+</androidx.appcompat.widget.Toolbar>
     <FrameLayout
         android:id="@+id/empty_frame"
         android:layout_width="match_parent"
@@ -39,7 +66,8 @@
         android:orientation="horizontal"
         android:id="@+id/ll_pending_so_po"
         android:visibility="visible"
-        android:background="@color/color_lite_violet"
+        android:layout_below="@id/toolbar"
+        android:background="@color/colorAccent"
         >
         <TextView
             android:layout_width="80dp"

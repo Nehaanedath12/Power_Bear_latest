@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
@@ -21,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidnetworking.AndroidNetworking;
@@ -39,13 +39,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 public class SelectCustomerOrProduct extends AppCompatActivity {
 EditText et_customer_product,from,to;
@@ -61,7 +58,7 @@ String customer = "0";
     AlertDialog alertDialog;
     RecyclerView rv_search;
     View view;
-
+    ImageView img_home;
 
     private void ProductSearch(String keyword) {
             Cursor cursor ;
@@ -201,13 +198,21 @@ String customer = "0";
     et_customer_product = findViewById(R.id.customer_or_product);
     list= new ArrayList<>();
     list2 = new ArrayList<>();
-    title = findViewById(R.id.title);
+    title = findViewById(R.id.title2);
     from = findViewById(R.id.from);
     to = findViewById(R.id.to);
     il_from = findViewById(R.id.il_from);
     il_to = findViewById(R.id.il_to);
     btn_search = findViewById(R.id.search);
-
+    img_home = findViewById(R.id.home);
+    img_home.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(SelectCustomerOrProduct.this,Home.class);
+            startActivity(intent);
+            finishAffinity();
+        }
+    });
 
 
     customerAdapter = new SearchCustomerAdapter(this,list);
@@ -276,8 +281,8 @@ String customer = "0";
                 Intent intent1 = new Intent(SelectCustomerOrProduct.this, ReportGoods_Stock_Delivery.class);
                 intent1.putExtra("report_type", report_type);
                 intent1.putExtra("customer", customer);
-                intent1.putExtra("from", from.getText().toString());
-                intent1.putExtra("to", to.getText().toString());
+                intent1.putExtra("from", Tools.dateFormat(from.getText().toString()));
+                intent1.putExtra("to", Tools.dateFormat(to.getText().toString()));
                 startActivity(intent1);
             }
         }
@@ -311,11 +316,12 @@ String customer = "0";
                 @Override
                 public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                    String StringDate = year +
+                    String StringDate =
+                            Tools.checkDigit(dayOfMonth)+
                             "-" +
                             Tools.checkDigit(month + 1) +
-                            "-" +
-                            Tools.checkDigit(dayOfMonth);
+                            "-"+
+                            year;
                     from.setText(StringDate);
                 }
             };
@@ -336,11 +342,11 @@ String customer = "0";
                 @Override
                 public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                    String StringDate = year +
+                    String StringDate =  Tools.checkDigit(dayOfMonth)+
                             "-" +
                             Tools.checkDigit(month + 1) +
-                            "-" +
-                            Tools.checkDigit(dayOfMonth);
+                            "-"+
+                            year;
                     to.setText(StringDate);
                 }
             };

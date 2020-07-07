@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -106,6 +107,7 @@ public class PostStockCount extends JobService {
                 stockCount++;
                 if(cursor.getCount()<=stockCount){
                     jobFinished(params,false);
+                    Toast.makeText(this, "Stock count uploaded!", Toast.LENGTH_SHORT).show();
 
                 }
             }

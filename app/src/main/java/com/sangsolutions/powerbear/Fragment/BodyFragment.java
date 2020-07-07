@@ -54,6 +54,7 @@ import com.sangsolutions.powerbear.Database.StockCount;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
+import com.sangsolutions.powerbear.Tools;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;

@@ -76,6 +76,8 @@ public class AddDeliveryNote extends AppCompatActivity {
     private String DocNo = "";
     private boolean EditMode = false;
     private String iVoucherNo;
+    private ImageView img_home;
+    private TextView title;
     private static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -345,7 +347,16 @@ public class AddDeliveryNote extends AppCompatActivity {
         qty = findViewById(R.id.qty);
         add_new = findViewById(R.id.add_new);
         save = findViewById(R.id.save);
-
+        img_home = findViewById(R.id.home);
+        title = findViewById(R.id.title);
+        title.setText("Delivery note");
+        img_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(AddDeliveryNote.this,Home.class));
+                finishAffinity();
+            }
+        });
         helper = new DatabaseHelper(this);
 
         iVoucherNo = Objects.requireNonNull(helper).GetDeliveryNoteVoucherNo();

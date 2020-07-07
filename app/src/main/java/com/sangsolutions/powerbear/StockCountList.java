@@ -22,21 +22,18 @@ import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountListA
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 
 public class StockCountList extends AppCompatActivity {
     ImageView add_new;
     RecyclerView rv;
     FrameLayout empty_frame;
-    TextView date;
+    TextView title;
     StockCountListAdapter adapter;
     DatabaseHelper helper;
-
+    ImageView img_home;
     List<com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList> list;
 
     @Override
@@ -104,14 +101,23 @@ public class StockCountList extends AppCompatActivity {
         setContentView(R.layout.activity_stock_count_list);
 
         add_new = findViewById(R.id.add_new);
-        date = findViewById(R.id.date);
+        title = findViewById(R.id.title2);
         empty_frame = findViewById(R.id.empty_frame);
 
         helper = new DatabaseHelper(this);
 
 
-       // date.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
-        date.setText("Stock Count");
+
+        img_home = findViewById(R.id.home);
+        title = findViewById(R.id.title);
+        title.setText("Stock count");
+        img_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(StockCountList.this,Home.class));
+                finishAffinity();
+            }
+        });
         list = new ArrayList<>();
         adapter = new StockCountListAdapter(list,this);
         rv = findViewById(R.id.rv_summary);

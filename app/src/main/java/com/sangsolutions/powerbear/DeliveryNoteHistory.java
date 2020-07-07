@@ -20,18 +20,18 @@ import android.widget.Toast;
 import com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistoryAdapter;
 
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.Database.DeliveryNote;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DeliveryNoteHistory extends AppCompatActivity {
-    ImageView add_new;
+    ImageView add_new,img_home;
     RecyclerView rv;
     FrameLayout empty_frame;
     TextView date;
     DeliveryNoteHistoryAdapter adapter;
     DatabaseHelper helper;
-
     List<com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory> list;
 
     @Override
@@ -97,11 +97,18 @@ public class DeliveryNoteHistory extends AppCompatActivity {
         setContentView(R.layout.activity_stock_count_list);
 
         add_new = findViewById(R.id.add_new);
-        date = findViewById(R.id.date);
+        date = findViewById(R.id.title);
         empty_frame = findViewById(R.id.empty_frame);
-
+        img_home = findViewById(R.id.home);
         helper = new DatabaseHelper(this);
 
+        img_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(DeliveryNoteHistory.this,Home.class));
+                finishAffinity();
+            }
+        });
 
      /*   date.setText("Delivery Note    "+new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));*/
         date.setText("Delivery Note");

@@ -32,6 +32,17 @@ public class Tools {
         return targetFormat.format(date);
     }
 
+    public static String dateFormat2(String dateToFormat){
+        DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat targetFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = null;
+        try {
+            date = originalFormat.parse(dateToFormat);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return targetFormat.format(date);
+    }
 
 
 }

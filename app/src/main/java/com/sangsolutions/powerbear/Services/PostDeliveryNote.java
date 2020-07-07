@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -101,6 +102,7 @@ public class PostDeliveryNote extends JobService {
                 if(cursor.getCount()<=DeliveryCount){
                     jobFinished(params,false);
                     new ScheduleJob().SyncStockCount(getApplicationContext());
+                    Toast.makeText(this, "Delivery note uploaded!", Toast.LENGTH_SHORT).show();
                 }
             }
         }else {

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sangsolutions.powerbear.R;
+import com.sangsolutions.powerbear.Tools;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ Context context;
         final StockCountList stockCountList = list.get(position);
 
     holder.Vno.setText("VNo :"+list.get(position).VNo);
-    holder.date.setText("Date :"+list.get(position).Date);
+    holder.date.setText("Date :"+ Tools.dateFormat2(list.get(position).Date));
     holder.totalQty.setText("Total Qty :"+list.get(position).TotalQty);
     holder.warehouse.setText("Warehouse :"+list.get(position).Warehouse);
 
@@ -68,7 +69,7 @@ Context context;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             Vno = itemView.findViewById(R.id.vno);
-            date = itemView.findViewById(R.id.date);
+            date = itemView.findViewById(R.id.title2);
             totalQty = itemView.findViewById(R.id.total_qty);
             warehouse = itemView.findViewById(R.id.warehouse);
             menu = itemView.findViewById(R.id.menu);

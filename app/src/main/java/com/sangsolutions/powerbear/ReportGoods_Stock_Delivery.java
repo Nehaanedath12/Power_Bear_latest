@@ -14,7 +14,9 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
@@ -47,11 +49,14 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
     List<Goods_Stock> list;
     List<StockCountReport> list2;
     DatabaseHelper helper;
+    ImageView img_home;
+    TextView title;
     LinearLayout ll_stock,ll_goods_delivery;
 
 
     public void LoadRecycler(String from,String to,String report_type,String customer){
         if(report_type.equals("goods_receipt")){
+            title.setText("Goods receipt report");
             AndroidNetworking.get(URLs.GetGRNote)
                     .addQueryParameter("fDate",from)
                     .addQueryParameter("tDate",to)
@@ -91,6 +96,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
                     });
         }
         else if(report_type.equals("delivery_note")){
+            title.setText("Delivery note report");
             AndroidNetworking.get(URLs.GetDeliveryNote)
                     .addQueryParameter("fDate",from)
                     .addQueryParameter("tDate",to)
@@ -130,6 +136,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
                     });
         }
         else if(report_type.equals("stock_count")){
+            title.setText("Stock count report");
             AndroidNetworking.get(URLs.GetStockCount)
                     .addQueryParameter("fDate",from)
                     .addQueryParameter("tDate",to)
@@ -180,6 +187,8 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         helper = new DatabaseHelper(this);
+
+
         setContentView(R.layout.activity_report_goods__stock__delivery);
         Intent intent = getIntent();
         if(intent!=null) {
@@ -187,8 +196,11 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
             customer = intent.getStringExtra("customer");
             from = intent.getStringExtra("from");
             to = intent.getStringExtra("to");
-            Toast.makeText(this, customer+" "+to+" "+" "+from, Toast.LENGTH_SHORT).show();
         }
+
+        title = findViewById(R.id.title);
+        img_home = findViewById(R.id.home);
+
         empty_frame = findViewById(R.id.empty_frame);
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -208,6 +220,14 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
             ll_goods_delivery.setVisibility(View.VISIBLE);
         }
                     LoadRecycler(from, to, report_type, customer);
+
+        img_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            startActivity(new Intent(ReportGoods_Stock_Delivery.this,Home.class));
+            finishAffinity();
+            }
+        });
 
     }
 }

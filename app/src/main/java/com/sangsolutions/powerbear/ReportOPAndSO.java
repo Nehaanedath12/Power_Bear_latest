@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -26,14 +28,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReportOPAndSO extends AppCompatActivity {
-String report_type="",customer="";
+String report_type="",customer="0";
     FrameLayout empty_frame;
     RecyclerView recyclerView;
     PendingSoReportOPAdapter pendingSoReportOPAdapter;
     List<PendingSoReportOP> list;
-
-  public void LoadPendingSoOrPO(final String customer){
+    ImageView img_home;
+    TextView title;
+  public void LoadPendingSoOrPO(final String report_type, final String customer){
       if(report_type.equals("pending_so")){
+          title.setText("Pending SO");
           AndroidNetworking.get(URLs.GetPendingSODetails)
                   .addQueryParameter("iCustomer",customer)
                   .setPriority(Priority.MEDIUM)
@@ -43,6 +47,7 @@ String report_type="",customer="";
                       public void onResponse(JSONObject response) {
                           try {
                               empty_frame.setVisibility(View.INVISIBLE);
+                              list.clear();
                               JSONArray jsonArray = new JSONArray(response.getString("PendingSO_Details"));
                               for(int i = 0;i<jsonArray.length();i++ ){
                                   JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -78,6 +83,7 @@ String report_type="",customer="";
                   });
       }
       else if(report_type.equals("pending_po")){
+          title.setText("Pending PO");
           AndroidNetworking.get(URLs.GetPendingPODetails)
                   .addQueryParameter("iVendor",customer)
                   .setPriority(Priority.MEDIUM)
@@ -87,6 +93,7 @@ String report_type="",customer="";
                       public void onResponse(JSONObject response) {
                           try {
                               empty_frame.setVisibility(View.INVISIBLE);
+                              list.clear();
                               JSONArray jsonArray = new JSONArray(response.getString("PendingPO_Details"));
                               for(int i = 0;i<jsonArray.length();i++ ){
                                   JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -132,7 +139,16 @@ String report_type="",customer="";
             report_type = intent.getStringExtra("report_type");
             customer = intent.getStringExtra("customer");
         }
+        img_home = findViewById(R.id.home);
+        title = findViewById(R.id.title);
 
+        img_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ReportOPAndSO.this,Home.class));
+                finishAffinity();
+            }
+        });
         empty_frame = findViewById(R.id.empty_frame);
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -140,6 +156,6 @@ String report_type="",customer="";
         list = new ArrayList<>();
         pendingSoReportOPAdapter = new PendingSoReportOPAdapter(list,this);
 
-        LoadPendingSoOrPO(report_type);
+        LoadPendingSoOrPO(report_type,customer);
     }
 }

@@ -17,16 +17,11 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory;
-import com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistoryAdapter;
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistoryAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class GoodsReceiptHistory extends AppCompatActivity {
     ImageView add_new;
@@ -35,6 +30,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
     TextView date;
     GoodsReceiptHistoryAdapter adapter;
     DatabaseHelper helper;
+    ImageView img_home;
 
     List<com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory> list;
 
@@ -100,11 +96,19 @@ public class GoodsReceiptHistory extends AppCompatActivity {
         setContentView(R.layout.activity_goods_receipt_history);
 
         add_new = findViewById(R.id.add_new);
-        date = findViewById(R.id.date);
+        date = findViewById(R.id.title);
         empty_frame = findViewById(R.id.empty_frame);
-
+        img_home = findViewById(R.id.home);
         helper = new DatabaseHelper(this);
 
+
+        img_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(GoodsReceiptHistory.this,Home.class));
+                finishAffinity();
+            }
+        });
 
        // date.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
         date.setText("Goods Receipt");

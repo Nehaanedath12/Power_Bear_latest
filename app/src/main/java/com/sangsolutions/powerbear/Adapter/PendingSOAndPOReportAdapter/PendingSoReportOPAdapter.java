@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sangsolutions.powerbear.R;
+import com.sangsolutions.powerbear.Tools;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class PendingSoReportOPAdapter extends RecyclerView.Adapter<PendingSoRepo
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
         holder.DocNo.setText(list.get(position).getDocNo());
-        holder.DocDate.setText(list.get(position).getDocDate());
+        holder.DocDate.setText(Tools.dateFormat2(Tools.ConvertDate(list.get(position).getDocDate())));
         holder.Customer.setText(list.get(position).getCusomer());
         holder.SINo.setText(list.get(position).getSINo());
         holder.ProductName.setText(list.get(position).getProductName());

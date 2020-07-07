@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,6 +27,8 @@ DatabaseHelper helper;
 List<DONo> list;
 SOAdapter adapter;
 ListView doc_no_lv;
+TextView title;
+ImageView img_home;
 
 
     @Override
@@ -36,6 +39,17 @@ ListView doc_no_lv;
         doc_no_lv = findViewById(R.id.doc_no_lv);
         list= new ArrayList<>();
         adapter = new SOAdapter(list);
+        img_home = findViewById(R.id.home);
+        title = findViewById(R.id.title);
+        title.setText("Select vender");
+        img_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SelectCustomer.this,Home.class));
+                finishAffinity();
+            }
+        });
+
         Cursor cursor = helper.GetDocNo();
         list.clear();
         if(cursor!=null){
@@ -124,11 +138,11 @@ ListView doc_no_lv;
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = LayoutInflater.from(SelectCustomer.this).inflate(R.layout.dno_item,parent,false);
             TextView doc_no = view.findViewById(R.id.dno);
-            TextView date = view.findViewById(R.id.date);
+            TextView date = view.findViewById(R.id.title2);
             TextView customer = view.findViewById(R.id.customer);
             RelativeLayout lyt_parent= view.findViewById(R.id.lay_parent);
             doc_no.setText("Doc No : "+ list.get(position).DocNo);
-            date.setText(list.get(position).DocDate);
+            date.setText(Tools.dateFormat2(list.get(position).DocDate));
             customer.setText(list.get(position).Cusomer);
             if (position % 2 == 0) {
                 lyt_parent.setBackgroundColor(Color.rgb(234, 234, 234));

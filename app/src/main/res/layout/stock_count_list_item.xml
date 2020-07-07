@@ -27,7 +27,7 @@
                 android:text="XXX" />
 
             <TextView
-                android:id="@+id/date"
+                android:id="@+id/title2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="XXX" />

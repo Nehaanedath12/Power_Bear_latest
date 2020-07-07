@@ -28,6 +28,7 @@ DatabaseHelper helper;
         report_btn = findViewById(R.id.delivery_note);
         helper = new DatabaseHelper(this);
 
+
     stock_count_btn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
