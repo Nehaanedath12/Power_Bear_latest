@@ -503,7 +503,10 @@ Cursor cursor= db.rawQuery("select "+HEADER_ID+" from "+TABLE_DELIVERY_NOTE+" wh
            if(cursor.getCount()==0) {
                 status = db.insert(TABLE_DELIVERY_NOTE, null, cv);
             } else {
-            status = db.update(TABLE_DELIVERY_NOTE,  cv,HEADER_ID+" = ? and "+SI_NO+" = ? ",new String[]{d.getHeaderId(),d.getSiNo()} );
+               float deliveryStatus = db.delete(TABLE_DELIVERY_NOTE,HEADER_ID+" = ? and "+SI_NO+" = ? ",new String[]{d.getHeaderId(),d.getSiNo()});
+               if(deliveryStatus!=-1) {
+                   status = db.insert(TABLE_DELIVERY_NOTE, null, cv);
+               }
         }
         return status != -1;
     }
@@ -800,8 +803,11 @@ public boolean DeleteStockCount(String voucherNo){
         if(cursor.getCount()==0) {
            status = db.insert(TABLE_GOODS_RECEIPT, null, cv);
        }else {
-            status = db.update(TABLE_GOODS_RECEIPT,  cv,HEADER_ID+" = ? and "+SI_NO+" = ? ",new String[]{g.getHeaderId(),g.getSiNo()} );
-       }
+           float deleteStatus =  db.delete(TABLE_GOODS_RECEIPT,HEADER_ID+" = ? and "+SI_NO+" = ? ",new String[]{g.getHeaderId(),g.getSiNo()});
+          if(deleteStatus!=-1) {
+              status = db.insert(TABLE_GOODS_RECEIPT, null, cv);
+          }
+          }
         cursor.close();
         return status != -1;
     }
