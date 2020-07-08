@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,8 +36,13 @@ String report_type="",customer="0";
     List<PendingSoReportOP> list;
     ImageView img_home;
     TextView title;
-  public void LoadPendingSoOrPO(final String report_type, final String customer){
-      if(report_type.equals("pending_so")){
+    private AnimationDrawable animationDrawable;
+    private ImageView mProgressBar;
+
+    public void LoadPendingSoOrPO(final String report_type, final String customer){
+        mProgressBar.setVisibility(View.VISIBLE);
+        animationDrawable.start();
+        if(report_type.equals("pending_so")){
           title.setText("Pending SO");
           AndroidNetworking.get(URLs.GetPendingSODetails)
                   .addQueryParameter("iCustomer",customer)
@@ -45,6 +51,8 @@ String report_type="",customer="0";
                   .getAsJSONObject(new JSONObjectRequestListener() {
                       @Override
                       public void onResponse(JSONObject response) {
+                          animationDrawable.stop();
+                          mProgressBar.setVisibility(View.INVISIBLE);
                           try {
                               empty_frame.setVisibility(View.INVISIBLE);
                               list.clear();
@@ -65,9 +73,13 @@ String report_type="",customer="0";
 
                                   list.add(new PendingSoReportOP(Cusomer,DocDate,DocNo,HeaderId,Product,ProductCode,ProductName,Qty,SINo,unit));
 
+
                                   if(jsonArray.length()==i+1){
                                       recyclerView.setAdapter(pendingSoReportOPAdapter);
                                   }
+                              }
+                              if(jsonArray.length()<=0){
+                                  empty_frame.setVisibility(View.VISIBLE);
                               }
                           } catch (JSONException e) {
                               empty_frame.setVisibility(View.VISIBLE);
@@ -77,6 +89,8 @@ String report_type="",customer="0";
 
                       @Override
                       public void onError(ANError anError) {
+                          animationDrawable.stop();
+                          mProgressBar.setVisibility(View.INVISIBLE);
                           Log.d("error data",anError.getErrorBody());
                           empty_frame.setVisibility(View.VISIBLE);
                       }
@@ -91,6 +105,8 @@ String report_type="",customer="0";
                   .getAsJSONObject(new JSONObjectRequestListener() {
                       @Override
                       public void onResponse(JSONObject response) {
+                          animationDrawable.stop();
+                          mProgressBar.setVisibility(View.INVISIBLE);
                           try {
                               empty_frame.setVisibility(View.INVISIBLE);
                               list.clear();
@@ -111,9 +127,14 @@ String report_type="",customer="0";
 
                                   list.add(new PendingSoReportOP(Cusomer,DocDate,DocNo,HeaderId,Product,ProductCode,ProductName,Qty,SINo,unit));
 
+
+
                                   if(jsonArray.length()==i+1){
                                       recyclerView.setAdapter(pendingSoReportOPAdapter);
                                   }
+                              }
+                              if(jsonArray.length()<=0){
+                                  empty_frame.setVisibility(View.VISIBLE);
                               }
                           } catch (JSONException e) {
                               empty_frame.setVisibility(View.VISIBLE);
@@ -123,6 +144,8 @@ String report_type="",customer="0";
 
                       @Override
                       public void onError(ANError anError) {
+                          animationDrawable.stop();
+                          mProgressBar.setVisibility(View.INVISIBLE);
                           empty_frame.setVisibility(View.VISIBLE);
                           Log.d("error",anError.getErrorBody());
                       }
@@ -155,7 +178,10 @@ String report_type="",customer="0";
 
         list = new ArrayList<>();
         pendingSoReportOPAdapter = new PendingSoReportOPAdapter(list,this);
+        mProgressBar = findViewById(R.id.main_progress);
+        mProgressBar.setBackgroundResource(R.drawable.loading);
 
+        animationDrawable = (AnimationDrawable) mProgressBar.getBackground();
         LoadPendingSoOrPO(report_type,customer);
     }
 }

@@ -402,10 +402,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    public boolean DeleteDeliveryNote(String header_id, String sino,String iVoucherNo){
+    public boolean DeleteDeliveryNote(String sino,String iVoucherNo){
         this.db = getWritableDatabase();
         float status;
-        status = db.delete(TABLE_DELIVERY_NOTE,HEADER_ID+" =  ? and "+SI_NO+" = ? and iVoucherNo = ? ",new String[]{header_id,sino,iVoucherNo});
+        status = db.delete(TABLE_DELIVERY_NOTE,SI_NO+" = ? and iVoucherNo = ? ",new String[]{sino,iVoucherNo});
         return status != -1;
 
     }

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -52,9 +53,13 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
     ImageView img_home;
     TextView title;
     LinearLayout ll_stock,ll_goods_delivery;
-
+    private AnimationDrawable animationDrawable;
+    private ImageView mProgressBar;
 
     public void LoadRecycler(String from,String to,String report_type,String customer){
+        mProgressBar.setVisibility(View.VISIBLE);
+        animationDrawable.start();
+
         if(report_type.equals("goods_receipt")){
             title.setText("Goods receipt report");
             AndroidNetworking.get(URLs.GetGRNote)
@@ -67,6 +72,8 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
                     .getAsJSONObject(new JSONObjectRequestListener() {
                         @Override
                         public void onResponse(JSONObject response) {
+                            animationDrawable.stop();
+                            mProgressBar.setVisibility(View.INVISIBLE);
                             try {
                                 empty_frame.setVisibility(View.INVISIBLE);
                                 JSONArray jsonArray = new JSONArray(response.getString("MRN_Details"));
@@ -79,17 +86,25 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
 
                                     list.add(new Goods_Stock(ProductName,ProductCode,Vendor,Qty));
 
+
+
                                     if(jsonArray.length()==i+1){
                                         recyclerView.setAdapter(goods_delivery_adapter);
                                     }
                                 }
+                                if(jsonArray.length()<=0){
+                                    empty_frame.setVisibility(View.VISIBLE);
+                                }
                             } catch (JSONException e) {
+                                empty_frame.setVisibility(View.VISIBLE);
                                 e.printStackTrace();
                             }
                         }
 
                         @Override
                         public void onError(ANError anError) {
+                            animationDrawable.stop();
+                            mProgressBar.setVisibility(View.INVISIBLE);
                             Log.d("error data",anError.getErrorDetail());
                         empty_frame.setVisibility(View.VISIBLE);
                         }
@@ -107,7 +122,10 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
                     .getAsJSONObject(new JSONObjectRequestListener() {
                         @Override
                         public void onResponse(JSONObject response) {
+                            animationDrawable.stop();
+                            mProgressBar.setVisibility(View.INVISIBLE);
                             try {
+                                Log.d("data",response.toString());
                                 empty_frame.setVisibility(View.INVISIBLE);
                                 JSONArray jsonArray = new JSONArray(response.getString("Delivery_Details"));
                                 for(int i = 0;i<jsonArray.length();i++ ){
@@ -119,17 +137,26 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
 
                                     list.add(new Goods_Stock(ProductName,ProductCode,Vendor,Qty));
 
+
+
                                     if(jsonArray.length()==i+1){
                                         recyclerView.setAdapter(goods_delivery_adapter);
                                     }
+
+                                }
+                                if(jsonArray.length()<=0){
+                                    empty_frame.setVisibility(View.VISIBLE);
                                 }
                             } catch (JSONException e) {
+                                empty_frame.setVisibility(View.VISIBLE);
                                 e.printStackTrace();
                             }
                         }
 
                         @Override
                         public void onError(ANError anError) {
+                            animationDrawable.stop();
+                            mProgressBar.setVisibility(View.INVISIBLE);
                             empty_frame.setVisibility(View.VISIBLE);
                             Log.d("error",anError.getErrorDetail());
                         }
@@ -147,6 +174,8 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
                     .getAsJSONObject(new JSONObjectRequestListener() {
                         @Override
                         public void onResponse(JSONObject response) {
+                            animationDrawable.stop();
+                            mProgressBar.setVisibility(View.INVISIBLE);
                             try {
                                 empty_frame.setVisibility(View.INVISIBLE);
                                 JSONArray jsonArray = new JSONArray(response.getString("Stock_Details"));
@@ -163,17 +192,26 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
 
                                     list2.add(new StockCountReport(DocDate,iVoucherNo,ProductCode,Waehouse,Name,fQty,sUnit,sRemarks));
 
+
+
                                     if(jsonArray.length()==i+1){
                                         recyclerView.setAdapter(stockCountReportAdapter);
                                     }
                                 }
+                                if(jsonArray.length()<=0){
+                                    empty_frame.setVisibility(View.VISIBLE);
+                                }
                             } catch (JSONException e) {
+                                    empty_frame.setVisibility(View.VISIBLE);
+
                                 e.printStackTrace();
                             }
                         }
 
                         @Override
                         public void onError(ANError anError) {
+                            animationDrawable.stop();
+                            mProgressBar.setVisibility(View.INVISIBLE);
                             empty_frame.setVisibility(View.VISIBLE);
                             Log.d("error",anError.getErrorDetail());
                         }
@@ -212,6 +250,11 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
         ll_goods_delivery = findViewById(R.id.ll_goods_delivery);
 
 
+        mProgressBar = findViewById(R.id.main_progress);
+        mProgressBar.setBackgroundResource(R.drawable.loading);
+
+        animationDrawable = (AnimationDrawable) mProgressBar.getBackground();
+
         if(report_type.equals("stock_count")){
             ll_stock.setVisibility(View.VISIBLE);
             ll_goods_delivery.setVisibility(View.GONE);
@@ -219,6 +262,8 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
             ll_stock.setVisibility(View.GONE);
             ll_goods_delivery.setVisibility(View.VISIBLE);
         }
+
+
                     LoadRecycler(from, to, report_type, customer);
 
         img_home.setOnClickListener(new View.OnClickListener() {

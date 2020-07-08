@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 
@@ -39,7 +40,7 @@ DatabaseHelper helper;
         sync_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Toast.makeText(Home.this, "Sync started...", Toast.LENGTH_SHORT).show();
                //start with SyncGoodsReceipt
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     new ScheduleJob().SyncGoodsReceipt(Home.this);

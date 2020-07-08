@@ -148,5 +148,10 @@
         android:layout_below="@id/ll_pending_so_po"
         android:layout_height="match_parent"
         android:id="@+id/recycler" />
-
+    <ImageView
+        android:id="@+id/main_progress"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        android:visibility="invisible" />
 </RelativeLayout>

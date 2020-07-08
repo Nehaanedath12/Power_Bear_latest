@@ -66,7 +66,7 @@ public class PostDeliveryNote extends JobService {
                 response = connection.execute();
 
                 if(response.equals("1"))
-                if(helper.DeleteDeliveryNote(map.get("iHeaderId"),map.get("SiNo"),map.get("iVoucherNo"))){
+                if(helper.DeleteDeliveryNote(map.get("SiNo"),map.get("iVoucherNo"))){
                     Log.d("status change","true");
                 }
                 return null;
@@ -89,6 +89,7 @@ public class PostDeliveryNote extends JobService {
         if(cursor!=null) {
 
             if (cursor.getCount()>DeliveryCount) {
+                map.put("iVoucherNo", cursor.getString(cursor.getColumnIndex("iVoucherNo")));
                 map.put("iHeaderId", cursor.getString(cursor.getColumnIndex("HeaderId")));
                 //map.put("iRowId",cursor.getString(cursor.getColumnIndex("iRowId")));
                 map.put("iRowId", String.valueOf(DeliveryCount));
