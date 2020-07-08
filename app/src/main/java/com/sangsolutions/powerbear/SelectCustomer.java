@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +31,26 @@ SOAdapter adapter;
 ListView doc_no_lv;
 TextView title;
 ImageView img_home;
+Handler handler;
+    private AnimationDrawable animationDrawable;
+    private ImageView mProgressBar;
 
+    public void LoadCustomer(){
+        Cursor cursor = helper.GetDocNo();
+        list.clear();
+        if(cursor!=null){
+            for (int i = 0; i < cursor.getCount(); i++) {
+                list.add(new DONo(cursor.getString(cursor.getColumnIndex("DocNo")),
+                        Tools.ConvertDate(cursor.getString(cursor.getColumnIndex("DocDate"))),cursor.getString(cursor.getColumnIndex("Cusomer"))));
+                cursor.moveToNext();
+                if(cursor.getCount()==i+1){
+                    doc_no_lv.setAdapter(adapter);
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    animationDrawable.stop();
+                }
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +63,27 @@ ImageView img_home;
         img_home = findViewById(R.id.home);
         title = findViewById(R.id.title);
         title.setText("Select vender");
+
+
+        mProgressBar = findViewById(R.id.main_progress);
+        mProgressBar.setBackgroundResource(R.drawable.loading);
+
+        animationDrawable = (AnimationDrawable) mProgressBar.getBackground();
+        handler = new Handler();
+        final Runnable r = new Runnable() {
+            public void run() {
+                if(!PublicData.pendingSOFinished){
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    animationDrawable.start();
+                    handler.removeCallbacksAndMessages(null);
+                }else {
+                    LoadCustomer();
+                }
+                handler.postDelayed(this, 1000);
+            }
+        };
+        handler.postDelayed(r, 1000);
+
         img_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,18 +92,7 @@ ImageView img_home;
             }
         });
 
-        Cursor cursor = helper.GetDocNo();
-        list.clear();
-        if(cursor!=null){
-            for (int i = 0; i < cursor.getCount(); i++) {
-                list.add(new DONo(cursor.getString(cursor.getColumnIndex("DocNo")),
-                        Tools.ConvertDate(cursor.getString(cursor.getColumnIndex("DocDate"))),cursor.getString(cursor.getColumnIndex("Cusomer"))));
-            cursor.moveToNext();
-            if(cursor.getCount()==i+1){
-                doc_no_lv.setAdapter(adapter);
-            }
-            }
-        }
+
 
         doc_no_lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

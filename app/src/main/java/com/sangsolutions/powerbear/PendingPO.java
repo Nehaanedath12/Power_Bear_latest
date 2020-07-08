@@ -8,8 +8,10 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -32,6 +34,29 @@ public class PendingPO extends AppCompatActivity {
    DatabaseHelper helper;
    TextView title;
    ImageView img_home;
+   Handler handler;
+    private AnimationDrawable animationDrawable;
+    private ImageView mProgressBar;
+   public void LoadPO(){
+       Cursor cursor = helper.GetDocNoForPO();
+       list.clear();
+       if(cursor!=null){
+           for (int i = 0; i < cursor.getCount(); i++) {
+               list.add(new PO(cursor.getString(cursor.getColumnIndex("DocNo")),
+                       Tools.ConvertDate(cursor.getString(cursor.getColumnIndex("DocDate"))),cursor.getString(cursor.getColumnIndex("Cusomer"))));
+               cursor.moveToNext();
+               if(cursor.getCount()==i+1){
+                   doc_no_lv.setAdapter(poAdapter);
+                   animationDrawable.stop();
+                   mProgressBar.setVisibility(View.INVISIBLE);
+               }
+           }
+       }
+
+
+
+   }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +65,10 @@ public class PendingPO extends AppCompatActivity {
         img_home = findViewById(R.id.home);
         title = findViewById(R.id.title);
         title.setText("Select customer");
+        mProgressBar = findViewById(R.id.main_progress);
+        mProgressBar.setBackgroundResource(R.drawable.loading);
+
+        animationDrawable = (AnimationDrawable) mProgressBar.getBackground();
         img_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,18 +81,26 @@ public class PendingPO extends AppCompatActivity {
         poAdapter = new POAdapter(list,this);
         helper = new DatabaseHelper(this);
         doc_no_lv = findViewById(R.id.doc_no_lv);
-        Cursor cursor = helper.GetDocNoForPO();
-        list.clear();
-        if(cursor!=null){
-            for (int i = 0; i < cursor.getCount(); i++) {
-                list.add(new PO(cursor.getString(cursor.getColumnIndex("DocNo")),
-                        Tools.ConvertDate(cursor.getString(cursor.getColumnIndex("DocDate"))),cursor.getString(cursor.getColumnIndex("Cusomer"))));
-                cursor.moveToNext();
-                if(cursor.getCount()==i+1){
-                    doc_no_lv.setAdapter(poAdapter);
+
+
+        handler = new Handler();
+
+        final Runnable r = new Runnable() {
+            public void run() {
+                if(!PublicData.pendingPOFinished){
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    animationDrawable.start();
+                    handler.postDelayed(this, 1000);
+                }else {
+
+                    LoadPO();
+                     handler.removeCallbacksAndMessages(null);
                 }
             }
-        }
+        };
+        handler.postDelayed(r, 1000);
+
+
 
         doc_no_lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

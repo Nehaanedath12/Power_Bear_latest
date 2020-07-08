@@ -6,4 +6,8 @@ public class PublicData {
     public static String date;
 
 
+    public static boolean pendingPOFinished;
+    public static boolean pendingSOFinished;
+    public static boolean WarehouseFinished;
+
 }

@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,28 @@ DatabaseHelper helper;
 WarehouseAdapter adapter;
 TextView title;
 ImageView img_home;
+Handler handler;
+    private AnimationDrawable animationDrawable;
+    private ImageView mProgressBar;
+
+   public void LoadWarehouse(){
+       Cursor cursor = helper.GetWarehouse();
+       list.clear();
+       if(cursor!=null){
+           for (int i = 0; i < cursor.getCount(); i++) {
+               list.add(new Warehouse(cursor.getString(cursor.getColumnIndex("MasterId")),cursor.getString(cursor.getColumnIndex("Name"))));
+
+               cursor.moveToNext();
+               if(cursor.getCount()==i+1){
+                   lv_warehouse.setAdapter(adapter);
+                   animationDrawable.stop();
+                   mProgressBar.setVisibility(View.INVISIBLE);
+               }
+
+           }
+       }
+   }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +60,36 @@ ImageView img_home;
         img_home = findViewById(R.id.home);
         title = findViewById(R.id.title);
         title.setText("Select warehouse");
+
+        helper = new DatabaseHelper(this);
+        list = new ArrayList<>();
+        adapter = new WarehouseAdapter(list);
+
+        mProgressBar = findViewById(R.id.main_progress);
+        mProgressBar.setBackgroundResource(R.drawable.loading);
+
+        animationDrawable = (AnimationDrawable) mProgressBar.getBackground();
+
+
+        handler = new Handler();
+
+        final Runnable r = new Runnable() {
+            public void run() {
+                if(!PublicData.pendingPOFinished){
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    animationDrawable.start();
+                    handler.postDelayed(this, 1000);
+                }else {
+
+                    LoadWarehouse();
+                    handler.removeCallbacksAndMessages(null);
+                }
+            }
+        };
+        handler.postDelayed(r, 1000);
+
+
+
         img_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,22 +98,8 @@ ImageView img_home;
             }
         });
 
-    helper = new DatabaseHelper(this);
-    list = new ArrayList<>();
-    adapter = new WarehouseAdapter(list);
-        Cursor cursor = helper.GetWarehouse();
-        list.clear();
-        if(cursor!=null){
-            for (int i = 0; i < cursor.getCount(); i++) {
-                list.add(new Warehouse(cursor.getString(cursor.getColumnIndex("MasterId")),cursor.getString(cursor.getColumnIndex("Name"))));
 
-                cursor.moveToNext();
-                if(cursor.getCount()==i+1){
-                    lv_warehouse.setAdapter(adapter);
-                }
 
-            }
-        }
 
         lv_warehouse.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

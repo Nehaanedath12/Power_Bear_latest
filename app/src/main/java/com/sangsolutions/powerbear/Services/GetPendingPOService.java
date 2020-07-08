@@ -18,6 +18,7 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.PendingSO;
+import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.URLs;
 
 import org.json.JSONArray;
@@ -86,6 +87,7 @@ public class GetPendingPOService extends JobService {
 
             @Override
             protected void onPostExecute(Void aVoid) {
+                PublicData.pendingPOFinished = true;
                 jobFinished(params,false);
             }
         };

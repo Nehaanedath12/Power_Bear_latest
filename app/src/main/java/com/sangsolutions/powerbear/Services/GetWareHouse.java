@@ -15,6 +15,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.Warehouse;
+import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.ScheduleJob;
 import com.sangsolutions.powerbear.URLs;
 
@@ -99,9 +100,8 @@ public class GetWareHouse extends JobService {
             protected void onPostExecute(Void aVoid) {
 
                 Log.d("Status:", "data synced");
-
+                PublicData.WarehouseFinished = true;
                 new ScheduleJob().SyncPendingPO(GetWareHouse.this);
-
                 jobFinished(params,false);
             }
         };
