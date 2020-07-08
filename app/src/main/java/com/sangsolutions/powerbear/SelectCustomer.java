@@ -45,7 +45,7 @@ Handler handler;
                 cursor.moveToNext();
                 if(cursor.getCount()==i+1){
                     doc_no_lv.setAdapter(adapter);
-                    mProgressBar.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.INVISIBLE);
                     animationDrawable.stop();
                 }
             }
@@ -75,11 +75,12 @@ Handler handler;
                 if(!PublicData.pendingSOFinished){
                     mProgressBar.setVisibility(View.VISIBLE);
                     animationDrawable.start();
-                    handler.removeCallbacksAndMessages(null);
+                    handler.postDelayed(this, 1000);
                 }else {
                     LoadCustomer();
+                    handler.removeCallbacksAndMessages(null);
                 }
-                handler.postDelayed(this, 1000);
+
             }
         };
         handler.postDelayed(r, 1000);

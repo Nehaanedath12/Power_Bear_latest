@@ -47,8 +47,8 @@ public class PendingPO extends AppCompatActivity {
                cursor.moveToNext();
                if(cursor.getCount()==i+1){
                    doc_no_lv.setAdapter(poAdapter);
-                   animationDrawable.stop();
                    mProgressBar.setVisibility(View.INVISIBLE);
+                   animationDrawable.stop();
                }
            }
        }

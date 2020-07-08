@@ -44,8 +44,8 @@ Handler handler;
                cursor.moveToNext();
                if(cursor.getCount()==i+1){
                    lv_warehouse.setAdapter(adapter);
-                   animationDrawable.stop();
                    mProgressBar.setVisibility(View.INVISIBLE);
+                   animationDrawable.stop();
                }
 
            }
@@ -80,7 +80,6 @@ Handler handler;
                     animationDrawable.start();
                     handler.postDelayed(this, 1000);
                 }else {
-
                     LoadWarehouse();
                     handler.removeCallbacksAndMessages(null);
                 }
