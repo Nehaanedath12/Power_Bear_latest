@@ -21,7 +21,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -31,7 +30,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,11 +71,12 @@ public class AddDeliveryNote extends AppCompatActivity {
     private ListProductAdapter listProductAdapter;
     private List<ListProduct> list;
     private ImageView add_new, save;
-    private String DocNo = "";
+    private String HeaderId = "";
     private boolean EditMode = false;
     private String iVoucherNo;
     private ImageView img_home;
     private TextView title;
+    private boolean saveStatus = true;
     private static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -151,36 +150,39 @@ public class AddDeliveryNote extends AppCompatActivity {
 
     public void SaveDataToDB() {
         DeliveryNote d = new DeliveryNote();
-        if(helper.DeleteDeliveryNoteDocNOAndVoucherNO(DocNo,iVoucherNo)) {
-            for (int i = 0; i < list.size(); i++) {
-                d.setiVoucherNo(iVoucherNo);
-                d.setSiNo(list.get(i).getSiNo());
-                d.setHeaderId(list.get(i).getHeaderId());
-                d.setProduct(list.get(i).getProduct());
-                d.setQty(list.get(i).getPickedQty());
-                d.setiStatus("0");
-                helper.InsertDelivery(d);
+        if(saveStatus) {
+            if (helper.DeleteDeliveryNoteHeaderIdAndVoucherNO(HeaderId, iVoucherNo)) {
+                for (int i = 0; i < list.size(); i++) {
+                    d.setiVoucherNo(iVoucherNo);
+                    d.setSiNo(list.get(i).getSiNo());
+                    d.setHeaderId(list.get(i).getHeaderId());
+                    d.setProduct(list.get(i).getProduct());
+                    d.setQty(list.get(i).getPickedQty());
+                    d.setiStatus("0");
+                    helper.InsertDelivery(d);
 
+                    if (list.size() == i + 1) {
+                        Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
 
-                if (list.size() == i + 1) {
-                    Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
-                    finish();
                 }
-
             }
+        }else {
+            Toast.makeText(this, "Make sure there is not error your entry", Toast.LENGTH_SHORT).show();
         }
 
     }
 
 
-    public void setRecyclerViewFromDB(String DocNo,boolean EditMode,String iVoucherNo) {
+    public void setRecyclerViewFromDB(String HeaderID,boolean EditMode) {
         String Name, Code, Qty, PickedQty, HeaderId, Product, SiNo ,Unit;
-        Log.d("docno", DocNo);
+        Log.d("docno", HeaderID);
         Cursor cursor;
         if(!EditMode) {
-             cursor = helper.GetAllPendingDN(DocNo);
+             cursor = helper.GetAllPendingDN(HeaderID);
         }else {
-             cursor = helper.GetAllDeliveryNote(DocNo,iVoucherNo);
+             cursor = helper.GetAllDeliveryNote(HeaderID);
         }
         if (cursor != null) {
             cursor.moveToFirst();
@@ -201,7 +203,6 @@ public class AddDeliveryNote extends AppCompatActivity {
                 SiNo = cursor.getString(cursor.getColumnIndex("SiNo"));
 
                 list.add(new ListProduct(iVoucherNo,Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit));
-
                 listProductAdapter.notifyDataSetChanged();
                 cursor.moveToNext();
 
@@ -275,9 +276,9 @@ public class AddDeliveryNote extends AppCompatActivity {
         if (dialog.isShowing()) {
             Cursor cursor ;
             if(!EditMode){
-                cursor =  helper.SearchProductPendingSO(keyword,DocNo);;
+                cursor =  helper.SearchProductPendingSO(keyword,HeaderId);;
             }else {
-                cursor =  helper.SearchProductDeliveryNote(keyword,DocNo);
+                cursor =  helper.SearchProductDeliveryNote(keyword,HeaderId);
             }
 
             if (cursor != null&&!keyword.equals("")) {
@@ -291,6 +292,7 @@ public class AddDeliveryNote extends AppCompatActivity {
 
                     if (i + 1 == cursor.getCount()) {
                         rv_search.setAdapter(adapter);
+                        rv_product.setItemViewCacheSize(list.size());
                     }
 
                     adapter.setOnClickListener(new SearchProductAdapter.OnClickListener() {
@@ -375,39 +377,53 @@ public class AddDeliveryNote extends AppCompatActivity {
 
         Intent intent = getIntent();
         if(intent!=null) {
-            DocNo = intent.getStringExtra("DocNo");
+            HeaderId = intent.getStringExtra("HeaderId");
             EditMode = intent.getBooleanExtra("EditMode", false);
             iVoucherNo = intent.getStringExtra("iVoucherNo");
+            if(helper.IsDeliveryNotePresent(HeaderId)){
+                EditMode = true;
+            }
         }
 
 
-if(iVoucherNo==null&&!EditMode)
+if(!EditMode)
 {
     iVoucherNo = Objects.requireNonNull(helper).GetDeliveryNoteVoucherNo();
 }
 
-        if (DocNo != null && !DocNo.equals("")&&iVoucherNo!=null) {
-            setRecyclerViewFromDB(DocNo,EditMode,iVoucherNo);
+        if (HeaderId != null && !HeaderId.equals("")) {
+            setRecyclerViewFromDB(HeaderId,EditMode);
         }
 
-        listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
-            @Override
-            public void onItemClick(View view, final ListProduct listProduct, int pos) {
-                PopupMenu popupMenu = new PopupMenu(AddDeliveryNote.this, view);
-                popupMenu.inflate(R.menu.edit_menu);
-                popupMenu.show();
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                      if (item.getItemId() == R.id.edit) {
-                          qty.setText(listProduct.getPickedQty());
-                          et_barcode.setText(helper.GetProductBarcode(listProduct.getCode()));
-                        }
-                        return true;
+
+      listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
+
+          @Override
+          public void onTextChangedListener(EditText et,ListProduct products, int pos, String text) {
+                if(!text.equals("")) {
+                    if (Integer.parseInt(products.getQty()) >= Integer.parseInt(text)) {
+                        saveStatus = true;
+                        list.set(pos, new ListProduct(
+                                list.get(pos).getiVoucherNo(),
+                                list.get(pos).getName(),
+                                list.get(pos).getCode(),
+                                list.get(pos).getQty(),
+                                text,
+                                list.get(pos).getHeaderId(),
+                                list.get(pos).getProduct(),
+                                list.get(pos).getSiNo(),
+                                list.get(pos).getUnit()));
+                    } else {
+                            et.setError("Entry error!");
+                        Toast.makeText(AddDeliveryNote.this, "PickedQty should not be grater then Qty", Toast.LENGTH_SHORT).show();
+                        saveStatus = false;
                     }
-                });
-            }
-        });
+                }else {
+                    et.setError("Entry error!");
+                    saveStatus = false;
+                }
+          }
+      });
 
 
 

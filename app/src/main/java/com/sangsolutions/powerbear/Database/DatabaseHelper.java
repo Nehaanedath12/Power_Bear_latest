@@ -365,12 +365,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public Cursor SearchProductPendingSO(String keyword,String DocNo) {
+    public Cursor SearchProductPendingSO(String keyword,String HeaderId) {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select Name,Code,Barcode from tbl_Product p " +
                 "INNER JOIN tbl_PendingSO so " +
                 "on so.Product = p.MasterId " +
-                "where instr(upper(Code),upper(?)) and so.DocNo = ? limit 10",new String[]{keyword,DocNo});
+                "where instr(upper(Code),upper(?)) and so.HeaderId = ? limit 10",new String[]{keyword,HeaderId});
 
         if (cursor.moveToFirst()) {
             return cursor;
@@ -378,6 +378,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return null;
         }
 
+    }
+
+    public boolean IsDeliveryNotePresent(String HeaderId){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from "+TABLE_DELIVERY_NOTE+" where "+HEADER_ID+"= ? ",new String[]{HeaderId});
+        if(cursor!=null){
+            if(cursor.moveToFirst()){
+                return true;
+            }
+        }
+       return false;
     }
 
     public Cursor SearchProductDeliveryNote(String keyword,String HeaderId) {
@@ -394,6 +405,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
     }
+
+
 
     public String GetDeliveryNoteVoucherNo(){
         this.db = getReadableDatabase();
@@ -472,7 +485,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor GetDocNo(){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT "+DOC_NO+","+CUSTOMER+","+DOC_DATE+" FROM "+TABLE_PENDING_SO,null);
+        Cursor cursor = db.rawQuery("SELECT DISTINCT "+DOC_NO+","+CUSTOMER+","+DOC_DATE+","+HEADER_ID+" FROM "+TABLE_PENDING_SO,null);
         if(cursor.moveToFirst()){
             return cursor;
         }else {
@@ -480,9 +493,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor GetAllPendingDN(String DocNo) {
+    public Cursor GetAllPendingDN(String HeaderId) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * from tbl_PendingSO LEFT JOIN tbl_Product WHERE tbl_PendingSO.Product = tbl_Product.MasterId and DocNo = ? ", new String[]{DocNo});
+        Cursor cursor = db.rawQuery("SELECT * from tbl_PendingSO LEFT JOIN tbl_Product WHERE tbl_PendingSO.Product = tbl_Product.MasterId and HeaderId = ? ", new String[]{HeaderId});
         if(cursor.moveToFirst()){
             return cursor;
         }else {
@@ -524,21 +537,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return null;
     }
 
-    public boolean DeleteDeliveryNoteDocNOAndVoucherNO(String id,String iVoucherNo){
+    public boolean DeleteDeliveryNoteHeaderIdAndVoucherNO(String id, String iVoucherNo){
         this.db = getWritableDatabase();
         db.delete(TABLE_DELIVERY_NOTE,HEADER_ID+" = ? and "+I_VOUCHER_NO+" = ? ",new String[]{id,iVoucherNo});
         return true;
     }
 
 
-    public Cursor GetAllDeliveryNote(String DocNo,String iVoucherNo) {
+    public Cursor GetAllDeliveryNote(String HeaderId) {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT d.HeaderId,d.SiNo,p.MasterId as Product,p.Name,p.Code,p.Unit,d.iVoucherNo iVoucherNo , d.Qty PickedQty,so.Qty Qty FROM tbl_DeliveryNote d " +
                 "INNER JOIN tbl_PendingSO so on d.HeaderId = so.HeaderId and d.sino=so.sino " +
                 "INNER JOIN tbl_Product p on d.product=p.masterid " +
                 " " +
-                "WHERE d.HeaderId = ? and d.iVoucherNo = ? " +
-                "", new String[]{DocNo,iVoucherNo});
+                "WHERE d.HeaderId = ? " +
+                "", new String[]{HeaderId});
         if(cursor.moveToFirst()){
             return cursor;
         }else {

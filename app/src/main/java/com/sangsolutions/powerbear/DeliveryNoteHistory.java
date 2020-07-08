@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistoryAdapter;
 
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
-import com.sangsolutions.powerbear.Database.DeliveryNote;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +76,7 @@ public class DeliveryNoteHistory extends AppCompatActivity {
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(helper.DeleteDeliveryNoteDocNOAndVoucherNO(deliveryNoteHistory.getHeaderId(),deliveryNoteHistory.getiVoucherNo())) {
+                        if(helper.DeleteDeliveryNoteHeaderIdAndVoucherNO(deliveryNoteHistory.getHeaderId(),deliveryNoteHistory.getiVoucherNo())) {
                             list.remove(pos);
                             adapter.notifyDataSetChanged();
                             setRecyclerView();
@@ -144,7 +143,7 @@ public class DeliveryNoteHistory extends AppCompatActivity {
                             DeleteStockCountItemAlert(deliveryNoteHistory, pos);
                         } else if (item.getItemId() == R.id.edit) {
                             Intent intent1 = new Intent(DeliveryNoteHistory.this, AddDeliveryNote.class);
-                            intent1.putExtra("DocNo",deliveryNoteHistory.getHeaderId());
+                            intent1.putExtra("HeaderId",deliveryNoteHistory.getHeaderId());
                             intent1.putExtra("iVoucherNo",deliveryNoteHistory.getiVoucherNo());
                             intent1.putExtra("EditMode", true);
                             startActivity(intent1);

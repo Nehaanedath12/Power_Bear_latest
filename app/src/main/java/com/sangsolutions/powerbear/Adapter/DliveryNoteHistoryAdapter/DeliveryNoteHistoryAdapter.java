@@ -42,7 +42,7 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
         holder.HeaderId.setText("Id :"+list.get(position).getHeaderId());
         holder.Qty.setText("Total Qty :"+list.get(position).getQty());
 
-
+        //TODO change menu to two buttons that do edit and delete operations
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

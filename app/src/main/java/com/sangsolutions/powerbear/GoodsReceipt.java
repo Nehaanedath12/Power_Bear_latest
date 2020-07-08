@@ -484,7 +484,7 @@ TextView title;
             }
         });
 
-        listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
+      /*  listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
             @Override
             public void onItemClick(View view, final ListProduct listProduct, int pos) {
                 PopupMenu popupMenu = new PopupMenu(GoodsReceipt.this, view);
@@ -501,7 +501,7 @@ TextView title;
                     }
                 });
             }
-        });
+        });*/
 
         linear_search.setOnClickListener(new View.OnClickListener() {
             @Override

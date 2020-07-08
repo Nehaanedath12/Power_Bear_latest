@@ -2,9 +2,12 @@ package com.sangsolutions.powerbear.Adapter.ListProduct;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -50,12 +53,23 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         holder.PickedQty.setText(list.get(position).getPickedQty());
         holder.Unit.setText(list.get(position).getUnit());
 
-        holder.menu.setOnClickListener(new View.OnClickListener() {
+        holder.PickedQty.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                onClickListener.onItemClick(v, listProduct, position);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                onClickListener.onTextChangedListener(holder.PickedQty,listProduct, position, s.toString());
             }
         });
+
     }
 
     @Override
@@ -64,15 +78,15 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
     }
 
     public interface OnClickListener {
-        void onItemClick(View view, ListProduct listProduct, int pos);
+        void onTextChangedListener(EditText et,ListProduct products, int pos, String text);
 
     }
 
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView Name, Code, Qty,PickedQty,Unit;
-        ImageButton menu;
+        TextView Name, Code, Qty,Unit;
+        EditText PickedQty;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -81,7 +95,7 @@ Code = itemView.findViewById(R.id.product_code);
 Qty = itemView .findViewById(R.id.product_qty);
 Unit = itemView.findViewById(R.id.product_unit);
 PickedQty = itemView.findViewById(R.id.product_picked_qty);
-            menu = itemView.findViewById(R.id.menu);
+
         }
     }
 }

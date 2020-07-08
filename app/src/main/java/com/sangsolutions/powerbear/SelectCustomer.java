@@ -41,7 +41,9 @@ Handler handler;
         if(cursor!=null){
             for (int i = 0; i < cursor.getCount(); i++) {
                 list.add(new DONo(cursor.getString(cursor.getColumnIndex("DocNo")),
-                        Tools.ConvertDate(cursor.getString(cursor.getColumnIndex("DocDate"))),cursor.getString(cursor.getColumnIndex("Cusomer"))));
+                        Tools.ConvertDate(cursor.getString(cursor.getColumnIndex("DocDate"))),
+                        cursor.getString(cursor.getColumnIndex("Cusomer")),
+                        cursor.getString(cursor.getColumnIndex("HeaderId"))));
                 cursor.moveToNext();
                 if(cursor.getCount()==i+1){
                     doc_no_lv.setAdapter(adapter);
@@ -99,8 +101,8 @@ Handler handler;
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(SelectCustomer.this, AddDeliveryNote.class);
-                   intent.putExtra("DocNo",parent.getItemAtPosition(position).toString());
-                intent.putExtra("EditMode",false);
+                    intent.putExtra("HeaderId",parent.getItemAtPosition(position).toString());
+                    intent.putExtra("EditMode",false);
                     startActivity(intent);
 
                 }
@@ -110,12 +112,13 @@ Handler handler;
 
     }
     private class DONo {
-        String DocNo, DocDate, Cusomer;
+        String DocNo, DocDate, Cusomer,HeaderId;
 
-        public DONo(String docNo, String docDate, String cusomer) {
+        public DONo(String docNo, String docDate, String cusomer,String HeaderId) {
             this.DocNo = docNo;
             this.DocDate = docDate;
             this.Cusomer = cusomer;
+            this.HeaderId = HeaderId;
         }
 
         public String getDocNo() {
@@ -141,6 +144,14 @@ Handler handler;
         public void setCusomer(String cusomer) {
             Cusomer = cusomer;
         }
+
+        public String getHeaderId() {
+            return HeaderId;
+        }
+
+        public void setHeaderId(String headerId) {
+            HeaderId = headerId;
+        }
     }
 
     private class SOAdapter extends BaseAdapter{
@@ -157,7 +168,7 @@ Handler handler;
 
         @Override
         public Object getItem(int position) {
-            return list.get(position).DocNo;
+            return list.get(position).getHeaderId();
         }
 
         @Override
