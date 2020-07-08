@@ -151,7 +151,7 @@ public class AddDeliveryNote extends AppCompatActivity {
 
     public void SaveDataToDB() {
         DeliveryNote d = new DeliveryNote();
-        if(helper.DeleteDeliveryNote(DocNo)) {
+        if(helper.DeleteDeliveryNoteDocNOAndVoucherNO(DocNo,iVoucherNo)) {
             for (int i = 0; i < list.size(); i++) {
                 d.setiVoucherNo(iVoucherNo);
                 d.setSiNo(list.get(i).getSiNo());
@@ -173,14 +173,14 @@ public class AddDeliveryNote extends AppCompatActivity {
     }
 
 
-    public void setRecyclerViewFromDB(String DocNo,boolean EditMode) {
+    public void setRecyclerViewFromDB(String DocNo,boolean EditMode,String iVoucherNo) {
         String Name, Code, Qty, PickedQty, HeaderId, Product, SiNo ,Unit;
         Log.d("docno", DocNo);
         Cursor cursor;
         if(!EditMode) {
              cursor = helper.GetAllPendingDN(DocNo);
         }else {
-             cursor = helper.GetAllDeliveryNote(DocNo);
+             cursor = helper.GetAllDeliveryNote(DocNo,iVoucherNo);
         }
         if (cursor != null) {
             cursor.moveToFirst();
@@ -359,7 +359,7 @@ public class AddDeliveryNote extends AppCompatActivity {
         });
         helper = new DatabaseHelper(this);
 
-        iVoucherNo = Objects.requireNonNull(helper).GetDeliveryNoteVoucherNo();
+
 
         rv_product = findViewById(R.id.rv_product);
         rv_product.setLayoutManager(new LinearLayoutManager(this));
@@ -377,12 +377,18 @@ public class AddDeliveryNote extends AppCompatActivity {
         if(intent!=null) {
             DocNo = intent.getStringExtra("DocNo");
             EditMode = intent.getBooleanExtra("EditMode", false);
-        }
-        if (DocNo != null && !DocNo.equals("")) {
-            setRecyclerViewFromDB(DocNo,EditMode);
+            iVoucherNo = intent.getStringExtra("iVoucherNo");
         }
 
 
+if(iVoucherNo==null&&!EditMode)
+{
+    iVoucherNo = Objects.requireNonNull(helper).GetDeliveryNoteVoucherNo();
+}
+
+        if (DocNo != null && !DocNo.equals("")&&iVoucherNo!=null) {
+            setRecyclerViewFromDB(DocNo,EditMode,iVoucherNo);
+        }
 
         listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
             @Override

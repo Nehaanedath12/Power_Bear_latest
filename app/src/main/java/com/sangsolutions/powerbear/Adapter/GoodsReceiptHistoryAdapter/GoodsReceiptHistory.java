@@ -2,13 +2,13 @@ package com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter;
 
 public class GoodsReceiptHistory {
 
-    String HeaderId,Qty;
+    String HeaderId,Qty,iVoucherNo;
 
-    public GoodsReceiptHistory(String headerId, String qty) {
+    public GoodsReceiptHistory(String headerId, String qty, String iVoucherNo) {
         this.HeaderId = headerId;
         this.Qty = qty;
+        this.iVoucherNo = iVoucherNo;
     }
-
 
     public String getHeaderId() {
         return HeaderId;
@@ -24,5 +24,13 @@ public class GoodsReceiptHistory {
 
     public void setQty(String qty) {
         Qty = qty;
+    }
+
+    public String getiVoucherNo() {
+        return iVoucherNo;
+    }
+
+    public void setiVoucherNo(String iVoucherNo) {
+        this.iVoucherNo = iVoucherNo;
     }
 }

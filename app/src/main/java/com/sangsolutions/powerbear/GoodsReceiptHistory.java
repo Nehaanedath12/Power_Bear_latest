@@ -48,12 +48,12 @@ public class GoodsReceiptHistory extends AppCompatActivity {
             cursor.moveToFirst();
             empty_frame.setVisibility(View.GONE);
             for (int i = 0; i < cursor.getCount(); i++) {
-                String Header_id,TotalQty;
+                String Header_id,TotalQty,iVoucherNo;
 
                 Header_id = cursor.getString(cursor.getColumnIndex("HeaderId"));
                 TotalQty = cursor.getString(cursor.getColumnIndex("Qty"));
-
-                list.add(new com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory(Header_id,TotalQty));
+                iVoucherNo = cursor.getString(cursor.getColumnIndex("iVoucherNo"));
+                list.add(new com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory(Header_id,TotalQty,iVoucherNo));
                 cursor.moveToNext();
 
                 if (i + 1 == cursor.getCount()) {
@@ -75,7 +75,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(helper.DeleteGoodsReceipt(goodsReceiptHistory.getHeaderId())) {
+                        if(helper.DeleteGoodsReceipt(goodsReceiptHistory.getHeaderId(),goodsReceiptHistory.getiVoucherNo())) {
                             list.remove(pos);
                             adapter.notifyDataSetChanged();
                             setRecyclerView();
@@ -144,6 +144,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
                         } else if (item.getItemId() == R.id.edit) {
                             Intent intent1 = new Intent(GoodsReceiptHistory.this,GoodsReceipt.class);
                             intent1.putExtra("DocNo",goodsReceiptHistory.getHeaderId());
+                            intent1.putExtra("iVoucherNo",goodsReceiptHistory.getiVoucherNo());
                             intent1.putExtra("EditMode", true);
                             startActivity(intent1);
                         }

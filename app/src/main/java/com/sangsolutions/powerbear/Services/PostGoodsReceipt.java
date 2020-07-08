@@ -68,7 +68,7 @@ public class PostGoodsReceipt extends JobService {
 
                 response = connection.execute();
                 if(response.equals("1")) {
-                    if (helper.DeleteGoods(map.get("iHeaderId"), map.get("SiNo"))) {
+                    if (helper.DeleteGoods(map.get("iHeaderId"), map.get("SiNo"),map.get("iVoucherNo"))) {
                         Log.d("status change", "true");
                     }
                 }

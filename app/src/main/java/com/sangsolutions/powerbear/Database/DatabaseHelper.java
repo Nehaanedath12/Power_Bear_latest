@@ -391,7 +391,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String GetDeliveryNoteVoucherNo(){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select "+I_VOUCHER_NO+" from  "+TABLE_DELIVERY_NOTE,null);
+        Cursor cursor = db.rawQuery("select "+I_VOUCHER_NO+" from  "+TABLE_DELIVERY_NOTE+" ORDER BY "+I_VOUCHER_NO,null);
         if(cursor!=null){
             if(cursor.moveToLast()){
                 return String.valueOf(cursor.getInt(cursor.getColumnIndex(I_VOUCHER_NO))+1);
@@ -402,10 +402,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    public boolean DeleteDeliveryNote(String header_id, String sino){
+    public boolean DeleteDeliveryNote(String header_id, String sino,String iVoucherNo){
         this.db = getWritableDatabase();
         float status;
-        status = db.delete(TABLE_DELIVERY_NOTE,HEADER_ID+" =  ? and "+SI_NO+" = ?",new String[]{header_id,sino});
+        status = db.delete(TABLE_DELIVERY_NOTE,HEADER_ID+" =  ? and "+SI_NO+" = ? and iVoucherNo = ? ",new String[]{header_id,sino,iVoucherNo});
         return status != -1;
 
     }
@@ -487,10 +487,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //Delivery Note
     public boolean InsertDelivery(DeliveryNote d){
         this.db = getWritableDatabase();
-        this.db = getReadableDatabase();
         float status = -1;
-
-Cursor cursor= db.rawQuery("select "+HEADER_ID+" from "+TABLE_DELIVERY_NOTE+" where "+HEADER_ID+" = ? ",new String[]{d.getHeaderId()});
 
         ContentValues cv = new ContentValues();
         cv.put(I_VOUCHER_NO, d.getiVoucherNo());
@@ -499,15 +496,7 @@ Cursor cursor= db.rawQuery("select "+HEADER_ID+" from "+TABLE_DELIVERY_NOTE+" wh
         cv.put(PRODUCT, d.getProduct());
         cv.put(QTY, d.getQty());
         cv.put(I_STATUS, d.getiStatus());
-        cursor.moveToFirst();
-           if(cursor.getCount()==0) {
                 status = db.insert(TABLE_DELIVERY_NOTE, null, cv);
-            } else {
-               float deliveryStatus = db.delete(TABLE_DELIVERY_NOTE,HEADER_ID+" = ? and "+SI_NO+" = ? ",new String[]{d.getHeaderId(),d.getSiNo()});
-               if(deliveryStatus!=-1) {
-                   status = db.insert(TABLE_DELIVERY_NOTE, null, cv);
-               }
-        }
         return status != -1;
     }
 
@@ -522,28 +511,28 @@ Cursor cursor= db.rawQuery("select "+HEADER_ID+" from "+TABLE_DELIVERY_NOTE+" wh
 
     public Cursor GetDeliveryNoteList() {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT sum(Qty) as Qty,HeaderId from tbl_DeliveryNote  GROUP BY HeaderId",null);
+        Cursor cursor = db.rawQuery("SELECT sum(Qty) as Qty,HeaderId,iVoucherNo from tbl_DeliveryNote  GROUP BY "+I_VOUCHER_NO,null);
         if(cursor.moveToFirst())
             return cursor;
         else
             return null;
     }
 
-    public boolean DeleteDeliveryNote(String id){
+    public boolean DeleteDeliveryNoteDocNOAndVoucherNO(String id,String iVoucherNo){
         this.db = getWritableDatabase();
-        db.delete(TABLE_DELIVERY_NOTE,HEADER_ID+" = ? ",new String[]{id});
+        db.delete(TABLE_DELIVERY_NOTE,HEADER_ID+" = ? and "+I_VOUCHER_NO+" = ? ",new String[]{id,iVoucherNo});
         return true;
     }
 
 
-    public Cursor GetAllDeliveryNote(String DocNo) {
+    public Cursor GetAllDeliveryNote(String DocNo,String iVoucherNo) {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT d.HeaderId,d.SiNo,p.MasterId as Product,p.Name,p.Code,p.Unit,d.iVoucherNo iVoucherNo , d.Qty PickedQty,so.Qty Qty FROM tbl_DeliveryNote d " +
                 "INNER JOIN tbl_PendingSO so on d.HeaderId = so.HeaderId and d.sino=so.sino " +
                 "INNER JOIN tbl_Product p on d.product=p.masterid " +
                 " " +
-                "WHERE d.HeaderId = ? " +
-                "", new String[]{DocNo});
+                "WHERE d.HeaderId = ? and d.iVoucherNo = ? " +
+                "", new String[]{DocNo,iVoucherNo});
         if(cursor.moveToFirst()){
             return cursor;
         }else {
@@ -693,28 +682,28 @@ public boolean DeleteStockCount(String voucherNo){
     //  goods receipt
 
 
-    public Cursor GetAllGoodsReceiptNote(String DocNo) {
+    public Cursor GetAllGoodsReceiptNote(String DocNo,String iVoucherNo) {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT g.HeaderId,g.SiNo,p.MasterId as Product,g.iVoucherNo iVoucherNo,p.Name,p.Code,p.Unit, g.Qty PickedQty,po.Qty Qty FROM tbl_GoodsReceipt g " +
                 "INNER JOIN tbl_PendingPO po on g.HeaderId = po.HeaderId and g.sino=po.sino " +
                 "INNER JOIN tbl_Product p on g.product=p.masterid " +
-                "WHERE g.HeaderId = ?  ", new String[]{DocNo});
+                "WHERE g.HeaderId = ?  and g.iVoucherNo = ? ", new String[]{DocNo,iVoucherNo});
         if(cursor.moveToFirst()){
             return cursor;
         }else {
             return null;
         }
     }
-    public boolean DeleteGoodsReceipt(String id){
+    public boolean DeleteGoodsReceipt(String id,String iVoucherNo){
         this.db = getWritableDatabase();
-        db.delete(TABLE_GOODS_RECEIPT,HEADER_ID+" = ? ",new String[]{id});
+        db.delete(TABLE_GOODS_RECEIPT,HEADER_ID+" = ? and "+I_VOUCHER_NO+" = ?",new String[]{id,iVoucherNo});
         return true;
     }
 
-    public boolean DeleteGoods(String header_id, String sino){
+    public boolean DeleteGoods(String header_id, String sino,String iVoucherNo){
         this.db = getWritableDatabase();
         float status;
-        status  =  db.delete(TABLE_GOODS_RECEIPT,HEADER_ID+" =  ? and "+SI_NO+" = ?",new String[]{header_id,sino});
+        status  =  db.delete(TABLE_GOODS_RECEIPT,HEADER_ID+" =  ? and "+SI_NO+" = ? and iVoucherNo = ? ",new String[]{header_id,sino,iVoucherNo});
 
         return status != -1;
     }
@@ -770,7 +759,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetAllGoodsReceipt() {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT sum(Qty) as Qty,HeaderId from "+TABLE_GOODS_RECEIPT+ " GROUP BY HeaderId",null);
+        Cursor cursor = db.rawQuery("SELECT sum(Qty) as Qty,HeaderId,iVoucherNo from "+TABLE_GOODS_RECEIPT+ " GROUP BY iVoucherNo",null);
         if(cursor.moveToFirst())
             return cursor;
         else
@@ -787,10 +776,8 @@ public boolean DeleteStockCount(String voucherNo){
     }
 
     public boolean InsertGoodsReceipt(GoodsReceipt g){
-        this.db = getReadableDatabase();
+        this.db = getWritableDatabase();
         float status = -1;
-
-        Cursor cursor= db.rawQuery("select "+HEADER_ID+" from "+TABLE_GOODS_RECEIPT+" where "+HEADER_ID+" = ? ",new String[]{g.getHeaderId()});
 
         ContentValues cv = new ContentValues();
         cv.put(I_VOUCHER_NO, g.getiVoucherNo());
@@ -799,23 +786,16 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(PRODUCT, g.getProduct());
         cv.put(QTY, g.getQty());
         cv.put(I_STATUS, g.getiStatus());
-        cursor.moveToFirst();
-        if(cursor.getCount()==0) {
+
            status = db.insert(TABLE_GOODS_RECEIPT, null, cv);
-       }else {
-           float deleteStatus =  db.delete(TABLE_GOODS_RECEIPT,HEADER_ID+" = ? and "+SI_NO+" = ? ",new String[]{g.getHeaderId(),g.getSiNo()});
-          if(deleteStatus!=-1) {
-              status = db.insert(TABLE_GOODS_RECEIPT, null, cv);
-          }
-          }
-        cursor.close();
+
         return status != -1;
     }
 
 
     public String GetGoodsReceiptVoucherNo(){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select "+I_VOUCHER_NO+" from  "+TABLE_GOODS_RECEIPT,null);
+        Cursor cursor = db.rawQuery("select "+I_VOUCHER_NO+" from  "+TABLE_GOODS_RECEIPT+" ORDER BY "+I_VOUCHER_NO,null);
         if(cursor!=null){
             if(cursor.moveToLast()){
                 return String.valueOf(cursor.getInt(cursor.getColumnIndex(I_VOUCHER_NO))+1);

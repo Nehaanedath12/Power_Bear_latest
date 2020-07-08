@@ -66,7 +66,7 @@ public class PostDeliveryNote extends JobService {
                 response = connection.execute();
 
                 if(response.equals("1"))
-                if(helper.DeleteDeliveryNote(map.get("iHeaderId"),map.get("SiNo"))){
+                if(helper.DeleteDeliveryNote(map.get("iHeaderId"),map.get("SiNo"),map.get("iVoucherNo"))){
                     Log.d("status change","true");
                 }
                 return null;

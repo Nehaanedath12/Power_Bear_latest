@@ -150,7 +150,7 @@ TextView title;
 
     public void SaveDataToDB() {
         com.sangsolutions.powerbear.Database.GoodsReceipt g = new com.sangsolutions.powerbear.Database.GoodsReceipt();
-        if(helper.DeleteGoodsReceipt(DocNo)){
+        if(helper.DeleteGoodsReceipt(DocNo,iVoucherNo)){
         for (int i = 0; i < list.size(); i++) {
             g.setiVoucherNo(iVoucherNo);
             g.setSiNo(list.get(i).getSiNo());
@@ -171,14 +171,14 @@ TextView title;
     }
 
 
-    public void setRecyclerViewFromDB(String DocNo,boolean EditMode) {
+    public void setRecyclerViewFromDB(String DocNo,boolean EditMode,String iVoucherNo) {
         String Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit;
         Log.d("docno", DocNo);
         Cursor cursor;
         if(!EditMode) {
             cursor = helper.GetAllPendingPO(DocNo);
         }else {
-            cursor = helper.GetAllGoodsReceiptNote(DocNo);
+            cursor = helper.GetAllGoodsReceiptNote(DocNo,iVoucherNo);
         }
         if (cursor != null) {
             cursor.moveToFirst();
@@ -357,7 +357,7 @@ TextView title;
 
         helper = new DatabaseHelper(this);
 
-        iVoucherNo = Objects.requireNonNull(helper).GetGoodsReceiptVoucherNo();
+
 
         rv_product = findViewById(R.id.rv_product);
         rv_product.setLayoutManager(new LinearLayoutManager(this));
@@ -375,9 +375,13 @@ TextView title;
         if(intent!=null) {
             DocNo = intent.getStringExtra("DocNo");
             EditMode = intent.getBooleanExtra("EditMode", false);
+            iVoucherNo = intent.getStringExtra("iVoucherNo");
         }
-        if (DocNo != null && !DocNo.equals("")) {
-            setRecyclerViewFromDB(DocNo,EditMode);
+        if(iVoucherNo==null&&!EditMode) {
+                iVoucherNo = Objects.requireNonNull(helper).GetGoodsReceiptVoucherNo();
+            }
+        if (DocNo != null && !DocNo.equals("") && iVoucherNo != null) {
+            setRecyclerViewFromDB(DocNo,EditMode,iVoucherNo);
         }
 
         fab_controller.setOnClickListener(new View.OnClickListener() {
