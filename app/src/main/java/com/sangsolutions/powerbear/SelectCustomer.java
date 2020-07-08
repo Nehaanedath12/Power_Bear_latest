@@ -71,7 +71,6 @@ ImageView img_home;
                 intent.putExtra("EditMode",false);
                     startActivity(intent);
 
-                Toast.makeText(SelectCustomer.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
                 }
 
         });

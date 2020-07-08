@@ -73,7 +73,6 @@ public class PendingPO extends AppCompatActivity {
                 intent.putExtra("EditMode",false);
                 startActivity(intent);
 
-                Toast.makeText(PendingPO.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
             }
 
         });
