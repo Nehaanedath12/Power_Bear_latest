@@ -210,6 +210,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return status != -1;
     }
 
+    public boolean DeleteCurrentUser(){
+        this.db = getWritableDatabase();
+      float status = db.delete(TABLE_CURRENT_LOGIN,null,null);
+        return status!=-1;
+    }
+
     public boolean LoginUser(User u) {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + TABLE_USER + " where " + S_LOGIN_NAME + "='" + u.getsLoginName() + "' and " + S_PASSWORD + "='" + u.getsPassword() + "'", null);

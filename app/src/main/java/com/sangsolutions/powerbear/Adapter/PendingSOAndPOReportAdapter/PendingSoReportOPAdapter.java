@@ -1,9 +1,11 @@
 package com.sangsolutions.powerbear.Adapter.PendingSOAndPOReportAdapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,6 +45,12 @@ public class PendingSoReportOPAdapter extends RecyclerView.Adapter<PendingSoRepo
         holder.Qty.setText(list.get(position).getQty());
         holder.unit.setText(list.get(position).getUnit());
 
+        if (position % 2 == 0) {
+            holder.rl_parent.setBackgroundColor(Color.rgb(234, 234, 234));
+        } else {
+
+            holder.rl_parent.setBackgroundColor(Color.rgb(255, 255, 255));
+        }
     }
     @Override
     public int getItemCount() {
@@ -50,7 +58,7 @@ public class PendingSoReportOPAdapter extends RecyclerView.Adapter<PendingSoRepo
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView DocNo,DocDate,Customer,SINo,ProductName,ProductCode,Qty,unit;
-
+        RelativeLayout rl_parent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             DocNo = itemView.findViewById(R.id.DocNo);
@@ -61,7 +69,7 @@ public class PendingSoReportOPAdapter extends RecyclerView.Adapter<PendingSoRepo
             ProductCode = itemView.findViewById(R.id.ProductCode);
             Qty = itemView.findViewById(R.id.Qty);
             unit = itemView.findViewById(R.id.unit);
-
+            rl_parent = itemView.findViewById(R.id.parent);
 
         }
     }

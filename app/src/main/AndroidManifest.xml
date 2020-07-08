@@ -13,10 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ReportOPAndSO"></activity>
-        <activity android:name=".ReportGoods_Stock_Delivery" />
-        <activity android:name=".SelectCustomerOrProduct" />
-        <activity android:name=".ReportMain" />
+        <activity android:name=".ReportOPAndSO"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".ReportGoods_Stock_Delivery"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".SelectCustomerOrProduct"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".ReportMain"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity
             android:name=".GoodsReceiptHistory"
             android:configChanges="keyboardHidden|orientation|screenSize" />

@@ -1,9 +1,11 @@
 package com.sangsolutions.powerbear.Adapter.Goods_Stock_Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +39,13 @@ public class Goods_Delivery_Adapter extends RecyclerView.Adapter<Goods_Delivery_
         holder.code.setText(list.get(position).getProductCode());
         holder.product.setText(list.get(position).getProductName());
         holder.qty.setText(list.get(position).getQty());
+
+        if (position % 2 == 0) {
+            holder.rl_parent.setBackgroundColor(Color.rgb(234, 234, 234));
+        } else {
+
+            holder.rl_parent.setBackgroundColor(Color.rgb(255, 255, 255));
+        }
     }
 
     @Override
@@ -46,12 +55,14 @@ public class Goods_Delivery_Adapter extends RecyclerView.Adapter<Goods_Delivery_
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView product,code,customer,qty;
+        RelativeLayout rl_parent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             product = itemView.findViewById(R.id.product);
             qty = itemView.findViewById(R.id.qty);
             customer = itemView.findViewById(R.id.customer);
             code = itemView.findViewById(R.id.code);
+            rl_parent = itemView.findViewById(R.id.parent);
         }
     }
 }

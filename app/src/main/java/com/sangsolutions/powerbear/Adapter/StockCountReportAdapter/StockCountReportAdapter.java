@@ -1,9 +1,11 @@
 package com.sangsolutions.powerbear.Adapter.StockCountReportAdapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,7 +43,12 @@ public class StockCountReportAdapter extends RecyclerView.Adapter<StockCountRepo
         holder.qty.setText(list.get(position).getfQty());
         holder.unit.setText(list.get(position).getsUnit());
         holder.remarks.setText(list.get(position).getsRemarks());
+        if (position % 2 == 0) {
+            holder.rl_parent.setBackgroundColor(Color.rgb(234, 234, 234));
+        } else {
 
+            holder.rl_parent.setBackgroundColor(Color.rgb(255, 255, 255));
+        }
 
     }
 
@@ -52,6 +59,7 @@ public class StockCountReportAdapter extends RecyclerView.Adapter<StockCountRepo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView vno,doc_date,warehouse,name,code,qty,unit,remarks;
+        RelativeLayout rl_parent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             vno = itemView.findViewById(R.id.vno);
@@ -62,6 +70,7 @@ public class StockCountReportAdapter extends RecyclerView.Adapter<StockCountRepo
             qty = itemView.findViewById(R.id.qty);
             unit = itemView.findViewById(R.id.unit);
             remarks = itemView.findViewById(R.id.remarks);
+            rl_parent = itemView.findViewById(R.id.parent);
 
 
         }

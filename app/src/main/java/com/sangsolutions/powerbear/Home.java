@@ -1,13 +1,17 @@
 package com.sangsolutions.powerbear;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
@@ -15,6 +19,7 @@ import com.sangsolutions.powerbear.Database.DatabaseHelper;
 public class Home extends AppCompatActivity {
 Button sync_btn,delivery_btn,stock_count_btn,goods_btn,report_btn;
 DatabaseHelper helper;
+ImageView img_setting;
 
 
 
@@ -27,6 +32,7 @@ DatabaseHelper helper;
         stock_count_btn = findViewById(R.id.stock_count);
         goods_btn = findViewById(R.id.goods);
         report_btn = findViewById(R.id.delivery_note);
+        img_setting = findViewById(R.id.settings);
         helper = new DatabaseHelper(this);
 
 
@@ -48,6 +54,28 @@ DatabaseHelper helper;
 
             }
         });
+
+    img_setting.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            PopupMenu popupMenu = new PopupMenu(Home.this,view);
+            popupMenu.inflate(R.menu.logout_menu);
+            popupMenu.setGravity(Gravity.BOTTOM);
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    if(item.getItemId()==R.id.logout){
+                    if(helper.DeleteCurrentUser()){
+                        startActivity(new Intent(Home.this,MainActivity.class));
+                        finish();
+                    }
+                    }
+                    return true;
+                }
+            });
+            popupMenu.show();
+        }
+    });
 
     goods_btn.setOnClickListener(new View.OnClickListener() {
         @Override
