@@ -46,10 +46,16 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
         holder.Qty.setText("Total Qty :" + list.get(position).getQty());
 
 
-        holder.menu.setOnClickListener(new View.OnClickListener() {
+        holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickListener.onItemClick(v, goodsReceiptHistory, position);
+                onClickListener.onEditItemClick(v, goodsReceiptHistory, position);
+            }
+        });
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onDeleteItemClick(v, goodsReceiptHistory, position);
             }
         });
 
@@ -61,20 +67,22 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
     }
 
     public interface OnClickListener {
-        void onItemClick(View view, GoodsReceiptHistory goodsReceiptHistory, int pos);
+        void onEditItemClick(View view, GoodsReceiptHistory goodsReceiptHistory, int pos);
+        void onDeleteItemClick(View view, GoodsReceiptHistory goodsReceiptHistory, int pos);
 
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView HeaderId, Qty;
-        ImageButton menu;
+        ImageButton edit,delete;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             HeaderId = itemView.findViewById(R.id.header_id);
             Qty = itemView.findViewById(R.id.total_qty);
-            menu = itemView.findViewById(R.id.menu);
+            edit = itemView.findViewById(R.id.edit);
+            delete = itemView.findViewById(R.id.delete);
         }
     }
 }

@@ -43,10 +43,10 @@
 
     <ImageButton
         android:id="@+id/menu"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end"
         android:background="@null"
+        android:layout_weight="1"
         android:src="@drawable/menu" />
-
 </LinearLayout>

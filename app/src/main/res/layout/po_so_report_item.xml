@@ -13,43 +13,19 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="DocNo"
-            android:layout_weight="1"
-            android:id="@+id/DocNo"
-            android:gravity="center"
-            />
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Doc Date"
             android:id="@+id/DocDate"
-            android:gravity="center"
-            />
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Customer"
-            android:id="@+id/Customer"
             android:gravity="center"
             />
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
+            android:text="Voucher no"
             android:layout_weight="1"
+            android:id="@+id/Voucher_no"
             android:gravity="center"
-            android:id="@+id/SINo"
-            android:text="SINo"
-            />
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/ProductName"
-            android:text="Name"
             />
         <TextView
             android:layout_width="80dp"
@@ -64,9 +40,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:id="@+id/Qty"
-            android:text="Qty"
+            android:id="@+id/ProductName"
+            android:text="Name"/>
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Customer"
+            android:id="@+id/Customer"
+            android:gravity="center"
             />
+
+
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
@@ -75,5 +60,14 @@
             android:id="@+id/unit"
             android:text="unit"
             />
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:id="@+id/Qty"
+            android:text="Qty"
+            />
+
     </LinearLayout>
 </RelativeLayout>

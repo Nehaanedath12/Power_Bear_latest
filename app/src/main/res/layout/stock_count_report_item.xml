@@ -14,14 +14,6 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Voucher No"
-            android:layout_weight="1"
-            android:id="@+id/vno"
-            android:gravity="center"
-            />
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Doc Date"
             android:id="@+id/doc_date"
@@ -30,18 +22,10 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
+            android:text="Voucher No"
             android:layout_weight="1"
-            android:text="Warehouse"
-            android:id="@+id/warehouse"
+            android:id="@+id/vno"
             android:gravity="center"
-            />
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/name"
-            android:text="Name"
             />
         <TextView
             android:layout_width="80dp"
@@ -56,8 +40,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Qty"
-            android:id="@+id/qty"
+            android:id="@+id/name"
+            android:text="Name"
+            />
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Warehouse"
+            android:id="@+id/warehouse"
+            android:gravity="center"
             />
         <TextView
             android:layout_width="80dp"
@@ -67,6 +59,16 @@
             android:id="@+id/unit"
             android:text="Unit"
             />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Qty"
+            android:id="@+id/qty"
+            />
+
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"

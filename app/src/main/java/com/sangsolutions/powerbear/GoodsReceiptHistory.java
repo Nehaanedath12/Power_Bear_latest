@@ -130,28 +130,21 @@ public class GoodsReceiptHistory extends AppCompatActivity {
 
 
 
-        adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
-            @Override
-            public void onItemClick(View view, final com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory, final int pos) {
-                PopupMenu popupMenu = new PopupMenu(GoodsReceiptHistory.this, view);
-                popupMenu.inflate(R.menu.edit_delete_menu);
-                popupMenu.show();
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.delete) {
-                            DeleteGoodsReceiptItemAlert(goodsReceiptHistory, pos);
-                        } else if (item.getItemId() == R.id.edit) {
-                            Intent intent1 = new Intent(GoodsReceiptHistory.this,GoodsReceipt.class);
-                            intent1.putExtra("DocNo",goodsReceiptHistory.getHeaderId());
-                            intent1.putExtra("iVoucherNo",goodsReceiptHistory.getiVoucherNo());
-                            intent1.putExtra("EditMode", true);
-                            startActivity(intent1);
-                        }
-                        return true;
-                    }
-                });
-            }
-        });
+
+adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
+    @Override
+    public void onEditItemClick(View view, com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory, int pos) {
+        Intent intent1 = new Intent(GoodsReceiptHistory.this,GoodsReceipt.class);
+        intent1.putExtra("HeaderId",goodsReceiptHistory.getHeaderId());
+        intent1.putExtra("iVoucherNo",goodsReceiptHistory.getiVoucherNo());
+        intent1.putExtra("EditMode", true);
+        startActivity(intent1);
+    }
+
+    @Override
+    public void onDeleteItemClick(View view, com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory, int pos) {
+        DeleteGoodsReceiptItemAlert(goodsReceiptHistory, pos);
+    }
+});
     }
 }

@@ -1,15 +1,11 @@
 package com.sangsolutions.powerbear;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -17,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sangsolutions.powerbear.Adapter.POAdapter.PO;
 import com.sangsolutions.powerbear.Adapter.POAdapter.POAdapter;
@@ -35,14 +30,18 @@ public class PendingPO extends AppCompatActivity {
    TextView title;
    ImageView img_home;
    Handler handler;
+
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+
     private AnimationDrawable animationDrawable;
     private ImageView mProgressBar;
    public void LoadPO(){
-       Cursor cursor = helper.GetDocNoForPO();
+       Cursor cursor = helper.GetHeaderIdForPO();
        list.clear();
        if(cursor!=null){
            for (int i = 0; i < cursor.getCount(); i++) {
-               list.add(new PO(cursor.getString(cursor.getColumnIndex("DocNo")),
+               list.add(new PO(cursor.getString(cursor.getColumnIndex("HeaderId")),
                        Tools.ConvertDate(cursor.getString(cursor.getColumnIndex("DocDate"))),cursor.getString(cursor.getColumnIndex("Cusomer"))));
                cursor.moveToNext();
                if(cursor.getCount()==i+1){
@@ -65,6 +64,10 @@ public class PendingPO extends AppCompatActivity {
         img_home = findViewById(R.id.home);
         title = findViewById(R.id.title);
         title.setText("Select customer");
+
+        preferences = getSharedPreferences("sync",MODE_PRIVATE);
+        editor = preferences.edit();
+
         mProgressBar = findViewById(R.id.main_progress);
         mProgressBar.setBackgroundResource(R.drawable.loading);
 
@@ -87,7 +90,7 @@ public class PendingPO extends AppCompatActivity {
 
         final Runnable r = new Runnable() {
             public void run() {
-                if(!PublicData.pendingPOFinished){
+                if(!preferences.getBoolean("pendingPOFinished",false)){
                     mProgressBar.setVisibility(View.VISIBLE);
                     animationDrawable.start();
                     handler.postDelayed(this, 1000);
@@ -106,7 +109,7 @@ public class PendingPO extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(PendingPO.this, GoodsReceipt.class);
-                intent.putExtra("DocNo",parent.getItemAtPosition(position).toString());
+                intent.putExtra("HeaderId",parent.getItemAtPosition(position).toString());
                 intent.putExtra("EditMode",false);
                 startActivity(intent);
 

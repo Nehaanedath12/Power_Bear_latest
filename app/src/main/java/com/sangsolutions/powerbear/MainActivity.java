@@ -3,6 +3,7 @@ package com.sangsolutions.powerbear;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,9 @@ public class MainActivity extends AppCompatActivity {
 Button login_btn;
 EditText login_name,password;
 DatabaseHelper helper;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,10 +29,14 @@ DatabaseHelper helper;
     login_name = findViewById(R.id.username);
     password = findViewById(R.id.password);
     helper = new DatabaseHelper(this);
-
+        preferences = getSharedPreferences("sync",MODE_PRIVATE);
+        editor = preferences.edit();
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         ScheduleJob scheduleJob =    new ScheduleJob();
             scheduleJob.SyncUserData(this);
+        editor.putBoolean("WarehouseFinished",false).apply();
+        editor.putBoolean("pendingPOFinished",false).apply();
+        editor.putBoolean("pendingSOFinished",false).apply();
         }else {
             Toast.makeText(this, "Cannot be synced do to lower Api level", Toast.LENGTH_SHORT).show();
         }

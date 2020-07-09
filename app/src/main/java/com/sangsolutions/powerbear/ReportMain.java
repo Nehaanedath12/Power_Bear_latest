@@ -6,13 +6,24 @@ import androidx.cardview.widget.CardView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class ReportMain extends AppCompatActivity implements View.OnClickListener {
 CardView card_pendingPO,card_pendingSO,card_deliveryNote,card_goodsReceipt,card_stockCount;
-    @Override
+    ImageView img_home;
+    TextView title;
+
+@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report_main);
+
+    title = findViewById(R.id.title);
+    img_home = findViewById(R.id.home);
+
+    title.setText("Reports");
+
         card_pendingPO = findViewById(R.id.pending_po);
         card_pendingSO = findViewById(R.id.pending_so);
         card_deliveryNote = findViewById(R.id.delivery_note);
@@ -24,6 +35,7 @@ CardView card_pendingPO,card_pendingSO,card_deliveryNote,card_goodsReceipt,card_
         card_deliveryNote.setOnClickListener(this);
         card_goodsReceipt.setOnClickListener(this);
         card_stockCount.setOnClickListener(this);
+        img_home.setOnClickListener(this);
 
     }
 
@@ -54,6 +66,11 @@ CardView card_pendingPO,card_pendingSO,card_deliveryNote,card_goodsReceipt,card_
                 Intent intent5 = new Intent(ReportMain.this, SelectCustomerOrProduct.class);
                 intent5.putExtra("report_type","stock_count");
                 startActivity(intent5);
+                break;
+
+            case R.id.home:
+                startActivity(new Intent(ReportMain.this,Home.class));
+                finishAffinity();
                 break;
         }
     }

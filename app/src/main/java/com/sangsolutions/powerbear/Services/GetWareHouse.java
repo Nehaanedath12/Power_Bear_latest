@@ -3,6 +3,7 @@ package com.sangsolutions.powerbear.Services;
 import android.annotation.SuppressLint;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
@@ -27,7 +28,8 @@ import org.json.JSONObject;
 public class GetWareHouse extends JobService {
     JobParameters params;
     DatabaseHelper helper;
-
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
 
 
     public void GetProduct() {
@@ -100,7 +102,7 @@ public class GetWareHouse extends JobService {
             protected void onPostExecute(Void aVoid) {
 
                 Log.d("Status:", "data synced");
-                PublicData.WarehouseFinished = true;
+                editor.putBoolean("WarehouseFinished",true).apply();
                 new ScheduleJob().SyncPendingPO(GetWareHouse.this);
                 jobFinished(params,false);
             }
@@ -112,6 +114,8 @@ public class GetWareHouse extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
+        preferences = getSharedPreferences("sync",MODE_PRIVATE);
+        editor = preferences.edit();
         AndroidNetworking.initialize(getApplicationContext());
         this.params = params;
         GetProduct();

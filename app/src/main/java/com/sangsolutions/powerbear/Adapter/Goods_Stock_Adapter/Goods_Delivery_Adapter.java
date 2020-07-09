@@ -16,11 +16,11 @@ import com.sangsolutions.powerbear.R;
 import java.util.List;
 
 public class Goods_Delivery_Adapter extends RecyclerView.Adapter<Goods_Delivery_Adapter.ViewHolder> {
-    List<Goods_Stock> list;
+    List<Goods_Delivery> list;
     Context context;
 
 
-    public Goods_Delivery_Adapter(List<Goods_Stock> list, Context context) {
+    public Goods_Delivery_Adapter(List<Goods_Delivery> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -39,7 +39,7 @@ public class Goods_Delivery_Adapter extends RecyclerView.Adapter<Goods_Delivery_
         holder.code.setText(list.get(position).getProductCode());
         holder.product.setText(list.get(position).getProductName());
         holder.qty.setText(list.get(position).getQty());
-
+        holder.iVoucherNo.setText(list.get(position).getiVoucherNo());
         if (position % 2 == 0) {
             holder.rl_parent.setBackgroundColor(Color.rgb(234, 234, 234));
         } else {
@@ -54,7 +54,7 @@ public class Goods_Delivery_Adapter extends RecyclerView.Adapter<Goods_Delivery_
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView product,code,customer,qty;
+        TextView product,code,customer,qty,iVoucherNo;
         RelativeLayout rl_parent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -62,6 +62,7 @@ public class Goods_Delivery_Adapter extends RecyclerView.Adapter<Goods_Delivery_
             qty = itemView.findViewById(R.id.qty);
             customer = itemView.findViewById(R.id.customer);
             code = itemView.findViewById(R.id.code);
+            iVoucherNo = itemView.findViewById(R.id.voucher_no);
             rl_parent = itemView.findViewById(R.id.parent);
         }
     }

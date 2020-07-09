@@ -36,14 +36,13 @@ public class PendingSoReportOPAdapter extends RecyclerView.Adapter<PendingSoRepo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
-        holder.DocNo.setText(list.get(position).getDocNo());
         holder.DocDate.setText(Tools.dateFormat2(Tools.ConvertDate(list.get(position).getDocDate())));
         holder.Customer.setText(list.get(position).getCusomer());
-        holder.SINo.setText(list.get(position).getSINo());
         holder.ProductName.setText(list.get(position).getProductName());
         holder.ProductCode.setText(list.get(position).getProductCode());
         holder.Qty.setText(list.get(position).getQty());
         holder.unit.setText(list.get(position).getUnit());
+        holder.iVoucherNo.setText(list.get(position).getDocNo());
 
         if (position % 2 == 0) {
             holder.rl_parent.setBackgroundColor(Color.rgb(234, 234, 234));
@@ -57,19 +56,18 @@ public class PendingSoReportOPAdapter extends RecyclerView.Adapter<PendingSoRepo
         return list.size();
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView DocNo,DocDate,Customer,SINo,ProductName,ProductCode,Qty,unit;
+        TextView DocDate,Customer,SINo,ProductName,ProductCode,Qty,unit,iVoucherNo;
         RelativeLayout rl_parent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            DocNo = itemView.findViewById(R.id.DocNo);
             DocDate = itemView.findViewById(R.id.DocDate);
             Customer = itemView.findViewById(R.id.Customer);
-            SINo = itemView.findViewById(R.id.SINo);
             ProductName = itemView.findViewById(R.id.ProductName);
             ProductCode = itemView.findViewById(R.id.ProductCode);
             Qty = itemView.findViewById(R.id.Qty);
             unit = itemView.findViewById(R.id.unit);
             rl_parent = itemView.findViewById(R.id.parent);
+            iVoucherNo = itemView.findViewById(R.id.Voucher_no);
 
         }
     }

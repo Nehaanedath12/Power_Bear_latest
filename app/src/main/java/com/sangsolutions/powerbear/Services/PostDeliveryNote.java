@@ -3,6 +3,7 @@ package com.sangsolutions.powerbear.Services;
 import android.annotation.SuppressLint;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -35,6 +36,7 @@ public class PostDeliveryNote extends JobService {
     String response = "";
     Cursor cursor;
     AsyncConnection connection;
+
     public void UploadDeliveryNote(final HashMap<String,String> map){
         @SuppressLint("StaticFieldLeak") final AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
 

@@ -74,11 +74,11 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="product"
             android:layout_weight="1"
-            android:id="@+id/product"
-            android:textColor="@color/color_white"
             android:gravity="center"
+            android:id="@+id/voucher_no"
+            android:textColor="@color/color_white"
+            android:text="Voucher No"
             />
         <TextView
             android:layout_width="80dp"
@@ -89,6 +89,17 @@
             android:textColor="@color/color_white"
             android:gravity="center"
             />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="product"
+            android:layout_weight="1"
+            android:id="@+id/product"
+            android:textColor="@color/color_white"
+            android:gravity="center"
+            />
+
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
@@ -120,27 +131,32 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Voucher No"
-            android:layout_weight="1"
-            android:textColor="@color/color_white"
-            android:gravity="center"
-            />
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Doc Date"
             android:textColor="@color/color_white"
             android:gravity="center"
             />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Voucher No"
+            android:layout_weight="1"
+            android:textColor="@color/color_white"
+            android:gravity="center"
+            />
+
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Warehouse"
-            android:textColor="@color/color_white"
             android:gravity="center"
+            android:textColor="@color/color_white"
+            android:text="Product Code"
             />
+
+
+
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
@@ -153,9 +169,18 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="Warehouse"
+            android:textColor="@color/color_white"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
             android:textColor="@color/color_white"
-            android:text="Product Code"
+            android:text="Unit"
             />
         <TextView
             android:layout_width="80dp"
@@ -164,14 +189,6 @@
             android:gravity="center"
             android:textColor="@color/color_white"
             android:text="Qty"
-            />
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/color_white"
-            android:text="Unit"
             />
         <TextView
             android:layout_width="80dp"

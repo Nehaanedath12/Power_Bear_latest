@@ -4,27 +4,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.sangsolutions.powerbear.Adapter.Goods_Stock_Adapter.Goods_Stock;
+import com.sangsolutions.powerbear.Adapter.Goods_Stock_Adapter.Goods_Delivery;
 import com.sangsolutions.powerbear.Adapter.Goods_Stock_Adapter.Goods_Delivery_Adapter;
 import com.sangsolutions.powerbear.Adapter.StockCountReportAdapter.StockCountReport;
 import com.sangsolutions.powerbear.Adapter.StockCountReportAdapter.StockCountReportAdapter;
@@ -34,12 +28,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 public class ReportGoods_Stock_Delivery extends AppCompatActivity {
     String report_type="",customer="",from="",to="";
@@ -47,7 +37,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
     RecyclerView recyclerView;
     Goods_Delivery_Adapter goods_delivery_adapter;
     StockCountReportAdapter stockCountReportAdapter;
-    List<Goods_Stock> list;
+    List<Goods_Delivery> list;
     List<StockCountReport> list2;
     DatabaseHelper helper;
     ImageView img_home;
@@ -56,7 +46,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
     private AnimationDrawable animationDrawable;
     private ImageView mProgressBar;
 
-    public void LoadRecycler(String from,String to,String report_type,String customer){
+    public void LoadRecycler(String from, String to, final String report_type, String customer){
         mProgressBar.setVisibility(View.VISIBLE);
         animationDrawable.start();
 
@@ -83,8 +73,9 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
                                     String ProductCode = jsonObject.getString("ProductCode");
                                     String Vendor = jsonObject.getString("Vendor");
                                     String Qty = jsonObject.getString("Qty");
+                                    String iVoucherNo = jsonObject.getString("iVoucherNo");
 
-                                    list.add(new Goods_Stock(ProductName,ProductCode,Vendor,Qty));
+                                    list.add(new Goods_Delivery(ProductName,ProductCode,Vendor,Qty,iVoucherNo));
 
 
 
@@ -134,8 +125,8 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
                                     String ProductCode = jsonObject.getString("ProductCode");
                                     String Vendor = jsonObject.getString("Vendor");
                                     String Qty = jsonObject.getString("Qty");
-
-                                    list.add(new Goods_Stock(ProductName,ProductCode,Vendor,Qty));
+                                    String iVoucherNo = jsonObject.getString("iVoucherNo");
+                                    list.add(new Goods_Delivery(ProductName,ProductCode,Vendor,Qty,iVoucherNo));
 
 
 

@@ -51,8 +51,7 @@
         android:background="@color/colorAccent"
         >
         <TextView
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="Code"
             android:gravity="center"
@@ -60,8 +59,7 @@
             android:textStyle="bold"
             />
         <TextView
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="Name"
             android:gravity="center"
@@ -70,8 +68,7 @@
             />
 
         <TextView
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="Unit"
             android:gravity="center"
@@ -80,8 +77,7 @@
             />
 
         <TextView
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="Qty"
             android:gravity="center"
@@ -90,8 +86,7 @@
             />
 
         <TextView
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="Picked Qty"
             android:gravity="center"
@@ -241,6 +236,22 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+
+
+            <EditText
+                android:id="@+id/et_barcode"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:background="@color/color_white"
+                android:gravity="center"
+                android:hint="Enter Barcode"
+                android:maxLength="14"
+                android:textSize="14sp"
+                android:textStyle="bold" />
             <EditText
                 android:id="@+id/qty"
                 android:layout_width="wrap_content"
@@ -257,22 +268,6 @@
                 android:inputType="number"
                 android:textSize="14sp"
                 android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/et_barcode"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
-                android:background="@color/color_white"
-                android:gravity="center"
-                android:hint="Enter Barcode"
-                android:maxLength="14"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
 
 
             <ImageView

@@ -69,15 +69,7 @@
         android:layout_below="@id/toolbar"
         android:background="@color/colorAccent"
         >
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="DocNo"
-            android:layout_weight="1"
-            android:id="@+id/DocNo"
-            android:gravity="center"
-            android:textColor="@color/color_white"
-            />
+
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
@@ -87,6 +79,35 @@
             android:gravity="center"
             android:textColor="@color/color_white"
             />
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Voucher No"
+            android:id="@+id/Voucher_no"
+            android:gravity="center"
+            android:textColor="@color/color_white"
+            />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:id="@+id/ProductCode"
+            android:text="Code"
+            android:textColor="@color/color_white"
+            />
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:id="@+id/ProductName"
+            android:text="Name"
+            android:textColor="@color/color_white"
+            />
+
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
@@ -102,28 +123,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:id="@+id/SINo"
-            android:text="SINo"
+            android:id="@+id/unit"
             android:textColor="@color/color_white"
+            android:text="unit"
             />
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/ProductName"
-            android:text="Name"
-            android:textColor="@color/color_white"
-            />
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/ProductCode"
-            android:text="Code"
-            android:textColor="@color/color_white"
-            />
+
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
@@ -133,15 +137,7 @@
             android:text="Qty"
             android:textColor="@color/color_white"
             />
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/unit"
-            android:textColor="@color/color_white"
-            android:text="unit"
-            />
+
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

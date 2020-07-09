@@ -42,14 +42,19 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
         holder.HeaderId.setText("Id :"+list.get(position).getHeaderId());
         holder.Qty.setText("Total Qty :"+list.get(position).getQty());
 
-        //TODO change menu to two buttons that do edit and delete operations
-        holder.menu.setOnClickListener(new View.OnClickListener() {
+   holder.edit.setOnClickListener(new View.OnClickListener() {
+       @Override
+       public void onClick(View view) {
+           onClickListener.onEditItemClick(view, deliveryNoteHistory, position);
+       }
+   });
+
+        holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                onClickListener.onItemClick(v, deliveryNoteHistory, position);
+            public void onClick(View view) {
+                onClickListener.onDeleteItemClick(view, deliveryNoteHistory, position);
             }
         });
-
     }
 
     @Override
@@ -58,19 +63,20 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
     }
 
     public interface OnClickListener {
-        void onItemClick(View view, DeliveryNoteHistory deliveryNoteHistory, int pos);
-
+        void onEditItemClick(View view, DeliveryNoteHistory deliveryNoteHistory, int pos);
+        void onDeleteItemClick(View view, DeliveryNoteHistory deliveryNoteHistory, int pos);
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView HeaderId,Qty;
-        ImageButton menu;
+        ImageButton edit,delete;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             HeaderId = itemView.findViewById(R.id.header_id);
             Qty = itemView.findViewById(R.id.total_qty);
-            menu = itemView.findViewById(R.id.menu);
+            edit = itemView.findViewById(R.id.edit);
+            delete = itemView.findViewById(R.id.delete);
         }
     }
 }

@@ -72,7 +72,8 @@ public class GoodsReceipt extends AppCompatActivity {
     private ListProductAdapter listProductAdapter;
     private List<ListProduct> list;
     private ImageView add_new, save;
-    private String DocNo = "";
+    private String HeaderId = "";
+    private boolean saveStatus = true;
     private boolean EditMode = false;
 String iVoucherNo;
 ImageView img_home;
@@ -150,7 +151,8 @@ TextView title;
 
     public void SaveDataToDB() {
         com.sangsolutions.powerbear.Database.GoodsReceipt g = new com.sangsolutions.powerbear.Database.GoodsReceipt();
-        if(helper.DeleteGoodsReceipt(DocNo,iVoucherNo)){
+        if(saveStatus){
+        if(helper.DeleteGoodsReceipt(HeaderId,iVoucherNo)){
         for (int i = 0; i < list.size(); i++) {
             g.setiVoucherNo(iVoucherNo);
             g.setSiNo(list.get(i).getSiNo());
@@ -167,18 +169,21 @@ TextView title;
             }
         }
         }
+        }else {
+            Toast.makeText(this, "Make sure there is not error your entry", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
 
-    public void setRecyclerViewFromDB(String DocNo,boolean EditMode,String iVoucherNo) {
+    public void setRecyclerViewFromDB(String HeaderID,boolean EditMode) {
         String Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit;
-        Log.d("docno", DocNo);
+        Log.d("HeaderId", HeaderID);
         Cursor cursor;
         if(!EditMode) {
-            cursor = helper.GetAllPendingPO(DocNo);
+            cursor = helper.GetAllPendingPO(HeaderID);
         }else {
-            cursor = helper.GetAllGoodsReceiptNote(DocNo,iVoucherNo);
+            cursor = helper.GetAllGoodsReceiptNote(HeaderID);
         }
         if (cursor != null) {
             cursor.moveToFirst();
@@ -272,9 +277,9 @@ TextView title;
         if (dialog.isShowing()) {
             Cursor cursor ;
            if(!EditMode){
-                cursor = helper.SearchProductPendingPO(keyword,DocNo);
+                cursor = helper.SearchProductPendingPO(keyword,HeaderId);
             }else {
-                cursor = helper.SearchProductGoodsReceipt(keyword,DocNo);
+                cursor = helper.SearchProductGoodsReceipt(keyword,HeaderId);
             }
 
             if (cursor != null&&!keyword.equals("")) {
@@ -373,16 +378,53 @@ TextView title;
 
         Intent intent = getIntent();
         if(intent!=null) {
-            DocNo = intent.getStringExtra("DocNo");
+            HeaderId = intent.getStringExtra("HeaderId");
             EditMode = intent.getBooleanExtra("EditMode", false);
             iVoucherNo = intent.getStringExtra("iVoucherNo");
+
+            if(helper.IsGoodsReceiptPresent(HeaderId)){
+                EditMode = true;
+            }
         }
-        if(iVoucherNo==null&&!EditMode) {
+        if(!EditMode) {
                 iVoucherNo = Objects.requireNonNull(helper).GetGoodsReceiptVoucherNo();
             }
-        if (DocNo != null && !DocNo.equals("") && iVoucherNo != null) {
-            setRecyclerViewFromDB(DocNo,EditMode,iVoucherNo);
+
+
+
+        if (HeaderId != null && !HeaderId.equals("")) {
+            setRecyclerViewFromDB(HeaderId,EditMode);
         }
+
+
+        listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
+            @Override
+            public void onTextChangedListener(EditText et, ListProduct products, int pos, String text) {
+                if(!text.equals("")) {
+                    if (Integer.parseInt(products.getQty()) >= Integer.parseInt(text)) {
+                        saveStatus = true;
+                        list.set(pos, new ListProduct(
+                                list.get(pos).getiVoucherNo(),
+                                list.get(pos).getName(),
+                                list.get(pos).getCode(),
+                                list.get(pos).getQty(),
+                                text,
+                                list.get(pos).getHeaderId(),
+                                list.get(pos).getProduct(),
+                                list.get(pos).getSiNo(),
+                                list.get(pos).getUnit()));
+                    } else {
+                        et.setError("Entry error!");
+                        Toast.makeText(GoodsReceipt.this, "PickedQty should not be grater then Qty", Toast.LENGTH_SHORT).show();
+                        saveStatus = false;
+                    }
+                }else {
+                    et.setError("Entry error!");
+                    saveStatus = false;
+                }
+            }
+        });
+
 
         fab_controller.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -483,25 +525,6 @@ TextView title;
                 }
             }
         });
-
-      /*  listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
-            @Override
-            public void onItemClick(View view, final ListProduct listProduct, int pos) {
-                PopupMenu popupMenu = new PopupMenu(GoodsReceipt.this, view);
-                popupMenu.inflate(R.menu.edit_menu);
-                popupMenu.show();
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.edit) {
-                            qty.setText(listProduct.getPickedQty());
-                            et_barcode.setText(helper.GetProductBarcode(listProduct.getCode()));
-                        }
-                        return true;
-                    }
-                });
-            }
-        });*/
 
         linear_search.setOnClickListener(new View.OnClickListener() {
             @Override

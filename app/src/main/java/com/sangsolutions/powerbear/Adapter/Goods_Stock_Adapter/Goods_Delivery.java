@@ -1,13 +1,22 @@
 package com.sangsolutions.powerbear.Adapter.Goods_Stock_Adapter;
 
-public class Goods_Stock {
-    String ProductName,ProductCode,Vendor,Qty;
+public class Goods_Delivery {
+    String ProductName,ProductCode,Vendor,Qty,iVoucherNo;
 
-    public Goods_Stock(String productName, String productCode, String vendor, String qty) {
+    public Goods_Delivery(String productName, String productCode, String vendor, String qty,String iVoucherNo) {
         this.ProductName = productName;
         this.ProductCode = productCode;
         this.Vendor = vendor;
         this.Qty = qty;
+        this.iVoucherNo =iVoucherNo;
+    }
+
+    public String getiVoucherNo() {
+        return iVoucherNo;
+    }
+
+    public void setiVoucherNo(String iVoucherNo) {
+        this.iVoucherNo = iVoucherNo;
     }
 
     public String getProductName() {

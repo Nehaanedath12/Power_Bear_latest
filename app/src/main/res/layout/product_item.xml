@@ -7,7 +7,6 @@
     android:layout_marginBottom="2.5dp"
     >
     <TextView
-        android:layout_weight="1"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:id="@+id/product_code"
@@ -15,7 +14,6 @@
         android:gravity="center"
         />
     <TextView
-        android:layout_weight="1"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:id="@+id/product_name"
@@ -24,7 +22,6 @@
         />
 
     <TextView
-        android:layout_weight="1"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:id="@+id/product_unit"
@@ -32,7 +29,6 @@
         android:gravity="center"
         />
     <TextView
-        android:layout_weight="1"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:id="@+id/product_qty"
@@ -40,11 +36,11 @@
         android:gravity="center"
         />
     <EditText
-        android:layout_weight="1"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:id="@+id/product_picked_qty"
         android:gravity="center"
+        android:inputType="number"
         />
 
 </LinearLayout>

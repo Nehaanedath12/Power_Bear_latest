@@ -128,30 +128,21 @@ public class DeliveryNoteHistory extends AppCompatActivity {
             }
         });
 
+adapter.setOnClickListener(new DeliveryNoteHistoryAdapter.OnClickListener() {
+    @Override
+    public void onEditItemClick(View view, com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory deliveryNoteHistory, int pos) {
+        Intent intent1 = new Intent(DeliveryNoteHistory.this, AddDeliveryNote.class);
+        intent1.putExtra("HeaderId",deliveryNoteHistory.getHeaderId());
+        intent1.putExtra("iVoucherNo",deliveryNoteHistory.getiVoucherNo());
+        intent1.putExtra("EditMode", true);
+        startActivity(intent1);
+    }
 
+    @Override
+    public void onDeleteItemClick(View view, com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory deliveryNoteHistory, int pos) {
+        DeleteStockCountItemAlert(deliveryNoteHistory, pos);
+    }
+});
 
-        adapter.setOnClickListener(new DeliveryNoteHistoryAdapter.OnClickListener() {
-            @Override
-            public void onItemClick(View view, final com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory deliveryNoteHistory, final int pos) {
-                PopupMenu popupMenu = new PopupMenu(DeliveryNoteHistory.this, view);
-                popupMenu.inflate(R.menu.edit_delete_menu);
-                popupMenu.show();
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.delete) {
-                            DeleteStockCountItemAlert(deliveryNoteHistory, pos);
-                        } else if (item.getItemId() == R.id.edit) {
-                            Intent intent1 = new Intent(DeliveryNoteHistory.this, AddDeliveryNote.class);
-                            intent1.putExtra("HeaderId",deliveryNoteHistory.getHeaderId());
-                            intent1.putExtra("iVoucherNo",deliveryNoteHistory.getiVoucherNo());
-                            intent1.putExtra("EditMode", true);
-                            startActivity(intent1);
-                        }
-                        return true;
-                    }
-                });
-            }
-        });
     }
 }

@@ -17,7 +17,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.sangsolutions.powerbear.Adapter.Goods_Stock_Adapter.Goods_Stock;
 import com.sangsolutions.powerbear.Adapter.PendingSOAndPOReportAdapter.PendingSoReportOP;
 import com.sangsolutions.powerbear.Adapter.PendingSOAndPOReportAdapter.PendingSoReportOPAdapter;
 
@@ -69,6 +68,7 @@ String report_type="",customer="0";
                                   String ProductCode = jsonObject.getString("ProductCode");
                                   String Qty = jsonObject.getString("Qty");
                                   String unit = jsonObject.getString("unit");
+
 
 
                                   list.add(new PendingSoReportOP(Cusomer,DocDate,DocNo,HeaderId,Product,ProductCode,ProductName,Qty,SINo,unit));

@@ -3,6 +3,7 @@ package com.sangsolutions.powerbear;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,20 +11,32 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class Home extends AppCompatActivity {
 Button sync_btn,delivery_btn,stock_count_btn,goods_btn,report_btn;
 DatabaseHelper helper;
-ImageView img_setting;
+ImageView img_logout;
+TextView tv_username,tv_date;
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Date c = Calendar.getInstance().getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("dd MMMM yyyy");
+        tv_date.setText(df.format(c));
+    }
 
-@Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
@@ -32,9 +45,12 @@ ImageView img_setting;
         stock_count_btn = findViewById(R.id.stock_count);
         goods_btn = findViewById(R.id.goods);
         report_btn = findViewById(R.id.delivery_note);
-        img_setting = findViewById(R.id.settings);
+        img_logout = findViewById(R.id.logout);
+        tv_username = findViewById(R.id.username);
+        tv_date = findViewById(R.id.date);
         helper = new DatabaseHelper(this);
 
+        tv_username.setText(helper.GetLoginUser());
 
     stock_count_btn.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -55,7 +71,7 @@ ImageView img_setting;
             }
         });
 
-    img_setting.setOnClickListener(new View.OnClickListener() {
+    img_logout.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             PopupMenu popupMenu = new PopupMenu(Home.this,view);

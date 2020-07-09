@@ -3,6 +3,7 @@ package com.sangsolutions.powerbear;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -33,7 +34,8 @@ ImageView img_home;
 Handler handler;
     private AnimationDrawable animationDrawable;
     private ImageView mProgressBar;
-
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
    public void LoadWarehouse(){
        Cursor cursor = helper.GetWarehouse();
        list.clear();
@@ -70,12 +72,14 @@ Handler handler;
 
         animationDrawable = (AnimationDrawable) mProgressBar.getBackground();
 
+        preferences = getSharedPreferences("sync",MODE_PRIVATE);
+        editor = preferences.edit();
 
         handler = new Handler();
 
         final Runnable r = new Runnable() {
             public void run() {
-                if(!PublicData.pendingPOFinished){
+                if(!preferences.getBoolean("WarehouseFinished",false)){
                     mProgressBar.setVisibility(View.VISIBLE);
                     animationDrawable.start();
                     handler.postDelayed(this, 1000);

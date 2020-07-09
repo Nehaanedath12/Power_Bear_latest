@@ -3,6 +3,7 @@ package com.sangsolutions.powerbear.Services;
 import android.annotation.SuppressLint;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -30,7 +31,8 @@ public class GetPendingSoService extends JobService {
     DatabaseHelper helper;
     PendingSO p;
     JobParameters params;
-
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
     private void asyncPendingSO(final JSONObject response) {
 
         @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
@@ -90,7 +92,7 @@ public class GetPendingSoService extends JobService {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                PublicData.pendingSOFinished = true;
+                editor.putBoolean("pendingSOFinished",true).apply();
                 new ScheduleJob().SyncWarehouse(getApplicationContext());
             }
         };
@@ -120,6 +122,8 @@ public class GetPendingSoService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
+        preferences = getSharedPreferences("sync",MODE_PRIVATE);
+        editor = preferences.edit();
         AndroidNetworking.initialize(getApplicationContext());
         p = new PendingSO();
         GetProduct();

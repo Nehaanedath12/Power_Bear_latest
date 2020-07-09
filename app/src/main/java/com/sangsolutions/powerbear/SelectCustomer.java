@@ -3,6 +3,7 @@ package com.sangsolutions.powerbear;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -34,7 +35,8 @@ ImageView img_home;
 Handler handler;
     private AnimationDrawable animationDrawable;
     private ImageView mProgressBar;
-
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
     public void LoadCustomer(){
         Cursor cursor = helper.GetDocNo();
         list.clear();
@@ -66,6 +68,8 @@ Handler handler;
         title = findViewById(R.id.title);
         title.setText("Select vender");
 
+        preferences = getSharedPreferences("sync",MODE_PRIVATE);
+        editor = preferences.edit();
 
         mProgressBar = findViewById(R.id.main_progress);
         mProgressBar.setBackgroundResource(R.drawable.loading);
@@ -74,7 +78,7 @@ Handler handler;
         handler = new Handler();
         final Runnable r = new Runnable() {
             public void run() {
-                if(!PublicData.pendingSOFinished){
+                if(!preferences.getBoolean("pendingSOFinished",false)){
                     mProgressBar.setVisibility(View.VISIBLE);
                     animationDrawable.start();
                     handler.postDelayed(this, 1000);
