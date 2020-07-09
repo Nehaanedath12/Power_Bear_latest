@@ -3,8 +3,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/color_cyan</item>
-        <item name="colorPrimaryDark">@color/color_cyan</item>
+        <item name="colorPrimary">@color/color_red_dark</item>
+        <item name="colorPrimaryDark">@color/color_red_darker</item>
         <item name="colorAccent">@color/color_lite_violet</item>
     </style>
     <style name="datepicker" parent="Theme.AppCompat.Light.Dialog.MinWidth">

@@ -91,10 +91,11 @@ public class PostGoodsReceipt extends JobService {
     public void syncGoodsReceipt(){
         if(cursor!=null) {
             if (cursor.getCount()>ReceiptCount) {
+                int rowId = ReceiptCount;
                 map.put("iVoucherNo", cursor.getString(cursor.getColumnIndex("iVoucherNo")));
                 map.put("iHeaderId", cursor.getString(cursor.getColumnIndex("HeaderId")));
                 //map.put("iRowId",cursor.getString(cursor.getColumnIndex("iRowId")));
-                map.put("iRowId", String.valueOf(ReceiptCount));
+                map.put("iRowId", String.valueOf(rowId+1));
                 map.put("iProduct", cursor.getString(cursor.getColumnIndex("Product")));
                 map.put("fQty", cursor.getString(cursor.getColumnIndex("Qty")));
                 map.put("iStatus", cursor.getString(cursor.getColumnIndex("iStatus")));
