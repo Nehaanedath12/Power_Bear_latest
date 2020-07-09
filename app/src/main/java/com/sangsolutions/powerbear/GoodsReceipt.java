@@ -20,6 +20,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
@@ -75,6 +76,7 @@ public class GoodsReceipt extends AppCompatActivity {
     private String HeaderId = "";
     private boolean saveStatus = true;
     private boolean EditMode = false;
+    SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
 String iVoucherNo;
 ImageView img_home;
 TextView title;
@@ -136,7 +138,21 @@ TextView title;
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SaveDataToDB();
+                        for(int j = 0 ;j<=sparseBooleanArray.size();j++){
+                            Log.d("sparse",sparseBooleanArray.toString());
+                            if(!sparseBooleanArray.get(j)){
+                                saveStatus =false;
+                                Toast.makeText(GoodsReceipt.this, "There is an error in data entry", Toast.LENGTH_SHORT).show();
+                                break;
+                            }else{
+                                saveStatus =true;
+                            }
+
+                            if(j+1==sparseBooleanArray.size()){
+                                SaveDataToDB();
+                            }
+
+                        }
                     }
                 }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
@@ -204,6 +220,7 @@ TextView title;
                 Unit = cursor.getString(cursor.getColumnIndex("Unit"));
                 Log.d("Qty", Qty);
                 list.add(new ListProduct(iVoucherNo,Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit));
+                sparseBooleanArray.append(i,true);
                 listProductAdapter.notifyDataSetChanged();
                 cursor.moveToNext();
 
@@ -401,26 +418,30 @@ TextView title;
             @Override
             public void onTextChangedListener(EditText et, ListProduct products, int pos, String text) {
                 if(!text.equals("")) {
-                    if (Integer.parseInt(products.getQty()) >= Integer.parseInt(text)) {
-                        saveStatus = true;
-                        list.set(pos, new ListProduct(
-                                list.get(pos).getiVoucherNo(),
-                                list.get(pos).getName(),
-                                list.get(pos).getCode(),
-                                list.get(pos).getQty(),
-                                text,
-                                list.get(pos).getHeaderId(),
-                                list.get(pos).getProduct(),
-                                list.get(pos).getSiNo(),
-                                list.get(pos).getUnit()));
-                    } else {
-                        et.setError("Entry error!");
-                        Toast.makeText(GoodsReceipt.this, "PickedQty should not be grater then Qty", Toast.LENGTH_SHORT).show();
-                        saveStatus = false;
+                    try {
+                        if (Integer.parseInt(products.getQty()) >= Integer.parseInt(text)) {
+                            sparseBooleanArray.append(pos, true);
+                            list.set(pos, new ListProduct(
+                                    list.get(pos).getiVoucherNo(),
+                                    list.get(pos).getName(),
+                                    list.get(pos).getCode(),
+                                    list.get(pos).getQty(),
+                                    text,
+                                    list.get(pos).getHeaderId(),
+                                    list.get(pos).getProduct(),
+                                    list.get(pos).getSiNo(),
+                                    list.get(pos).getUnit()));
+                        } else {
+                            et.setError("Entry error!");
+                            Toast.makeText(GoodsReceipt.this, "PickedQty should not be grater then Qty", Toast.LENGTH_SHORT).show();
+                            sparseBooleanArray.append(pos, false);
+                        }
+                    }catch (NumberFormatException e){
+                        e.printStackTrace();
                     }
                 }else {
                     et.setError("Entry error!");
-                    saveStatus = false;
+                    sparseBooleanArray.append(pos,false);
                 }
             }
         });

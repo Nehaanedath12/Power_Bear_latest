@@ -20,6 +20,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -77,6 +78,7 @@ public class AddDeliveryNote extends AppCompatActivity {
     private ImageView img_home;
     private TextView title;
     private boolean saveStatus = true;
+    SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
     private static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -89,11 +91,11 @@ public class AddDeliveryNote extends AppCompatActivity {
     }
 
     private void setRecyclerView(int position) {
-        String Name, Code, Qty;
+        String  Qty;
 
         Qty = map.get("Qty");
 
-        if (Integer.parseInt(list.get(position).getQty()) >= Integer.parseInt(Qty)) {
+        if (Integer.parseInt(list.get(position).getQty()) >= Integer.parseInt(Qty)&&Integer.parseInt(Qty)!=0) {
             list.set(position, new ListProduct(
                     list.get(position).getiVoucherNo(),
                     list.get(position).getName(),
@@ -135,7 +137,26 @@ public class AddDeliveryNote extends AppCompatActivity {
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SaveDataToDB();
+
+                        for(int j = 0 ;j<=sparseBooleanArray.size();j++){
+                            Log.d("sparse",sparseBooleanArray.toString());
+                                if(!sparseBooleanArray.get(j)){
+                                    saveStatus =false;
+                                    Toast.makeText(AddDeliveryNote.this, "There is an error in data entry", Toast.LENGTH_SHORT).show();
+                                    break;
+                                }else{
+                                    saveStatus =true;
+                                }
+
+                                if(j+1==sparseBooleanArray.size()){
+                                    SaveDataToDB();
+                                }
+
+                        }
+
+
+
+
                     }
                 }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
@@ -203,6 +224,7 @@ public class AddDeliveryNote extends AppCompatActivity {
                 SiNo = cursor.getString(cursor.getColumnIndex("SiNo"));
 
                 list.add(new ListProduct(iVoucherNo,Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit));
+               sparseBooleanArray.append(i,true);
                 listProductAdapter.notifyDataSetChanged();
                 cursor.moveToNext();
 
@@ -401,26 +423,30 @@ if(!EditMode)
           @Override
           public void onTextChangedListener(EditText et,ListProduct products, int pos, String text) {
                 if(!text.equals("")) {
-                    if (Integer.parseInt(products.getQty()) >= Integer.parseInt(text)) {
-                        saveStatus = true;
-                        list.set(pos, new ListProduct(
-                                list.get(pos).getiVoucherNo(),
-                                list.get(pos).getName(),
-                                list.get(pos).getCode(),
-                                list.get(pos).getQty(),
-                                text,
-                                list.get(pos).getHeaderId(),
-                                list.get(pos).getProduct(),
-                                list.get(pos).getSiNo(),
-                                list.get(pos).getUnit()));
-                    } else {
+                    try {
+                        if (Integer.parseInt(products.getQty()) >= Integer.parseInt(text)) {
+                            sparseBooleanArray.append(pos, true);
+                            list.set(pos, new ListProduct(
+                                    list.get(pos).getiVoucherNo(),
+                                    list.get(pos).getName(),
+                                    list.get(pos).getCode(),
+                                    list.get(pos).getQty(),
+                                    text,
+                                    list.get(pos).getHeaderId(),
+                                    list.get(pos).getProduct(),
+                                    list.get(pos).getSiNo(),
+                                    list.get(pos).getUnit()));
+                        } else {
                             et.setError("Entry error!");
-                        Toast.makeText(AddDeliveryNote.this, "PickedQty should not be grater then Qty", Toast.LENGTH_SHORT).show();
-                        saveStatus = false;
+                            Toast.makeText(AddDeliveryNote.this, "PickedQty should not be grater then Qty", Toast.LENGTH_SHORT).show();
+                            sparseBooleanArray.append(pos, false);
+                        }
+                    }catch (NumberFormatException e){
+                        e.printStackTrace();
                     }
                 }else {
                     et.setError("Entry error!");
-                    saveStatus = false;
+                    sparseBooleanArray.append(pos,false);
                 }
           }
       });
