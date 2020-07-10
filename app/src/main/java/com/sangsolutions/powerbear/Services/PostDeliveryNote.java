@@ -100,14 +100,15 @@ public class PostDeliveryNote extends JobService {
                 map.put("fQty", cursor.getString(cursor.getColumnIndex("Qty")));
                 map.put("iStatus", cursor.getString(cursor.getColumnIndex("iStatus")));
                 map.put("SiNo", cursor.getString(cursor.getColumnIndex("SiNo")));
-                UploadDeliveryNote(map);
                 DeliveryCount++;
                 cursor.moveToNext();
-                if(cursor.getCount()<=DeliveryCount){
-                    jobFinished(params,false);
-                    new ScheduleJob().SyncStockCount(getApplicationContext());
-                    Toast.makeText(this, "Delivery note uploaded!", Toast.LENGTH_SHORT).show();
-                }
+                UploadDeliveryNote(map);
+                Log.d("data",DeliveryCount+"");
+            }
+            if(cursor.getCount()==DeliveryCount+1){
+                jobFinished(params,false);
+                new ScheduleJob().SyncStockCount(getApplicationContext());
+                Toast.makeText(this, "Delivery note uploaded!", Toast.LENGTH_SHORT).show();
             }
         }else {
             jobFinished(params,false);
