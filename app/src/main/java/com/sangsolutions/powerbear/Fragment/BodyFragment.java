@@ -405,7 +405,7 @@ if(!EditModeInner) {
         add_new = view.findViewById(R.id.add_new);
         rv_product = view.findViewById(R.id.rv_product);
         c = Calendar.getInstance().getTime();
-        df = new SimpleDateFormat("yyyy-MM-dd");
+        df = new SimpleDateFormat("dd-MM-yyyy");
         rv_product.setLayoutManager(new LinearLayoutManager(getActivity()));
         map = new HashMap<>();
 

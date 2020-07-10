@@ -11,18 +11,8 @@
         android:layout_height="25dp"
         android:background="@color/colorAccent"
         android:orientation="horizontal">
-
         <TextView
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Name"
-            android:textColor="@color/color_white"
-            android:textSize="15sp" />
-
-        <TextView
-            android:layout_width="150dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -31,7 +21,27 @@
             android:textSize="15sp" />
 
         <TextView
-            android:layout_width="150dp"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Name"
+            android:textColor="@color/color_white"
+            android:textSize="15sp" />
+
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Unit"
+            android:textColor="@color/color_white"
+            android:textSize="15sp"
+            />
+
+        <TextView
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -39,14 +49,14 @@
             android:textColor="@color/color_white"
             android:textSize="15sp" />
 
-        <TextView
-            android:layout_width="150dp"
+        <ImageButton
+            android:id="@+id/menu"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@null"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="Unit"
-            android:textColor="@color/color_white"
-            android:textSize="15sp" />
+            android:visibility="invisible"
+            android:src="@drawable/menu"/>
 
     </LinearLayout>
 

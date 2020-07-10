@@ -115,7 +115,7 @@ private void setDataForEditing(String voucherNo){
         }
             VoucherNo.setText("Voucher No :"+helper.GetNewVoucherNo());
             date.setText(df.format(c));
-           PublicData.date = df.format(c);
+           PublicData.date = Tools.dateFormat(df.format(c));
 
         }else {
             setDataForEditing(voucherNo);
