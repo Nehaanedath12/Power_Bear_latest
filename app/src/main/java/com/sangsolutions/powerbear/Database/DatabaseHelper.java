@@ -544,7 +544,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor GetDeliveryNote(){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from "+TABLE_DELIVERY_NOTE+"",null);
+        Cursor cursor = db.rawQuery("select * from "+TABLE_DELIVERY_NOTE+" where "+QTY+" != ? ",new String[]{"0"});
         if(cursor.moveToFirst()){
             return cursor;
         }
@@ -810,7 +810,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetGoodsReceipt() {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * from "+TABLE_GOODS_RECEIPT+"  GROUP BY "+HEADER_ID,null);
+        Cursor cursor = db.rawQuery("SELECT * from "+TABLE_GOODS_RECEIPT+" where "+QTY+" != ? ",new String[]{"0"});
         if(cursor.moveToFirst())
             return cursor;
         else
