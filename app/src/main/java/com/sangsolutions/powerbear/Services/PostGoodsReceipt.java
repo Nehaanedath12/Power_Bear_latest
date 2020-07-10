@@ -100,14 +100,15 @@ public class PostGoodsReceipt extends JobService {
                 map.put("fQty", cursor.getString(cursor.getColumnIndex("Qty")));
                 map.put("iStatus", cursor.getString(cursor.getColumnIndex("iStatus")));
                 map.put("SiNo", cursor.getString(cursor.getColumnIndex("SiNo")));
-                UploadGoodsReceipt(map);
                 ReceiptCount++;
                 cursor.moveToNext();
-                if(cursor.getCount()<=ReceiptCount){
-                    jobFinished(params,false);
-                    new ScheduleJob().SyncDeliveryNote(getApplicationContext());
-                    Toast.makeText(this, "Goods receipt uploaded!", Toast.LENGTH_SHORT).show();
-                }
+                UploadGoodsReceipt(map);
+
+            }
+            if(cursor.getCount()==ReceiptCount+1){
+                jobFinished(params,false);
+                new ScheduleJob().SyncDeliveryNote(getApplicationContext());
+                Toast.makeText(this, "Goods receipt uploaded!", Toast.LENGTH_SHORT).show();
             }
         }else {
             jobFinished(params,false);
