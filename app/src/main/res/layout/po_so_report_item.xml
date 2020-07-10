@@ -27,6 +27,16 @@
             android:id="@+id/Voucher_no"
             android:gravity="center"
             />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Customer"
+            android:id="@+id/Customer"
+            android:gravity="center"
+            />
+
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
@@ -42,15 +52,6 @@
             android:gravity="center"
             android:id="@+id/ProductName"
             android:text="Name"/>
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Customer"
-            android:id="@+id/Customer"
-            android:gravity="center"
-            />
-
 
         <TextView
             android:layout_width="80dp"

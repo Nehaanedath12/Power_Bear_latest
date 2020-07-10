@@ -48,5 +48,5 @@
         android:layout_gravity="center_vertical|end"
         android:background="@null"
         android:layout_weight="1"
-        android:src="@drawable/menu" />
+        android:src="@drawable/menu"/>
 </LinearLayout>

@@ -89,6 +89,17 @@
             android:textColor="@color/color_white"
             />
 
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Customer"
+            android:id="@+id/Customer"
+            android:gravity="center"
+            android:textColor="@color/color_white"
+            />
+
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
@@ -112,20 +123,10 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Customer"
-            android:id="@+id/Customer"
-            android:gravity="center"
-            android:textColor="@color/color_white"
-            />
-
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="center"
             android:id="@+id/unit"
             android:textColor="@color/color_white"
-            android:text="unit"
+            android:text="Unit"
             />
 
         <TextView

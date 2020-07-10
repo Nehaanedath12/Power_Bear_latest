@@ -84,7 +84,6 @@ public class BodyFragment extends Fragment {
     private ListProductAdapter listProductAdapter;
     private List<ListProduct> list;
     private ImageView add_new,save;
-    private String DocNo = "";
     private boolean EditMode = false,EditModeInner = false;
     private String voucherNo = "";
     private int EditPosition = -1;
