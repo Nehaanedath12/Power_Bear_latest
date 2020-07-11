@@ -33,10 +33,16 @@ DatabaseHelper helper;
         editor = preferences.edit();
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         ScheduleJob scheduleJob =    new ScheduleJob();
-            scheduleJob.SyncUserData(this);
-        editor.putBoolean("WarehouseFinished",false).apply();
-        editor.putBoolean("pendingPOFinished",false).apply();
-        editor.putBoolean("pendingSOFinished",false).apply();
+
+          if(!preferences.getBoolean("WarehouseFinished",false)
+                  ||!preferences.getBoolean("pendingPOFinished",false)
+                  ||!preferences.getBoolean("pendingSOFinished",false)){
+              scheduleJob.SyncUserData(this);
+              editor.putBoolean("WarehouseFinished",false).apply();
+              editor.putBoolean("pendingPOFinished",false).apply();
+              editor.putBoolean("pendingSOFinished",false).apply();
+          }
+
         }else {
             Toast.makeText(this, "Cannot be synced do to lower Api level", Toast.LENGTH_SHORT).show();
         }
