@@ -34,9 +34,11 @@ DatabaseHelper helper;
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         ScheduleJob scheduleJob =    new ScheduleJob();
 
-          if(!preferences.getBoolean("WarehouseFinished",false)
-                  ||!preferences.getBoolean("pendingPOFinished",false)
-                  ||!preferences.getBoolean("pendingSOFinished",false)){
+          if(preferences.getBoolean("WarehouseFinished",false)
+                  &&preferences.getBoolean("pendingPOFinished",false)
+                  &&preferences.getBoolean("pendingSOFinished",false)){
+
+          }else {
               scheduleJob.SyncUserData(this);
               editor.putBoolean("WarehouseFinished",false).apply();
               editor.putBoolean("pendingPOFinished",false).apply();
