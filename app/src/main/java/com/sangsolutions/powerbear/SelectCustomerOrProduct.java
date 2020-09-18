@@ -237,14 +237,14 @@ String customer = "0";
 
     }else if (report_type.equals("delivery_note")){
 
-        et_customer_product.setHint("Select Vendor");
+        et_customer_product.setHint("Select Customer");
         title.setText("Delivery note");
         from.setText(date);
         to.setText(date);
 
     }else if(report_type.equals("goods_receipt")){
 
-        et_customer_product.setHint("Select Customer");
+        et_customer_product.setHint("Select Vendor");
         title.setText("Goods receipt");
 
         from.setText(date);
