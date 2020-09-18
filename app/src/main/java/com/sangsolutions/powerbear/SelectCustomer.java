@@ -66,7 +66,7 @@ Handler handler;
         adapter = new SOAdapter(list);
         img_home = findViewById(R.id.home);
         title = findViewById(R.id.title);
-        title.setText("Select vender");
+        title.setText("Select Customer");
 
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
         editor = preferences.edit();
