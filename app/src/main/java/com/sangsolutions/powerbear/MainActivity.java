@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +29,7 @@ DatabaseHelper helper;
     login_btn = findViewById(R.id.login);
     login_name = findViewById(R.id.username);
     password = findViewById(R.id.password);
+
     helper = new DatabaseHelper(this);
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
         editor = preferences.edit();

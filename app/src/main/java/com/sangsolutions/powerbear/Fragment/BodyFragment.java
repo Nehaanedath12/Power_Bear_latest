@@ -2,10 +2,8 @@ package com.sangsolutions.powerbear.Fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -54,8 +52,6 @@ import com.sangsolutions.powerbear.Database.StockCount;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
-import com.sangsolutions.powerbear.Tools;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

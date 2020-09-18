@@ -113,9 +113,6 @@ Handler handler;
                 intent.putExtra("EditMode",false);
                 intent.putExtra("voucherNo","");
                 startActivity(intent);
-
-
-                Toast.makeText(StockCount.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
             }
 
         });

@@ -1,5 +1,11 @@
 package com.sangsolutions.powerbear;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.Build;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,5 +50,28 @@ public class Tools {
         return targetFormat.format(date);
     }
 
+
+    @SuppressLint("HardwareIds")
+    public static String getDeviceId(Context context) {
+
+        String deviceId;
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            deviceId = Settings.Secure.getString(
+                    context.getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+        } else {
+            final TelephonyManager mTelephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            if (mTelephony.getDeviceId() != null) {
+                deviceId = mTelephony.getDeviceId();
+            } else {
+                deviceId = Settings.Secure.getString(
+                        context.getContentResolver(),
+                        Settings.Secure.ANDROID_ID);
+            }
+        }
+
+        return deviceId;
+    }
 
 }
