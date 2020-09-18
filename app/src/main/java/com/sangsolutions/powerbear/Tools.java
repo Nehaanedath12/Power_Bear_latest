@@ -2,9 +2,12 @@ package com.sangsolutions.powerbear;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
+import android.util.Patterns;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -13,7 +16,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Tools {
-
+SharedPreferences preferences;
+SharedPreferences.Editor editor;
     public static String ConvertDate(String date){
         String year =  date.substring(0,4);
         String month =  date.substring(4,6);
@@ -72,6 +76,27 @@ public class Tools {
         }
 
         return deviceId;
+    }
+
+    public String getIP(Context context){
+    preferences = context.getSharedPreferences("Settings",Context.MODE_PRIVATE);
+    if(preferences!=null){
+        return preferences.getString("IP","");
+    }
+    return "";
+    }
+
+    public boolean setIP(Context context,String IP){
+        preferences = context.getSharedPreferences("Settings",Context.MODE_PRIVATE);
+        editor = preferences.edit();
+        if(editor!=null){
+        editor.putString("IP",IP).apply();
+        }
+        return true;
+    }
+
+    public static boolean isValidIP(CharSequence target) {
+        return (!TextUtils.isEmpty(target) && Patterns.IP_ADDRESS.matcher(target).matches());
     }
 
 }

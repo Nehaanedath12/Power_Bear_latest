@@ -33,6 +33,7 @@ import com.sangsolutions.powerbear.Adapter.CustomerAdapter.SearchCustomerAdapter
 import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProduct;
 import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProductAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.Services.PostStockCount;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,7 +98,7 @@ String customer = "0";
         }
 
     private void CustomerSearch(String keyword) {
-        AndroidNetworking.get(URLs.GetCustomer)
+        AndroidNetworking.get("http://"+new Tools().getIP(SelectCustomerOrProduct.this)+URLs.GetCustomer)
                 .addQueryParameter("condition",keyword)
                 .setPriority(Priority.MEDIUM)
                 .build()

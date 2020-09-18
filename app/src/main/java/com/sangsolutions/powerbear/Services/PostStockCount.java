@@ -59,7 +59,7 @@ public class PostStockCount extends JobService {
                 list.add(new BasicNameValuePair("iStatus",map.get("iStatus")));
                 list.add(new BasicNameValuePair("sDeviceId", sDeviceId));
 
-                connection = new AsyncConnection(list, URLs.PostStockCount);
+                connection = new AsyncConnection(list, "http://"+new Tools().getIP(PostStockCount.this)+URLs.PostStockCount);
 
 
             }

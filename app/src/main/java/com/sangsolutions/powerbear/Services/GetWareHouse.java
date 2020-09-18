@@ -18,6 +18,7 @@ import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.Warehouse;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.ScheduleJob;
+import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 
 import org.json.JSONArray;
@@ -33,7 +34,7 @@ public class GetWareHouse extends JobService {
 
 
     public void GetProduct() {
-        AndroidNetworking.get(URLs.GetWarehouse)
+        AndroidNetworking.get("http://"+new Tools().getIP(GetWareHouse.this)+URLs.GetWarehouse)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {

@@ -21,6 +21,7 @@ import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.PendingSO;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.ScheduleJob;
+import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -100,7 +101,7 @@ public class GetPendingSoService extends JobService {
     }
 
     public void GetProduct() {
-        AndroidNetworking.get(URLs.GetPendingSo)
+        AndroidNetworking.get("http://"+new Tools().getIP(GetPendingSoService.this)+URLs.GetPendingSo)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {

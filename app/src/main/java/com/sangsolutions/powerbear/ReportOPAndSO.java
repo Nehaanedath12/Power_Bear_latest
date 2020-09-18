@@ -19,6 +19,7 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.sangsolutions.powerbear.Adapter.PendingSOAndPOReportAdapter.PendingSoReportOP;
 import com.sangsolutions.powerbear.Adapter.PendingSOAndPOReportAdapter.PendingSoReportOPAdapter;
+import com.sangsolutions.powerbear.Services.PostStockCount;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +44,7 @@ String report_type="",customer="0";
         animationDrawable.start();
         if(report_type.equals("pending_so")){
           title.setText("Pending SO");
-          AndroidNetworking.get(URLs.GetPendingSODetails)
+          AndroidNetworking.get("http://"+new Tools().getIP(ReportOPAndSO.this)+URLs.GetPendingSODetails)
                   .addQueryParameter("iCustomer",customer)
                   .setPriority(Priority.MEDIUM)
                   .build()
@@ -98,7 +99,7 @@ String report_type="",customer="0";
       }
       else if(report_type.equals("pending_po")){
           title.setText("Pending PO");
-          AndroidNetworking.get(URLs.GetPendingPODetails)
+          AndroidNetworking.get("http://"+new Tools().getIP(ReportOPAndSO.this)+URLs.GetPendingPODetails)
                   .addQueryParameter("iVendor",customer)
                   .setPriority(Priority.MEDIUM)
                   .build()

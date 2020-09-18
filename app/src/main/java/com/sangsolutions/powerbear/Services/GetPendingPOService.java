@@ -20,6 +20,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.PendingSO;
 import com.sangsolutions.powerbear.PublicData;
+import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 
 import org.json.JSONArray;
@@ -97,7 +98,7 @@ public class GetPendingPOService extends JobService {
     }
 
     public void PendingSO() {
-        AndroidNetworking.get(URLs.GetPendingPo)
+        AndroidNetworking.get("http://"+new Tools().getIP(this)+URLs.GetPendingPo)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {

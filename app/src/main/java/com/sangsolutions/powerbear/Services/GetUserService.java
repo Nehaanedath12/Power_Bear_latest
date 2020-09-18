@@ -17,6 +17,7 @@ import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.User;
 import com.sangsolutions.powerbear.ScheduleJob;
+import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 
 import org.json.JSONArray;
@@ -88,7 +89,7 @@ public class GetUserService extends JobService {
     }
 
     public void GetProduct() {
-        AndroidNetworking.get(URLs.GetUser)
+        AndroidNetworking.get("http://"+new Tools().getIP(GetUserService.this)+URLs.GetUser)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {

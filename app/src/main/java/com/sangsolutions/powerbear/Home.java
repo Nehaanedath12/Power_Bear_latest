@@ -26,7 +26,7 @@ Button sync_btn,delivery_btn,stock_count_btn,goods_btn,report_btn;
 DatabaseHelper helper;
 ImageView img_logout;
 TextView tv_username,tv_date;
-
+ImageView img_settings;
 
     @Override
     protected void onResume() {
@@ -48,6 +48,7 @@ TextView tv_username,tv_date;
         img_logout = findViewById(R.id.logout);
         tv_username = findViewById(R.id.username);
         tv_date = findViewById(R.id.date);
+        img_settings = findViewById(R.id.settings);
         helper = new DatabaseHelper(this);
 
         tv_username.setText(helper.GetLoginUser());
@@ -115,5 +116,14 @@ TextView tv_username,tv_date;
         startActivity(new Intent(Home.this,ReportMain.class));
             }
         });
+
+        img_settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Home.this,SetIPActivity.class));
+            }
+        });
     }
+
+
 }

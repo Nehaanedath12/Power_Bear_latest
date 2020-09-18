@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
@@ -21,6 +22,36 @@ EditText login_name,password;
 DatabaseHelper helper;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
+ImageView settings;
+
+
+public void syncData(){
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        ScheduleJob scheduleJob = new ScheduleJob();
+
+        if(preferences.getBoolean("WarehouseFinished",false)
+                &&preferences.getBoolean("pendingPOFinished",false)
+                &&preferences.getBoolean("pendingSOFinished",false)){
+
+        }else {
+            scheduleJob.SyncUserData(this);
+            editor.putBoolean("WarehouseFinished",false).apply();
+            editor.putBoolean("pendingPOFinished",false).apply();
+            editor.putBoolean("pendingSOFinished",false).apply();
+        }
+
+    }else {
+        Toast.makeText(this, "Cannot be synced do to lower Api level", Toast.LENGTH_SHORT).show();
+    }
+}
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            new ScheduleJob().SyncUserData(this);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,30 +61,27 @@ DatabaseHelper helper;
     login_name = findViewById(R.id.username);
     password = findViewById(R.id.password);
 
+    settings = findViewById(R.id.settings);
     helper = new DatabaseHelper(this);
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
         editor = preferences.edit();
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        ScheduleJob scheduleJob =    new ScheduleJob();
 
-          if(preferences.getBoolean("WarehouseFinished",false)
-                  &&preferences.getBoolean("pendingPOFinished",false)
-                  &&preferences.getBoolean("pendingSOFinished",false)){
-
-          }else {
-              scheduleJob.SyncUserData(this);
-              editor.putBoolean("WarehouseFinished",false).apply();
-              editor.putBoolean("pendingPOFinished",false).apply();
-              editor.putBoolean("pendingSOFinished",false).apply();
-          }
-
-        }else {
-            Toast.makeText(this, "Cannot be synced do to lower Api level", Toast.LENGTH_SHORT).show();
-        }
         if (helper.GetLoginStatus()) {
             startActivity(new Intent(MainActivity.this, Home.class));
             finish();
+            syncData();
         }
+
+
+
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,SetIPActivity.class));
+
+            }
+        });
+
         login_btn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -74,6 +102,7 @@ DatabaseHelper helper;
 
                     boolean status = helper.InsertCurrentLoginUser(u);
                     if (status) {
+                        syncData();
                         startActivity(new Intent(MainActivity.this, Home.class));
                         finish();
                     } else {

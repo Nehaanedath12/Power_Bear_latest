@@ -20,6 +20,7 @@ import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.Product;
 import com.sangsolutions.powerbear.ScheduleJob;
+import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +36,7 @@ public class GetProductService extends JobService {
 
 
     public void GetProduct() {
-        AndroidNetworking.get(URLs.GeProducts)
+        AndroidNetworking.get("http://"+new Tools().getIP(this)+URLs.GeProducts)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {

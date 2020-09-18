@@ -59,7 +59,7 @@ public class PostDeliveryNote extends JobService {
                 list.add(new BasicNameValuePair("iUser",helper.GetUserId()));
                 list.add(new BasicNameValuePair("sDeviceId", sDeviceId));
 
-                connection = new AsyncConnection(list, URLs.PostDeliveryNote);
+                connection = new AsyncConnection(list, "http://"+new Tools().getIP(PostDeliveryNote.this)+URLs.PostDeliveryNote);
 
 
             }

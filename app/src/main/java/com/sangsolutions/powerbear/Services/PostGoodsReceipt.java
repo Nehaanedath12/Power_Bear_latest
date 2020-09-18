@@ -59,7 +59,7 @@ public class PostGoodsReceipt extends JobService {
                 list.add(new BasicNameValuePair("iUser",helper.GetUserId()));
                 list.add(new BasicNameValuePair("sDeviceId", sDeviceId));
 
-                connection = new AsyncConnection(list, URLs.PostRecieptNote);
+                connection = new AsyncConnection(list,"http://"+new Tools().getIP(PostGoodsReceipt.this)+ URLs.PostRecieptNote);
 
 
             }

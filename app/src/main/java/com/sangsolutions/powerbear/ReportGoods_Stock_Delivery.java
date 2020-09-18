@@ -23,6 +23,7 @@ import com.sangsolutions.powerbear.Adapter.Goods_Stock_Adapter.Goods_Delivery_Ad
 import com.sangsolutions.powerbear.Adapter.StockCountReportAdapter.StockCountReport;
 import com.sangsolutions.powerbear.Adapter.StockCountReportAdapter.StockCountReportAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.Services.PostStockCount;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,7 +53,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
 
         if(report_type.equals("goods_receipt")){
             title.setText("Goods receipt report");
-            AndroidNetworking.get(URLs.GetGRNote)
+            AndroidNetworking.get("http://"+new Tools().getIP(ReportGoods_Stock_Delivery.this)+URLs.GetGRNote)
                     .addQueryParameter("fDate",from)
                     .addQueryParameter("tDate",to)
                     .addQueryParameter("iUser",helper.GetUserId())
@@ -103,7 +104,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
         }
         else if(report_type.equals("delivery_note")){
             title.setText("Delivery note report");
-            AndroidNetworking.get(URLs.GetDeliveryNote)
+            AndroidNetworking.get("http://"+new Tools().getIP(ReportGoods_Stock_Delivery.this)+URLs.GetDeliveryNote)
                     .addQueryParameter("fDate",from)
                     .addQueryParameter("tDate",to)
                     .addQueryParameter("iUser",helper.GetUserId())
@@ -155,7 +156,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
         }
         else if(report_type.equals("stock_count")){
             title.setText("Stock count report");
-            AndroidNetworking.get(URLs.GetStockCount)
+            AndroidNetworking.get("http://"+new Tools().getIP(ReportGoods_Stock_Delivery.this)+URLs.GetStockCount)
                     .addQueryParameter("fDate",from)
                     .addQueryParameter("tDate",to)
                     .addQueryParameter("iUser",helper.GetUserId())

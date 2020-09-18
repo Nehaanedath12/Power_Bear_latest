@@ -10,7 +10,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            android:src="@drawable/ic_settings_black"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/settings"
+            />
         <ImageView
             android:id="@+id/logo"
             android:layout_width="wrap_content"
