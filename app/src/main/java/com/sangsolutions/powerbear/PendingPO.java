@@ -63,7 +63,7 @@ public class PendingPO extends AppCompatActivity {
 
         img_home = findViewById(R.id.home);
         title = findViewById(R.id.title);
-        title.setText("Select customer");
+        title.setText("Select Vendor");
 
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
         editor = preferences.edit();
