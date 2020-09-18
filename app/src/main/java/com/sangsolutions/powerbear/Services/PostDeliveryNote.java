@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi;
 import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.ScheduleJob;
+import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 
 import org.apache.http.NameValuePair;
@@ -36,6 +37,7 @@ public class PostDeliveryNote extends JobService {
     String response = "";
     Cursor cursor;
     AsyncConnection connection;
+    String sDeviceId="";
 
     public void UploadDeliveryNote(final HashMap<String,String> map){
         @SuppressLint("StaticFieldLeak") final AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
@@ -55,6 +57,7 @@ public class PostDeliveryNote extends JobService {
                 list.add(new BasicNameValuePair("iStatus",map.get("iStatus")));
                 list.add(new BasicNameValuePair("dDate", df.format(c)));
                 list.add(new BasicNameValuePair("iUser",helper.GetUserId()));
+                list.add(new BasicNameValuePair("sDeviceId", sDeviceId));
 
                 connection = new AsyncConnection(list, URLs.PostDeliveryNote);
 
@@ -121,7 +124,7 @@ public class PostDeliveryNote extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
-
+        sDeviceId = Tools.getDeviceId(getApplicationContext());
         helper = new DatabaseHelper(this);
         this.params = params;
         cursor = helper.GetDeliveryNote();

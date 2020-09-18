@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi;
 
 import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 
 import org.apache.http.NameValuePair;
@@ -35,7 +36,7 @@ public class PostStockCount extends JobService {
     String response = "";
     AsyncConnection connection;
     int stockCount  = 0;
-
+    String sDeviceId="";
 
     public void UploadStockCount(final HashMap<String,String> map){
         @SuppressLint("StaticFieldLeak") final AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
@@ -56,7 +57,7 @@ public class PostStockCount extends JobService {
                 list.add(new BasicNameValuePair("iUser",helper.GetUserId()));
                 list.add(new BasicNameValuePair("dProcessedDate",map.get("dProcessedDate")));
                 list.add(new BasicNameValuePair("iStatus",map.get("iStatus")));
-
+                list.add(new BasicNameValuePair("sDeviceId", sDeviceId));
 
                 connection = new AsyncConnection(list, URLs.PostStockCount);
 
@@ -123,6 +124,7 @@ public class PostStockCount extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
+        sDeviceId = Tools.getDeviceId(getApplicationContext());
         helper = new DatabaseHelper(this);
         this.params = params;
          cursor = helper.GetAllStockCount();

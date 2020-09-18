@@ -15,6 +15,7 @@ import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 
 import com.sangsolutions.powerbear.ScheduleJob;
+import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 
 import org.apache.http.NameValuePair;
@@ -36,7 +37,7 @@ public class PostGoodsReceipt extends JobService {
     String response = "";
     AsyncConnection connection;
     Cursor cursor;
-
+    String sDeviceId="";
 
     public void UploadGoodsReceipt(final HashMap<String,String> map){
         @SuppressLint("StaticFieldLeak") final AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
@@ -56,6 +57,7 @@ public class PostGoodsReceipt extends JobService {
                 list.add(new BasicNameValuePair("iStatus",map.get("iStatus")));
                 list.add(new BasicNameValuePair("dDate", df.format(c)));
                 list.add(new BasicNameValuePair("iUser",helper.GetUserId()));
+                list.add(new BasicNameValuePair("sDeviceId", sDeviceId));
 
                 connection = new AsyncConnection(list, URLs.PostRecieptNote);
 
@@ -119,6 +121,7 @@ public class PostGoodsReceipt extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
+        sDeviceId = Tools.getDeviceId(getApplicationContext());
         helper = new DatabaseHelper(this);
         this.params = params;
          cursor = helper.GetGoodsReceipt();
