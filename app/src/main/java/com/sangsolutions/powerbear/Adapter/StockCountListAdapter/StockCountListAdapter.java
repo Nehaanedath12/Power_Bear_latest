@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sangsolutions.powerbear.R;
@@ -46,7 +47,14 @@ Context context;
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickListener.onItemClick(v, stockCountList, position);
+                onClickListener.onMenuItemClick(v, stockCountList, position);
+            }
+        });
+
+        holder.card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickListener.onItemClick(view,stockCountList,position);
             }
         });
 
@@ -58,14 +66,15 @@ Context context;
     }
 
     public interface OnClickListener {
+        void onMenuItemClick(View view, StockCountList stockCountList, int pos);
         void onItemClick(View view, StockCountList stockCountList, int pos);
-
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView Vno,date,totalQty,warehouse;
         ImageButton menu;
+        CardView card;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             Vno = itemView.findViewById(R.id.vno);
@@ -73,6 +82,7 @@ Context context;
             totalQty = itemView.findViewById(R.id.total_qty);
             warehouse = itemView.findViewById(R.id.warehouse);
             menu = itemView.findViewById(R.id.menu);
+            card = itemView.findViewById(R.id.card);
         }
     }
 }

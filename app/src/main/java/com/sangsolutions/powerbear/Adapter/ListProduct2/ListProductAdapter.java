@@ -20,15 +20,16 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
     private Context context;
     private List<ListProduct> list;
     private OnClickListener onClickListener;
-
+    private boolean EditMode = false;
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
 
-    public ListProductAdapter(Context context, List<ListProduct> list) {
+    public ListProductAdapter(Context context, List<ListProduct> list,boolean EditMode) {
         this.context = context;
         this.list = list;
+        this.EditMode = EditMode;
     }
 
     @NonNull
@@ -47,14 +48,17 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         holder.Qty.setText(list.get(position).getQty());
         holder.unit.setText(list.get(position).getUnit());
 
-        holder.menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickListener.onItemClick(v, productList, position);
-            }
-        });
-
-
+        if(EditMode){
+            holder.menu.setVisibility(View.VISIBLE);
+            holder.menu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickListener.onItemClick(v, productList, position);
+                }
+            });
+        }else {
+            holder.menu.setVisibility(View.GONE);
+        }
     }
 
     @Override

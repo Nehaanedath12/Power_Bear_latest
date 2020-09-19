@@ -257,6 +257,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean GetUser() {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TABLE_USER, null);
+        if (cursor.moveToFirst())
+            return true;
+        else {
+            return false;
+        }
+    }
+
     //Product
     public boolean CheckProduct(Product p) {
         this.db = getReadableDatabase();

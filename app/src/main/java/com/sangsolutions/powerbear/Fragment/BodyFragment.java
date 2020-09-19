@@ -84,6 +84,7 @@ public class BodyFragment extends Fragment {
     private String voucherNo = "";
     private int EditPosition = -1;
     private String warehouse_id = "";
+    private RelativeLayout status;
     Date c;
 private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
 
@@ -397,6 +398,7 @@ if(!EditModeInner) {
         product_name= view.findViewById(R.id.product_name);
         product_code = view.findViewById(R.id.product_code);
         save = view.findViewById(R.id.save);
+        status = view.findViewById(R.id.status);
         qty = view.findViewById(R.id.qty);
         add_new = view.findViewById(R.id.add_new);
         rv_product = view.findViewById(R.id.rv_product);
@@ -406,31 +408,33 @@ if(!EditModeInner) {
         map = new HashMap<>();
 
 
-
+        list = new ArrayList<>();
         helper = new DatabaseHelper(getActivity());
         rl_showProductInfo = view.findViewById(R.id.details);
         productList = new ArrayList<>();
         adapter = new SearchProductAdapter(getActivity(), productList);
-        list = new ArrayList<>();
-        listProductAdapter = new ListProductAdapter(getActivity(),list);
-
 
         if(getArguments() != null) {
             EditMode = getArguments().getBoolean("EditMode");
             voucherNo = getArguments().getString("voucherNo");
             warehouse_id = getArguments().getString("warehouse");
-            if (EditMode) {
                 setDataForEditing(voucherNo);
                 SetRecyclerFromDB(voucherNo);
-            }
+
+                if(!EditMode){
+                    status.setVisibility(View.GONE);
+                    fab_controller.setVisibility(View.GONE);
+                }
         }
 
+        listProductAdapter = new ListProductAdapter(getActivity(),list,EditMode);
 
         rv_product.setAdapter(listProductAdapter);
 
         listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
             @Override
             public void onItemClick(View view,final ListProduct product,final int pos) {
+
                 PopupMenu popupMenu = new PopupMenu(getActivity(), view);
                 popupMenu.inflate(R.menu.edit_delete_menu);
                 popupMenu.show();

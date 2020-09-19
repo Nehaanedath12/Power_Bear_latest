@@ -138,7 +138,7 @@ public class StockCountList extends AppCompatActivity {
 
         adapter.setOnClickListener(new StockCountListAdapter.OnClickListener() {
             @Override
-            public void onItemClick(View view, final com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, final int pos) {
+            public void onMenuItemClick(View view, final com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, final int pos) {
                 PopupMenu popupMenu = new PopupMenu(StockCountList.this, view);
                 popupMenu.inflate(R.menu.edit_delete_menu);
                 popupMenu.show();
@@ -157,6 +157,15 @@ public class StockCountList extends AppCompatActivity {
                         return true;
                     }
                 });
+            }
+
+            @Override
+            public void onItemClick(View view, com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, int pos) {
+                Intent intent1 = new Intent(StockCountList.this,StockCountWarehouse.class);
+                intent1.putExtra("warehouse",stockCountList.getWarehouseId());
+                intent1.putExtra("voucherNo",stockCountList.getVNo());
+                intent1.putExtra("EditMode", false);
+                startActivity(intent1);
             }
         });
     }}

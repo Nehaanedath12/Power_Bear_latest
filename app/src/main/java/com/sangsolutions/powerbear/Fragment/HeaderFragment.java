@@ -45,25 +45,31 @@ boolean EditMode = false;
     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
 
 
-private void CloseAlert(){
-    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-    builder.setTitle("Exit?")
-            .setMessage("Do you want't to exit without saving?")
-            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    StockCountSingleton.getInstance().clearList();
-             Objects.requireNonNull(getActivity()).finish();
-                }
-            })
-            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            })
-            .create()
-            .show();
+private void CloseAlert() {
+    if (EditMode) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Exit?")
+                .setMessage("Do you want't to exit without saving?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        StockCountSingleton.getInstance().clearList();
+                        Objects.requireNonNull(getActivity()).finish();
+                    }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
+    else {
+        StockCountSingleton.getInstance().clearList();
+        Objects.requireNonNull(getActivity()).finish();
+    }
 }
 
 
@@ -95,7 +101,6 @@ private void setDataForEditing(String voucherNo){
         warehouse = view.findViewById(R.id.warehouse_name);
         close = view.findViewById(R.id.goods_receipt);
         VoucherNo = view.findViewById(R.id.voucher_no);
-
         helper = new DatabaseHelper(getActivity());
     c = Calendar.getInstance().getTime();
     df = new SimpleDateFormat("dd-MM-yyyy");
@@ -107,7 +112,8 @@ private void setDataForEditing(String voucherNo){
         voucherNo = getArguments().getString("voucherNo");
 
         if(!EditMode){
-
+            remarks.setFocusable(false);
+            date.setClickable(false);
         if(!helper.GetWarehouseById(warehouse_id).equals("")){
             warehouse.setText(helper.GetWarehouseById(warehouse_id));
         }else{
@@ -118,6 +124,7 @@ private void setDataForEditing(String voucherNo){
            PublicData.date = Tools.dateFormat(df.format(c));
 
         }else {
+            date.setClickable(false);
             setDataForEditing(voucherNo);
         }
     }else {
@@ -148,6 +155,7 @@ private void setDataForEditing(String voucherNo){
                 int day = now.get(Calendar.DAY_OF_MONTH);
                 DatePickerDialog datePickerDialog = new DatePickerDialog(Objects.requireNonNull(getActivity()), onDateSetListener, year, month, day);
                 datePickerDialog.setTitle("Select Date");
+                if(EditMode)
                 datePickerDialog.show();
             }
         });
@@ -173,7 +181,7 @@ private void setDataForEditing(String voucherNo){
 
         @Override
         public void afterTextChanged(Editable editable) {
-PublicData.remakes = editable.toString();
+            PublicData.remakes = editable.toString();
         }
     });
         return view;

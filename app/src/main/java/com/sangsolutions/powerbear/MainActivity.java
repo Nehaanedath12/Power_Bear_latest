@@ -96,20 +96,23 @@ public void syncData(){
                 User u = new User();
                 u.setsLoginName(login_name.getText().toString().trim());
                 u.setsPassword(password.getText().toString().trim());
+                if(helper.GetUser()) {
+                    boolean success = helper.LoginUser(u);
+                    if (success) {
 
-                boolean success = helper.LoginUser(u);
-                if (success) {
-
-                    boolean status = helper.InsertCurrentLoginUser(u);
-                    if (status) {
-                        syncData();
-                        startActivity(new Intent(MainActivity.this, Home.class));
-                        finish();
+                        boolean status = helper.InsertCurrentLoginUser(u);
+                        if (status) {
+                            syncData();
+                            startActivity(new Intent(MainActivity.this, Home.class));
+                            finish();
+                        } else {
+                            Toast.makeText(MainActivity.this, "An unexpected error occurred!", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(MainActivity.this, "An unexpected error occurred!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Login information don't mach the recoded ", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(MainActivity.this, "Login information don't mach the recoded ", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(MainActivity.this, "Check the IP and try again!", Toast.LENGTH_SHORT).show();
                 }
             }
 
