@@ -17,6 +17,7 @@ public class URLs {
 
     public static final String ip =  "http://185.151.4.210/";
     public static final String domain =  "/power/api/Data/";
+    public static final String PostProductStock = domain + "PostProductStock";
     public static final String PostStockCount = domain + "PostStockCount";
     public static final String PostDeliveryNote = domain + "PostDeliveryNote";
     public static final String PostRecieptNote = domain + "PostRecieptNote";

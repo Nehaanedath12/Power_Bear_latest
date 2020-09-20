@@ -40,10 +40,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class HeaderFragment extends Fragment {
-EditText date,remarks;
+EditText date, narration;
 TextView warehouse,VoucherNo;
 DatabaseHelper helper;
-String warehouse_id = "",voucherNo="",Date ="" ,Remarks="";
+String warehouse_id = "",voucherNo="",Date ="" , Narration ="";
 Button close,save;
 Date c;
 Spinner sp_warehouse;
@@ -107,17 +107,17 @@ private void setData(String voucherNo){
                 warehouse_id = cursor.getString(cursor.getColumnIndex("iWarehouse"));
                 voucherNo = cursor.getString(cursor.getColumnIndex("iVoucherNo"));
                 Date  = Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("dDate")));
-        Remarks  = cursor.getString(cursor.getColumnIndex("sRemarks"));
+        Narration = cursor.getString(cursor.getColumnIndex("sNarration"));
         date.setText(Date);
 
        PublicData.date = Date;
-        PublicData.remakes = Remarks;
+        PublicData.narration = Narration;
         PublicData.warehouse = warehouse_id;
 
        // warehouse.setText(helper.GetWarehouseById(warehouse_id));
         VoucherNo.setText("Voucher No :"+voucherNo);
         warehouse.setText(helper.GetWarehouseById(warehouse_id));
-        remarks.setText(Remarks);
+        narration.setText(Narration);
 
     }
 
@@ -160,11 +160,11 @@ if(list.size()!=0){
 
 
     private void Save(){
-        String s_date="",s_remarks="" ,s_warehouse ="";
+        String s_date="",s_narration="" ,s_warehouse ="";
 
         s_date= PublicData.date;
 
-        s_remarks=PublicData.remakes;
+        s_narration=PublicData.narration;
 
         s_warehouse = PublicData.warehouse;
 
@@ -172,15 +172,15 @@ if(list.size()!=0){
 
         if(!s_date.isEmpty()&&!list.isEmpty())
         {
-            String str_date,s_voucher_no,str_remarks;
+            String str_date,s_voucher_no,str_narration;
             if(EditMode.equals("new")){
                 str_date = s_date;
                 s_voucher_no = helper.GetNewVoucherNo();
-                str_remarks = s_remarks;
+                str_narration = s_narration;
             }else {
                 str_date = s_date;
                 s_voucher_no = voucherNo;
-                str_remarks = s_remarks;
+                str_narration = s_narration;
             }
             StockCount s = new StockCount();
             if(EditMode.equals("edit")) {
@@ -197,7 +197,8 @@ if(list.size()!=0){
                 s.setiProduct(list.get(i).getiProduct());
                 s.setfQty(list.get(i).getQty());
                 s.setsUnit(list.get(i).getUnit());
-                s.setsRemarks(str_remarks);
+                s.setsNarration(str_narration);
+                s.setsRemarks(list.get(i).getsRemarks());
                 s.setdProcessedDate(df.format(c));
                 s.setiStatus("0");
 
@@ -223,7 +224,7 @@ if(list.size()!=0){
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.header_frgment, container, false);
     date =   view.findViewById(R.id.date);
-    remarks = view.findViewById(R.id.remarks);
+    narration = view.findViewById(R.id.narration);
         warehouse = view.findViewById(R.id.warehouse_name);
         close = view.findViewById(R.id.close);
         VoucherNo = view.findViewById(R.id.voucher_no);
@@ -250,7 +251,7 @@ if(list.size()!=0){
         if(EditMode.equals("view")){
             warehouse_id = getArguments().getString("warehouse");
             voucherNo = getArguments().getString("voucherNo");
-            remarks.setFocusable(false);
+            narration.setFocusable(false);
             date.setClickable(false);
             sp_warehouse.setEnabled(false);
             sp_warehouse.setClickable(false);
@@ -338,7 +339,7 @@ if(list.size()!=0){
             }
         });
 
-    remarks.addTextChangedListener(new TextWatcher() {
+    narration.addTextChangedListener(new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -351,7 +352,7 @@ if(list.size()!=0){
 
         @Override
         public void afterTextChanged(Editable editable) {
-            PublicData.remakes = editable.toString();
+            PublicData.narration = editable.toString();
         }
     });
 

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/ll_1"
+    >
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/theme_color_red"
+        >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="end">
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close_30dp"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/close_alert"
+        android:layout_centerVertical="true"
+            />
+
+
+                <ImageView
+                    android:id="@+id/search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_toStartOf="@id/new_item"
+                    android:src="@drawable/ic_search"
+                    android:layout_centerVertical="true"
+                    />
+
+            <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_circle"
+            android:layout_margin="10dp"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/new_item"
+                android:layout_centerVertical="true"
+            />
+
+            </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <EditText
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:id="@+id/barcode"
+    android:layout_marginTop="20dp"
+    android:hint="Barcode"
+    android:textSize="20sp"
+    android:textColor="@color/color_black"
+        />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/qr_code"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:background="@color/theme_color_red"
+        android:id="@+id/img_barcode"
+        android:layout_marginEnd="2dp"
+        />
+</RelativeLayout>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/qty"
+        android:layout_marginTop="20dp"
+        android:hint="Quantity"
+        android:inputType="number"
+        android:textSize="20sp"
+        android:textColor="@color/color_black"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/narration"
+        android:layout_marginTop="20dp"
+        android:hint="Remarks"
+        android:textSize="20sp"
+        android:maxLength="50"
+        android:textColor="@color/color_black"/>
+</LinearLayout>
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/ll_1"
+        android:layout_above="@id/details"
+        android:visibility="gone"
+        />
+    <RelativeLayout
+        android:id="@+id/details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:visibility="gone"
+        android:layout_above="@+id/ll_2"
+        >
+
+        <TextView
+            android:id="@+id/product_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:textSize="18sp"
+            android:textColor="@color/color_white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/product_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/product_name"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:textSize="25sp"
+            android:textColor="@color/color_white"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:id="@+id/ll_2"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_1"
+            android:text="@string/back"
+            android:textSize="20dp"
+            android:textColor="#fff"
+            android:id="@+id/backward"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_weight="1"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_2"
+            android:text="CLOSE"
+            android:textColor="#fff"
+            android:id="@+id/close"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_weight="1"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_1"
+            android:text="@string/forward"
+            android:textSize="20dp"
+            android:textColor="#fff"
+            android:id="@+id/forward"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+</RelativeLayout>

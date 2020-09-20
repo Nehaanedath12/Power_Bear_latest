@@ -11,6 +11,10 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Tools;
@@ -18,6 +22,9 @@ import com.sangsolutions.powerbear.URLs;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,14 +38,10 @@ public class PostStockCount extends JobService {
 
     JobParameters params;
     DatabaseHelper helper;
-    HashMap<String,String> map;
     Cursor cursor;
-    String response = "";
-    AsyncConnection connection;
-    int stockCount  = 0;
     String sDeviceId="";
 
-    public void UploadStockCount(final HashMap<String,String> map){
+/*    public void UploadStockCount(final HashMap<String,String> map){
         @SuppressLint("StaticFieldLeak") final AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
 
             @Override
@@ -54,12 +57,13 @@ public class PostStockCount extends JobService {
                 list.add(new BasicNameValuePair("fQty",map.get("fQty")));
                 list.add(new BasicNameValuePair("sUnit",map.get("sUnit")));
                 list.add(new BasicNameValuePair("sRemarks",map.get("sRemarks")));
+                list.add(new BasicNameValuePair("sRemarks",map.get("sNarration")));
                 list.add(new BasicNameValuePair("iUser",helper.GetUserId()));
                 list.add(new BasicNameValuePair("dProcessedDate",map.get("dProcessedDate")));
                 list.add(new BasicNameValuePair("iStatus",map.get("iStatus")));
                 list.add(new BasicNameValuePair("sDeviceId", sDeviceId));
 
-                connection = new AsyncConnection(list, "http://"+new Tools().getIP(PostStockCount.this)+URLs.PostStockCount);
+                connection = new AsyncConnection(list, "http://"+new Tools().getIP(PostStockCount.this)+URLs.PostProductStock);
 
 
             }
@@ -88,8 +92,6 @@ public class PostStockCount extends JobService {
 
     }
 
-
-
     public void syncStockCount(){
 
         if(cursor!=null) {
@@ -116,10 +118,81 @@ public class PostStockCount extends JobService {
             jobFinished(params,false);
         }
 
+    }*/
+
+
+public void uploadJsonStockCount(JSONObject jsonObject){
+
+    AndroidNetworking.post("http://"+new Tools().getIP(PostStockCount.this)+URLs.PostProductStock)
+            .addJSONObjectBody(jsonObject)
+            .setPriority(Priority.MEDIUM)
+            .build()
+            .getAsString(new StringRequestListener() {
+                @Override
+                public void onResponse(String response) {
+
+            Log.d("Upload",response);
+
+                }
+
+                @Override
+                public void onError(ANError anError) {
+
+                    Log.d("error", anError.toString());
+                }
+            });
+
+}
+
+
+
+    public void GetDataToUpload(){
+
+        JSONObject mainJsonObject = new JSONObject();
+        if(cursor!=null) {
+            try {
+                mainJsonObject.put("iVoucherNo", cursor.getString(cursor.getColumnIndex("iVoucherNo")));
+                mainJsonObject.put("iDocDate", Tools.dateFormat(cursor.getString(cursor.getColumnIndex("dProcessedDate"))));
+                mainJsonObject.put("iWarehouse", cursor.getString(cursor.getColumnIndex("iWarehouse")));
+                mainJsonObject.put("iUser", helper.GetUserId());
+                if(cursor.getString(cursor.getColumnIndex("sNarration"))==null){
+                    mainJsonObject.put("sNarration","");
+                }else {
+                    mainJsonObject.put("sNarration", cursor.getString(cursor.getColumnIndex("sNarration")));
+                }
+                mainJsonObject.put("sDeviceId", Tools.getDeviceId(this));
+
+
+
+                JSONArray jsonArray = new JSONArray();
+                for(int i = 0 ; i<cursor.getCount();i++){
+                    JSONObject jsonObject = new JSONObject();
+
+                    jsonObject.put("iProduct", cursor.getString(cursor.getColumnIndex("iProduct")));
+                    jsonObject.put("fQty", cursor.getString(cursor.getColumnIndex("fQty")));
+                    jsonObject.put("sUnit", cursor.getString(cursor.getColumnIndex("sUnit")));
+                    if(cursor.getString(cursor.getColumnIndex("sRemarks"))==null){
+                        mainJsonObject.put("sRemarks","");
+                    }else {
+                        mainJsonObject.put("sRemarks", cursor.getString(cursor.getColumnIndex("sRemarks")));
+                    }
+                    jsonArray.put(jsonObject);
+                    cursor.moveToNext();
+                    if(cursor.getCount()==i+1){
+                        mainJsonObject.put("stockBody",jsonObject);
+                        uploadJsonStockCount(mainJsonObject);
+                        Log.d("upload",mainJsonObject.toString());
+                    }
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
     }
-
-
-
 
 
     @Override
@@ -131,8 +204,7 @@ public class PostStockCount extends JobService {
         if(cursor!=null) {
             cursor.moveToFirst();
         }
-        map = new HashMap<>();
-        syncStockCount();
+        GetDataToUpload();
         return true;
     }
 

@@ -40,7 +40,14 @@
        android:text="Qty"
         android:gravity="center"
         />
-
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/product_remarks"
+        android:text="Remarks"
+        android:gravity="center"
+        />
 
     <ImageButton
         android:id="@+id/menu"

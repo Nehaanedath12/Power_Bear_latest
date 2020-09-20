@@ -62,6 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static  final String S_UNIT = "sUnit";
     private static  final String S_REMARKS = "sRemarks";
     private static  final String D_PROCESSED_DATE ="dProcessedDate";
+    private static final String S_NARRATION = "sNarration";
 
 
 
@@ -111,6 +112,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + I_PRODUCT + "  INTEGER DEFAULT 0," +
             "" + F_QTY + "  TEXT(10) DEFAULT null," +
             "" + S_UNIT + "  TEXT(10) DEFAULT null," +
+            "" + S_NARRATION + "  TEXT(50) DEFAULT null," +
             "" + S_REMARKS + "  TEXT(50) DEFAULT null," +
             "" + D_PROCESSED_DATE + "  TEXT(10) DEFAULT null," +
             "" + I_STATUS + "  TEXT(10) DEFAULT null" +
@@ -639,6 +641,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     cv.put(I_PRODUCT,s.getiProduct());
     cv.put(F_QTY,s.getfQty());
     cv.put(S_UNIT,s.getsUnit());
+    cv.put(S_NARRATION,s.getsNarration());
     cv.put(S_REMARKS,s.getsRemarks());
     cv.put(D_PROCESSED_DATE,s.getdProcessedDate());
     cv.put(I_STATUS,s.getiStatus());
@@ -710,7 +713,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetHeaderData(String voucherNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT "+D_DATE+","+I_WAREHOUSE+","+I_VOUCHER_NO+","+S_REMARKS+" FROM "+TABLE_STOCK_COUNT+" where "+I_VOUCHER_NO+" = ? ", new String[]{voucherNo});
+        Cursor cursor = db.rawQuery("SELECT "+D_DATE+","+I_WAREHOUSE+","+I_VOUCHER_NO+","+S_NARRATION+" FROM "+TABLE_STOCK_COUNT+" where "+I_VOUCHER_NO+" = ? ", new String[]{voucherNo});
         if (cursor.moveToFirst()) {
             return cursor;
         } else {

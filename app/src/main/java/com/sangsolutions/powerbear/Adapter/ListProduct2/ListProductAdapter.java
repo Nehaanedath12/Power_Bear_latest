@@ -47,6 +47,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         holder.Code.setText(list.get(position).getCode());
         holder.Qty.setText(list.get(position).getQty());
         holder.unit.setText(list.get(position).getUnit());
+        holder.remarks.setText(list.get(position).getsRemarks());
 
         if(!EditMode.equals("view")){
             holder.menu.setVisibility(View.VISIBLE);
@@ -73,7 +74,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView Name, Code, Qty,unit;
+        TextView Name, Code, Qty,unit,remarks;
         ImageButton menu;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -82,6 +83,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
             Code = itemView.findViewById(R.id.product_code);
             Qty = itemView .findViewById(R.id.product_qty);
             unit = itemView.findViewById(R.id.product_unit);
+            remarks = itemView.findViewById(R.id.product_remarks);
             menu = itemView.findViewById(R.id.menu);
         }
     }

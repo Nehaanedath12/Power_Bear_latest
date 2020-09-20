@@ -1,7 +1,15 @@
 package com.sangsolutions.powerbear.Database;
 
 public class StockCount {
-String iVoucherNo,dDate,iWarehouse,iProduct,fQty,sUnit,sRemarks,dProcessedDate,iStatus;
+String iVoucherNo,dDate,iWarehouse,iProduct,fQty,sUnit,sRemarks,sNarration,dProcessedDate,iStatus;
+
+    public String getsNarration() {
+        return sNarration;
+    }
+
+    public void setsNarration(String sNarration) {
+        this.sNarration = sNarration;
+    }
 
     public String getiVoucherNo() {
         return iVoucherNo;

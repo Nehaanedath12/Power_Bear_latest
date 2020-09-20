@@ -78,8 +78,9 @@
             android:layout_marginTop="30dp"
             android:layout_gravity="center_horizontal"
             android:ems="12"
-            android:hint="Remarks"
-            android:id="@+id/remarks"
+            android:hint="Narration"
+            android:id="@+id/narration"
+            android:maxLength="50"
             android:layout_marginBottom="40dp"
             />
     </LinearLayout>

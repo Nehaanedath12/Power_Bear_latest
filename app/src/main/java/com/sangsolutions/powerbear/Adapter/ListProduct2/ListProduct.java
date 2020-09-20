@@ -1,14 +1,15 @@
 package com.sangsolutions.powerbear.Adapter.ListProduct2;
 
 public class ListProduct {
-    String Name,Code,Qty,Unit,iProduct;
+    String Name,Code,Qty,Unit,iProduct,sRemarks;
 
-    public ListProduct(String name, String code, String qty, String unit, String iProduct) {
+    public ListProduct(String name, String code, String qty, String unit, String iProduct,String sRemarks) {
         this.Name = name;
         this.Code = code;
         this.Qty = qty;
         this.Unit = unit;
         this.iProduct = iProduct;
+        this.sRemarks = sRemarks;
     }
 
     public String getName() {
@@ -49,5 +50,13 @@ public class ListProduct {
 
     public void setiProduct(String iProduct) {
         this.iProduct = iProduct;
+    }
+
+    public String getsRemarks() {
+        return sRemarks;
+    }
+
+    public void setsRemarks(String sRemarks) {
+        this.sRemarks = sRemarks;
     }
 }

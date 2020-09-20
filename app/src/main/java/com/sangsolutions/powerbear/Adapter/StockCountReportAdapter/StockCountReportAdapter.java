@@ -69,7 +69,7 @@ public class StockCountReportAdapter extends RecyclerView.Adapter<StockCountRepo
             code = itemView.findViewById(R.id.code);
             qty = itemView.findViewById(R.id.qty);
             unit = itemView.findViewById(R.id.unit);
-            remarks = itemView.findViewById(R.id.remarks);
+            remarks = itemView.findViewById(R.id.narration);
             rl_parent = itemView.findViewById(R.id.parent);
 
 
