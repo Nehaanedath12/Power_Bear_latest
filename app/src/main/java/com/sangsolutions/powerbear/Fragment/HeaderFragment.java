@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.sangsolutions.powerbear.Adapter.ListProduct2.ListProduct;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.Database.StockCount;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
@@ -43,11 +44,11 @@ EditText date,remarks;
 TextView warehouse,VoucherNo;
 DatabaseHelper helper;
 String warehouse_id = "",voucherNo="",Date ="" ,Remarks="";
-Button close;
+Button close,save;
 Date c;
 Spinner sp_warehouse;
-    List<Warehouse> list;
-    WarehouseAdapter adapter;
+List<Warehouse> list;
+WarehouseAdapter adapter;
 String EditMode = "";
 
     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
@@ -137,6 +138,86 @@ if(list.size()!=0){
 
 }
 
+    private void SaveAlert(){
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
+        builder.setTitle("Save?")
+                .setMessage("Do you want't to save?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Save();
+                    }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+
+    private void Save(){
+        String s_date="",s_remarks="" ,s_warehouse ="";
+
+        s_date= PublicData.date;
+
+        s_remarks=PublicData.remakes;
+
+        s_warehouse = PublicData.warehouse;
+
+        List<ListProduct> list = StockCountSingleton.getInstance().getList();
+
+        if(!s_date.isEmpty()&&!list.isEmpty())
+        {
+            String str_date,s_voucher_no,str_remarks;
+            if(EditMode.equals("new")){
+                str_date = s_date;
+                s_voucher_no = helper.GetNewVoucherNo();
+                str_remarks = s_remarks;
+            }else {
+                str_date = s_date;
+                s_voucher_no = voucherNo;
+                str_remarks = s_remarks;
+            }
+            StockCount s = new StockCount();
+            if(EditMode.equals("edit")) {
+                helper.DeleteStockCount(voucherNo);
+            }
+            for(int i = 0 ; i < list.size(); i ++){
+                s.setiVoucherNo(s_voucher_no);
+                s.setdDate(str_date);
+                if(!s_warehouse.isEmpty()) {
+                    s.setiWarehouse(s_warehouse);
+                }else {
+                    s.setiWarehouse(warehouse_id);
+                }
+                s.setiProduct(list.get(i).getiProduct());
+                s.setfQty(list.get(i).getQty());
+                s.setsUnit(list.get(i).getUnit());
+                s.setsRemarks(str_remarks);
+                s.setdProcessedDate(df.format(c));
+                s.setiStatus("0");
+
+                helper.InsertStockCount(s);
+
+
+                if(list.size()==i+1){
+                    Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
+                    StockCountSingleton.getInstance().clearList();
+                    Objects.requireNonNull(getActivity()).finish();
+                }
+
+            }
+
+        }else {
+            Toast.makeText(getActivity(), "some data is missing", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
 @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -144,10 +225,10 @@ if(list.size()!=0){
     date =   view.findViewById(R.id.date);
     remarks = view.findViewById(R.id.remarks);
         warehouse = view.findViewById(R.id.warehouse_name);
-        close = view.findViewById(R.id.goods_receipt);
+        close = view.findViewById(R.id.close);
         VoucherNo = view.findViewById(R.id.voucher_no);
         sp_warehouse = view.findViewById(R.id.warehouse);
-
+        save = view.findViewById(R.id.save);
         helper = new DatabaseHelper(getActivity());
 
         //setting default warehouse
@@ -173,6 +254,7 @@ if(list.size()!=0){
             date.setClickable(false);
             sp_warehouse.setEnabled(false);
             sp_warehouse.setClickable(false);
+            save.setVisibility(View.GONE);
             if(!helper.GetWarehouseById(warehouse_id).equals("")){
                 warehouse.setText(helper.GetWarehouseById(warehouse_id));
                 SetWarehouseSpinner(warehouse_id);
@@ -272,8 +354,17 @@ if(list.size()!=0){
             PublicData.remakes = editable.toString();
         }
     });
+
+    save.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            SaveAlert();
+        }
+    });
         return view;
-    }
+
+}
+
 
 
 

@@ -103,7 +103,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/goods_receipt"
+            android:id="@+id/close"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_below="@id/stock_count"
@@ -141,7 +141,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="15dp"
-            android:layout_toEndOf="@+id/goods_receipt"
+            android:layout_toEndOf="@+id/close"
             app:cardElevation="3dp">
 
             <LinearLayout
@@ -169,7 +169,7 @@
             android:id="@+id/pending_po"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_below="@id/goods_receipt"
+            android:layout_below="@id/close"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="15dp"
             app:cardElevation="3dp">
