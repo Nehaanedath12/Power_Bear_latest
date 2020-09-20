@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -32,7 +33,7 @@ public class StockCountList extends AppCompatActivity {
     ImageView add_new;
     RecyclerView rv;
     FrameLayout empty_frame;
-    TextView title;
+    TextView title,title_selection;
     StockCountListAdapter adapter;
     DatabaseHelper helper;
     ImageView img_home;
@@ -46,11 +47,51 @@ public class StockCountList extends AppCompatActivity {
 
 
 
+    public void DeleteItems(){
+       List<Integer> listSelectedItem = adapter.getSelectedItems();
+        for(int i = 0 ; i<listSelectedItem.size();i++) {
+            for(int j = 0 ;j<list.size();j++) {
+                if(listSelectedItem.get(i)==j)
+                  if (helper.DeleteStockCount(list.get(j).getVNo())) {
+                        Log.d("StockCount", "deleted!");
+                    }
+            }
+            if(i+1 == listSelectedItem.size()){
+                setRecyclerView();
+                closeSelection();
+            }
+        }
+
+    }
+
+
+
+    public void deleteAlert(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete!")
+                .setMessage("Do you want to delete "+adapter.getSelectedItemCount()+" items?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        DeleteItems();
+                    }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).create()
+                .show();
+    }
+
     private void initToolbar() {
         appbar = findViewById(R.id.appbar);
         close = findViewById(R.id.close);
         delete = findViewById(R.id.delete);
         toolbar = findViewById(R.id.toolbar);
+        title_selection = findViewById(R.id.title_selection);
         setSupportActionBar(toolbar);
         close.setVisibility(View.INVISIBLE);
         delete.setVisibility(View.INVISIBLE);
@@ -76,7 +117,7 @@ public class StockCountList extends AppCompatActivity {
         if(count==0){
             closeSelection();
         }
-        toolbar.setTitle(count + " item selected ");
+        title_selection.setText("Selected "+count+" item's");
         close.setVisibility(View.VISIBLE);
         delete.setVisibility(View.VISIBLE);
 
@@ -127,6 +168,7 @@ public class StockCountList extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(helper.DeleteStockCount(stockCountList.getVNo())) {
+                            closeSelection();
                             list.remove(pos);
                             adapter.notifyDataSetChanged();
                             Toast.makeText(StockCountList.this, "Deleted!", Toast.LENGTH_SHORT).show();
@@ -154,7 +196,7 @@ public class StockCountList extends AppCompatActivity {
 
 
         img_home = findViewById(R.id.home);
-        title = findViewById(R.id.title);
+        title= findViewById(R.id.title);
         title.setText("Stock count");
         img_home.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,6 +276,13 @@ public class StockCountList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 closeSelection();
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAlert();
             }
         });
     }}
