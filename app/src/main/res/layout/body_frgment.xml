@@ -6,7 +6,7 @@
     android:background="@color/color_white">
 
     <LinearLayout
-        android:id="@+id/title2"
+        android:id="@+id/date"
         android:layout_width="match_parent"
         android:layout_height="25dp"
         android:background="@color/colorAccent"
@@ -64,7 +64,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:visibility="gone"
-        android:layout_below="@+id/title2"/>
+        android:layout_below="@+id/date"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_product"
         android:layout_width="match_parent"

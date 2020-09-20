@@ -33,7 +33,6 @@ import com.sangsolutions.powerbear.Adapter.CustomerAdapter.SearchCustomerAdapter
 import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProduct;
 import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProductAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
-import com.sangsolutions.powerbear.Services.PostStockCount;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -199,7 +198,7 @@ String customer = "0";
     et_customer_product = findViewById(R.id.customer_or_product);
     list= new ArrayList<>();
     list2 = new ArrayList<>();
-    title = findViewById(R.id.title2);
+    title = findViewById(R.id.date);
     from = findViewById(R.id.from);
     to = findViewById(R.id.to);
     il_from = findViewById(R.id.il_from);

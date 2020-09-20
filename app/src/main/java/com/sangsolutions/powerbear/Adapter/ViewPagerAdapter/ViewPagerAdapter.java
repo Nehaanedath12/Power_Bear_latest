@@ -31,10 +31,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         return FragmentList.size();
     }
 
-    public void add(Fragment fragment, String title,String warehouse,boolean EditMode,String voucherNo) {
+    public void add(Fragment fragment, String title,String warehouse,String EditMode,String voucherNo) {
         Bundle bundle = new Bundle();
         bundle.putString("warehouse",warehouse);
-        bundle.putBoolean("EditMode",EditMode);
+        bundle.putString("EditMode",EditMode);
         bundle.putString("voucherNo",voucherNo);
         fragment.setArguments(bundle);
         FragmentList.add(fragment);

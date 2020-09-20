@@ -14,7 +14,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:background="@color/colorAccent"
-        android:text="ABC warehouse"
+        android:text=""
         android:textSize="24sp"
         android:textColor="@color/color_white"
         android:textStyle="bold" />
@@ -34,37 +34,46 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/warehouse_name"
             android:layout_marginStart="10dp"
             android:layout_marginTop="30dp"
             android:focusable="false"
-            android:textSize="15dp"
+            android:textSize="15sp"
             android:id="@+id/voucher_no"
             android:textStyle="bold"
             android:layout_gravity="center_horizontal"
             android:hint="Voucher number : 1 " />
 
 
+
+
         <EditText
-            android:id="@+id/title2"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/warehouse_name"
             android:layout_marginStart="10dp"
             android:layout_marginTop="30dp"
             android:layout_gravity="center_horizontal"
             android:ems="12"
             android:focusable="false"
             android:hint="Date"
-            android:drawableRight="@drawable/ic_date"
+            android:drawableEnd="@drawable/ic_date"
             />
 
-
+        <Spinner
+            android:id="@+id/warehouse"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal"
+            android:ems="12"
+            android:gravity="center"
+            android:focusable="false"
+            />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/warehouse_name"
             android:layout_marginStart="10dp"
             android:layout_marginTop="30dp"
             android:layout_gravity="center_horizontal"

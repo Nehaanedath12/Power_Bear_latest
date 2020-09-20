@@ -8,12 +8,16 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,8 +32,10 @@ import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
 import com.sangsolutions.powerbear.Tools;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class HeaderFragment extends Fragment {
@@ -39,14 +45,34 @@ DatabaseHelper helper;
 String warehouse_id = "",voucherNo="",Date ="" ,Remarks="";
 Button close;
 Date c;
-
-boolean EditMode = false;
+Spinner sp_warehouse;
+    List<Warehouse> list;
+    WarehouseAdapter adapter;
+String EditMode = "";
 
     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
 
 
+public void LoadWarehouse(){
+        Cursor cursor = helper.GetWarehouse();
+        list.clear();
+        if(cursor!=null){
+            for (int i = 0; i < cursor.getCount(); i++) {
+                if(!cursor.getString(cursor.getColumnIndex("Name")).equals(" "))
+                list.add(new Warehouse(cursor.getString(cursor.getColumnIndex("MasterId")),cursor.getString(cursor.getColumnIndex("Name"))));
+
+                cursor.moveToNext();
+                if(cursor.getCount()==i+1){
+                    sp_warehouse.setAdapter(adapter);
+                }
+
+            }
+        }
+    }
+
+
 private void CloseAlert() {
-    if (EditMode) {
+    if (EditMode.equals("edit")||EditMode.equals("new")) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Exit?")
                 .setMessage("Do you want't to exit without saving?")
@@ -66,14 +92,14 @@ private void CloseAlert() {
                 .create()
                 .show();
     }
-    else {
+    else if(EditMode.equals("view")){
         StockCountSingleton.getInstance().clearList();
         Objects.requireNonNull(getActivity()).finish();
     }
 }
 
 
-private void setDataForEditing(String voucherNo){
+private void setData(String voucherNo){
     Cursor cursor = helper.GetHeaderData(voucherNo);
 
     if(cursor!=null && cursor.moveToFirst()){
@@ -82,13 +108,32 @@ private void setDataForEditing(String voucherNo){
                 Date  = Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("dDate")));
         Remarks  = cursor.getString(cursor.getColumnIndex("sRemarks"));
         date.setText(Date);
+
        PublicData.date = Date;
         PublicData.remakes = Remarks;
-        warehouse.setText(helper.GetWarehouseById(warehouse_id));
+        PublicData.warehouse = warehouse_id;
+
+       // warehouse.setText(helper.GetWarehouseById(warehouse_id));
         VoucherNo.setText("Voucher No :"+voucherNo);
+        warehouse.setText(helper.GetWarehouseById(warehouse_id));
         remarks.setText(Remarks);
 
     }
+
+}
+
+
+public void SetWarehouseSpinner(String warehouse_id){
+
+if(list.size()!=0){
+
+    for(int i = 0;i<list.size();i++){
+        if(list.get(i).getMasterId().equals(warehouse_id)){
+            warehouse.setText(list.get(i).getName());
+            sp_warehouse.setSelection(i);
+        }
+    }
+}
 
 }
 
@@ -96,41 +141,84 @@ private void setDataForEditing(String voucherNo){
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.header_frgment, container, false);
-    date =   view.findViewById(R.id.title2);
+    date =   view.findViewById(R.id.date);
     remarks = view.findViewById(R.id.remarks);
         warehouse = view.findViewById(R.id.warehouse_name);
         close = view.findViewById(R.id.goods_receipt);
         VoucherNo = view.findViewById(R.id.voucher_no);
+        sp_warehouse = view.findViewById(R.id.warehouse);
+
         helper = new DatabaseHelper(getActivity());
+
+        //setting default warehouse
+        PublicData.warehouse = "1";
+
+
     c = Calendar.getInstance().getTime();
     df = new SimpleDateFormat("dd-MM-yyyy");
 
-
+    list = new ArrayList<>();
+    adapter = new WarehouseAdapter(list);
+    LoadWarehouse();
     if(getArguments() != null) {
-        warehouse_id = getArguments().getString("warehouse");
-        EditMode = getArguments().getBoolean("EditMode");
-        voucherNo = getArguments().getString("voucherNo");
 
-        if(!EditMode){
+        EditMode = getArguments().getString("EditMode");
+
+
+        assert EditMode != null;
+        if(EditMode.equals("view")){
+            warehouse_id = getArguments().getString("warehouse");
+            voucherNo = getArguments().getString("voucherNo");
             remarks.setFocusable(false);
             date.setClickable(false);
-        if(!helper.GetWarehouseById(warehouse_id).equals("")){
-            warehouse.setText(helper.GetWarehouseById(warehouse_id));
-        }else{
-            Objects.requireNonNull(getActivity()).finish();
-        }
+            sp_warehouse.setEnabled(false);
+            sp_warehouse.setClickable(false);
+            if(!helper.GetWarehouseById(warehouse_id).equals("")){
+                warehouse.setText(helper.GetWarehouseById(warehouse_id));
+                SetWarehouseSpinner(warehouse_id);
+            }else{
+                Objects.requireNonNull(getActivity()).finish();
+            }
+            setData(voucherNo);
+
+        }else if(EditMode.equals("edit")){
+            warehouse_id = getArguments().getString("warehouse");
+            voucherNo = getArguments().getString("voucherNo");
+            if(!helper.GetWarehouseById(warehouse_id).equals("")){
+                warehouse.setText(helper.GetWarehouseById(warehouse_id));
+                SetWarehouseSpinner(warehouse_id);
+            }else{
+                Objects.requireNonNull(getActivity()).finish();
+            }
+            setData(voucherNo);
+
+        }else if(EditMode.equals("new")){
             VoucherNo.setText("Voucher No :"+helper.GetNewVoucherNo());
             date.setText(df.format(c));
-           PublicData.date = Tools.dateFormat(df.format(c));
-
-        }else {
-            date.setClickable(false);
-            setDataForEditing(voucherNo);
+            PublicData.date = Tools.dateFormat(df.format(c));
         }
+
+
+
     }else {
         Toast.makeText(getActivity(), "Didn't have data to load!", Toast.LENGTH_SHORT).show();
     Objects.requireNonNull(getActivity()).finish();
     }
+
+
+
+    sp_warehouse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                warehouse.setText(list.get(adapterView.getSelectedItemPosition()).getName());
+                PublicData.warehouse = list.get(adapterView.getSelectedItemPosition()).getMasterId();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    });
 
         date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,7 +243,7 @@ private void setDataForEditing(String voucherNo){
                 int day = now.get(Calendar.DAY_OF_MONTH);
                 DatePickerDialog datePickerDialog = new DatePickerDialog(Objects.requireNonNull(getActivity()), onDateSetListener, year, month, day);
                 datePickerDialog.setTitle("Select Date");
-                if(EditMode)
+                if(EditMode.equals("edit")||EditMode.equals("new"))
                 datePickerDialog.show();
             }
         });
@@ -186,4 +274,66 @@ private void setDataForEditing(String voucherNo){
     });
         return view;
     }
+
+
+
+    private class Warehouse {
+
+        String MasterId,Name;
+
+        public Warehouse(String masterId, String name) {
+            MasterId = masterId;
+            Name = name;
+        }
+
+        public String getMasterId() {
+            return MasterId;
+        }
+
+        public void setMasterId(String masterId) {
+            MasterId = masterId;
+        }
+
+        public String getName() {
+            return Name;
+        }
+
+        public void setName(String name) {
+            Name = name;
+        }
+    }
+
+
+    private class WarehouseAdapter extends BaseAdapter {
+        List<Warehouse> list;
+
+        public WarehouseAdapter(List<Warehouse> list) {
+            this.list = list;
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return list.get(position).MasterId;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = LayoutInflater.from(requireActivity()).inflate(R.layout.warehouse_item,parent,false);
+            TextView warehouse = view.findViewById(R.id.warehouse);
+            warehouse.setText(list.get(position).Name);
+            return view;
+        }
+    }
+
+
 }

@@ -80,7 +80,8 @@ public class BodyFragment extends Fragment {
     private ListProductAdapter listProductAdapter;
     private List<ListProduct> list;
     private ImageView add_new,save;
-    private boolean EditMode = false,EditModeInner = false;
+    private String EditMode = "";
+    private boolean EditModeInner = false;
     private String voucherNo = "";
     private int EditPosition = -1;
     private String warehouse_id = "";
@@ -113,20 +114,20 @@ private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
 
 
     private void Save(){
-      String s_date="",s_remarks="";
+      String s_date="",s_remarks="" ,s_warehouse ="";
 
             s_date= PublicData.date;
 
            s_remarks=PublicData.remakes;
 
-
+           s_warehouse = PublicData.warehouse;
 
         List<ListProduct> list = StockCountSingleton.getInstance().getList();
 
         if(!s_date.isEmpty()&&!list.isEmpty())
         {
             String str_date,s_voucher_no,str_remarks;
-            if(!EditMode){
+            if(EditMode.equals("new")){
                 str_date = s_date;
                 s_voucher_no = helper.GetNewVoucherNo();
                 str_remarks = s_remarks;
@@ -136,13 +137,17 @@ private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
                 str_remarks = s_remarks;
             }
             StockCount s = new StockCount();
-            if(EditMode) {
+            if(EditMode.equals("edit")) {
                 helper.DeleteStockCount(voucherNo);
             }
             for(int i = 0 ; i < list.size(); i ++){
                 s.setiVoucherNo(s_voucher_no);
                 s.setdDate(str_date);
-                s.setiWarehouse(warehouse_id);
+                if(!s_warehouse.isEmpty()) {
+                    s.setiWarehouse(s_warehouse);
+                }else {
+                    s.setiWarehouse(warehouse_id);
+                }
                 s.setiProduct(list.get(i).getiProduct());
                 s.setfQty(list.get(i).getQty());
                 s.setsUnit(list.get(i).getUnit());
@@ -415,15 +420,26 @@ if(!EditModeInner) {
         adapter = new SearchProductAdapter(getActivity(), productList);
 
         if(getArguments() != null) {
-            EditMode = getArguments().getBoolean("EditMode");
-            voucherNo = getArguments().getString("voucherNo");
-            warehouse_id = getArguments().getString("warehouse");
-                setDataForEditing(voucherNo);
-                SetRecyclerFromDB(voucherNo);
+            EditMode = getArguments().getString("EditMode");
 
-                if(!EditMode){
+            assert EditMode != null;
+            if(EditMode.equals("view")){
                     status.setVisibility(View.GONE);
                     fab_controller.setVisibility(View.GONE);
+                    voucherNo = getArguments().getString("voucherNo");
+                    warehouse_id = getArguments().getString("warehouse");
+                    setDataForEditing(voucherNo);
+                    SetRecyclerFromDB(voucherNo);
+
+
+                }else if(EditMode.equals("edit")){
+                    voucherNo = getArguments().getString("voucherNo");
+                    warehouse_id = getArguments().getString("warehouse");
+                    setDataForEditing(voucherNo);
+                    SetRecyclerFromDB(voucherNo);
+
+                }else {
+                    warehouse_id = PublicData.warehouse;
                 }
         }
 

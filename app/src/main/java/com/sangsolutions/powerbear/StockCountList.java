@@ -2,6 +2,7 @@ package com.sangsolutions.powerbear;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountListAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 
@@ -34,12 +36,55 @@ public class StockCountList extends AppCompatActivity {
     StockCountListAdapter adapter;
     DatabaseHelper helper;
     ImageView img_home;
+    ImageView close,delete;
+    AppBarLayout appbar;
+    Toolbar toolbar;
     List<com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList> list;
+
+
+    private boolean selection_active = false ;
+
+
+
+    private void initToolbar() {
+        appbar = findViewById(R.id.appbar);
+        close = findViewById(R.id.close);
+        delete = findViewById(R.id.delete);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        close.setVisibility(View.INVISIBLE);
+        delete.setVisibility(View.INVISIBLE);
+        appbar.setVisibility(View.GONE);
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         setRecyclerView();
+    }
+
+    public void closeSelection(){
+        adapter.clearSelections();
+        appbar.setVisibility(View.GONE);
+        selection_active = false;
+    }
+
+    private void toggleSelection(int position) {
+        appbar.setVisibility(View.VISIBLE);
+        adapter.toggleSelection(position);
+        int count = adapter.getSelectedItemCount();
+        if(count==0){
+            closeSelection();
+        }
+        toolbar.setTitle(count + " item selected ");
+        close.setVisibility(View.VISIBLE);
+        delete.setVisibility(View.VISIBLE);
+
+
+    }
+
+    private void enableActionMode(int position) {
+        toggleSelection(position);
     }
 
     public void setRecyclerView(){
@@ -101,9 +146,9 @@ public class StockCountList extends AppCompatActivity {
         setContentView(R.layout.activity_stock_count_list);
 
         add_new = findViewById(R.id.add_new);
-        title = findViewById(R.id.title2);
+        title = findViewById(R.id.date);
         empty_frame = findViewById(R.id.empty_frame);
-
+        initToolbar();
         helper = new DatabaseHelper(this);
 
 
@@ -130,7 +175,10 @@ public class StockCountList extends AppCompatActivity {
         add_new.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-        startActivity(new Intent(StockCountList.this,StockCount.class));
+             Intent intent = new Intent(StockCountList.this,StockCountWarehouse.class);
+             // new for new entry
+             intent.putExtra("EditMode", "new");
+             startActivity(intent);
            }
         });
 
@@ -151,7 +199,8 @@ public class StockCountList extends AppCompatActivity {
                             Intent intent1 = new Intent(StockCountList.this,StockCountWarehouse.class);
                              intent1.putExtra("warehouse",stockCountList.getWarehouseId());
                              intent1.putExtra("voucherNo",stockCountList.getVNo());
-                             intent1.putExtra("EditMode", true);
+                             //edit for editing
+                             intent1.putExtra("EditMode", "edit");
                             startActivity(intent1);
                         }
                         return true;
@@ -161,11 +210,30 @@ public class StockCountList extends AppCompatActivity {
 
             @Override
             public void onItemClick(View view, com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, int pos) {
-                Intent intent1 = new Intent(StockCountList.this,StockCountWarehouse.class);
-                intent1.putExtra("warehouse",stockCountList.getWarehouseId());
-                intent1.putExtra("voucherNo",stockCountList.getVNo());
-                intent1.putExtra("EditMode", false);
-                startActivity(intent1);
+
+              if(!selection_active) {
+                  Intent intent1 = new Intent(StockCountList.this, StockCountWarehouse.class);
+                  intent1.putExtra("warehouse", stockCountList.getWarehouseId());
+                  intent1.putExtra("voucherNo", stockCountList.getVNo());
+                  //view for viewing entry's
+                  intent1.putExtra("EditMode", "view");
+                  startActivity(intent1);
+              }else {
+                  enableActionMode(pos);
+              }
+            }
+
+            @Override
+            public void onItemLongClick(View view, com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, int pos) {
+                enableActionMode(pos);
+                selection_active = true;
+            }
+        });
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeSelection();
             }
         });
     }}

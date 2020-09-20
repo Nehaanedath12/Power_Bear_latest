@@ -26,9 +26,6 @@ import java.util.List;
 
 public class StockCount extends AppCompatActivity {
 ListView lv_warehouse ;
-List<Warehouse> list;
-DatabaseHelper helper;
-WarehouseAdapter adapter;
 TextView title;
 ImageView img_home;
 Handler handler;
@@ -36,7 +33,9 @@ Handler handler;
     private ImageView mProgressBar;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-   public void LoadWarehouse(){
+
+
+   /*public void LoadWarehouse(){
        Cursor cursor = helper.GetWarehouse();
        list.clear();
        if(cursor!=null){
@@ -52,7 +51,7 @@ Handler handler;
 
            }
        }
-   }
+   }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +61,6 @@ Handler handler;
         img_home = findViewById(R.id.home);
         title = findViewById(R.id.title);
         title.setText("Select warehouse");
-
-        helper = new DatabaseHelper(this);
-        list = new ArrayList<>();
-        adapter = new WarehouseAdapter(list);
 
         mProgressBar = findViewById(R.id.main_progress);
         mProgressBar.setBackgroundResource(R.drawable.loading);
@@ -84,7 +79,7 @@ Handler handler;
                     animationDrawable.start();
                     handler.postDelayed(this, 1000);
                 }else {
-                    LoadWarehouse();
+                    //LoadWarehouse();
                     handler.removeCallbacksAndMessages(null);
                 }
             }
@@ -124,7 +119,7 @@ Handler handler;
 
 
 
-private class Warehouse {
+/*private class Warehouse {
 
         String MasterId,Name;
 
@@ -180,6 +175,6 @@ private class WarehouseAdapter extends BaseAdapter {
             warehouse.setText(list.get(position).Name);
            return view;
         }
-    }
+    }*/
 
 }
