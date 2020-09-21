@@ -45,7 +45,6 @@ EditText date, narration;
 TextView warehouse,VoucherNo;
 DatabaseHelper helper;
 String warehouse_id = "",voucherNo="",Date ="" , Narration ="";
-Button close,save;
 Date c;
 Spinner sp_warehouse;
 List<Warehouse> list;
@@ -73,32 +72,7 @@ public void LoadWarehouse(){
     }
 
 
-private void CloseAlert() {
-    if (EditMode.equals("edit")||EditMode.equals("new")) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Exit?")
-                .setMessage("Do you want't to exit without saving?")
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        StockCountSingleton.getInstance().clearList();
-                        Objects.requireNonNull(getActivity()).finish();
-                    }
-                })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create()
-                .show();
-    }
-    else if(EditMode.equals("view")){
-        StockCountSingleton.getInstance().clearList();
-        Objects.requireNonNull(getActivity()).finish();
-    }
-}
+
 
 
 private void setData(String voucherNo){
@@ -139,86 +113,6 @@ if(list.size()!=0){
 
 }
 
-    private void SaveAlert(){
-        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
-        builder.setTitle("Save?")
-                .setMessage("Do you want't to save?")
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Save();
-                    }
-                })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create()
-                .show();
-    }
-
-
-    private void Save(){
-        String s_date="",s_narration="" ,s_warehouse ="";
-
-        s_date= PublicData.date;
-
-        s_narration=PublicData.narration;
-
-        s_warehouse = PublicData.warehouse;
-
-        List<ListProduct> list = StockCountSingleton.getInstance().getList();
-
-        if(!s_date.isEmpty()&&!list.isEmpty())
-        {
-            String str_date,s_voucher_no,str_narration;
-            if(EditMode.equals("new")){
-                str_date = s_date;
-                s_voucher_no = helper.GetNewVoucherNo();
-                str_narration = s_narration;
-            }else {
-                str_date = s_date;
-                s_voucher_no = voucherNo;
-                str_narration = s_narration;
-            }
-            StockCount s = new StockCount();
-            if(EditMode.equals("edit")) {
-                helper.DeleteStockCount(voucherNo);
-            }
-            for(int i = 0 ; i < list.size(); i ++){
-                s.setiVoucherNo(s_voucher_no);
-                s.setdDate(str_date);
-                if(!s_warehouse.isEmpty()) {
-                    s.setiWarehouse(s_warehouse);
-                }else {
-                    s.setiWarehouse(warehouse_id);
-                }
-                s.setiProduct(list.get(i).getiProduct());
-                s.setfQty(list.get(i).getQty());
-                s.setsUnit(list.get(i).getUnit());
-                s.setsNarration(str_narration);
-                s.setsRemarks(list.get(i).getsRemarks());
-                s.setdProcessedDate(df.format(c));
-                s.setiStatus("0");
-
-                helper.InsertStockCount(s);
-
-
-                if(list.size()==i+1){
-                    Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
-                    StockCountSingleton.getInstance().clearList();
-                    Objects.requireNonNull(getActivity()).finish();
-                }
-
-            }
-
-        }else {
-            Toast.makeText(getActivity(), "some data is missing", Toast.LENGTH_SHORT).show();
-        }
-
-    }
 
 @Nullable
     @Override
@@ -227,10 +121,8 @@ if(list.size()!=0){
     date =   view.findViewById(R.id.date);
     narration = view.findViewById(R.id.narration);
         warehouse = view.findViewById(R.id.warehouse_name);
-        close = view.findViewById(R.id.close);
         VoucherNo = view.findViewById(R.id.voucher_no);
         sp_warehouse = view.findViewById(R.id.warehouse);
-        save = view.findViewById(R.id.save);
         helper = new DatabaseHelper(getActivity());
 
         //setting default warehouse
@@ -256,7 +148,6 @@ if(list.size()!=0){
             date.setClickable(false);
             sp_warehouse.setEnabled(false);
             sp_warehouse.setClickable(false);
-            save.setVisibility(View.GONE);
             if(!helper.GetWarehouseById(warehouse_id).equals("")){
                 warehouse.setText(helper.GetWarehouseById(warehouse_id));
                 SetWarehouseSpinner(warehouse_id);
@@ -333,13 +224,6 @@ if(list.size()!=0){
         });
 
 
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CloseAlert();
-            }
-        });
-
     narration.addTextChangedListener(new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -354,13 +238,6 @@ if(list.size()!=0){
         @Override
         public void afterTextChanged(Editable editable) {
             PublicData.narration = editable.toString();
-        }
-    });
-
-    save.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            SaveAlert();
         }
     });
         return view;

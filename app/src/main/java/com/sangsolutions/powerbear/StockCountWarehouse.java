@@ -6,10 +6,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -35,6 +37,7 @@ public class StockCountWarehouse extends AppCompatActivity {
     String EditMode = "";
     DatabaseHelper helper;
     Toolbar toolbar;
+
     private     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat df;
     Date c;
@@ -98,8 +101,6 @@ public class StockCountWarehouse extends AppCompatActivity {
         }
 
     }
-
-
     private void SaveAlert(){
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         builder.setTitle("Save?")
@@ -119,13 +120,60 @@ public class StockCountWarehouse extends AppCompatActivity {
                 .create()
                 .show();
     }
-
-
+    private void CloseAlert() {
+        if (EditMode.equals("edit")||EditMode.equals("new")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Exit?")
+                    .setMessage("Do you want't to exit without saving?")
+                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            StockCountSingleton.getInstance().clearList();
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+        else if(EditMode.equals("view")){
+            StockCountSingleton.getInstance().clearList();
+           finish();
+        }
+    }
+    private void DeleteStockCountItemAlert(final String voucherNo) {
+        androidx.appcompat.app.AlertDialog.Builder builder= new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Delete!")
+                .setMessage("Do you want to delete this this entry?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(helper.DeleteStockCount(voucherNo)) {
+                            Toast.makeText(StockCountWarehouse.this, "Deleted!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+                }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).create().show();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_count_warehouse);
         ImageView img_save = findViewById(R.id.save);
+        ImageView img_forward = findViewById(R.id.forward);
+        ImageView img_backward = findViewById(R.id.backward);
+        ImageView img_delete = findViewById(R.id.delete);
+        ImageView img_close = findViewById(R.id.close);
         ImageView img_new = findViewById(R.id.add_new);
         toolbar = findViewById(R.id.toolbar);
         helper = new DatabaseHelper(this);
@@ -137,6 +185,7 @@ public class StockCountWarehouse extends AppCompatActivity {
             EditMode = intent.getStringExtra("EditMode");
 
 
+
             assert EditMode != null;
             if(EditMode.equals("edit")){
                 warehouse = intent.getStringExtra("warehouse");
@@ -144,12 +193,12 @@ public class StockCountWarehouse extends AppCompatActivity {
             }else if(EditMode.equals("view")){
                 warehouse = intent.getStringExtra("warehouse");
                 voucherNo = intent.getStringExtra("voucherNo");
-                toolbar.setVisibility(View.GONE);
+                img_save.setVisibility(View.GONE);
             }else {
                 warehouse = "";
                 voucherNo = "";
+                img_delete.setVisibility(View.GONE);
             }
-
 
         }
         tabLayout = findViewById(R.id.tabLay);
@@ -178,6 +227,34 @@ public class StockCountWarehouse extends AppCompatActivity {
                 voucherNo = "";
                 PublicData.clearData();
                 recreate();
+            }
+        });
+
+        img_forward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        img_backward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CloseAlert();
+            }
+        });
+
+        img_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeleteStockCountItemAlert(voucherNo);
             }
         });
 
