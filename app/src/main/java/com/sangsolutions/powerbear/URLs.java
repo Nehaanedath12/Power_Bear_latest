@@ -3,7 +3,7 @@ package com.sangsolutions.powerbear;
 public class URLs {
 
 
-/*    private static final String ip = "http://185.151.4.210:82/";
+/*  private static final String ip = "http://185.151.4.210:82/";
     private static final String domain = ip + "GD/";
     public static final String GeProducts = domain + "GetProducts.php";
     public static final String GePendingSO = domain + "GetPendingSO.php";

@@ -86,6 +86,7 @@ public class BodyFragment extends Fragment {
     private AlertDialog alertDialog;
     ImageView search;
     Date c;
+    int current_position=0;
 private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
 
     private static boolean hasPermissions(Context context, String... permissions) {
@@ -112,7 +113,7 @@ private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
 
 
     private void AddNewAlert(){
-        final int current_position=0;
+
         View view = LayoutInflater.from(requireActivity()).inflate(R.layout.add_stock_count_product_alert,null,false);
         ImageView close,add,barcode;
         Button btn_forward,btn_backward,btn_close;
@@ -134,6 +135,7 @@ private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
 
         AlertDialog.Builder builder= new AlertDialog.Builder(requireActivity(),android.R.style.Theme_Light_NoTitleBar_Fullscreen);
         builder.setView(view);
+        builder.setCancelable(false);
         alertDialog = builder.create();
         alertDialog.show();
 
@@ -142,6 +144,7 @@ private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
+                current_position = 0;
             }
         });
 
@@ -149,6 +152,7 @@ private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
+                current_position = 0;
             }
         });
 
@@ -224,7 +228,15 @@ private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
             @Override
             public void onClick(View view) {
                 if(list.size()>1){
+                    EditModeInner = true;
+                    EditPosition = current_position;
+                    if(current_position<list.size()) {
+                        et_barcode.setText(helper.GetBarcodeFromIProduct(list.get(current_position).getiProduct()));
+                        et_qty.setText(list.get(current_position).getQty());
+                        et_remarks.setText(list.get(current_position).getsRemarks());
+                        current_position++;
 
+                    }
                 }
             }
         });
@@ -232,6 +244,16 @@ private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
             @Override
             public void onClick(View view) {
                 if(list.size()>1){
+                        if(current_position>0) {
+                            current_position--;
+                            EditModeInner = true;
+                            EditPosition = current_position;
+                            Log.d("data",list.size()+" : "+current_position);
+                            et_barcode.setText(helper.GetBarcodeFromIProduct(list.get(current_position).getiProduct()));
+                            et_qty.setText(list.get(current_position).getQty());
+                            et_remarks.setText(list.get(current_position).getsRemarks());
+
+                        }
 
                 }
             }

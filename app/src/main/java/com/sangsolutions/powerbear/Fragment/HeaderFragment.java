@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,7 +111,7 @@ private void setData(String voucherNo){
         Narration = cursor.getString(cursor.getColumnIndex("sNarration"));
         date.setText(Date);
 
-       PublicData.date = Date;
+       PublicData.date = Tools.dateFormat(Date);
         PublicData.narration = Narration;
         PublicData.warehouse = warehouse_id;
 
