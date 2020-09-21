@@ -249,87 +249,8 @@ private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
         });
     }
 
-    private void Save(){
-      String s_date="",s_remarks="" ,s_warehouse ="";
-
-            s_date= PublicData.date;
-
-           s_remarks=PublicData.narration;
-
-           s_warehouse = PublicData.warehouse;
-
-        List<ListProduct> list = StockCountSingleton.getInstance().getList();
-
-        if(!s_date.isEmpty()&&!list.isEmpty())
-        {
-            String str_date,s_voucher_no,str_remarks;
-            if(EditMode.equals("new")){
-                str_date = s_date;
-                s_voucher_no = helper.GetNewVoucherNo();
-                str_remarks = s_remarks;
-            }else {
-                str_date = s_date;
-                s_voucher_no = voucherNo;
-                str_remarks = s_remarks;
-            }
-            StockCount s = new StockCount();
-            if(EditMode.equals("edit")) {
-                helper.DeleteStockCount(voucherNo);
-            }
-            for(int i = 0 ; i < list.size(); i ++){
-                s.setiVoucherNo(s_voucher_no);
-                s.setdDate(str_date);
-                if(!s_warehouse.isEmpty()) {
-                    s.setiWarehouse(s_warehouse);
-                }else {
-                    s.setiWarehouse(warehouse_id);
-                }
-                s.setiProduct(list.get(i).getiProduct());
-                s.setfQty(list.get(i).getQty());
-                s.setsUnit(list.get(i).getUnit());
-                s.setsRemarks(str_remarks);
-                s.setdProcessedDate(df.format(c));
-                s.setiStatus("0");
-
-                helper.InsertStockCount(s);
-
-
-                if(list.size()==i+1){
-                    Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
-                    StockCountSingleton.getInstance().clearList();
-                    Objects.requireNonNull(getActivity()).finish();
-                }
-
-            }
-
-        }else {
-            Toast.makeText(getActivity(), "some data is missing", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    private void SaveAlert(){
-       AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Save?")
-                .setMessage("Do you want't to save?")
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Save();
-                    }
-                })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create()
-                .show();
-    }
-
     private void setRecyclerView() {
-        String Name, Code, Qty;
+        String  Qty;
 
         Qty = map.get("Qty");
 
@@ -664,12 +585,6 @@ if(!EditModeInner) {
             }
         });
 
-       /* save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SaveAlert();
-            }
-        });*/
 
         return view;
     }
