@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/color_white"
     >
 <LinearLayout
     android:layout_width="match_parent"
@@ -56,15 +57,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
+
     <EditText
-    android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:id="@+id/barcode"
-    android:layout_marginTop="20dp"
-    android:hint="Barcode"
-    android:textSize="20sp"
-    android:textColor="@color/color_black"
-        />
+        android:id="@+id/barcode"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif-light"
+        android:hint="Barcode"
+        android:textColor="@color/color_black"
+        android:textSize="18sp" />
     <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -76,25 +78,28 @@
         android:layout_marginEnd="2dp"
         />
 </RelativeLayout>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:id="@+id/qty"
-        android:layout_marginTop="20dp"
-        android:hint="Quantity"
-        android:inputType="number"
-        android:textSize="20sp"
-        android:textColor="@color/color_black"/>
 
     <EditText
+        android:id="@+id/qty"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:id="@+id/narration"
         android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif-light"
+        android:hint="Quantity"
+        android:inputType="number"
+        android:textColor="@color/color_black"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/narration"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif-light"
         android:hint="Remarks"
-        android:textSize="20sp"
         android:maxLength="50"
-        android:textColor="@color/color_black"/>
+        android:textColor="@color/color_black"
+        android:textSize="16sp" />
 </LinearLayout>
     <SurfaceView
         android:id="@+id/surfaceView"

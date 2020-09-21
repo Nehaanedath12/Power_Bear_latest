@@ -7,4 +7,10 @@ public class PublicData {
     public static String warehouse;
 
 
+    public static void clearData(){
+        narration = "";
+        date = "";
+        warehouse = "";
+    }
+
 }
