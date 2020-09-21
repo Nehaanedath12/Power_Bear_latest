@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.material.appbar.AppBarLayout;
 import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountListAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
 
 
 import java.util.ArrayList;
@@ -150,6 +151,7 @@ public class StockCountList extends AppCompatActivity {
 
                 if (i + 1 == cursor.getCount()) {
                     rv.setAdapter(adapter);
+                    StockCountSingleton.getInstance().setList(list);
                     cursor.close();
                 }
             }
@@ -157,7 +159,6 @@ public class StockCountList extends AppCompatActivity {
             empty_frame.setVisibility(View.VISIBLE);
             rv.setAdapter(adapter);
         }
-
     }
 
     private void DeleteStockCountItemAlert(final com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, final int pos) {
@@ -171,6 +172,7 @@ public class StockCountList extends AppCompatActivity {
                             closeSelection();
                             list.remove(pos);
                             adapter.notifyDataSetChanged();
+                            StockCountSingleton.getInstance().setList(list);
                             Toast.makeText(StockCountList.this, "Deleted!", Toast.LENGTH_SHORT).show();
                         }
                     }

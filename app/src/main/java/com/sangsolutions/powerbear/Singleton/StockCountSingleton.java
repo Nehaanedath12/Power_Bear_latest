@@ -1,26 +1,28 @@
 package com.sangsolutions.powerbear.Singleton;
 
-import com.sangsolutions.powerbear.Adapter.ListProduct2.ListProduct;
+import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class StockCountSingleton {
+
     private static StockCountSingleton stockCountSingleton;
-    public List<ListProduct> list = new ArrayList<>();
+    public List<StockCountList> list = new ArrayList<>();
 
     private StockCountSingleton(){}
 
     public static StockCountSingleton getInstance(){
-        if(stockCountSingleton==null){
-            stockCountSingleton= new StockCountSingleton();
+        if(stockCountSingleton ==null){
+            stockCountSingleton = new StockCountSingleton();
         }
         return stockCountSingleton;
     }
 
-    public List<ListProduct> getList(){return list;}
-    public void setList(List<ListProduct> list){
+    public List<StockCountList> getList(){return list;}
+    public void setList(List<StockCountList> list){
         this.list = list;
     }
-    public void clearList(){list.clear();}
+    public void clearList(){list.clear();
+    }
 }

@@ -18,7 +18,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -44,10 +43,9 @@ import com.sangsolutions.powerbear.Adapter.ListProduct2.ListProductAdapter;
 import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProduct;
 import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProductAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
-import com.sangsolutions.powerbear.Database.StockCount;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
-import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
+import com.sangsolutions.powerbear.Singleton.StockCountProductSingleton;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -268,7 +266,7 @@ if(!EditModeInner) {
         et_remarks.setText("");
         map.clear();
         listProductAdapter.notifyDataSetChanged();
-        StockCountSingleton.getInstance().setList(list);
+        StockCountProductSingleton.getInstance().setList(list);
     }
 
     private void setDataForEditing(String voucherNo){
@@ -297,7 +295,7 @@ if(!EditModeInner) {
 
                     if (cursor.getCount() == i + 1) {
                         adapter.notifyDataSetChanged();
-                        StockCountSingleton.getInstance().setList(list);
+                        StockCountProductSingleton.getInstance().setList(list);
                     }
                 }
             }else {
@@ -325,7 +323,7 @@ if(!EditModeInner) {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         list.remove(pos);
-                        StockCountSingleton.getInstance().setList(list);
+                        StockCountProductSingleton.getInstance().setList(list);
                         listProductAdapter.notifyDataSetChanged();
 
                     }

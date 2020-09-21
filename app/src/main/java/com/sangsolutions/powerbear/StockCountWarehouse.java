@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -23,7 +22,7 @@ import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.StockCount;
 import com.sangsolutions.powerbear.Fragment.BodyFragment;
 import com.sangsolutions.powerbear.Fragment.HeaderFragment;
-import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
+import com.sangsolutions.powerbear.Singleton.StockCountProductSingleton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -51,7 +50,7 @@ public class StockCountWarehouse extends AppCompatActivity {
 
         s_warehouse = PublicData.warehouse;
 
-        List<ListProduct> list = StockCountSingleton.getInstance().getList();
+        List<ListProduct> list = StockCountProductSingleton.getInstance().getList();
 
         if(!s_date.isEmpty()&&!list.isEmpty())
         {
@@ -90,7 +89,7 @@ public class StockCountWarehouse extends AppCompatActivity {
 
                 if(list.size()==i+1){
                     Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
-                    StockCountSingleton.getInstance().clearList();
+                    StockCountProductSingleton.getInstance().clearList();
                     this.finish();
                 }
 
@@ -128,7 +127,7 @@ public class StockCountWarehouse extends AppCompatActivity {
                     .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            StockCountSingleton.getInstance().clearList();
+                            StockCountProductSingleton.getInstance().clearList();
                             finish();
                         }
                     })
@@ -142,7 +141,7 @@ public class StockCountWarehouse extends AppCompatActivity {
                     .show();
         }
         else if(EditMode.equals("view")){
-            StockCountSingleton.getInstance().clearList();
+            StockCountProductSingleton.getInstance().clearList();
            finish();
         }
     }
@@ -233,14 +232,14 @@ public class StockCountWarehouse extends AppCompatActivity {
         img_forward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Toast.makeText(StockCountWarehouse.this, getString(R.string.forward), Toast.LENGTH_SHORT).show();
             }
         });
 
         img_backward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Toast.makeText(StockCountWarehouse.this, getString(R.string.back), Toast.LENGTH_SHORT).show();
             }
         });
 
