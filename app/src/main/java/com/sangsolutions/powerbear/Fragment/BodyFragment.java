@@ -80,7 +80,6 @@ public class BodyFragment extends Fragment {
     private String voucherNo = "";
     private int EditPosition = -1;
     private String warehouse_id = "";
-    private RelativeLayout status;
     EditText et_barcode;
     EditText et_remarks,et_qty;
     private AlertDialog alertDialog;
@@ -116,13 +115,12 @@ private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
 
         View view = LayoutInflater.from(requireActivity()).inflate(R.layout.add_stock_count_product_alert,null,false);
         ImageView close,add,barcode;
-        Button btn_forward,btn_backward,btn_close;
+        ImageView btn_forward,btn_backward;
 
         product_name= view.findViewById(R.id.product_name);
         product_code = view.findViewById(R.id.product_code);
         rl_showProductInfo = view.findViewById(R.id.details);
         surfaceView = view.findViewById(R.id.surfaceView);
-        btn_close = view.findViewById(R.id.close);
         btn_forward = view.findViewById(R.id.forward);
         btn_backward =view.findViewById(R.id.backward);
         et_remarks = view.findViewById(R.id.narration);
@@ -138,15 +136,6 @@ private     @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
         builder.setCancelable(false);
         alertDialog = builder.create();
         alertDialog.show();
-
-
-        btn_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-                current_position = 0;
-            }
-        });
 
         close.setOnClickListener(new View.OnClickListener() {
             @Override
