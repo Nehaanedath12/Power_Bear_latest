@@ -693,7 +693,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetAllStockCountFromVoucher(String voucherNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM tbl_StockCount where "+I_STATUS+" = 0  and iVoucherNo ",new String[]{});
+        Cursor cursor = db.rawQuery("SELECT * FROM tbl_StockCount where "+I_STATUS+" = 0  and iVoucherNo = ? ",new String[]{voucherNo});
         if(cursor.moveToFirst())
             return cursor;
         else
