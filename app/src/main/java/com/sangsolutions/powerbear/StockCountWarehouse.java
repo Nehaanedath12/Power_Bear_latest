@@ -11,20 +11,24 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.sangsolutions.powerbear.Adapter.ListProduct2.ListProduct;
+import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList;
 import com.sangsolutions.powerbear.Adapter.ViewPagerAdapter.ViewPagerAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.StockCount;
 import com.sangsolutions.powerbear.Fragment.BodyFragment;
 import com.sangsolutions.powerbear.Fragment.HeaderFragment;
 import com.sangsolutions.powerbear.Singleton.StockCountProductSingleton;
+import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +44,7 @@ public class StockCountWarehouse extends AppCompatActivity {
     private     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat df;
     Date c;
+    int current_position=0;
 
     private void Save(){
         String s_date="",s_narration="" ,s_warehouse ="";
@@ -183,8 +188,6 @@ public class StockCountWarehouse extends AppCompatActivity {
 
             EditMode = intent.getStringExtra("EditMode");
 
-
-
             assert EditMode != null;
             if(EditMode.equals("edit")){
                 warehouse = intent.getStringExtra("warehouse");
@@ -218,28 +221,49 @@ public class StockCountWarehouse extends AppCompatActivity {
         img_new.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* PublicData.clearData();
                 warehouse = "";
                 voucherNo = "";
-                setUpViewPager(viewPager);*/
-                warehouse = "";
-                voucherNo = "";
+                EditMode = "new";
                 PublicData.clearData();
-                recreate();
+              setUpViewPager(viewPager);
             }
         });
 
         img_forward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(StockCountWarehouse.this, getString(R.string.forward), Toast.LENGTH_SHORT).show();
+                if(!EditMode.equals("new")){
+                    List<StockCountList> list = StockCountSingleton.getInstance().getList();
+                    if (list.size() > 1) {
+                        if (current_position < list.size()) {
+                            warehouse = list.get(current_position).getWarehouseId();
+                            voucherNo = list.get(current_position).getVNo();
+                            PublicData.clearData();
+                            setUpViewPager(viewPager);
+                            current_position++;
+                        }
+                    }
+                }
             }
         });
 
         img_backward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(StockCountWarehouse.this, getString(R.string.back), Toast.LENGTH_SHORT).show();
+                if(!EditMode.equals("new")) {
+                    List<StockCountList> list = StockCountSingleton.getInstance().getList();
+                    if (list.size() > 1) {
+                        if (current_position > 0) {
+                            current_position--;
+                            warehouse = list.get(current_position).getWarehouseId();
+                            voucherNo = list.get(current_position).getVNo();
+                            PublicData.clearData();
+                            setUpViewPager(viewPager);
+
+                        }
+
+                    }
+                }
             }
         });
 
