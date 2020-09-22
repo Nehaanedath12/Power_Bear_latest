@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+import android.widget.EdgeEffect;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -38,45 +39,55 @@ public class PostStockCount extends JobService {
 
     JobParameters params;
     DatabaseHelper helper;
-
     String sDeviceId="";
     List<String> list;
-    int upload_list_portion =0;
+    int upload_list_portion = 0;
     Cursor cursor;
     String UserId="";
     private void vouchersToBeUploaded() {
-        if (upload_list_portion<list.size()) {
-           cursor = helper.GetAllStockCountFromVoucher(list.get(upload_list_portion));
-           if (cursor != null) {
-                GetDataToUpload(cursor);
+        try {
+            if (upload_list_portion < list.size()) {
+                Log.d("list", String.valueOf(upload_list_portion));
+                cursor = helper.GetAllStockCountFromVoucher(list.get(upload_list_portion));
+                upload_list_portion++;
+                if (cursor != null) {
+                    GetDataToUpload(cursor);
+                }
+
             }
-            upload_list_portion++;
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
 
-public void uploadJsonStockCount(JSONObject jsonObject){
- /*   AndroidNetworking.post("http://"+new Tools().getIP(PostStockCount.this)+URLs.PostProductStock)
-            .addJSONObjectBody(jsonObject)
-            .setPriority(Priority.MEDIUM)
-            .build()
-            .getAsString(new StringRequestListener() {
-                @Override
-                public void onResponse(String response) {
+    public void uploadJsonStockCount(final JSONObject jsonObject) {
+        AndroidNetworking.post("http://" + new Tools().getIP(PostStockCount.this) + URLs.PostProductStock)
+                .addJSONObjectBody(jsonObject)
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsString(new StringRequestListener() {
+                    @Override
+                    public void onResponse(String response) {
 
-                Log.d("Upload",response);
+                        Log.d("Upload", response);
+                        try {
+                            if (Integer.parseInt(response) > 0) {
+                                helper.DeleteStockCount(jsonObject.getString("iVoucherNo"));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-                }
+                    @Override
+                    public void onError(ANError anError) {
 
-                @Override
-                public void onError(ANError anError) {
-
-                Log.d("error", anError.toString());
-                }
-            });*/
-    vouchersToBeUploaded();
- Log.d("data",jsonObject.toString());
-
+                        Log.d("error", anError.toString());
+                    }
+                });
+        vouchersToBeUploaded();
 }
 
 
@@ -143,7 +154,7 @@ public void uploadJsonStockCount(JSONObject jsonObject){
                list.add(cursor.getString(cursor.getColumnIndex("iVoucherNo")));
                 cursor.moveToNext();
                if(i+1==cursor.getCount()){
-                  // vouchersToBeUploaded();
+                   vouchersToBeUploaded();
                    cursor.close();
                }
            }
