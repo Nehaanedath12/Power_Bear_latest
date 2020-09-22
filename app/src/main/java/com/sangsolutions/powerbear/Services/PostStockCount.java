@@ -122,7 +122,6 @@ public class PostStockCount extends JobService {
 
 
 public void uploadJsonStockCount(JSONObject jsonObject){
-
     AndroidNetworking.post("http://"+new Tools().getIP(PostStockCount.this)+URLs.PostProductStock)
             .addJSONObjectBody(jsonObject)
             .setPriority(Priority.MEDIUM)
@@ -131,14 +130,14 @@ public void uploadJsonStockCount(JSONObject jsonObject){
                 @Override
                 public void onResponse(String response) {
 
-            Log.d("Upload",response);
+                Log.d("Upload",response);
 
                 }
 
                 @Override
                 public void onError(ANError anError) {
 
-                    Log.d("error", anError.toString());
+                Log.d("error", anError.toString());
                 }
             });
 
@@ -172,14 +171,14 @@ public void uploadJsonStockCount(JSONObject jsonObject){
                     jsonObject.put("fQty", cursor.getString(cursor.getColumnIndex("fQty")));
                     jsonObject.put("sUnit", cursor.getString(cursor.getColumnIndex("sUnit")));
                     if(cursor.getString(cursor.getColumnIndex("sRemarks"))==null){
-                        mainJsonObject.put("sRemarks","");
+                        jsonObject.put("sRemarks","");
                     }else {
-                        mainJsonObject.put("sRemarks", cursor.getString(cursor.getColumnIndex("sRemarks")));
+                        jsonObject.put("sRemarks", cursor.getString(cursor.getColumnIndex("sRemarks")));
                     }
                     jsonArray.put(jsonObject);
                     cursor.moveToNext();
                     if(cursor.getCount()==i+1){
-                        mainJsonObject.put("stockBody",jsonObject);
+                        mainJsonObject.put("stockBody",jsonArray);
                         uploadJsonStockCount(mainJsonObject);
                         Log.d("upload",mainJsonObject.toString());
                     }

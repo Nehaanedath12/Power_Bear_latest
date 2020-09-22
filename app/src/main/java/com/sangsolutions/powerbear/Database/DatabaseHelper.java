@@ -690,6 +690,18 @@ public boolean DeleteStockCount(String voucherNo){
             return null;
     }
 
+
+    public Cursor GetAllStockCountFromVoucher(String voucherNo) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM tbl_StockCount where "+I_STATUS+" = 0  and iVoucherNo ",new String[]{});
+        if(cursor.moveToFirst())
+            return cursor;
+        else
+            return null;
+    }
+
+
+
     public boolean DeleteStockCount(String vno, String product){
         this.db = getWritableDatabase();
         float status;
