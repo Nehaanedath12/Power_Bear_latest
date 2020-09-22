@@ -38,91 +38,25 @@ public class PostStockCount extends JobService {
 
     JobParameters params;
     DatabaseHelper helper;
-    Cursor cursor;
+
     String sDeviceId="";
-
-/*    public void UploadStockCount(final HashMap<String,String> map){
-        @SuppressLint("StaticFieldLeak") final AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected void onPreExecute() {
-                Date c = Calendar.getInstance().getTime();
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-
-                List<NameValuePair> list = new ArrayList<>();
-                list.add(new BasicNameValuePair("iVoucherNo",map.get("iVoucherNo")));
-                list.add(new BasicNameValuePair("dDate", df.format(c)));
-                list.add(new BasicNameValuePair("iWarehouse",map.get("iWarehouse")));
-                list.add(new BasicNameValuePair("iProduct",map.get("iProduct")));
-                list.add(new BasicNameValuePair("fQty",map.get("fQty")));
-                list.add(new BasicNameValuePair("sUnit",map.get("sUnit")));
-                list.add(new BasicNameValuePair("sRemarks",map.get("sRemarks")));
-                list.add(new BasicNameValuePair("sRemarks",map.get("sNarration")));
-                list.add(new BasicNameValuePair("iUser",helper.GetUserId()));
-                list.add(new BasicNameValuePair("dProcessedDate",map.get("dProcessedDate")));
-                list.add(new BasicNameValuePair("iStatus",map.get("iStatus")));
-                list.add(new BasicNameValuePair("sDeviceId", sDeviceId));
-
-                connection = new AsyncConnection(list, "http://"+new Tools().getIP(PostStockCount.this)+URLs.PostProductStock);
-
-
+    List<String> list;
+    int upload_list_portion =0;
+    Cursor cursor;
+    String UserId="";
+    private void vouchersToBeUploaded() {
+        if (upload_list_portion<list.size()) {
+           cursor = helper.GetAllStockCountFromVoucher(list.get(upload_list_portion));
+           if (cursor != null) {
+                GetDataToUpload(cursor);
             }
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-
-
-                response = connection.execute();
-                if(response.equals("1"))
-                if(helper.DeleteStockCount(map.get("iVoucherNo"),map.get("iProduct"))){
-                  Log.d("status change","true");
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                Log.d("Stock:", "data synced"+response);
-                syncStockCount();
-            }
-        };
-        asyncTask.execute();
-
+            upload_list_portion++;
+        }
 
     }
 
-    public void syncStockCount(){
-
-        if(cursor!=null) {
-            if (cursor.getCount()>stockCount) {
-                map.put("iVoucherNo", cursor.getString(cursor.getColumnIndex("iVoucherNo")));
-                map.put("iWarehouse", cursor.getString(cursor.getColumnIndex("iWarehouse")));
-                map.put("iProduct", cursor.getString(cursor.getColumnIndex("iProduct")));
-                map.put("fQty", cursor.getString(cursor.getColumnIndex("fQty")));
-                map.put("sUnit", cursor.getString(cursor.getColumnIndex("sUnit")));
-                map.put("sRemarks", cursor.getString(cursor.getColumnIndex("sRemarks")));
-                map.put("dProcessedDate", cursor.getString(cursor.getColumnIndex("dProcessedDate")));
-                map.put("iStatus", cursor.getString(cursor.getColumnIndex("iStatus")));
-
-                UploadStockCount(map);
-                cursor.moveToNext();
-                stockCount++;
-                if(cursor.getCount()<=stockCount){
-                    jobFinished(params,false);
-                    Toast.makeText(this, "Stock count uploaded!", Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        }else {
-            jobFinished(params,false);
-        }
-
-    }*/
-
-
 public void uploadJsonStockCount(JSONObject jsonObject){
-    AndroidNetworking.post("http://"+new Tools().getIP(PostStockCount.this)+URLs.PostProductStock)
+ /*   AndroidNetworking.post("http://"+new Tools().getIP(PostStockCount.this)+URLs.PostProductStock)
             .addJSONObjectBody(jsonObject)
             .setPriority(Priority.MEDIUM)
             .build()
@@ -139,13 +73,15 @@ public void uploadJsonStockCount(JSONObject jsonObject){
 
                 Log.d("error", anError.toString());
                 }
-            });
+            });*/
+    vouchersToBeUploaded();
+ Log.d("data",jsonObject.toString());
 
 }
 
 
 
-    public void GetDataToUpload(){
+    public void GetDataToUpload(Cursor cursor){
 
         JSONObject mainJsonObject = new JSONObject();
         if(cursor!=null) {
@@ -153,7 +89,7 @@ public void uploadJsonStockCount(JSONObject jsonObject){
                 mainJsonObject.put("iVoucherNo", cursor.getString(cursor.getColumnIndex("iVoucherNo")));
                 mainJsonObject.put("iDocDate", Tools.dateFormat(cursor.getString(cursor.getColumnIndex("dProcessedDate"))));
                 mainJsonObject.put("iWarehouse", cursor.getString(cursor.getColumnIndex("iWarehouse")));
-                mainJsonObject.put("iUser", helper.GetUserId());
+                mainJsonObject.put("iUser", UserId);
                 if(cursor.getString(cursor.getColumnIndex("sNarration"))==null){
                     mainJsonObject.put("sNarration","");
                 }else {
@@ -180,7 +116,6 @@ public void uploadJsonStockCount(JSONObject jsonObject){
                     if(cursor.getCount()==i+1){
                         mainJsonObject.put("stockBody",jsonArray);
                         uploadJsonStockCount(mainJsonObject);
-                        Log.d("upload",mainJsonObject.toString());
                     }
 
                 }
@@ -198,14 +133,25 @@ public void uploadJsonStockCount(JSONObject jsonObject){
     public boolean onStartJob(JobParameters params) {
         sDeviceId = Tools.getDeviceId(getApplicationContext());
         helper = new DatabaseHelper(this);
+        list = new ArrayList<>();
         this.params = params;
-         cursor = helper.GetAllStockCount();
+        Cursor cursor = helper.GetAllStockCountVoucher();
+        UserId = helper.GetUserId();
         if(cursor!=null) {
             cursor.moveToFirst();
+           for(int i=0;i<cursor.getCount();i++){
+               list.add(cursor.getString(cursor.getColumnIndex("iVoucherNo")));
+                cursor.moveToNext();
+               if(i+1==cursor.getCount()){
+                  // vouchersToBeUploaded();
+                   cursor.close();
+               }
+           }
         }
-        GetDataToUpload();
         return true;
     }
+
+
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {

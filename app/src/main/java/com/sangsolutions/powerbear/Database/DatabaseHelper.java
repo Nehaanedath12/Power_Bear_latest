@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 
 import androidx.annotation.Nullable;
@@ -252,9 +253,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String GetUserId() {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + TABLE_CURRENT_LOGIN, null);
-        if (cursor.moveToFirst())
-            return cursor.getString(cursor.getColumnIndex(USER_ID));
+        if (cursor.moveToFirst()) {
+            String UserId = cursor.getString(cursor.getColumnIndex(USER_ID));
+            cursor.close();
+            return UserId;
+        }
         else {
+            cursor.close();
             return null;
         }
     }
@@ -693,14 +698,21 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetAllStockCountFromVoucher(String voucherNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM tbl_StockCount where "+I_STATUS+" = 0  and iVoucherNo = ? ",new String[]{voucherNo});
+        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_STOCK_COUNT+" where "+I_STATUS+" = 0  and iVoucherNo = ? ",new String[]{voucherNo});
         if(cursor.moveToFirst())
             return cursor;
         else
             return null;
     }
 
-
+    public Cursor GetAllStockCountVoucher() {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT iVoucherNo FROM tbl_StockCount where iStatus = 0 GROUP BY iVoucherNo ",null);
+        if(cursor.moveToFirst())
+            return cursor;
+        else
+            return null;
+    }
 
     public boolean DeleteStockCount(String vno, String product){
         this.db = getWritableDatabase();
