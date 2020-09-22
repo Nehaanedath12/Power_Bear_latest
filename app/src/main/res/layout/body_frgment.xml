@@ -58,7 +58,7 @@
             android:gravity="center"
             />
         <ImageButton
-            android:id="@+id/menu"
+            android:id="@+id/delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
@@ -73,13 +73,14 @@
         android:layout_height="200dp"
         android:visibility="gone"
         android:layout_below="@+id/date"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_product"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/fab_controller"
         android:layout_below="@id/surfaceView"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="5dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_controller"
@@ -91,6 +92,37 @@
         app:fabCustomSize="50dp"
         app:useCompatPadding="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_delete_white"
+            app:fabCustomSize="50dp"
+            app:useCompatPadding="true"
+            android:layout_weight="1"
+            app:backgroundTint="@color/color_red_dark" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_close_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_close_30dp"
+            app:fabCustomSize="50dp"
+            app:useCompatPadding="true"
+            android:layout_weight="1"
+            app:backgroundTint="@color/color_green" />
+    </LinearLayout>
 </RelativeLayout>

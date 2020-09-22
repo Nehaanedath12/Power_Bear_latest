@@ -35,8 +35,8 @@ import java.util.Objects;
 
 public class HeaderFragment extends Fragment {
 EditText date, narration;
-TextView warehouse,VoucherNo;
-DatabaseHelper helper;
+    TextView VoucherNo;
+    DatabaseHelper helper;
 String warehouse_id = "",voucherNo="",Date ="" , Narration ="";
 Date c;
 Spinner sp_warehouse;
@@ -84,7 +84,6 @@ private void setData(String voucherNo){
 
        // warehouse.setText(helper.GetWarehouseById(warehouse_id));
         VoucherNo.setText("Voucher No :"+voucherNo);
-        warehouse.setText(helper.GetWarehouseById(warehouse_id));
         narration.setText(Narration);
 
     }
@@ -98,7 +97,6 @@ if(list.size()!=0){
 
     for(int i = 0;i<list.size();i++){
         if(list.get(i).getMasterId().equals(warehouse_id)){
-            warehouse.setText(list.get(i).getName());
             sp_warehouse.setSelection(i);
         }
     }
@@ -113,7 +111,6 @@ if(list.size()!=0){
         View view = inflater.inflate(R.layout.header_frgment, container, false);
     date =   view.findViewById(R.id.date);
     narration = view.findViewById(R.id.narration);
-        warehouse = view.findViewById(R.id.warehouse_name);
         VoucherNo = view.findViewById(R.id.voucher_no);
         sp_warehouse = view.findViewById(R.id.warehouse);
         helper = new DatabaseHelper(getActivity());
@@ -142,7 +139,6 @@ if(list.size()!=0){
             sp_warehouse.setEnabled(false);
             sp_warehouse.setClickable(false);
             if(!helper.GetWarehouseById(warehouse_id).equals("")){
-                warehouse.setText(helper.GetWarehouseById(warehouse_id));
                 SetWarehouseSpinner(warehouse_id);
             }else{
                 Objects.requireNonNull(getActivity()).finish();
@@ -153,7 +149,6 @@ if(list.size()!=0){
             warehouse_id = getArguments().getString("warehouse");
             voucherNo = getArguments().getString("voucherNo");
             if(!helper.GetWarehouseById(warehouse_id).equals("")){
-                warehouse.setText(helper.GetWarehouseById(warehouse_id));
                 SetWarehouseSpinner(warehouse_id);
             }else{
                 Objects.requireNonNull(getActivity()).finish();
@@ -178,7 +173,6 @@ if(list.size()!=0){
     sp_warehouse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                warehouse.setText(list.get(adapterView.getSelectedItemPosition()).getName());
                 PublicData.warehouse = list.get(adapterView.getSelectedItemPosition()).getMasterId();
         }
 

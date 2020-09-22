@@ -121,8 +121,6 @@ public class StockCountList extends AppCompatActivity {
         title_selection.setText("Selected "+count+" item's");
         close.setVisibility(View.VISIBLE);
         delete.setVisibility(View.VISIBLE);
-
-
     }
 
     private void enableActionMode(int position) {

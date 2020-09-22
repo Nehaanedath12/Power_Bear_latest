@@ -158,7 +158,7 @@ Context context;
             date = itemView.findViewById(R.id.date);
             totalQty = itemView.findViewById(R.id.total_qty);
             warehouse = itemView.findViewById(R.id.warehouse);
-            menu = itemView.findViewById(R.id.menu);
+            menu = itemView.findViewById(R.id.delete);
             card = itemView.findViewById(R.id.card);
             img_check = itemView.findViewById(R.id.check);
         }

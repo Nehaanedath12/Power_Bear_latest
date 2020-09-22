@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:layout_marginTop="2.5dp"
-    android:layout_marginBottom="2.5dp"
-    >
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="1dp"
+    android:id="@+id/ll_main">
+
+    <ImageView
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/check"
+        android:src="@drawable/ic_check_red"
+        android:gravity="center"
+        android:layout_gravity="center_vertical" />
+
     <TextView
         android:layout_weight="1"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:id="@+id/product_code"
         android:text="Code"
-        android:gravity="center"
-        />
+        android:gravity="center" />
+
     <TextView
         android:layout_weight="1"
         android:layout_width="80dp"
@@ -38,23 +48,21 @@
         android:layout_height="wrap_content"
         android:id="@+id/product_qty"
        android:text="Qty"
-        android:gravity="center"
-        />
+        android:gravity="center" />
+
     <TextView
         android:layout_weight="1"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:id="@+id/product_remarks"
         android:text="Remarks"
-        android:gravity="center"
-        />
+        android:gravity="center" />
 
-    <ImageButton
-        android:id="@+id/menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/delete"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_gravity="center_vertical|end"
-        android:background="@null"
         android:layout_weight="1"
-        android:src="@drawable/menu"/>
+        android:src="@drawable/ic_delete" />
 </LinearLayout>
