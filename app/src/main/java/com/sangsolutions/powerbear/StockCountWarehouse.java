@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -28,7 +27,6 @@ import com.sangsolutions.powerbear.Singleton.StockCountProductSingleton;
 import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -169,11 +167,17 @@ public class StockCountWarehouse extends AppCompatActivity {
             }
         }).create().show();
     }
+
+    @Override
+    public void onBackPressed() {
+       CloseAlert();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_count_warehouse);
-        ImageView img_save = findViewById(R.id.save);
+        final ImageView img_save = findViewById(R.id.save);
         ImageView img_forward = findViewById(R.id.forward);
         ImageView img_backward = findViewById(R.id.backward);
         ImageView img_delete = findViewById(R.id.delete);
@@ -224,7 +228,11 @@ public class StockCountWarehouse extends AppCompatActivity {
                 warehouse = "";
                 voucherNo = "";
                 EditMode = "new";
+                if(img_save.getVisibility()==View.GONE || img_save.getVisibility()==View.INVISIBLE){
+                    img_save.setVisibility(View.VISIBLE);
+                }
                 PublicData.clearData();
+                StockCountProductSingleton.getInstance().clearList();
               setUpViewPager(viewPager);
             }
         });
