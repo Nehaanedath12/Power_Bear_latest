@@ -107,10 +107,10 @@ Context context;
     holder.totalQty.setText("Total Qty :"+list.get(position).TotalQty);
     holder.warehouse.setText("Warehouse :"+list.get(position).Warehouse);
 
-        holder.menu.setOnClickListener(new View.OnClickListener() {
+        holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickListener.onMenuItemClick(v, stockCountList, position);
+                onClickListener.onDeleteItemClick(v, stockCountList, position);
             }
         });
 
@@ -141,15 +141,16 @@ Context context;
     }
 
     public interface OnClickListener {
-        void onMenuItemClick(View view, StockCountList stockCountList, int pos);
+        void onDeleteItemClick(View view, StockCountList stockCountList, int pos);
+
         void onItemClick(View view, StockCountList stockCountList, int pos);
         void onItemLongClick(View view, StockCountList stockCountList, int pos);
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView Vno,date,totalQty,warehouse;
-        ImageButton menu;
+        TextView Vno,date,totalQty, warehouse;
+        ImageButton delete;
         CardView card;
         ImageView img_check;
         public ViewHolder(@NonNull View itemView) {
@@ -158,7 +159,7 @@ Context context;
             date = itemView.findViewById(R.id.date);
             totalQty = itemView.findViewById(R.id.total_qty);
             warehouse = itemView.findViewById(R.id.warehouse);
-            menu = itemView.findViewById(R.id.delete);
+            delete = itemView.findViewById(R.id.delete);
             card = itemView.findViewById(R.id.card);
             img_check = itemView.findViewById(R.id.check);
         }

@@ -143,10 +143,7 @@ public class StockCountWarehouse extends AppCompatActivity {
                     .create()
                     .show();
         }
-        else if(EditMode.equals("view")){
-            StockCountProductSingleton.getInstance().clearList();
-           finish();
-        }
+
     }
     private void DeleteStockCountItemAlert(final String voucherNo) {
         androidx.appcompat.app.AlertDialog.Builder builder= new androidx.appcompat.app.AlertDialog.Builder(this);
@@ -196,10 +193,6 @@ public class StockCountWarehouse extends AppCompatActivity {
             if(EditMode.equals("edit")){
                 warehouse = intent.getStringExtra("warehouse");
                 voucherNo = intent.getStringExtra("voucherNo");
-            }else if(EditMode.equals("view")){
-                warehouse = intent.getStringExtra("warehouse");
-                voucherNo = intent.getStringExtra("voucherNo");
-                img_save.setVisibility(View.GONE);
             }else {
                 warehouse = "";
                 voucherNo = "";

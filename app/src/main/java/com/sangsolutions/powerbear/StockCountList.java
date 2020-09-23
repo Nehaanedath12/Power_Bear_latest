@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -169,7 +168,7 @@ public class StockCountList extends AppCompatActivity {
                         if(helper.DeleteStockCount(stockCountList.getVNo())) {
                             closeSelection();
                             list.remove(pos);
-                            adapter.notifyDataSetChanged();
+                            setRecyclerView();
                             StockCountSingleton.getInstance().setList(list);
                             Toast.makeText(StockCountList.this, "Deleted!", Toast.LENGTH_SHORT).show();
                         }
@@ -228,26 +227,8 @@ public class StockCountList extends AppCompatActivity {
 
         adapter.setOnClickListener(new StockCountListAdapter.OnClickListener() {
             @Override
-            public void onMenuItemClick(View view, final com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, final int pos) {
-                PopupMenu popupMenu = new PopupMenu(StockCountList.this, view);
-                popupMenu.inflate(R.menu.edit_delete_menu);
-                popupMenu.show();
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                      if (item.getItemId() == R.id.delete) {
-                          DeleteStockCountItemAlert(stockCountList, pos);
-                        } else if (item.getItemId() == R.id.edit) {
-                            Intent intent1 = new Intent(StockCountList.this,StockCountWarehouse.class);
-                             intent1.putExtra("warehouse",stockCountList.getWarehouseId());
-                             intent1.putExtra("voucherNo",stockCountList.getVNo());
-                             //edit for editing
-                             intent1.putExtra("EditMode", "edit");
-                            startActivity(intent1);
-                        }
-                        return true;
-                    }
-                });
+            public void onDeleteItemClick(View view, final com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, final int pos) {
+                DeleteStockCountItemAlert(stockCountList, pos);
             }
 
             @Override
@@ -257,8 +238,7 @@ public class StockCountList extends AppCompatActivity {
                   Intent intent1 = new Intent(StockCountList.this, StockCountWarehouse.class);
                   intent1.putExtra("warehouse", stockCountList.getWarehouseId());
                   intent1.putExtra("voucherNo", stockCountList.getVNo());
-                  //view for viewing entry's
-                  intent1.putExtra("EditMode", "view");
+                  intent1.putExtra("EditMode", "edit");
                   startActivity(intent1);
               }else {
                   enableActionMode(pos);

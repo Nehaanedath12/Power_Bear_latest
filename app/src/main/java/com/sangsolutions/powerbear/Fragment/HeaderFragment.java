@@ -131,31 +131,17 @@ if(list.size()!=0){
 
 
         assert EditMode != null;
-        if(EditMode.equals("view")){
+        if (EditMode.equals("edit")) {
             warehouse_id = getArguments().getString("warehouse");
             voucherNo = getArguments().getString("voucherNo");
-            narration.setFocusable(false);
-            date.setClickable(false);
-            sp_warehouse.setEnabled(false);
-            sp_warehouse.setClickable(false);
-            if(!helper.GetWarehouseById(warehouse_id).equals("")){
+            if (!helper.GetWarehouseById(warehouse_id).equals("")) {
                 SetWarehouseSpinner(warehouse_id);
-            }else{
+            } else {
                 Objects.requireNonNull(getActivity()).finish();
             }
             setData(voucherNo);
 
-        }else if(EditMode.equals("edit")){
-            warehouse_id = getArguments().getString("warehouse");
-            voucherNo = getArguments().getString("voucherNo");
-            if(!helper.GetWarehouseById(warehouse_id).equals("")){
-                SetWarehouseSpinner(warehouse_id);
-            }else{
-                Objects.requireNonNull(getActivity()).finish();
-            }
-            setData(voucherNo);
-
-        }else if(EditMode.equals("new")){
+        } else if (EditMode.equals("new")) {
             VoucherNo.setText("Voucher No :"+helper.GetNewVoucherNo());
             date.setText(df.format(c));
             PublicData.date = Tools.dateFormat(df.format(c));

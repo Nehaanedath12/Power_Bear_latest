@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.icu.text.Edits;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -636,24 +634,15 @@ if(!EditModeInner) {
             EditMode = getArguments().getString("EditMode");
 
             assert EditMode != null;
-            if (EditMode.equals("view")) {
-                //  status.setVisibility(View.GONE);
-                fab_controller.setVisibility(View.GONE);
+            if (EditMode.equals("edit")) {
                 voucherNo = getArguments().getString("voucherNo");
                 warehouse_id = getArguments().getString("warehouse");
-                    setDataForEditing(voucherNo);
-                    SetRecyclerFromDB(voucherNo);
+                setDataForEditing(voucherNo);
+                SetRecyclerFromDB(voucherNo);
 
-
-                }else if(EditMode.equals("edit")){
-                    voucherNo = getArguments().getString("voucherNo");
-                    warehouse_id = getArguments().getString("warehouse");
-                    setDataForEditing(voucherNo);
-                    SetRecyclerFromDB(voucherNo);
-
-                }else {
-                    warehouse_id = PublicData.warehouse;
-                }
+            } else {
+                warehouse_id = PublicData.warehouse;
+            }
         }
 
         listProductAdapter = new ListProductAdapter(getActivity(), listProduct, EditMode);
