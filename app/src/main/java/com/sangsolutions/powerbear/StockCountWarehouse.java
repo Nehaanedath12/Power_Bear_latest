@@ -122,8 +122,36 @@ public class StockCountWarehouse extends AppCompatActivity {
                 .create()
                 .show();
     }
+
+
+    private void NewVoucherWaringAlert() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Warning!")
+                .setMessage("Do you want to save before starting new?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        warehouse = "";
+                        voucherNo = "";
+                        EditMode = "new";
+                        PublicData.clearData();
+                        StockCountProductSingleton.getInstance().clearList();
+                        setUpViewPager(viewPager);
+                    }
+                })
+                .create()
+                .show();
+    }
+
     private void CloseAlert() {
-        if (EditMode.equals("edit")||EditMode.equals("new")) {
+        if (EditMode.equals("edit") || EditMode.equals("new")) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Exit?")
                     .setMessage("Do you want't to exit without saving?")
@@ -218,15 +246,10 @@ public class StockCountWarehouse extends AppCompatActivity {
         img_new.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                warehouse = "";
-                voucherNo = "";
-                EditMode = "new";
-                if(img_save.getVisibility()==View.GONE || img_save.getVisibility()==View.INVISIBLE){
-                    img_save.setVisibility(View.VISIBLE);
+                List<ListProduct> list = StockCountProductSingleton.getInstance().getList();
+                if (!list.isEmpty()) {
+                    NewVoucherWaringAlert();
                 }
-                PublicData.clearData();
-                StockCountProductSingleton.getInstance().clearList();
-              setUpViewPager(viewPager);
             }
         });
 
