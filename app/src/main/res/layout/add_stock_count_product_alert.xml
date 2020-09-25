@@ -121,14 +121,20 @@
         android:textColor="@color/color_black"
         android:textSize="16sp" />
 </LinearLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/details"
+        android:layout_below="@id/ll_1"
+        android:visibility="gone"
+        android:id="@+id/frame_scan"
+        >
     <SurfaceView
         android:id="@+id/surfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ll_1"
-        android:layout_above="@id/details"
-        android:visibility="gone"
         />
+    </FrameLayout>
     <RelativeLayout
         android:id="@+id/details"
         android:layout_width="match_parent"

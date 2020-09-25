@@ -21,6 +21,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,6 +48,7 @@ import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProductAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
+import com.sangsolutions.powerbear.ScanDrawable;
 import com.sangsolutions.powerbear.Singleton.StockCountProductSingleton;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -85,6 +87,7 @@ public class BodyFragment extends Fragment {
     private AlertDialog alertDialog;
     private ImageView search;
     private Date c;
+    private FrameLayout frame_scan;
     int current_position = 0;
     Animation move_down_anim, move_up_anim;//clock_wise_rotate_anim,//anti_clock_wise_rotate_anim;
     private boolean selection_active = false;
@@ -224,6 +227,7 @@ public class BodyFragment extends Fragment {
         product_code = view.findViewById(R.id.product_code);
         rl_showProductInfo = view.findViewById(R.id.details);
         surfaceView = view.findViewById(R.id.surfaceView);
+        frame_scan = view.findViewById(R.id.frame_scan);
         btn_forward = view.findViewById(R.id.forward);
         btn_backward =view.findViewById(R.id.backward);
         et_remarks = view.findViewById(R.id.narration);
@@ -276,7 +280,7 @@ public class BodyFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (surfaceView.getVisibility() == View.VISIBLE) {
+                if (frame_scan.getVisibility() == View.VISIBLE) {
                     if (cameraSource != null) {
                         try {
                             cameraSource.stop();
@@ -285,9 +289,10 @@ public class BodyFragment extends Fragment {
                         }
 
                     }
-                    surfaceView.setVisibility(View.GONE);
+                    frame_scan.setVisibility(View.GONE);
                 } else {
-                    surfaceView.setVisibility(View.VISIBLE);
+                    frame_scan.setVisibility(View.VISIBLE);
+                    frame_scan.setForeground(new ScanDrawable(requireActivity(),15));
                     if (!hasPermissions(getActivity(), PERMISSIONS)) {
                         ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, 100);
                     } else {
@@ -457,7 +462,7 @@ if(!EditModeInner) {
                 } else {
                     try {
                         if (cameraSource != null) {
-                            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                            if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                                 return;
                             }
                             cameraSource.start(surfaceView.getHolder());

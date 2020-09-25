@@ -231,7 +231,7 @@ public class StockCountWarehouse extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLay);
         viewPager = findViewById(R.id.viewpager);
         tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF0000"));
-        tabLayout.setTabTextColors(Color.parseColor("#727272"), Color.parseColor("#ffffff"));
+        tabLayout.setTabTextColors(Color.parseColor("#e58989"), Color.parseColor("#ffffff"));
         tabLayout.setupWithViewPager(viewPager);
 
         setUpViewPager(viewPager);
