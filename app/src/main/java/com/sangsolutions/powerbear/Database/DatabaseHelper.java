@@ -323,7 +323,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return  null;
         }
     }
-
+    public String GetProductUnit(String Barcode){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT "+UNIT+" FROM "+TABLE_PRODUCT+" WHERE "+BARCODE+" = ? ",new String[]{Barcode});
+        if (cursor.moveToFirst()) {
+            return cursor.getString(cursor.getColumnIndex(UNIT));
+        }else {
+            return  "";
+        }
+    }
     public String GetProductName(String iProduct){
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select "+NAME+" from "+TABLE_PRODUCT+" where "+MASTER_ID+" = ? ",new String[]{iProduct});

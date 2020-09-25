@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ import com.sangsolutions.powerbear.Adapter.ListProduct2.ListProduct;
 import com.sangsolutions.powerbear.Adapter.ListProduct2.ListProductAdapter;
 import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProduct;
 import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProductAdapter;
+import com.sangsolutions.powerbear.Adapter.UnitAdapter.UnitAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
@@ -53,6 +55,7 @@ import com.sangsolutions.powerbear.Singleton.StockCountProductSingleton;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -89,6 +92,7 @@ public class BodyFragment extends Fragment {
     private Date c;
     private FrameLayout frame_scan;
     int current_position = 0;
+    private Spinner sp_unit;
     Animation move_down_anim, move_up_anim;//clock_wise_rotate_anim,//anti_clock_wise_rotate_anim;
     private boolean selection_active = false;
     private @SuppressLint("SimpleDateFormat")
@@ -103,6 +107,23 @@ public class BodyFragment extends Fragment {
             }
         }
         return true;
+    }
+
+
+    public void SetUnit(String units,int position) {
+        List<String> list;
+        list = Arrays.asList(units.split("\\s*,\\s*"));
+        UnitAdapter unitAdapter = new UnitAdapter(list, requireActivity());
+        sp_unit.setAdapter(unitAdapter);
+
+        if(listProduct.size()>0){
+            if(position != -1)
+            for(int i = 0 ;i< list.size();i++){
+                if(list.get(i).equals(listProduct.get(position).getUnit())){
+                    sp_unit.setSelection(i);
+                }
+            }
+        }
     }
 
     public void deleteAlert() {
@@ -217,11 +238,12 @@ public class BodyFragment extends Fragment {
     }
 
 
-    private void AddNewAlert() {
+    private void AddNewAlert(final int position) {
 
         View view = LayoutInflater.from(requireActivity()).inflate(R.layout.add_stock_count_product_alert, null, false);
-        ImageView close, add, barcode;
+        final ImageView close, add, barcode;
         ImageView btn_forward, btn_backward;
+
 
         product_name = view.findViewById(R.id.product_name);
         product_code = view.findViewById(R.id.product_code);
@@ -235,6 +257,7 @@ public class BodyFragment extends Fragment {
         et_barcode = view.findViewById(R.id.barcode);
         add = view.findViewById(R.id.new_item);
         search = view.findViewById(R.id.search);
+        sp_unit = view.findViewById(R.id.unit);
         barcode = view.findViewById(R.id.img_barcode);
         close = view.findViewById(R.id.close_alert);
 
@@ -265,7 +288,7 @@ public class BodyFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                GetProductInfoToMap(s.toString());
+                GetProductInfoToMap(s.toString(),position);
             }
         });
         search.setOnClickListener(new View.OnClickListener() {
@@ -331,6 +354,7 @@ public class BodyFragment extends Fragment {
                         et_barcode.setText(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct()));
                         et_qty.setText(listProduct.get(current_position).getQty());
                         et_remarks.setText(listProduct.get(current_position).getsRemarks());
+                        SetUnit(helper.GetProductUnit(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct())),position);
                         current_position++;
 
                     }
@@ -345,9 +369,9 @@ public class BodyFragment extends Fragment {
                         current_position--;
                         EditModeInner = true;
                         EditPosition = current_position;
-                        Log.d("data", listProduct.size() + " : " + current_position);
                         et_barcode.setText(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct()));
                         et_qty.setText(listProduct.get(current_position).getQty());
+                        SetUnit(helper.GetProductUnit(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct())),position);
                         et_remarks.setText(listProduct.get(current_position).getsRemarks());
 
                     }
@@ -363,10 +387,10 @@ public class BodyFragment extends Fragment {
         Qty = map.get("Qty");
 
 if(!EditModeInner) {
-    listProduct.add(new ListProduct(map.get("Name"), map.get("Code"), Qty, map.get("Unit"), map.get("iProduct"), map.get("sRemarks")));
+    listProduct.add(new ListProduct(map.get("Name"), map.get("Code"), Qty,sp_unit.getSelectedItem().toString(), map.get("iProduct"), map.get("sRemarks")));
 }else {
     if(EditPosition!= -1)
-        listProduct.set(EditPosition, new ListProduct(map.get("Name"), map.get("Code"), Qty, map.get("Unit"), map.get("iProduct"), map.get("sRemarks")));
+        listProduct.set(EditPosition, new ListProduct(map.get("Name"), map.get("Code"), Qty, sp_unit.getSelectedItem().toString(), map.get("iProduct"), map.get("sRemarks")));
 }
         EditModeInner = false;
         EditPosition = -1 ;
@@ -374,6 +398,7 @@ if(!EditModeInner) {
         et_qty.setText("");
         et_barcode.setText("");
         et_remarks.setText("");
+        SetUnit("",-1);
         map.clear();
         listProductAdapter.notifyDataSetChanged();
         StockCountProductSingleton.getInstance().setList(listProduct);
@@ -416,7 +441,7 @@ if(!EditModeInner) {
     }
 
     private void SetDataToEdit(ListProduct product, int pos) {
-        AddNewAlert();
+        AddNewAlert(pos);
         if(alertDialog.isShowing()) {
             et_barcode.setText(helper.GetBarcodeFromIProduct(product.getiProduct()));
             et_qty.setText(product.getQty());
@@ -497,6 +522,8 @@ if(!EditModeInner) {
                         @Override
                         public void run() {
                             et_barcode.setText(barcode.valueAt(0).displayValue);
+                            SetUnit(helper.GetProductUnit(barcode.valueAt(0).displayValue),-1);
+
                         }
                     });
                 }
@@ -525,6 +552,7 @@ if(!EditModeInner) {
                         @Override
                         public void onItemClick(View view, SearchProduct search_item, int pos) {
                             et_barcode.setText(search_item.getBarcode());
+                            SetUnit(helper.GetProductUnit(search_item.getBarcode()),-1);
                             dialog.dismiss();
                         }
                     });
@@ -541,7 +569,7 @@ if(!EditModeInner) {
     }
 
     @SuppressLint("SetTextI18n")
-    private void GetProductInfoToMap(String barcode) {
+    private void GetProductInfoToMap(String barcode,int position) {
 
         Cursor cursor = helper.GetProductInfo(barcode);
 
@@ -551,9 +579,11 @@ if(!EditModeInner) {
             map.put("Name",cursor.getString(cursor.getColumnIndex("Name")));
             map.put("Code",cursor.getString(cursor.getColumnIndex("Code")));
             map.put("Unit",cursor.getString(cursor.getColumnIndex("Unit")));
+
             map.put("iProduct",cursor.getString(cursor.getColumnIndex("MasterId")));
             product_name.setText("Name : "+map.get("Name"));
             product_code.setText(map.get("Code"));
+            SetUnit(helper.GetProductUnit(barcode),position);
         }else {
 
             rl_showProductInfo.setVisibility(View.GONE);
@@ -680,7 +710,7 @@ if(!EditModeInner) {
         fab_controller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddNewAlert();
+                AddNewAlert(-1);
             }
         });
 
@@ -700,8 +730,5 @@ if(!EditModeInner) {
         });
         return view;
     }
-
-
-
 
 }
