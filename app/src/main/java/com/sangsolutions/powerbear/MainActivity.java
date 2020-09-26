@@ -2,10 +2,14 @@ package com.sangsolutions.powerbear;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +20,8 @@ import android.widget.Toast;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.User;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 Button login_btn;
 EditText login_name,password;
@@ -24,20 +30,36 @@ DatabaseHelper helper;
     SharedPreferences.Editor editor;
 ImageView settings;
 
+/*    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
+    }*/
 
 public void syncData(){
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         ScheduleJob scheduleJob = new ScheduleJob();
+        if(!Objects.equals(preferences.getString("syncDate", ""),String.valueOf(DateFormat.format("yyyy-MM-dd", new java.util.Date())))) {
+            if (preferences.getBoolean("WarehouseFinished", false)
+                    && preferences.getBoolean("pendingPOFinished", false)
+                    && preferences.getBoolean("pendingSOFinished", false)) {
 
-        if(preferences.getBoolean("WarehouseFinished",false)
-                &&preferences.getBoolean("pendingPOFinished",false)
-                &&preferences.getBoolean("pendingSOFinished",false)){
-
+            } else {
+                scheduleJob.SyncUserData(this);
+                editor.putBoolean("WarehouseFinished", false).apply();
+                editor.putBoolean("pendingPOFinished", false).apply();
+                editor.putBoolean("pendingSOFinished", false).apply();
+                editor.putString("syncDate", "").apply();
+            }
         }else {
             scheduleJob.SyncUserData(this);
-            editor.putBoolean("WarehouseFinished",false).apply();
-            editor.putBoolean("pendingPOFinished",false).apply();
-            editor.putBoolean("pendingSOFinished",false).apply();
+            editor.putBoolean("WarehouseFinished", false).apply();
+            editor.putBoolean("pendingPOFinished", false).apply();
+            editor.putBoolean("pendingSOFinished", false).apply();
         }
 
     }else {
@@ -65,6 +87,7 @@ public void syncData(){
     helper = new DatabaseHelper(this);
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
         editor = preferences.edit();
+        editor.putString("syncDate", "").apply();
 
         if (helper.GetLoginStatus()) {
             startActivity(new Intent(MainActivity.this, Home.class));

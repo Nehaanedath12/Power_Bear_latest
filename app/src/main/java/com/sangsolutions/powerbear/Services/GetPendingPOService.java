@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -91,6 +92,7 @@ public class GetPendingPOService extends JobService {
             @Override
             protected void onPostExecute(Void aVoid) {
                 editor.putBoolean("pendingPOFinished",true).apply();
+                editor.putString("syncDate",String.valueOf(DateFormat.format("yyyy-MM-dd", new java.util.Date()))).apply();
                 jobFinished(params,false);
             }
         };
