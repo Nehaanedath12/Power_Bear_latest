@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -84,7 +85,7 @@ public class StockCountWarehouse extends AppCompatActivity {
                 s.setsUnit(list.get(i).getUnit());
                 s.setsNarration(str_narration);
                 s.setsRemarks(list.get(i).getsRemarks());
-                s.setdProcessedDate(df.format(c));
+                s.setdProcessedDate(String.valueOf(DateFormat.format("yyyy-MM-dd hh:mm:ss a", new Date())));
                 s.setiStatus("0");
 
                 helper.InsertStockCount(s);

@@ -271,7 +271,8 @@ public class BodyFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
-                current_position = 0;
+                current_position = -1;
+                EditModeInner = false;
             }
         });
 
@@ -348,15 +349,14 @@ public class BodyFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (listProduct.size() > 1) {
-                    EditModeInner = true;
-                    EditPosition = current_position;
                     if (current_position < listProduct.size()) {
+                        EditModeInner = true;
+                        EditPosition = current_position;
                         et_barcode.setText(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct()));
                         et_qty.setText(listProduct.get(current_position).getQty());
                         et_remarks.setText(listProduct.get(current_position).getsRemarks());
-                        SetUnit(helper.GetProductUnit(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct())),position);
+                        SetUnit(helper.GetProductUnit(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct())),current_position);
                         current_position++;
-
                     }
                 }
             }
@@ -371,7 +371,7 @@ public class BodyFragment extends Fragment {
                         EditPosition = current_position;
                         et_barcode.setText(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct()));
                         et_qty.setText(listProduct.get(current_position).getQty());
-                        SetUnit(helper.GetProductUnit(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct())),position);
+                        SetUnit(helper.GetProductUnit(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct())),current_position);
                         et_remarks.setText(listProduct.get(current_position).getsRemarks());
 
                     }
@@ -687,8 +687,11 @@ if(!EditModeInner) {
             @Override
             public void onItemClick(View view, final ListProduct product, final int pos) {
                 if (!selection_active) {
-                    SetDataToEdit(product, pos);
+                    current_position = pos;
                     EditModeInner = true;
+                    SetDataToEdit(product, current_position);
+
+
                 } else {
                     enableActionMode(pos);
                 }
