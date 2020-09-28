@@ -7,16 +7,15 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+
 import androidx.annotation.RequiresApi;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.Warehouse;
-import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.ScheduleJob;
 import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;

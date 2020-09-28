@@ -1,5 +1,6 @@
 package com.sangsolutions.powerbear.Database;
 
+@SuppressWarnings("ALL")
 public class DeliveryNote {
 
     String HeaderId,SiNo,Product,Qty,iStatus,iVoucherNo;

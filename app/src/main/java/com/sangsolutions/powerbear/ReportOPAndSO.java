@@ -1,9 +1,5 @@
 package com.sangsolutions.powerbear;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -13,13 +9,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.sangsolutions.powerbear.Adapter.PendingSOAndPOReportAdapter.PendingSoReportOP;
 import com.sangsolutions.powerbear.Adapter.PendingSOAndPOReportAdapter.PendingSoReportOPAdapter;
-import com.sangsolutions.powerbear.Services.PostStockCount;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,6 +27,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 public class ReportOPAndSO extends AppCompatActivity {
 String report_type="",customer="0";
     FrameLayout empty_frame;

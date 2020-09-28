@@ -1,21 +1,19 @@
 package com.sangsolutions.powerbear;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistoryAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
@@ -133,7 +131,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
 
 adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
     @Override
-    public void onEditItemClick(View view, com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory, int pos) {
+    public void onEditItemClick(com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory) {
         Intent intent1 = new Intent(GoodsReceiptHistory.this,GoodsReceipt.class);
         intent1.putExtra("HeaderId",goodsReceiptHistory.getHeaderId());
         intent1.putExtra("iVoucherNo",goodsReceiptHistory.getiVoucherNo());
@@ -142,7 +140,7 @@ adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
     }
 
     @Override
-    public void onDeleteItemClick(View view, com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory, int pos) {
+    public void onDeleteItemClick(com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory, int pos) {
         DeleteGoodsReceiptItemAlert(goodsReceiptHistory, pos);
     }
 });

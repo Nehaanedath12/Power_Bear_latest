@@ -19,7 +19,7 @@ import com.sangsolutions.powerbear.Services.PostStockCount;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class ScheduleJob {
- private static int MY_BACKGROUND_JOB = 0;
+ private static final int MY_BACKGROUND_JOB = 0;
 
 
    public void SyncProductData(Context context) {

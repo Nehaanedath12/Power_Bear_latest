@@ -8,23 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProduct;
-import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList;
-import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountListAdapter;
 import com.sangsolutions.powerbear.R;
 
 import java.util.List;
 
 public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.ViewHolder> {
 
-    private Context context;
-    private List<ListProduct> list;
+    private final Context context;
+    private final List<ListProduct> list;
     private OnClickListener onClickListener;
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
@@ -85,8 +81,11 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView Name, Code, Qty,Unit;
-        EditText PickedQty;
+        final TextView Name;
+        final TextView Code;
+        final TextView Qty;
+        final TextView Unit;
+        final EditText PickedQty;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 

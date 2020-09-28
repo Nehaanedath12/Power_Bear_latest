@@ -1,12 +1,5 @@
 package com.sangsolutions.powerbear;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -35,6 +28,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -53,12 +53,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("ALL")
 public class AddDeliveryNote extends AppCompatActivity {
     private FloatingActionButton fab_controller;
     private LinearLayout barcodeLinear, linear_search;
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
-    private String[] PERMISSIONS = {Manifest.permission.CAMERA};
+    private final String[] PERMISSIONS = {Manifest.permission.CAMERA};
     private SurfaceView surfaceView;
     private EditText et_barcode, et_search_input, qty;
     private DatabaseHelper helper;
@@ -71,14 +72,11 @@ public class AddDeliveryNote extends AppCompatActivity {
     private SearchProductAdapter adapter;
     private ListProductAdapter listProductAdapter;
     private List<ListProduct> list;
-    private ImageView add_new, save;
     private String HeaderId = "";
     private boolean EditMode = false;
     private String iVoucherNo;
-    private ImageView img_home;
-    private TextView title;
     private boolean saveStatus = true;
-    SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
+    final SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
     private static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -95,6 +93,7 @@ public class AddDeliveryNote extends AppCompatActivity {
 
         Qty = map.get("Qty");
 
+        assert Qty != null;
         if (Integer.parseInt(list.get(position).getQty()) >= Integer.parseInt(Qty)&&Integer.parseInt(Qty)!=0) {
             list.set(position, new ListProduct(
                     list.get(position).getiVoucherNo(),
@@ -238,7 +237,7 @@ public class AddDeliveryNote extends AppCompatActivity {
         barcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
                 .build();
-        cameraSource = new CameraSource.Builder(Objects.requireNonNull(this), barcodeDetector)
+        cameraSource = new CameraSource.Builder(this, barcodeDetector)
                 .setRequestedPreviewSize(1080, 1920)
                 .setAutoFocusEnabled(true)
                 .build();
@@ -298,7 +297,7 @@ public class AddDeliveryNote extends AppCompatActivity {
         if (dialog.isShowing()) {
             Cursor cursor ;
             if(!EditMode){
-                cursor =  helper.SearchProductPendingSO(keyword,HeaderId);;
+                cursor =  helper.SearchProductPendingSO(keyword,HeaderId);
             }else {
                 cursor =  helper.SearchProductDeliveryNote(keyword,HeaderId);
             }
@@ -319,7 +318,7 @@ public class AddDeliveryNote extends AppCompatActivity {
 
                     adapter.setOnClickListener(new SearchProductAdapter.OnClickListener() {
                         @Override
-                        public void onItemClick(View view, SearchProduct search_item, int pos) {
+                        public void onItemClick(SearchProduct search_item) {
                             et_barcode.setText(search_item.getBarcode());
                             dialog.dismiss();
                         }
@@ -369,10 +368,10 @@ public class AddDeliveryNote extends AppCompatActivity {
         product_name= findViewById(R.id.product_name);
         product_code = findViewById(R.id.product_code);
         qty = findViewById(R.id.qty);
-        add_new = findViewById(R.id.add_new);
-        save = findViewById(R.id.save);
-        img_home = findViewById(R.id.home);
-        title = findViewById(R.id.title);
+        ImageView add_new = findViewById(R.id.add_new);
+        ImageView save = findViewById(R.id.save);
+        ImageView img_home = findViewById(R.id.home);
+        TextView title = findViewById(R.id.title);
         title.setText("Delivery note");
         img_home.setOnClickListener(new View.OnClickListener() {
             @Override

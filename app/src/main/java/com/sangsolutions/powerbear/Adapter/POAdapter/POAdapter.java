@@ -14,8 +14,8 @@ import com.sangsolutions.powerbear.R;
 import java.util.List;
 
 public class POAdapter  extends BaseAdapter {
-        List<PO> list;
-        Context context;
+        final List<PO> list;
+        final Context context;
         public POAdapter(List<PO> list,Context context) {
             this.list = list;
             this.context = context;

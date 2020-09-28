@@ -11,8 +11,8 @@ import android.widget.TextView;
 import java.util.List;
 
 public class UnitAdapter extends BaseAdapter {
-    List<String> list;
-    Context context;
+    final List<String> list;
+    final Context context;
     public UnitAdapter(List<String> list, Context context) {
         this.list = list;
         this.context = context;

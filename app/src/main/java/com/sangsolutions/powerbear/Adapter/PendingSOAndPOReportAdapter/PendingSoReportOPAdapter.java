@@ -17,8 +17,8 @@ import com.sangsolutions.powerbear.Tools;
 import java.util.List;
 
 public class PendingSoReportOPAdapter extends RecyclerView.Adapter<PendingSoReportOPAdapter.ViewHolder> {
-    List<PendingSoReportOP> list;
-    Context context;
+    final List<PendingSoReportOP> list;
+    final Context context;
 
 
     public PendingSoReportOPAdapter(List<PendingSoReportOP> list, Context context) {
@@ -55,9 +55,15 @@ public class PendingSoReportOPAdapter extends RecyclerView.Adapter<PendingSoRepo
     public int getItemCount() {
         return list.size();
     }
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView DocDate,Customer,SINo,ProductName,ProductCode,Qty,unit,iVoucherNo;
-        RelativeLayout rl_parent;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        final TextView DocDate;
+        final TextView Customer;
+        final TextView ProductName;
+        final TextView ProductCode;
+        final TextView Qty;
+        final TextView unit;
+        final TextView iVoucherNo;
+        final RelativeLayout rl_parent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             DocDate = itemView.findViewById(R.id.DocDate);

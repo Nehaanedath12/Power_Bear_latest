@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -48,16 +47,13 @@ import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProduct;
 import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProductAdapter;
 import com.sangsolutions.powerbear.Adapter.UnitAdapter.UnitAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
-import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.ScanDrawable;
 import com.sangsolutions.powerbear.Singleton.StockCountProductSingleton;
+
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -66,37 +62,30 @@ public class BodyFragment extends Fragment {
     private FloatingActionButton fab_controller, fab_delete, fab_close_all;
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
-    private String[] PERMISSIONS = {Manifest.permission.CAMERA};
+    private final String[] PERMISSIONS = {Manifest.permission.CAMERA};
     private SurfaceView surfaceView;
-    private EditText et_search_input, qty;
+    private EditText et_search_input;
     private DatabaseHelper helper;
     private RelativeLayout rl_showProductInfo;
     private HashMap<String, String> map;
     private TextView product_name, product_code;
-    private RecyclerView rv_search, rv_product;
+    private RecyclerView rv_search;
     private AlertDialog dialog;
-    private List<SearchProduct> SearchproductList;
+    private List<SearchProduct> SearchProductList;
     private SearchProductAdapter adapter;
     private ListProductAdapter listProductAdapter;
     private List<ListProduct> listProduct;
-    private ImageView add_new, save;
     private String EditMode = "";
     private boolean EditModeInner = false;
-    private String voucherNo = "";
     private int EditPosition = -1;
-    private String warehouse_id = "";
     private EditText et_barcode;
     private EditText et_remarks, et_qty;
     private AlertDialog alertDialog;
-    private ImageView search;
-    private Date c;
     private FrameLayout frame_scan;
     int current_position = 0;
     private Spinner sp_unit;
     Animation move_down_anim, move_up_anim;//clock_wise_rotate_anim,//anti_clock_wise_rotate_anim;
     private boolean selection_active = false;
-    private @SuppressLint("SimpleDateFormat")
-    SimpleDateFormat df;
 
     private static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
@@ -256,7 +245,7 @@ public class BodyFragment extends Fragment {
         et_qty = view.findViewById(R.id.qty);
         et_barcode = view.findViewById(R.id.barcode);
         add = view.findViewById(R.id.new_item);
-        search = view.findViewById(R.id.search);
+        ImageView search = view.findViewById(R.id.search);
         sp_unit = view.findViewById(R.id.unit);
         barcode = view.findViewById(R.id.img_barcode);
         close = view.findViewById(R.id.close_alert);
@@ -407,8 +396,8 @@ if(!EditModeInner) {
     private void setDataForEditing(String voucherNo){
         Cursor cursor = helper.GetHeaderData(voucherNo);
 
-        if(cursor!=null && cursor.moveToFirst()){
-            warehouse_id = cursor.getString(cursor.getColumnIndex("iWarehouse"));
+        if (cursor != null) {
+            cursor.moveToFirst();
         }
 
     }
@@ -532,7 +521,7 @@ if(!EditModeInner) {
     }
 
     private void ProductSearch(String keyword) {
-        SearchproductList.clear();
+        SearchProductList.clear();
         if (dialog.isShowing()) {
             Cursor cursor = helper.SearchProduct(keyword);
             if (cursor != null&&!keyword.equals("")) {
@@ -541,7 +530,7 @@ if(!EditModeInner) {
                     String Name = cursor.getString(cursor.getColumnIndex("Name"));
                     String Code = cursor.getString(cursor.getColumnIndex("Code"));
                     String Barcode = cursor.getString(cursor.getColumnIndex("Barcode"));
-                    SearchproductList.add(new SearchProduct(Name, Code, Barcode));
+                    SearchProductList.add(new SearchProduct(Name, Code, Barcode));
                     cursor.moveToNext();
 
                     if (i + 1 == cursor.getCount()) {
@@ -550,7 +539,7 @@ if(!EditModeInner) {
 
                     adapter.setOnClickListener(new SearchProductAdapter.OnClickListener() {
                         @Override
-                        public void onItemClick(View view, SearchProduct search_item, int pos) {
+                        public void onItemClick(SearchProduct search_item) {
                             et_barcode.setText(search_item.getBarcode());
                             SetUnit(helper.GetProductUnit(search_item.getBarcode()),-1);
                             dialog.dismiss();
@@ -559,8 +548,8 @@ if(!EditModeInner) {
                 }
 
             } else {
-                SearchproductList.clear();
-                SearchproductList.add(new SearchProduct("No Products available!", "", ""));
+                SearchProductList.clear();
+                SearchProductList.add(new SearchProduct("No Products available!", "", ""));
                 rv_search.setAdapter(adapter);
 
             }
@@ -609,7 +598,7 @@ if(!EditModeInner) {
                     et_search_input.post(new Runnable() {
                         @Override
                         public void run() {
-                            InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            InputMethodManager inputMethodManager = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
                             Objects.requireNonNull(inputMethodManager).showSoftInput(et_search_input, InputMethodManager.SHOW_IMPLICIT);
                         }
                     });
@@ -646,14 +635,8 @@ if(!EditModeInner) {
 
         product_name = view.findViewById(R.id.product_name);
         product_code = view.findViewById(R.id.product_code);
-        save = view.findViewById(R.id.save);
-        qty = view.findViewById(R.id.qty);
-        add_new = view.findViewById(R.id.add_new);
-        rv_product = view.findViewById(R.id.rv_product);
+        RecyclerView rv_product = view.findViewById(R.id.rv_product);
         initFab(view);
-
-        c = Calendar.getInstance().getTime();
-        df = new SimpleDateFormat("dd-MM-yyyy");
         rv_product.setLayoutManager(new LinearLayoutManager(getActivity()));
         map = new HashMap<>();
 
@@ -661,21 +644,18 @@ if(!EditModeInner) {
         listProduct = new ArrayList<>();
         helper = new DatabaseHelper(getActivity());
 
-        SearchproductList = new ArrayList<>();
-        adapter = new SearchProductAdapter(getActivity(), SearchproductList);
+        SearchProductList = new ArrayList<>();
+        adapter = new SearchProductAdapter(getActivity(), SearchProductList);
 
         if (getArguments() != null) {
             EditMode = getArguments().getString("EditMode");
 
             assert EditMode != null;
             if (EditMode.equals("edit")) {
-                voucherNo = getArguments().getString("voucherNo");
-                warehouse_id = getArguments().getString("warehouse");
+                String voucherNo = getArguments().getString("voucherNo");
                 setDataForEditing(voucherNo);
                 SetRecyclerFromDB(voucherNo);
 
-            } else {
-                warehouse_id = PublicData.warehouse;
             }
         }
 
@@ -685,7 +665,7 @@ if(!EditModeInner) {
 
         listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
             @Override
-            public void onItemClick(View view, final ListProduct product, final int pos) {
+            public void onItemClick(final ListProduct product, final int pos) {
                 if (!selection_active) {
                     current_position = pos;
                     EditModeInner = true;
@@ -698,12 +678,12 @@ if(!EditModeInner) {
             }
 
             @Override
-            public void onItemDeleteClickListener(View view, ListProduct product, int pos) {
+            public void onItemDeleteClickListener(int pos) {
                 DeleteStockCountItemAlert(pos);
             }
 
             @Override
-            public void onItemLongClick(View view, ListProduct product, int pos) {
+            public void onItemLongClick(int pos) {
                 enableActionMode(pos);
                 selection_active = true;
             }

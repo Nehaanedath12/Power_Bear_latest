@@ -1,5 +1,6 @@
 package com.sangsolutions.powerbear.Adapter.Goods_Stock_Adapter;
 
+@SuppressWarnings("ALL")
 public class Goods_Delivery {
     String ProductName,ProductCode,Vendor,Qty,iVoucherNo;
 

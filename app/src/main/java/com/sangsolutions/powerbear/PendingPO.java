@@ -1,7 +1,5 @@
 package com.sangsolutions.powerbear;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -13,6 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.sangsolutions.powerbear.Adapter.POAdapter.PO;
 import com.sangsolutions.powerbear.Adapter.POAdapter.POAdapter;
@@ -32,7 +32,6 @@ public class PendingPO extends AppCompatActivity {
    Handler handler;
 
     SharedPreferences preferences;
-    SharedPreferences.Editor editor;
 
     private AnimationDrawable animationDrawable;
     private ImageView mProgressBar;
@@ -41,6 +40,7 @@ public class PendingPO extends AppCompatActivity {
        list.clear();
        if(cursor!=null){
            for (int i = 0; i < cursor.getCount(); i++) {
+               //noinspection SpellCheckingInspection
                list.add(new PO(cursor.getString(cursor.getColumnIndex("HeaderId")),
                        Tools.ConvertDate(cursor.getString(cursor.getColumnIndex("DocDate"))),cursor.getString(cursor.getColumnIndex("Cusomer"))));
                cursor.moveToNext();
@@ -66,7 +66,6 @@ public class PendingPO extends AppCompatActivity {
         title.setText("Select Vendor");
 
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
-        editor = preferences.edit();
 
         mProgressBar = findViewById(R.id.main_progress);
         mProgressBar.setBackgroundResource(R.drawable.loading);

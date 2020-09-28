@@ -1,5 +1,6 @@
 package com.sangsolutions.powerbear.Database;
 
+@SuppressWarnings("ALL")
 public class GoodsReceipt {
 
     String HeaderId,SiNo,Product,Qty,iStatus,iVoucherNo;

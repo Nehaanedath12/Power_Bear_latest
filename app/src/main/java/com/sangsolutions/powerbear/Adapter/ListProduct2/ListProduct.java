@@ -1,5 +1,6 @@
 package com.sangsolutions.powerbear.Adapter.ListProduct2;
 
+@SuppressWarnings("ALL")
 public class ListProduct {
     String Name,Code,Qty,Unit,iProduct,sRemarks;
 

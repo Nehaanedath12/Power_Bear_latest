@@ -13,7 +13,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+import java.util.Objects;
 
 public class Tools {
 SharedPreferences preferences;
@@ -39,7 +39,7 @@ SharedPreferences.Editor editor;
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return targetFormat.format(date);
+        return targetFormat.format(Objects.requireNonNull(date));
     }
 
     public static String dateFormat2(String dateToFormat){
@@ -51,7 +51,7 @@ SharedPreferences.Editor editor;
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return targetFormat.format(date);
+        return targetFormat.format(Objects.requireNonNull(date));
     }
 
 
@@ -86,7 +86,8 @@ SharedPreferences.Editor editor;
     return "";
     }
 
-    public boolean setIP(Context context,String IP){
+    @SuppressWarnings("SameReturnValue")
+    public boolean setIP(Context context, String IP){
         preferences = context.getSharedPreferences("Settings",Context.MODE_PRIVATE);
         editor = preferences.edit();
         if(editor!=null){

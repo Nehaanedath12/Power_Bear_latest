@@ -1,5 +1,6 @@
 package com.sangsolutions.powerbear;
 
+@SuppressWarnings("ALL")
 public class URLs {
 
 

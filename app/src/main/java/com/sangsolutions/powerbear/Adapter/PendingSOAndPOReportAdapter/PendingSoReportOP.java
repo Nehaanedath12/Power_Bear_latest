@@ -1,5 +1,6 @@
 package com.sangsolutions.powerbear.Adapter.PendingSOAndPOReportAdapter;
 
+@SuppressWarnings("ALL")
 public class PendingSoReportOP {
 String Cusomer,DocDate,DocNo,HeaderId,Product,ProductCode,ProductName,Qty,SINo,unit;
 

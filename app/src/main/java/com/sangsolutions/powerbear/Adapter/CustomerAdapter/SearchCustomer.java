@@ -2,7 +2,9 @@ package com.sangsolutions.powerbear.Adapter.CustomerAdapter;
 
 public class SearchCustomer {
 
-    String MasterId,Name,Code;
+    final String MasterId;
+    String Name;
+    String Code;
 
 
     public SearchCustomer(String masterId, String name, String code) {
@@ -13,10 +15,6 @@ public class SearchCustomer {
 
     public String getMasterId() {
         return MasterId;
-    }
-
-    public void setMasterId(String masterId) {
-        MasterId = masterId;
     }
 
     public String getName() {

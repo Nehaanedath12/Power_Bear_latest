@@ -83,6 +83,7 @@ public class ScanDrawable extends Drawable implements Animatable {
     }
 
     private RectF getShapeRecF(int width, int height) {
+        //noinspection IntegerDivisionInFloatingPointContext
         float shapeHeight = width * scanShape.getHeight() / scanShape.getWidth();
         rectF.set(0, -shapeHeight, width, 0);
 

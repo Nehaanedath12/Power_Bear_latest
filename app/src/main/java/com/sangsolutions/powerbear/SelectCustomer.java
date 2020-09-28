@@ -1,7 +1,5 @@
 package com.sangsolutions.powerbear;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -19,10 +17,14 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class SelectCustomer extends AppCompatActivity {
 
 DatabaseHelper helper;
@@ -114,7 +116,8 @@ Handler handler;
 
 
     }
-    private class DONo {
+    @SuppressWarnings("SpellCheckingInspection")
+    private static class DONo {
         String DocNo, DocDate, Cusomer,HeaderId;
 
         public DONo(String docNo, String docDate, String cusomer,String HeaderId) {
@@ -158,7 +161,7 @@ Handler handler;
     }
 
     private class SOAdapter extends BaseAdapter{
-        List<DONo> list;
+        final List<DONo> list;
 
         public SOAdapter(List<DONo> list) {
             this.list = list;

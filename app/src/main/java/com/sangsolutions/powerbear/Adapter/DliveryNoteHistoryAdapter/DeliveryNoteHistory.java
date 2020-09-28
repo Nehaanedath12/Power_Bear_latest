@@ -1,5 +1,6 @@
 package com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter;
 
+@SuppressWarnings("ALL")
 public class DeliveryNoteHistory {
 
     String HeaderId,Qty,iVoucherNo;

@@ -1,5 +1,6 @@
 package com.sangsolutions.powerbear.Database;
 
+@SuppressWarnings("ALL")
 public class StockCount {
 String iVoucherNo,dDate,iWarehouse,iProduct,fQty,sUnit,sRemarks,sNarration,dProcessedDate,iStatus;
 

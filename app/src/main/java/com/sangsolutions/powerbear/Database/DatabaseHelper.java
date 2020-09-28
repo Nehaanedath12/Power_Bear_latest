@@ -5,16 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
 
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.vision.barcode.Barcode;
-
+@SuppressWarnings("ALL")
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    Context context;
+    final Context context;
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "PowerBear.db";
@@ -267,11 +264,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean GetUser() {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + TABLE_USER, null);
-        if (cursor.moveToFirst())
-            return true;
-        else {
-            return false;
-        }
+        return cursor.moveToFirst();
     }
 
     //Product
@@ -421,9 +414,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from "+TABLE_DELIVERY_NOTE+" where "+HEADER_ID+"= ? ",new String[]{HeaderId});
         if(cursor!=null){
-            if(cursor.moveToFirst()){
-                return true;
-            }
+            return cursor.moveToFirst();
         }
        return false;
     }
@@ -482,9 +473,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from "+TABLE_GOODS_RECEIPT+" where "+HEADER_ID+"= ? ",new String[]{HeaderId});
         if(cursor!=null){
-            if(cursor.moveToFirst()){
-                return true;
-            }
+            return cursor.moveToFirst();
         }
         return false;
     }
@@ -515,7 +504,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean InsertPendingSO(PendingSO p){
         this.db = getWritableDatabase();
         db.execSQL(CREATE_TABLE_PENDING_SO);
-        float status = -1;
+        float status;
 
             ContentValues cv = new ContentValues();
             cv.put(DOC_NO, p.getDocNo());
@@ -552,9 +541,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Delivery Note
-    public boolean InsertDelivery(DeliveryNote d){
+    public void InsertDelivery(DeliveryNote d){
         this.db = getWritableDatabase();
-        float status = -1;
+        float status;
 
         ContentValues cv = new ContentValues();
         cv.put(I_VOUCHER_NO, d.getiVoucherNo());
@@ -564,7 +553,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(QTY, d.getQty());
         cv.put(I_STATUS, d.getiStatus());
                 status = db.insert(TABLE_DELIVERY_NOTE, null, cv);
-        return status != -1;
     }
 
     public Cursor GetDeliveryNote(){
@@ -610,7 +598,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //Warehouse
     public boolean InsertWarehouse(Warehouse w){
         this.db = getWritableDatabase();
-        float status = -1;
+        float status;
         ContentValues cv = new ContentValues();
         cv.put(NAME,w.getName() );
         cv.put(MASTER_ID, w.getMasterId());
@@ -643,9 +631,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 //stock count
-    public boolean InsertStockCount(StockCount s){
+    public void InsertStockCount(StockCount s){
         this.db = getWritableDatabase();
-        float status = -1;
+        float status;
 
     ContentValues cv = new ContentValues();
     cv.put(I_VOUCHER_NO,s.getiVoucherNo());
@@ -661,9 +649,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     status = db.insert(TABLE_STOCK_COUNT, null, cv);
 
-    return status != -1;
-
-}
+    }
 
 
 public boolean DeleteStockCount(String voucherNo){
@@ -799,7 +785,7 @@ public boolean DeleteStockCount(String voucherNo){
     public boolean InsertPendingPO(PendingSO p){
         this.db = getWritableDatabase();
         db.execSQL(CREATE_TABLE_PENDING_PO);
-        float status = -1;
+        float status;
 
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO, p.getDocNo());
@@ -862,9 +848,9 @@ public boolean DeleteStockCount(String voucherNo){
             return null;
     }
 
-    public boolean InsertGoodsReceipt(GoodsReceipt g){
+    public void InsertGoodsReceipt(GoodsReceipt g){
         this.db = getWritableDatabase();
-        float status = -1;
+        float status;
 
         ContentValues cv = new ContentValues();
         cv.put(I_VOUCHER_NO, g.getiVoucherNo());
@@ -876,7 +862,6 @@ public boolean DeleteStockCount(String voucherNo){
 
            status = db.insert(TABLE_GOODS_RECEIPT, null, cv);
 
-        return status != -1;
     }
 
 

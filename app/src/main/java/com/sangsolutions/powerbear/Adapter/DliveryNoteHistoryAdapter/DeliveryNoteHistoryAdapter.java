@@ -15,8 +15,8 @@ import com.sangsolutions.powerbear.R;
 import java.util.List;
 
 public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNoteHistoryAdapter.ViewHolder> {
-    List<DeliveryNoteHistory> list;
-    Context context;
+    final List<DeliveryNoteHistory> list;
+    final Context context;
 
     private OnClickListener onClickListener;
 
@@ -45,14 +45,14 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
    holder.edit.setOnClickListener(new View.OnClickListener() {
        @Override
        public void onClick(View view) {
-           onClickListener.onEditItemClick(view, deliveryNoteHistory, position);
+           onClickListener.onEditItemClick(deliveryNoteHistory);
        }
    });
 
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onClickListener.onDeleteItemClick(view, deliveryNoteHistory, position);
+                onClickListener.onDeleteItemClick(deliveryNoteHistory, position);
             }
         });
     }
@@ -63,14 +63,16 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
     }
 
     public interface OnClickListener {
-        void onEditItemClick(View view, DeliveryNoteHistory deliveryNoteHistory, int pos);
-        void onDeleteItemClick(View view, DeliveryNoteHistory deliveryNoteHistory, int pos);
+        void onEditItemClick(DeliveryNoteHistory deliveryNoteHistory);
+        void onDeleteItemClick(DeliveryNoteHistory deliveryNoteHistory, int pos);
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView HeaderId,Qty;
-        ImageButton edit,delete;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        final TextView HeaderId;
+        final TextView Qty;
+        final ImageButton edit;
+        final ImageButton delete;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             HeaderId = itemView.findViewById(R.id.header_id);

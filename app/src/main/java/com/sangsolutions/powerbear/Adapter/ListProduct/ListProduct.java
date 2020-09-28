@@ -1,5 +1,6 @@
 package com.sangsolutions.powerbear.Adapter.ListProduct;
 
+@SuppressWarnings("ALL")
 public class ListProduct {
     String iVoucherNo,Name,Code,Qty,PickedQty,HeaderId,Product,SiNo,Unit;
 

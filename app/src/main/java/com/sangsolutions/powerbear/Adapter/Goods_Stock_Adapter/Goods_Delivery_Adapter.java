@@ -16,8 +16,8 @@ import com.sangsolutions.powerbear.R;
 import java.util.List;
 
 public class Goods_Delivery_Adapter extends RecyclerView.Adapter<Goods_Delivery_Adapter.ViewHolder> {
-    List<Goods_Delivery> list;
-    Context context;
+    final List<Goods_Delivery> list;
+    final Context context;
 
 
     public Goods_Delivery_Adapter(List<Goods_Delivery> list, Context context) {
@@ -53,9 +53,13 @@ public class Goods_Delivery_Adapter extends RecyclerView.Adapter<Goods_Delivery_
         return list.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView product,code,customer,qty,iVoucherNo;
-        RelativeLayout rl_parent;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        final TextView product;
+        final TextView code;
+        final TextView customer;
+        final TextView qty;
+        final TextView iVoucherNo;
+        final RelativeLayout rl_parent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             product = itemView.findViewById(R.id.product);

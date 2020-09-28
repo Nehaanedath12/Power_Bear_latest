@@ -1,10 +1,5 @@
 package com.sangsolutions.powerbear;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,6 +10,11 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.sangsolutions.powerbear.Adapter.ListProduct2.ListProduct;
@@ -46,7 +46,7 @@ public class StockCountWarehouse extends AppCompatActivity {
     int current_position=0;
 
     private void Save(){
-        String s_date="",s_narration="" ,s_warehouse ="";
+        String s_date,s_narration,s_warehouse;
 
         s_date= PublicData.date;
 
@@ -62,12 +62,11 @@ public class StockCountWarehouse extends AppCompatActivity {
             if(EditMode.equals("new")){
                 str_date = s_date;
                 s_voucher_no = helper.GetNewVoucherNo();
-                str_narration = s_narration;
             }else {
                 str_date = s_date;
                 s_voucher_no = voucherNo;
-                str_narration = s_narration;
             }
+            str_narration = s_narration;
             com.sangsolutions.powerbear.Database.StockCount s = new StockCount();
             if(EditMode.equals("edit")) {
                 helper.DeleteStockCount(voucherNo);

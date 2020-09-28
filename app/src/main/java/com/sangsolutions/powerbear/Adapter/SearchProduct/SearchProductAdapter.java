@@ -5,16 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.sangsolutions.powerbear.R;
 
 import java.util.List;
 
 public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdapter.ViewHolder> {
-    private Context context;
-    private List<SearchProduct> list;
+    private final Context context;
+    private final List<SearchProduct> list;
     private OnClickListener onClickListener;
 
     public SearchProductAdapter(Context context, List<SearchProduct> list) {
@@ -42,7 +44,7 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
             @Override
             public void onClick(View v) {
                 if (!search_item.Code.equals("") )
-                    onClickListener.onItemClick(v, search_item, position);
+                    onClickListener.onItemClick(search_item);
 
             }
         });
@@ -54,13 +56,14 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
     }
 
     public interface OnClickListener {
-        void onItemClick(View view, SearchProduct search_item, int pos);
+        void onItemClick(SearchProduct search_item);
 
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView Code, Name;
-        CardView cardView;
+        final TextView Code;
+        final TextView Name;
+        final CardView cardView;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);

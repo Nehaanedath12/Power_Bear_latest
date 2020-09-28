@@ -19,14 +19,15 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.PendingSO;
-import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.ScheduleJob;
 import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@SuppressWarnings("ALL")
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class GetPendingSoService extends JobService {
     DatabaseHelper helper;
@@ -78,8 +79,7 @@ public class GetPendingSoService extends JobService {
                                 dataCount++;
                                 Log.d("data", dataCount + " : " + jsonArray.length());
                             } else {
-                                Log.d("error", "Data A" +
-                                        "lready added");
+                                Log.d("error", "Data Already added");
                             }
                         }
                     }

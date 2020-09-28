@@ -15,8 +15,8 @@ import com.sangsolutions.powerbear.R;
 import java.util.List;
 
 public class SearchCustomerAdapter extends RecyclerView.Adapter<SearchCustomerAdapter.ViewHolder> {
-    private Context context;
-    private List<SearchCustomer> list;
+    private final Context context;
+    private final List<SearchCustomer> list;
     private OnClickListener onClickListener;
 
     public SearchCustomerAdapter(Context context, List<SearchCustomer> list) {
@@ -44,7 +44,7 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<SearchCustomerAd
             @Override
             public void onClick(View v) {
                 if (!search_item.Code.equals("") )
-                    onClickListener.onItemClick(v, search_item, position);
+                    onClickListener.onItemClick(search_item);
 
             }
         });
@@ -56,13 +56,14 @@ public class SearchCustomerAdapter extends RecyclerView.Adapter<SearchCustomerAd
     }
 
     public interface OnClickListener {
-        void onItemClick(View view, SearchCustomer search_item, int pos);
+        void onItemClick(SearchCustomer search_item);
 
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView Code, Name;
-        CardView cardView;
+        final TextView Code;
+        final TextView Name;
+        final CardView cardView;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);

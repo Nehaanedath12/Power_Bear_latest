@@ -1,11 +1,5 @@
 package com.sangsolutions.powerbear;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -22,6 +16,12 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -52,7 +52,7 @@ List<SearchCustomer> list;
 List<SearchProduct> list2;
 TextView title;
 TextInputLayout il_from,il_to;
-DatabaseHelper helper = new DatabaseHelper(this);
+final DatabaseHelper helper = new DatabaseHelper(this);
 Button btn_search;
 String customer = "0";
     AlertDialog alertDialog;
@@ -62,9 +62,9 @@ String customer = "0";
 
     private void ProductSearch(String keyword) {
             Cursor cursor ;
-                cursor =  helper.SearchProduct2(keyword);;
+                cursor =  helper.SearchProduct2(keyword);
 
-            if (cursor != null&&!keyword.equals("")) {
+        if (cursor != null&&!keyword.equals("")) {
                 cursor.moveToFirst();
                 for (int i = 0; i < cursor.getCount(); i++) {
                     String Name = cursor.getString(cursor.getColumnIndex("Name"));
@@ -79,7 +79,7 @@ String customer = "0";
 
                       productAdapter.setOnClickListener(new SearchProductAdapter.OnClickListener() {
                         @Override
-                        public void onItemClick(View view, SearchProduct search_item, int pos) {
+                        public void onItemClick(SearchProduct search_item) {
                             et_customer_product.setText(search_item.getName());
                             alertDialog.dismiss();
                             customer = search_item.getBarcode();
@@ -137,7 +137,7 @@ String customer = "0";
 
         customerAdapter.setOnClickListener(new SearchCustomerAdapter.OnClickListener() {
             @Override
-            public void onItemClick(View view, SearchCustomer search_item, int pos) {
+            public void onItemClick(SearchCustomer search_item) {
                 et_customer_product.setText(search_item.getName());
                 alertDialog.dismiss();
                 customer = search_item.getMasterId();
@@ -227,45 +227,51 @@ String customer = "0";
     @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
     final String date = df.format(c);
 
-    if(report_type.equals("stock_count")){
+    switch (report_type) {
+        case "stock_count":
 
-    et_customer_product.setHint("Select Product");
-    title.setText("Stock count");
-    from.setText(date);
-    to.setText(date);
+            et_customer_product.setHint("Select Product");
+            title.setText("Stock count");
+            from.setText(date);
+            to.setText(date);
 
 
-    }else if (report_type.equals("delivery_note")){
+            break;
+        case "delivery_note":
 
-        et_customer_product.setHint("Select Customer");
-        title.setText("Delivery note");
-        from.setText(date);
-        to.setText(date);
+            et_customer_product.setHint("Select Customer");
+            title.setText("Delivery note");
+            from.setText(date);
+            to.setText(date);
 
-    }else if(report_type.equals("goods_receipt")){
+            break;
+        case "goods_receipt":
 
-        et_customer_product.setHint("Select Vendor");
-        title.setText("Goods receipt");
+            et_customer_product.setHint("Select Vendor");
+            title.setText("Goods receipt");
 
-        from.setText(date);
-        to.setText(date);
-    }else if(report_type.equals("pending_po")){
+            from.setText(date);
+            to.setText(date);
+            break;
+        case "pending_po":
 
-        et_customer_product.setHint("Select Vendor");
-        title.setText("Pending po");
-        from.setVisibility(View.INVISIBLE);
-        to.setVisibility(View.INVISIBLE);
-        il_from.setVisibility(View.INVISIBLE);
-        il_to.setVisibility(View.INVISIBLE);
-    }else if(report_type.equals("pending_so")){
+            et_customer_product.setHint("Select Vendor");
+            title.setText("Pending po");
+            from.setVisibility(View.INVISIBLE);
+            to.setVisibility(View.INVISIBLE);
+            il_from.setVisibility(View.INVISIBLE);
+            il_to.setVisibility(View.INVISIBLE);
+            break;
+        case "pending_so":
 
-        et_customer_product.setHint("Select Customer");
-        title.setText("Pending so");
+            et_customer_product.setHint("Select Customer");
+            title.setText("Pending so");
 
-        from.setVisibility(View.INVISIBLE);
-        to.setVisibility(View.INVISIBLE);
-        il_from.setVisibility(View.INVISIBLE);
-        il_to.setVisibility(View.INVISIBLE);
+            from.setVisibility(View.INVISIBLE);
+            to.setVisibility(View.INVISIBLE);
+            il_from.setVisibility(View.INVISIBLE);
+            il_to.setVisibility(View.INVISIBLE);
+            break;
     }
 
 
@@ -293,16 +299,18 @@ String customer = "0";
     et_customer_product.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(report_type.equals("stock_count")){
-                SearchAlert("Product");
-            }else if (report_type.equals("delivery_note")){
-                SearchAlert("Vendor");
-            }else if(report_type.equals("goods_receipt")){
-                SearchAlert("Customer");
-            }else if(report_type.equals("pending_po")){
-                SearchAlert("Vendor");
-            }else if(report_type.equals("pending_so")){
-                SearchAlert("Customer");
+            switch (report_type) {
+                case "stock_count":
+                    SearchAlert("Product");
+                    break;
+                case "delivery_note":
+                case "pending_po":
+                    SearchAlert("Vendor");
+                    break;
+                case "goods_receipt":
+                case "pending_so":
+                    SearchAlert("Customer");
+                    break;
             }
 
         }

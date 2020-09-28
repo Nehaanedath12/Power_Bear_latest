@@ -20,7 +20,6 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.PendingSO;
-import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 
@@ -42,6 +41,7 @@ public class GetPendingPOService extends JobService {
             protected void onPreExecute() {
             }
 
+            @SuppressWarnings("SpellCheckingInspection")
             @Override
             protected Void doInBackground(Void... voids) {
                 try {
@@ -76,8 +76,7 @@ public class GetPendingPOService extends JobService {
                                 dataCount++;
                                 Log.d("data", dataCount + " : " + jsonArray.length());
                             } else {
-                                Log.d("error", "Data A" +
-                                        "lready added");
+                                Log.d("error", "Data Already added");
                             }
                         }
                     }

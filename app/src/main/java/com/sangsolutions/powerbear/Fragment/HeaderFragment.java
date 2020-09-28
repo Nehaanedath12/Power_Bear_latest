@@ -53,7 +53,7 @@ public void LoadWarehouse(){
         if(cursor!=null){
             for (int i = 0; i < cursor.getCount(); i++) {
                 if(!cursor.getString(cursor.getColumnIndex("Name")).equals(" "))
-                list.add(new Warehouse(cursor.getString(cursor.getColumnIndex("MasterId")),cursor.getString(cursor.getColumnIndex("Name"))));
+                list.add(new Warehouse(cursor.getString(cursor.getColumnIndex("MasterId")), cursor.getString(cursor.getColumnIndex("Name"))));
 
                 cursor.moveToNext();
                 if(cursor.getCount()==i+1){
@@ -220,9 +220,10 @@ if(list.size()!=0){
 
 
 
-    private class Warehouse {
+    private static class Warehouse {
 
-        String MasterId,Name;
+        final String MasterId;
+        final String Name;
 
         public Warehouse(String masterId, String name) {
             MasterId = masterId;
@@ -233,22 +234,11 @@ if(list.size()!=0){
             return MasterId;
         }
 
-        public void setMasterId(String masterId) {
-            MasterId = masterId;
-        }
-
-        public String getName() {
-            return Name;
-        }
-
-        public void setName(String name) {
-            Name = name;
-        }
     }
 
 
     private class WarehouseAdapter extends BaseAdapter {
-        List<Warehouse> list;
+        final List<Warehouse> list;
 
         public WarehouseAdapter(List<Warehouse> list) {
             this.list = list;

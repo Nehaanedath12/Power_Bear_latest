@@ -7,7 +7,6 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,8 +14,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList;
-import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountListAdapter;
 import com.sangsolutions.powerbear.R;
 
 import java.util.ArrayList;
@@ -24,10 +21,10 @@ import java.util.List;
 
 public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.ViewHolder> {
 
-    private Context context;
-    private List<ListProduct> list;
+    private final Context context;
+    private final List<ListProduct> list;
     private OnClickListener onClickListener;
-    private String EditMode = "";
+    private final String EditMode;
     private SparseBooleanArray selected_items;
     private int current_selected_idx = -1;
 
@@ -43,11 +40,6 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         this.EditMode = EditMode;
     }
 
-
-    public void removeData(int position) {
-        list.remove(position);
-        resetCurrentIndex();
-    }
 
     private void resetCurrentIndex() {
         current_selected_idx = -1;
@@ -115,13 +107,13 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
             holder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onClickListener.onItemDeleteClickListener(v, productList, position);
+                    onClickListener.onItemDeleteClickListener(position);
                 }
             });
             holder.ll_main.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onClickListener.onItemClick(view, productList, position);
+                    onClickListener.onItemClick(productList, position);
                 }
             });
             holder.ll_main.setOnLongClickListener(new View.OnLongClickListener() {
@@ -129,7 +121,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
                 public boolean onLongClick(View view) {
                     if (onClickListener == null) return false;
                     else {
-                        onClickListener.onItemLongClick(view, productList, position);
+                        onClickListener.onItemLongClick(position);
                     }
                     return true;
                 }
@@ -147,19 +139,23 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
     }
 
     public interface OnClickListener {
-        void onItemClick(View view, ListProduct product, int pos);
+        void onItemClick(ListProduct product, int pos);
 
-        void onItemDeleteClickListener(View view, ListProduct product, int pos);
+        void onItemDeleteClickListener(int pos);
 
-        void onItemLongClick(View view, ListProduct product, int pos);
+        void onItemLongClick(int pos);
     }
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView Name, Code, Qty, unit, remarks;
-        ImageView delete;
-        LinearLayout ll_main;
-        ImageView img_check;
+        final TextView Name;
+        final TextView Code;
+        final TextView Qty;
+        final TextView unit;
+        final TextView remarks;
+        final ImageView delete;
+        final LinearLayout ll_main;
+        final ImageView img_check;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -1,12 +1,5 @@
 package com.sangsolutions.powerbear;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -22,7 +15,6 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -32,10 +24,16 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
@@ -59,24 +57,23 @@ public class GoodsReceipt extends AppCompatActivity {
     private LinearLayout barcodeLinear, linear_search;
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
-    private String[] PERMISSIONS = {Manifest.permission.CAMERA};
+    private final String[] PERMISSIONS = {Manifest.permission.CAMERA};
     private SurfaceView surfaceView;
     private EditText et_barcode, et_search_input, qty;
     private DatabaseHelper helper;
     private RelativeLayout rl_showProductInfo;
     private HashMap<String, String> map;
     private TextView product_name, product_code;
-    private RecyclerView rv_search, rv_product;
+    private RecyclerView rv_search;
     private AlertDialog dialog;
     private List<SearchProduct> productList;
     private SearchProductAdapter adapter;
     private ListProductAdapter listProductAdapter;
     private List<ListProduct> list;
-    private ImageView add_new, save;
     private String HeaderId = "";
     private boolean saveStatus = true;
     private boolean EditMode = false;
-    SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
+    final SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
 String iVoucherNo;
 ImageView img_home;
 TextView title;
@@ -92,10 +89,11 @@ TextView title;
     }
 
     private void setRecyclerView(int position) {
-        String Name, Code, Qty;
+        String Qty;
 
         Qty = map.get("Qty");
 
+        assert Qty != null;
         if (Integer.parseInt(list.get(position).getQty()) >= Integer.parseInt(Qty)) {
             list.set(position, new ListProduct(
                     list.get(position).getiVoucherNo(),
@@ -234,7 +232,7 @@ TextView title;
         barcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
                 .build();
-        cameraSource = new CameraSource.Builder(Objects.requireNonNull(this), barcodeDetector)
+        cameraSource = new CameraSource.Builder(this, barcodeDetector)
                 .setRequestedPreviewSize(1080, 1920)
                 .setAutoFocusEnabled(true)
                 .build();
@@ -314,7 +312,7 @@ TextView title;
 
                     adapter.setOnClickListener(new SearchProductAdapter.OnClickListener() {
                         @Override
-                        public void onItemClick(View view, SearchProduct search_item, int pos) {
+                        public void onItemClick(SearchProduct search_item) {
                             et_barcode.setText(search_item.getBarcode());
                             dialog.dismiss();
                         }
@@ -363,8 +361,8 @@ TextView title;
         product_name= findViewById(R.id.product_name);
         product_code = findViewById(R.id.product_code);
         qty = findViewById(R.id.qty);
-        add_new = findViewById(R.id.add_new);
-        save = findViewById(R.id.save);
+        ImageView add_new = findViewById(R.id.add_new);
+        ImageView save = findViewById(R.id.save);
 
         img_home = findViewById(R.id.home);
         title = findViewById(R.id.title);
@@ -380,8 +378,7 @@ TextView title;
         helper = new DatabaseHelper(this);
 
 
-
-        rv_product = findViewById(R.id.rv_product);
+        RecyclerView rv_product = findViewById(R.id.rv_product);
         rv_product.setLayoutManager(new LinearLayoutManager(this));
         map = new HashMap<>();
 
@@ -554,7 +551,7 @@ TextView title;
                 et_search_input = view.findViewById(R.id.search_edit);
                 rv_search = view.findViewById(R.id.search_recycler);
                 rv_search.setLayoutManager(new LinearLayoutManager(GoodsReceipt.this));
-                AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(GoodsReceipt.this));
+                AlertDialog.Builder builder = new AlertDialog.Builder(GoodsReceipt.this);
                 builder.setView(view);
                 dialog = builder.create();
                 dialog.show();

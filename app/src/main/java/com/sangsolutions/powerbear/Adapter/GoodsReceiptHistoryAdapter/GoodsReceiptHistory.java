@@ -1,5 +1,6 @@
 package com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter;
 
+@SuppressWarnings("ALL")
 public class GoodsReceiptHistory {
 
     String HeaderId,Qty,iVoucherNo;

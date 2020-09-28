@@ -13,13 +13,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class AsyncConnection {
-    private List<NameValuePair> list;
-    private String m = "", line, URL;
+    private final List<NameValuePair> list;
+    private String m = "";
+    private final String URL;
 
     public AsyncConnection(List<NameValuePair> list, String URL) {
 
@@ -27,10 +27,10 @@ public class AsyncConnection {
         this.URL = URL;
     }
 
-    public AsyncConnection(String URL) {
+/*    public AsyncConnection(String URL) {
         this.URL = URL;
         list = new ArrayList<>();
-    }
+    }*/
 
     public String execute() {
 
@@ -44,6 +44,7 @@ public class AsyncConnection {
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader reader = new BufferedReader(isr);
             StringBuilder builder = new StringBuilder();
+            String line;
             while ((line = reader.readLine()) != null) {
                 builder.append(line);
             }

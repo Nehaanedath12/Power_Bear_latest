@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StockCountListAdapter extends RecyclerView.Adapter<StockCountListAdapter.ViewHolder> {
-List<StockCountList> list;
-Context context;
+final List<StockCountList> list;
+final Context context;
     private SparseBooleanArray selected_items;
     private int current_selected_idx = -1;
     private OnClickListener onClickListener;
@@ -110,14 +110,14 @@ Context context;
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickListener.onDeleteItemClick(v, stockCountList, position);
+                onClickListener.onDeleteItemClick(stockCountList, position);
             }
         });
 
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onClickListener.onItemClick(view,stockCountList,position);
+                onClickListener.onItemClick(stockCountList,position);
             }
         });
 
@@ -126,7 +126,7 @@ Context context;
             public boolean onLongClick(View view) {
                 if(onClickListener==null) return false;
                 else {
-                    onClickListener.onItemLongClick(view,stockCountList , position);
+                    onClickListener.onItemLongClick(position);
                 }
                 return true;
             }
@@ -141,18 +141,21 @@ Context context;
     }
 
     public interface OnClickListener {
-        void onDeleteItemClick(View view, StockCountList stockCountList, int pos);
+        void onDeleteItemClick(StockCountList stockCountList, int pos);
 
-        void onItemClick(View view, StockCountList stockCountList, int pos);
-        void onItemLongClick(View view, StockCountList stockCountList, int pos);
+        void onItemClick(StockCountList stockCountList, int pos);
+        void onItemLongClick(int pos);
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView Vno,date,totalQty, warehouse;
-        ImageButton delete;
-        CardView card;
-        ImageView img_check;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        final TextView Vno;
+        final TextView date;
+        final TextView totalQty;
+        final TextView warehouse;
+        final ImageButton delete;
+        final CardView card;
+        final ImageView img_check;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             Vno = itemView.findViewById(R.id.vno);

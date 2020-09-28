@@ -1,24 +1,21 @@
 package com.sangsolutions.powerbear;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistoryAdapter;
-
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 
 import java.util.ArrayList;
@@ -42,7 +39,6 @@ public class DeliveryNoteHistory extends AppCompatActivity {
     public void setRecyclerView(){
         list.clear();
 
-        float net = 0;
         Cursor cursor = helper.GetDeliveryNoteList();
         if (cursor != null) {
             cursor.moveToFirst();
@@ -130,7 +126,7 @@ public class DeliveryNoteHistory extends AppCompatActivity {
 
 adapter.setOnClickListener(new DeliveryNoteHistoryAdapter.OnClickListener() {
     @Override
-    public void onEditItemClick(View view, com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory deliveryNoteHistory, int pos) {
+    public void onEditItemClick(com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory deliveryNoteHistory) {
         Intent intent1 = new Intent(DeliveryNoteHistory.this, AddDeliveryNote.class);
         intent1.putExtra("HeaderId",deliveryNoteHistory.getHeaderId());
         intent1.putExtra("iVoucherNo",deliveryNoteHistory.getiVoucherNo());
@@ -139,7 +135,7 @@ adapter.setOnClickListener(new DeliveryNoteHistoryAdapter.OnClickListener() {
     }
 
     @Override
-    public void onDeleteItemClick(View view, com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory deliveryNoteHistory, int pos) {
+    public void onDeleteItemClick(com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory deliveryNoteHistory, int pos) {
         DeleteStockCountItemAlert(deliveryNoteHistory, pos);
     }
 });

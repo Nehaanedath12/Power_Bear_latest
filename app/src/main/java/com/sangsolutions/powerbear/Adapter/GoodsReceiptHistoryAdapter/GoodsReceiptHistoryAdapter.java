@@ -10,15 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory;
-import com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistoryAdapter;
 import com.sangsolutions.powerbear.R;
 
 import java.util.List;
 
 public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceiptHistoryAdapter.ViewHolder> {
-    List<GoodsReceiptHistory> list;
-    Context context;
+    final List<GoodsReceiptHistory> list;
+    final Context context;
 
     private OnClickListener onClickListener;
 
@@ -49,13 +47,13 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickListener.onEditItemClick(v, goodsReceiptHistory, position);
+                onClickListener.onEditItemClick(goodsReceiptHistory);
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickListener.onDeleteItemClick(v, goodsReceiptHistory, position);
+                onClickListener.onDeleteItemClick(goodsReceiptHistory, position);
             }
         });
 
@@ -67,15 +65,17 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
     }
 
     public interface OnClickListener {
-        void onEditItemClick(View view, GoodsReceiptHistory goodsReceiptHistory, int pos);
-        void onDeleteItemClick(View view, GoodsReceiptHistory goodsReceiptHistory, int pos);
+        void onEditItemClick(GoodsReceiptHistory goodsReceiptHistory);
+        void onDeleteItemClick(GoodsReceiptHistory goodsReceiptHistory, int pos);
 
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView HeaderId, Qty;
-        ImageButton edit,delete;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        final TextView HeaderId;
+        final TextView Qty;
+        final ImageButton edit;
+        final ImageButton delete;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

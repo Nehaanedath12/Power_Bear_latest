@@ -1,14 +1,10 @@
 package com.sangsolutions.powerbear.Services;
 
-import android.annotation.SuppressLint;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
-import android.widget.EdgeEffect;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -16,34 +12,26 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
-import com.sangsolutions.powerbear.AsyncConnection;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class PostStockCount extends JobService {
 
-    JobParameters params;
     DatabaseHelper helper;
-    String sDeviceId="";
     List<String> list;
     int upload_list_portion = 0;
     Cursor cursor;
     String UserId="";
+
     private void vouchersToBeUploaded() {
         try {
             if (upload_list_portion < list.size()) {
@@ -144,10 +132,8 @@ public class PostStockCount extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        sDeviceId = Tools.getDeviceId(getApplicationContext());
         helper = new DatabaseHelper(this);
         list = new ArrayList<>();
-        this.params = params;
         Cursor cursor = helper.GetAllStockCountVoucher();
         UserId = helper.GetUserId();
         if(cursor!=null) {

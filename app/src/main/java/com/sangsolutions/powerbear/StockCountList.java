@@ -1,29 +1,26 @@
 package com.sangsolutions.powerbear;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountListAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,7 +126,6 @@ public class StockCountList extends AppCompatActivity {
     public void setRecyclerView(){
         list.clear();
 
-        float net = 0;
         Cursor cursor = helper.GetStockCountList();
         if (cursor != null) {
             cursor.moveToFirst();
@@ -227,12 +223,12 @@ public class StockCountList extends AppCompatActivity {
 
         adapter.setOnClickListener(new StockCountListAdapter.OnClickListener() {
             @Override
-            public void onDeleteItemClick(View view, final com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, final int pos) {
+            public void onDeleteItemClick(final com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, final int pos) {
                 DeleteStockCountItemAlert(stockCountList, pos);
             }
 
             @Override
-            public void onItemClick(View view, com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, int pos) {
+            public void onItemClick(com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, int pos) {
 
               if(!selection_active) {
                   Intent intent1 = new Intent(StockCountList.this, StockCountWarehouse.class);
@@ -246,7 +242,7 @@ public class StockCountList extends AppCompatActivity {
             }
 
             @Override
-            public void onItemLongClick(View view, com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, int pos) {
+            public void onItemLongClick(int pos) {
                 enableActionMode(pos);
                 selection_active = true;
             }

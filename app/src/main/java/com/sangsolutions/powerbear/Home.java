@@ -1,8 +1,5 @@
 package com.sangsolutions.powerbear;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
@@ -15,12 +12,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
+
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+@SuppressWarnings("ALL")
 public class Home extends AppCompatActivity {
 Button sync_btn,delivery_btn,stock_count_btn,goods_btn,report_btn;
 DatabaseHelper helper;

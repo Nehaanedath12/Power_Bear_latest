@@ -16,8 +16,8 @@ import com.sangsolutions.powerbear.R;
 import java.util.List;
 
 public class StockCountReportAdapter extends RecyclerView.Adapter<StockCountReportAdapter.ViewHolder> {
-    List<StockCountReport> list;
-    Context context;
+    final List<StockCountReport> list;
+    final Context context;
 
 
     public StockCountReportAdapter(List<StockCountReport> list, Context context) {
@@ -37,7 +37,7 @@ public class StockCountReportAdapter extends RecyclerView.Adapter<StockCountRepo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.vno.setText(list.get(position).getiVoucherNo());
         holder.doc_date.setText(list.get(position).getDocDate());
-        holder.warehouse.setText(list.get(position).getWaehouse());
+        holder.warehouse.setText(list.get(position).getWarehouse());
         holder.name.setText(list.get(position).getName());
         holder.code.setText(list.get(position).getCode());
         holder.qty.setText(list.get(position).getfQty());
@@ -57,9 +57,16 @@ public class StockCountReportAdapter extends RecyclerView.Adapter<StockCountRepo
         return list.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView vno,doc_date,warehouse,name,code,qty,unit,remarks;
-        RelativeLayout rl_parent;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        final TextView vno;
+        final TextView doc_date;
+        final TextView warehouse;
+        final TextView name;
+        final TextView code;
+        final TextView qty;
+        final TextView unit;
+        final TextView remarks;
+        final RelativeLayout rl_parent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             vno = itemView.findViewById(R.id.vno);

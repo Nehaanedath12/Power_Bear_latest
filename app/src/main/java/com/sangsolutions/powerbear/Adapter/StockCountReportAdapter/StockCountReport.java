@@ -1,12 +1,13 @@
 package com.sangsolutions.powerbear.Adapter.StockCountReportAdapter;
 
+@SuppressWarnings("ALL")
 public class StockCountReport {
-    String DocDate,iVoucherNo,Waehouse,Name,fQty,sUnit,sRemarks,Code;
+    String DocDate,iVoucherNo, Warehouse,Name,fQty,sUnit,sRemarks,Code;
 
-    public StockCountReport(String docDate, String iVoucherNo,String Code, String waehouse, String name, String fQty, String sUnit, String sRemarks) {
+    public StockCountReport(String docDate, String iVoucherNo,String Code, String warehouse, String name, String fQty, String sUnit, String sRemarks) {
         this. DocDate = docDate;
         this.iVoucherNo = iVoucherNo;
-        this.Waehouse = waehouse;
+        this.Warehouse = warehouse;
         this. Name = name;
         this.Code = Code;
         this.fQty = fQty;
@@ -30,12 +31,12 @@ public class StockCountReport {
         this.iVoucherNo = iVoucherNo;
     }
 
-    public String getWaehouse() {
-        return Waehouse;
+    public String getWarehouse() {
+        return Warehouse;
     }
 
-    public void setWaehouse(String waehouse) {
-        Waehouse = waehouse;
+    public void setWarehouse(String warehouse) {
+        Warehouse = warehouse;
     }
 
     public String getName() {

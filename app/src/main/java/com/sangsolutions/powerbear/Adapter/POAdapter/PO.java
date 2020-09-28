@@ -1,5 +1,6 @@
 package com.sangsolutions.powerbear.Adapter.POAdapter;
 
+@SuppressWarnings("ALL")
 public class PO {
     String DocNo, DocDate, Cusomer;
 
