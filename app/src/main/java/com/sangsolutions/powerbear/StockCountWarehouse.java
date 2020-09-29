@@ -22,8 +22,8 @@ import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList;
 import com.sangsolutions.powerbear.Adapter.ViewPagerAdapter.ViewPagerAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.StockCount;
-import com.sangsolutions.powerbear.Fragment.BodyFragment;
-import com.sangsolutions.powerbear.Fragment.HeaderFragment;
+import com.sangsolutions.powerbear.Fragment.StockCountBodyFragment;
+import com.sangsolutions.powerbear.Fragment.StockCountHeaderFragment;
 import com.sangsolutions.powerbear.Singleton.StockCountProductSingleton;
 import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
 
@@ -311,8 +311,8 @@ public class StockCountWarehouse extends AppCompatActivity {
 
     private void setUpViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        adapter.add(new HeaderFragment(), "Header",warehouse,EditMode,voucherNo);
-        adapter.add(new BodyFragment(), "Body",warehouse,EditMode,voucherNo);
+        adapter.add(new StockCountHeaderFragment(), "Header",warehouse,EditMode,voucherNo);
+        adapter.add(new StockCountBodyFragment(), "Body",warehouse,EditMode,voucherNo);
         viewPager.setAdapter(adapter);
     }
 }

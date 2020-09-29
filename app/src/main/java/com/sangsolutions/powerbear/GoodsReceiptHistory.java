@@ -122,7 +122,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
         add_new.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(GoodsReceiptHistory.this,PendingPO.class));
+                startActivity(new Intent(GoodsReceiptHistory.this,GoodsReceipt.class));
             }
         });
 

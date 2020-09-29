@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public class HeaderFragment extends Fragment {
+public class StockCountHeaderFragment extends Fragment {
 EditText date, narration;
     TextView VoucherNo;
     DatabaseHelper helper;

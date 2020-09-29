@@ -359,7 +359,7 @@ public class AddDeliveryNote extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_delivery_note);
+        setContentView(R.layout.activity_good_receipt);
         fab_controller = findViewById(R.id.fab_controller);
         barcodeLinear = findViewById(R.id.linear_scan);
         linear_search = findViewById(R.id.linear_search);

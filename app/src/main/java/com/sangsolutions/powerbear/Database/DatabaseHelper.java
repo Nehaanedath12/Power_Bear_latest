@@ -780,6 +780,18 @@ public boolean DeleteStockCount(String voucherNo){
 
         return status != -1;
     }
+
+    public Cursor GetPOs(String customer){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT HeaderId,DocNo from tbl_PendingPO WHERE Cusomer = ? GROUP by HeaderId ",new String[]{customer});
+        if(cursor.moveToFirst()){
+            return cursor;
+        }else {
+            return null;
+        }
+    }
+
+
     // Insert Pending PO
 
     public boolean InsertPendingPO(PendingSO p){
@@ -830,6 +842,16 @@ public boolean DeleteStockCount(String voucherNo){
         }
     }
 
+
+    public Cursor GetSupplier() {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT Cusomer,HeaderId from tbl_PendingPO GROUP BY Cusomer",null);
+        if(cursor.moveToFirst())
+            return cursor;
+        else
+            return null;
+    }
+
     public Cursor GetAllGoodsReceipt() {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT sum(Qty) as Qty,HeaderId,iVoucherNo from "+TABLE_GOODS_RECEIPT+ " GROUP BY iVoucherNo",null);
@@ -838,6 +860,8 @@ public boolean DeleteStockCount(String voucherNo){
         else
             return null;
     }
+
+
 
     public Cursor GetGoodsReceipt() {
         this.db = getReadableDatabase();

@@ -58,7 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-public class BodyFragment extends Fragment {
+public class StockCountBodyFragment extends Fragment {
     private FloatingActionButton fab_controller, fab_delete, fab_close_all;
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
