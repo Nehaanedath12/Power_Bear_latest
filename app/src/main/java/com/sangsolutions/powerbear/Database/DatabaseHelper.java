@@ -751,8 +751,20 @@ public boolean DeleteStockCount(String voucherNo){
 
     }
 
-
     //  goods receipt
+    //TODO add new tables(Header,Body) for goods recipt
+
+
+
+    public String GetNewVoucherNoGoods(){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+I_VOUCHER_NO+" from "+TABLE_GOODS_RECEIPT +" ORDER BY "+I_VOUCHER_NO ,null);
+        if(cursor.moveToFirst()){
+            cursor.moveToLast();
+            return String.valueOf(Integer.parseInt(cursor.getString(cursor.getColumnIndex(I_VOUCHER_NO)))+1);
+        }
+        return "1";
+    }
 
 
     public Cursor GetAllGoodsReceiptNote(String HeaderId) {

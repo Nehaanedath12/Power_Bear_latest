@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -97,8 +98,12 @@ public class GoodsReceiptHeaderFragment extends Fragment {
         btn_apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(poSelectAdapter.getSelectedItemCount()>0){
                 setPORecycler(poSelectAdapter.getSelectedItems());
                 alertDialog.dismiss();
+                }else {
+                    Toast.makeText(getActivity(), "Select a document before applying it!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -109,6 +114,7 @@ public class GoodsReceiptHeaderFragment extends Fragment {
                     enableActionMode(pos);
                 } else {
                     selection_active = true;
+                    enableActionMode(pos);
                 }
             }
         });

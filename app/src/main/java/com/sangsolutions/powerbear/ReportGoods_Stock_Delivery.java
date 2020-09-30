@@ -46,7 +46,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
     private AnimationDrawable animationDrawable;
     private ImageView mProgressBar;
 
-    public void LoadRecycler(String from, String to, final String report_type, String customer){
+    public void LoadRecycler(final String from, final String to, final String report_type, String customer){
         mProgressBar.setVisibility(View.VISIBLE);
         animationDrawable.start();
 
@@ -173,14 +173,14 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         String DocDate = jsonObject.getString("DocDate");
                                         String iVoucherNo = jsonObject.getString("iVoucherNo");
-                                        String Warehouse = jsonObject.getString("Warehouse");
+                                        String Warehouse = jsonObject.getString("Waehouse");
                                         String Name = jsonObject.getString("Name");
                                         String ProductCode = jsonObject.getString("ProductCode");
                                         String fQty = jsonObject.getString("fQty");
                                         String sUnit = jsonObject.getString("sUnit");
                                         String sRemarks = jsonObject.getString("sRemarks");
 
-                                        list2.add(new StockCountReport(DocDate, iVoucherNo, ProductCode, Warehouse, Name, fQty, sUnit, sRemarks));
+                                        list2.add(new StockCountReport(DocDate,iVoucherNo,ProductCode,Warehouse,Name,fQty,sUnit,sRemarks));
 
 
                                         if (jsonArray.length() == i + 1) {
@@ -195,6 +195,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
 
                                     e.printStackTrace();
                                 }
+                                Log.d("data",from+to);
                             }
 
                             @Override
