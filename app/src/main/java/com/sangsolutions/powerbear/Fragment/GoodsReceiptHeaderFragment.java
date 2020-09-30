@@ -26,9 +26,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sangsolutions.powerbear.Adapter.POListAdaptet.POList;
 import com.sangsolutions.powerbear.Adapter.POListAdaptet.POListAdapter;
+import com.sangsolutions.powerbear.Adapter.POSelectAdapter.POSelect;
+import com.sangsolutions.powerbear.Adapter.POSelectAdapter.POSelectAdapter;
 import com.sangsolutions.powerbear.Adapter.SupplierAdapter.SupplierAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
-import com.sangsolutions.powerbear.MainActivity;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.Tools;
@@ -44,12 +45,30 @@ public class GoodsReceiptHeaderFragment extends Fragment {
     Spinner sp_supplier;
     List<SupplierAdapter.Supplier> supplierList;
     List<POList> poList;
+    List<POSelect> poSelectList;
+    POSelectAdapter poSelectAdapter;
     POListAdapter poListAdapter;
     SupplierAdapter supplierAdapter;
     DatabaseHelper helper;
     RecyclerView rv_pos;
     TextView tv_add_po;
+    private boolean selection_active = false ;
 
+    public void closeSelection(){
+        poSelectAdapter.clearSelections();
+        selection_active = false;
+    }
+    private void toggleSelection(int position) {
+        poSelectAdapter.toggleSelection(position);
+        int count = poSelectAdapter.getSelectedItemCount();
+        if(count==0){
+            closeSelection();
+        }
+    }
+
+    private void enableActionMode(int position) {
+        toggleSelection(position);
+    }
 
     public void POSelectionDialog(){
         View view = LayoutInflater.from(requireActivity()).inflate(R.layout.select_po_layout,null,false);
@@ -57,7 +76,6 @@ public class GoodsReceiptHeaderFragment extends Fragment {
         Button btn_apply = view.findViewById(R.id.apply);
         RecyclerView rv_po_select = view.findViewById(R.id.rv_po_select);
         rv_po_select.setLayoutManager(new GridLayoutManager(requireActivity(),3));
-        rv_po_select.setAdapter(poListAdapter);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
 
@@ -65,29 +83,68 @@ public class GoodsReceiptHeaderFragment extends Fragment {
         Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertDialog.show();
 
-
+        if(poSelectList.size()>0) {
+            rv_po_select.setAdapter(poSelectAdapter);
+        }
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+                closeSelection();
             }
         });
 
         btn_apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setPORecycler(poSelectAdapter.getSelectedItems());
                 alertDialog.dismiss();
+            }
+        });
+
+        poSelectAdapter.setOnClickListener(new POSelectAdapter.OnClickListener() {
+            @Override
+            public void onItemClick(int pos) {
+                if (selection_active) {
+                    enableActionMode(pos);
+                } else {
+                    selection_active = true;
+                }
             }
         });
     }
 
 
+public void setPORecycler(List<Integer> list){
+    poList.clear();
+    for(int i=0;i<list.size();i++){
+        for (int j=0;j<poSelectList.size();j++){
+            if(list.get(i)==j){
+                poList.add(new POList(
+                       poSelectList.get(j).getDocNo(),
+                        poSelectList.get(j).getHeaderId()
+                ));
+            }
+        }
+        if(i+1==list.size()){
+            poListAdapter.notifyDataSetChanged();
+            closeSelection();
+        }
+    }
+
+}
+
 public void LoadPOs(String customer){
     poList.clear();
+    poSelectList.clear();
     Cursor cursor = helper.GetPOs(customer);
     if(cursor!=null&&cursor.moveToFirst()){
         for(int i=0;i<cursor.getCount();i++){
             poList.add(new POList(
+                    cursor.getString(cursor.getColumnIndex("DocNo")),
+                    cursor.getString(cursor.getColumnIndex("HeaderId"))
+            ));
+            poSelectList.add(new POSelect(
                     cursor.getString(cursor.getColumnIndex("DocNo")),
                     cursor.getString(cursor.getColumnIndex("HeaderId"))
             ));
@@ -138,8 +195,11 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         sp_supplier = view.findViewById(R.id.supplier);
         supplierList = new ArrayList<>();
         poList = new ArrayList<>();
+        poSelectList = new ArrayList<>();
         supplierAdapter =new SupplierAdapter(supplierList,requireActivity());
         poListAdapter = new POListAdapter(poList,requireActivity());
+        poSelectAdapter = new POSelectAdapter(poSelectList,requireActivity());
+
         rv_pos = view.findViewById(R.id.rv_po);
         rv_pos.setLayoutManager(new GridLayoutManager(requireActivity(),3));
         rv_pos.setAdapter(poListAdapter);
