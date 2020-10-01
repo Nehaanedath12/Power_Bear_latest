@@ -358,7 +358,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor SearchProduct(String keyword) {
      this.db = getReadableDatabase();
-      Cursor cursor = db.rawQuery("select "+NAME+","+CODE+","+BARCODE+" from "+TABLE_PRODUCT+" where instr(upper(Code),upper(?)) limit 10",new String[]{keyword});
+      Cursor cursor = db.rawQuery("select "+NAME+","+CODE+","+BARCODE+" from "+TABLE_PRODUCT+" where "+CODE+" like '"+keyword+"%' limit 10",null);
 
         if (cursor.moveToFirst()) {
             return cursor;
@@ -370,7 +370,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor SearchProduct2(String keyword) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select "+NAME+","+CODE+","+MASTER_ID+" from "+TABLE_PRODUCT+" where instr(upper(Code),upper(?)) limit 10",new String[]{keyword});
+        Cursor cursor = db.rawQuery("select "+NAME+","+CODE+","+MASTER_ID+" from "+TABLE_PRODUCT+" where "+CODE+" like '"+keyword+"%' limit 10",null);
 
         if (cursor.moveToFirst()) {
             return cursor;
