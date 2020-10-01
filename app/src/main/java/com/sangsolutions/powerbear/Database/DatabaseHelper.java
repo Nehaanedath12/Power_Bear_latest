@@ -13,7 +13,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     final Context context;
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "PowerBear.db";
     private static final String TABLE_PRODUCT = "tbl_Product";
     private static final String TABLE_PENDING_SO = "tbl_PendingSO";
@@ -23,7 +23,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_WAREHOUSE = "tbl_warehouse";
     private static final String TABLE_STOCK_COUNT = "tbl_StockCount";
     private static final String TABLE_PENDING_PO = "tbl_PendingPO";
-    private static final String TABLE_GOODS_RECEIPT = "tbl_GoodsReceipt";
+    private static final String TABLE_GOODS_RECEIPT_HEADER = "tbl_GoodsReceiptHeader";
+    private static final String TABLE_GOODS_RECEIPT_BODY = "tbl_GoodsReceiptBody";
 
     //Product
     private static final String MASTER_ID = "MasterId";
@@ -62,7 +63,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static  final String D_PROCESSED_DATE ="dProcessedDate";
     private static final String S_NARRATION = "sNarration";
 
+    //goods receipt header
+    private static final String S_SUPPLIER = "sSupplier";
+    private static final String S_PONO = "sPONo";
 
+    //goods receipt body
+    private static final String S_MINOR_REMARKS = "sMinorRemarks";
+    private static final String S_DAMAGED_REMARKS = "sDamagedRemarks";
+    private static final String F_MINOR_DAMAGE_QTY = "fMinorDamageQty";
+    private static final String F_DAMAGED_QTY = "fDamagedQty";
+    private static final String F_PO_QTY = "fPOQty";
+    private static final String S_MINOR_ATTACHMENT = "sMinorAttachment";
+    private static final String S_DAMAGED_ATTACHMENT = "sDamagedAttachment";
 
 
 //create table Product
@@ -117,15 +129,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ")";
 
 
-    private static final String CREATE_TABLE_GOODS_RECEIPT = "create table if not exists  " + TABLE_GOODS_RECEIPT + " (" +
-            "" + I_VOUCHER_NO + "  INTEGER DEFAULT 0," +
-            "" + HEADER_ID + "  INTEGER DEFAULT 0," +
-            "" + SI_NO + "  INTEGER DEFAULT 0," +
-            "" + PRODUCT + "  INTEGER DEFAULT 0," +
-            "" + QTY + "  TEXT(10) DEFAULT null," +
-            "" + I_STATUS + "  INTEGER DEFAULT 0" +
-            ")";
-
     //create table Pending SO
     private static final String CREATE_TABLE_PENDING_SO = "create table if not exists  " + TABLE_PENDING_SO + " (" +
             "" + DOC_NO + " TEXT(30) DEFAULT null ," +
@@ -149,6 +152,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + UNIT + " TEXT(15) DEFAULT null" +
             ")";
 
+    //create goods receipt header
+    private static final String CREATE_TABLE_GOODS_RECEIPT_HEADER = "create table if not exists "+TABLE_GOODS_RECEIPT_HEADER+" (" +
+            "" + DOC_NO + " TEXT(30) DEFAULT null ," +
+            "" + DOC_DATE + " TEXT(10) DEFAULT null ," +
+            "" + S_SUPPLIER + " TEXT(50) DEFAULT null ," +
+            "" + S_PONO + "  TEXT(150) DEFAULT null," +
+            "" + S_NARRATION + "  TEXT(50) DEFAULT null" +
+            ")";
+
+    //create goods receipt body
+    private static final String CREATE_TABLE_GOODS_RECEIPT_BODY = "create table if not exists "+TABLE_GOODS_RECEIPT_BODY+" (" +
+            "" + S_PONO + " TEXT(10) DEFAULT null ," +
+            "" + I_WAREHOUSE + " INTEGER DEFAULT 0,"  +
+            "" + BARCODE + " TEXT(30) DEFAULT null ," +
+            "" + F_PO_QTY + "  TEXT(10) DEFAULT null," +
+            "" + F_QTY + "  TEXT(10) DEFAULT null," +
+            "" + UNIT + "  TEXT(15) DEFAULT null," +
+            "" + S_REMARKS + "  TEXT(50) DEFAULT null," +
+            "" + F_MINOR_DAMAGE_QTY + "  TEXT(10) DEFAULT null," +
+            "" + S_MINOR_REMARKS+ "  TEXT(50) DEFAULT null," +
+            "" + S_MINOR_ATTACHMENT + "  TEXT(100) DEFAULT null," +
+            "" + F_DAMAGED_QTY + "  TEXT(10) DEFAULT null," +
+            "" + S_DAMAGED_REMARKS + "  TEXT(50) DEFAULT null," +
+            "" + S_DAMAGED_ATTACHMENT+ "  TEXT(100) DEFAULT null" +
+            ")";
+
     private SQLiteDatabase db;
 
     public DatabaseHelper(@Nullable Context context) {
@@ -167,12 +196,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_CURRENT_LOGIN);
         db.execSQL(CREATE_TABLE_WAREHOUSE);
         db.execSQL(CREATE_TABLE_STOCK_COUNT);
-        db.execSQL(CREATE_TABLE_GOODS_RECEIPT);
+        db.execSQL(CREATE_TABLE_GOODS_RECEIPT_HEADER);
+        db.execSQL(CREATE_TABLE_GOODS_RECEIPT_BODY);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+            db.execSQL("DROP TABLE IF EXISTS tbl_GoodsReceipt");
+        onCreate(db);
     }
 
 
@@ -208,7 +239,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean InsertCurrentLoginUser(User u) {
-        this.db =getReadableDatabase();
+        this.db = getReadableDatabase();
         this.db = getWritableDatabase();
 
         Cursor cursor = db.rawQuery("select " + I_ID + " from " + TABLE_USER + " where " + S_LOGIN_NAME + "='" + u.getsLoginName() + "' and " + S_PASSWORD + "='" + u.getsPassword() + "'", null);
@@ -224,7 +255,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean DeleteCurrentUser(){
         this.db = getWritableDatabase();
-      float status = db.delete(TABLE_CURRENT_LOGIN,null,null);
+        float status = db.delete(TABLE_CURRENT_LOGIN,null,null);
         return status!=-1;
     }
 
@@ -469,29 +500,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean IsGoodsReceiptPresent(String HeaderId){
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from "+TABLE_GOODS_RECEIPT+" where "+HEADER_ID+"= ? ",new String[]{HeaderId});
-        if(cursor!=null){
-            return cursor.moveToFirst();
-        }
-        return false;
-    }
 
-    public Cursor SearchProductGoodsReceipt(String keyword,String HeaderId) {
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select Name,Code,Barcode from tbl_Product p " +
-                "INNER JOIN tbl_GoodsReceipt g " +
-                "on g.Product = p.MasterId " +
-                "where instr(upper(Code),upper( ? )) and g.HeaderId = ? limit 10",new String[]{keyword,HeaderId});
-
-        if (cursor.moveToFirst()) {
-            return cursor;
-        } else {
-            return null;
-        }
-
-    }
 
     //Pending SO
     public boolean DeleteOldPendingSO() {
@@ -751,47 +760,48 @@ public boolean DeleteStockCount(String voucherNo){
 
     }
 
-    //  goods receipt
-    //TODO add new tables(Header,Body) for goods recipt
-
-
-
-    public String GetNewVoucherNoGoods(){
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select "+I_VOUCHER_NO+" from "+TABLE_GOODS_RECEIPT +" ORDER BY "+I_VOUCHER_NO ,null);
-        if(cursor.moveToFirst()){
-            cursor.moveToLast();
-            return String.valueOf(Integer.parseInt(cursor.getString(cursor.getColumnIndex(I_VOUCHER_NO)))+1);
-        }
-        return "1";
-    }
-
-
-    public Cursor GetAllGoodsReceiptNote(String HeaderId) {
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT g.HeaderId,g.SiNo,p.MasterId as Product,g.iVoucherNo iVoucherNo,p.Name,p.Code,p.Unit, g.Qty PickedQty,po.Qty Qty FROM tbl_GoodsReceipt g " +
-                "INNER JOIN tbl_PendingPO po on g.HeaderId = po.HeaderId and g.sino=po.sino " +
-                "INNER JOIN tbl_Product p on g.product=p.masterid " +
-                "WHERE g.HeaderId = ? ", new String[]{HeaderId});
-        if(cursor.moveToFirst()){
-            return cursor;
-        }else {
-            return null;
-        }
-    }
-    public boolean DeleteGoodsReceipt(String id,String iVoucherNo){
-        this.db = getWritableDatabase();
-        db.delete(TABLE_GOODS_RECEIPT,HEADER_ID+" = ? and "+I_VOUCHER_NO+" = ?",new String[]{id,iVoucherNo});
-        return true;
-    }
-
-    public boolean DeleteGoods(String header_id, String sino,String iVoucherNo){
+    //  goods receipt header
+    public boolean InsertGoodsReceiptHeader(GoodReceiptHeader gh){
         this.db = getWritableDatabase();
         float status;
-        status  =  db.delete(TABLE_GOODS_RECEIPT,HEADER_ID+" =  ? and "+SI_NO+" = ? and iVoucherNo = ? ",new String[]{header_id,sino,iVoucherNo});
+        ContentValues cv = new ContentValues();
+        cv.put(DOC_NO, gh.getDocNo());
+        cv.put(DOC_DATE, gh.getDocDate());
+        cv.put(S_SUPPLIER, gh.getsSupplier());
+        cv.put(S_PONO,gh.getsPONo());
+        cv.put(S_NARRATION,gh.getsNarration());
+        status = db.insert(TABLE_GOODS_RECEIPT_HEADER, null, cv);
 
         return status != -1;
     }
+
+
+    //goods receipt body
+    public boolean InsertGoodsReceiptBody(GoodsReceiptBody gb){
+        this.db = getWritableDatabase();
+        float status;
+        ContentValues cv = new ContentValues();
+        cv.put(S_PONO, gb.getsPONo());
+        cv.put(I_WAREHOUSE, gb.getiWarehouse());
+        cv.put(BARCODE, gb.getBarcode());
+        cv.put(F_PO_QTY, gb.getfPOQty());
+        cv.put(QTY, gb.getfQty());
+        cv.put(UNIT, gb.getUnit());
+        cv.put(S_REMARKS, gb.getsRemarks());
+        cv.put(F_MINOR_DAMAGE_QTY, gb.getfMinorDamageQty());
+        cv.put(S_MINOR_REMARKS, gb.getsMinorRemarks());
+        cv.put(S_MINOR_ATTACHMENT, gb.getsMinorAttachment());
+        cv.put(F_DAMAGED_QTY, gb.getfDamagedQty());
+        cv.put(S_DAMAGED_REMARKS, gb.getsDamagedRemarks());
+        cv.put(S_DAMAGED_ATTACHMENT, gb.getsDamagedAttachment());
+
+        status = db.insert(TABLE_GOODS_RECEIPT_BODY, null, cv);
+
+        return status != -1;
+    }
+
+
+
 
     public Cursor GetPOs(String customer){
         this.db = getReadableDatabase();
@@ -857,17 +867,8 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetSupplier() {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT Cusomer,HeaderId from tbl_PendingPO GROUP BY Cusomer",null);
-        if(cursor.moveToFirst())
-            return cursor;
-        else
-            return null;
-    }
-
-    public Cursor GetAllGoodsReceipt() {
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT sum(Qty) as Qty,HeaderId,iVoucherNo from "+TABLE_GOODS_RECEIPT+ " GROUP BY iVoucherNo",null);
-        if(cursor.moveToFirst())
+        Cursor cursor = db.rawQuery("SELECT Cusomer,HeaderId from tbl_PendingPO GROUP BY Cusomer", null);
+        if (cursor.moveToFirst())
             return cursor;
         else
             return null;
@@ -875,42 +876,9 @@ public boolean DeleteStockCount(String voucherNo){
 
 
 
-    public Cursor GetGoodsReceipt() {
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * from "+TABLE_GOODS_RECEIPT+" where "+QTY+" != ? ",new String[]{"0"});
-        if(cursor.moveToFirst())
-            return cursor;
-        else
-            return null;
-    }
-
-    public void InsertGoodsReceipt(GoodsReceipt g){
-        this.db = getWritableDatabase();
-        float status;
-
-        ContentValues cv = new ContentValues();
-        cv.put(I_VOUCHER_NO, g.getiVoucherNo());
-        cv.put(HEADER_ID, g.getHeaderId());
-        cv.put(SI_NO, g.getSiNo());
-        cv.put(PRODUCT, g.getProduct());
-        cv.put(QTY, g.getQty());
-        cv.put(I_STATUS, g.getiStatus());
-
-           status = db.insert(TABLE_GOODS_RECEIPT, null, cv);
-
-    }
 
 
-    public String GetGoodsReceiptVoucherNo(){
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select "+I_VOUCHER_NO+" from  "+TABLE_GOODS_RECEIPT+" ORDER BY "+I_VOUCHER_NO,null);
-        if(cursor!=null){
-            if(cursor.moveToLast()){
-                return String.valueOf(cursor.getInt(cursor.getColumnIndex(I_VOUCHER_NO))+1);
-            }
-        }
-        return "1";
-    }
+
 
 
 

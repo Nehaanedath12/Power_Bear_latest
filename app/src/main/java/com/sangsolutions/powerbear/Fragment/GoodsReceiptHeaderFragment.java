@@ -146,10 +146,6 @@ public void LoadPOs(String customer){
     Cursor cursor = helper.GetPOs(customer);
     if(cursor!=null&&cursor.moveToFirst()){
         for(int i=0;i<cursor.getCount();i++){
-            poList.add(new POList(
-                    cursor.getString(cursor.getColumnIndex("DocNo")),
-                    cursor.getString(cursor.getColumnIndex("HeaderId"))
-            ));
             poSelectList.add(new POSelect(
                     cursor.getString(cursor.getColumnIndex("DocNo")),
                     cursor.getString(cursor.getColumnIndex("HeaderId"))
@@ -165,20 +161,24 @@ public void LoadPOs(String customer){
 
 public void LoadSupplier(){
     supplierList.clear();
-    Cursor cursor = helper.GetSupplier();
-    if(cursor!=null&&cursor.moveToFirst()){
-        for(int i=0;i<cursor.getCount();i++){
-            supplierList.add(new SupplierAdapter.Supplier(
-               cursor.getString(cursor.getColumnIndex("Cusomer")),
-               cursor.getString(cursor.getColumnIndex("HeaderId"))
-            ));
-            cursor.moveToNext();
-            if(i+1==cursor.getCount()){
-                sp_supplier.setAdapter(supplierAdapter);
+    supplierList.add(new SupplierAdapter.Supplier("---Select Supplier---","0"));
+    try {
+        Cursor cursor = helper.GetSupplier();
+        if (cursor != null && cursor.moveToFirst()) {
+            for (int i = 0; i < cursor.getCount(); i++) {
+                supplierList.add(new SupplierAdapter.Supplier(
+                        cursor.getString(cursor.getColumnIndex("Cusomer")),
+                        cursor.getString(cursor.getColumnIndex("HeaderId"))
+                ));
+                cursor.moveToNext();
+                if (i + 1 == cursor.getCount()) {
+                    sp_supplier.setAdapter(supplierAdapter);
+                }
             }
         }
+    }catch (Exception e) {
+    e.printStackTrace();
     }
-
 sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

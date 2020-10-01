@@ -67,12 +67,12 @@ public class PostGoodsReceipt extends JobService {
             protected Void doInBackground(Void... voids) {
 
 
-                response = connection.execute();
+              /*  response = connection.execute();
                 if(response.equals("1")) {
                     if (helper.DeleteGoods(map.get("iHeaderId"), map.get("SiNo"),map.get("iVoucherNo"))) {
                         Log.d("status change", "true");
                     }
-                }
+                }*/
                 return null;
             }
 
@@ -123,7 +123,7 @@ public class PostGoodsReceipt extends JobService {
         sDeviceId = Tools.getDeviceId(getApplicationContext());
         helper = new DatabaseHelper(this);
         this.params = params;
-         cursor = helper.GetGoodsReceipt();
+       //  cursor = helper.GetGoodsReceipt();
         if(cursor!=null) {
             cursor.moveToFirst();
         }

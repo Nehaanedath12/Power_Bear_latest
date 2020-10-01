@@ -35,9 +35,9 @@ public class GoodsReceiptHistory extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setRecyclerView();
+        //setRecyclerView();
     }
-
+/*
     public void setRecyclerView(){
         list.clear();
 
@@ -87,7 +87,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
             }
         }).create().show();
     }
-
+*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +117,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
 
 
 
-        setRecyclerView();
+        //setRecyclerView();
 
         add_new.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +141,7 @@ adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
 
     @Override
     public void onDeleteItemClick(com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory, int pos) {
-        DeleteGoodsReceiptItemAlert(goodsReceiptHistory, pos);
+        //DeleteGoodsReceiptItemAlert(goodsReceiptHistory, pos);
     }
 });
     }
