@@ -776,6 +776,17 @@ public boolean DeleteStockCount(String voucherNo){
     }
 
 
+    public String GetNewVoucherNoGoodsReceipt(){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+DOC_NO+" from "+TABLE_GOODS_RECEIPT_HEADER +" ORDER BY "+DOC_NO ,null);
+        if(cursor.moveToFirst()){
+            cursor.moveToLast();
+            return String.valueOf(Integer.parseInt(cursor.getString(cursor.getColumnIndex(I_VOUCHER_NO)))+1);
+        }
+        return "1";
+    }
+
+
     //goods receipt body
     public boolean InsertGoodsReceiptBody(GoodsReceiptBody gb){
         this.db = getWritableDatabase();

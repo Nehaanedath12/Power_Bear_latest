@@ -53,6 +53,7 @@ public void SetViewPager(){
     fragmentList.add(new GoodsReceiptHeaderFragment());
     fragmentList.add(new GoodsReceiptBodyFragment());
     viewPager2AdapterGoodsReceipt = new ViewPager2AdapterGoodsReceipt(getSupportFragmentManager(),getLifecycle(),fragmentList);
+    viewPager2.setUserInputEnabled(false);
     viewPager2.setAdapter(viewPager2AdapterGoodsReceipt);
 
     new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {

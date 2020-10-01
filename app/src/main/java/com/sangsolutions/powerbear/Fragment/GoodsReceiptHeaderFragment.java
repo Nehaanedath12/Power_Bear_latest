@@ -52,7 +52,7 @@ public class GoodsReceiptHeaderFragment extends Fragment {
     SupplierAdapter supplierAdapter;
     DatabaseHelper helper;
     RecyclerView rv_pos;
-    TextView tv_add_po;
+    TextView tv_add_po,tv_doc_no;
     private boolean selection_active = false ;
 
     public void closeSelection(){
@@ -196,9 +196,15 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.good_reseipt_header_fragment,container,false);
         helper = new DatabaseHelper(requireActivity());
-        et_date = view.findViewById(R.id.date);
+        et_date = view.findViewById(R.id.ll_1);
         tv_add_po = view.findViewById(R.id.add_po);
         sp_supplier = view.findViewById(R.id.supplier);
+        tv_doc_no = view.findViewById(R.id.doc_no);
+        try {
+            tv_doc_no.setText("Doc No: " + helper.GetNewVoucherNoGoodsReceipt());
+        }catch (Exception e) {
+        e.printStackTrace();
+        }
         supplierList = new ArrayList<>();
         poList = new ArrayList<>();
         poSelectList = new ArrayList<>();

@@ -48,7 +48,7 @@ ImageView img_settings;
         report_btn = findViewById(R.id.delivery_note);
         img_logout = findViewById(R.id.logout);
         tv_username = findViewById(R.id.username);
-        tv_date = findViewById(R.id.date);
+        tv_date = findViewById(R.id.ll_1);
         img_settings = findViewById(R.id.settings);
         helper = new DatabaseHelper(this);
 
