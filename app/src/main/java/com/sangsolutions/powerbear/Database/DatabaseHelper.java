@@ -5,8 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("ALL")
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -811,6 +817,30 @@ public boolean DeleteStockCount(String voucherNo){
         return status != -1;
     }
 
+
+    public Cursor GetGoodsPOProdcut(List<String> list){
+        this.db = getReadableDatabase();
+
+        String docNo = TextUtils.join(",", list
+                .stream()
+                .map(new Function<String, Object>() {
+                    @Override
+                    public Object apply(String name) {
+                        return ("'" + name + "'");
+                    }
+                })
+                .collect(Collectors.toList()));
+
+
+        Cursor cursor = db.rawQuery("SELECT po.Unit as Unit,po.Qty as Qty,p.Name as Name,po.Product as Product,po.DocNo as DocNo FROM tbl_Product p " +
+                "INNER JOIN tbl_PendingPO po on p.MasterId = po.Product " +
+                "WHERE po.DocNo in ( "+docNo+" )",null);
+        if(cursor.moveToFirst()){
+            return cursor;
+        }else {
+            return null;
+        }
+    }
 
 
 

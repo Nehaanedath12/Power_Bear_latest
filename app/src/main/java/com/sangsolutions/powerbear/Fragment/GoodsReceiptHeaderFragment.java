@@ -33,6 +33,7 @@ import com.sangsolutions.powerbear.Adapter.SupplierAdapter.SupplierAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
+import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
 import com.sangsolutions.powerbear.Tools;
 
 import java.util.ArrayList;
@@ -133,6 +134,7 @@ public void setPORecycler(List<Integer> list){
             }
         }
         if(i+1==list.size()){
+            GoodsReceiptPoSingleton.getInstance().setList(poList);
             poListAdapter.notifyDataSetChanged();
             closeSelection();
         }
@@ -252,6 +254,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     poList.remove(pos);
                         poListAdapter.notifyDataSetChanged();
                 }
+                GoodsReceiptPoSingleton.getInstance().setList(poList);
             }
         });
 

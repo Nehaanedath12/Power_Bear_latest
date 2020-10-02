@@ -198,6 +198,13 @@ public class StockCountWarehouse extends AppCompatActivity {
        CloseAlert();
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUpViewPager(viewPager);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
