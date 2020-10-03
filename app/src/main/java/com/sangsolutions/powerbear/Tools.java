@@ -4,17 +4,26 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
+
+import io.fotoapparat.result.Photo;
+import io.fotoapparat.result.PhotoResult;
 
 public class Tools {
 SharedPreferences preferences;
@@ -94,4 +103,16 @@ SharedPreferences.Editor editor;
         return (!TextUtils.isEmpty(target) && Patterns.IP_ADDRESS.matcher(target).matches());
     }
 
+
+    public static String savePhoto(Context context, PhotoResult photoResult) {
+        String fileName = "IMG_"+System.currentTimeMillis() + ".jpg";
+        File folder = new File(context.getExternalFilesDir(null) + File.separator +"temp");
+
+        if (!folder.exists()) {
+            Log.d("folder created:", "" + folder.mkdir());
+        }
+            File file = new File(folder, fileName);
+            photoResult.saveToFile(file);
+            return file.getAbsolutePath();
+    }
 }

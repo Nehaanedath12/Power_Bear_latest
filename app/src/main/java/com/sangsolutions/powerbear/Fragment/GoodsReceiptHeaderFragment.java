@@ -184,6 +184,7 @@ public void LoadSupplier(){
 sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        poListAdapter.notifyDataSetChanged();
         LoadPOs(supplierList.get(position).getsSupplierName());
     }
 

@@ -832,7 +832,7 @@ public boolean DeleteStockCount(String voucherNo){
                 .collect(Collectors.toList()));
 
 
-        Cursor cursor = db.rawQuery("SELECT po.Unit as Unit,po.Qty as Qty,p.Name as Name,po.Product as Product,po.DocNo as DocNo FROM tbl_Product p " +
+        Cursor cursor = db.rawQuery("SELECT po.Unit as Unit,po.Qty as Qty,p.Name as Name,p.Code as Code,po.Product as Product,po.DocNo as DocNo FROM tbl_Product p " +
                 "INNER JOIN tbl_PendingPO po on p.MasterId = po.Product " +
                 "WHERE po.DocNo in ( "+docNo+" )",null);
         if(cursor.moveToFirst()){

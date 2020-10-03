@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.sangsolutions.powerbear.Adapter.ViewPager2AdapterGoodsReceipt.ViewPager2AdapterGoodsReceipt;
 import com.sangsolutions.powerbear.Fragment.GoodsReceiptBodyFragment;
 import com.sangsolutions.powerbear.Fragment.GoodsReceiptHeaderFragment;
+import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,13 @@ public void SetViewPager(){
         }
     }).attach();
 }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        GoodsReceiptPoSingleton.getInstance().clearList();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,10 +1,12 @@
 package com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter;
 
 public class GoodsReceiptBody {
-    String sPONo,iWarehouse,Barcode,fPOQty,fQty,Unit,sRemarks,fMinorDamageQty,sMinorRemarks,sMinorAttachment,fDamagedQty,sDamagedRemarks,sDamagedAttachment;
+    String sPONo,Name,Code,iWarehouse,Barcode,fPOQty,fQty,Unit,sRemarks,fMinorDamageQty,sMinorRemarks,sMinorAttachment,fDamagedQty,sDamagedRemarks,sDamagedAttachment;
 
-    public GoodsReceiptBody(String sPONo, String iWarehouse, String barcode, String fPOQty, String fQty, String unit, String sRemarks, String fMinorDamageQty, String sMinorRemarks, String sMinorAttachment, String fDamagedQty, String sDamagedRemarks, String sDamagedAttachment) {
+    public GoodsReceiptBody(String sPONo,String Name,String Code, String iWarehouse, String barcode, String fPOQty, String fQty, String unit, String sRemarks, String fMinorDamageQty, String sMinorRemarks, String sMinorAttachment, String fDamagedQty, String sDamagedRemarks, String sDamagedAttachment) {
         this.sPONo = sPONo;
+        this.Name = Name;
+        this.Code = Code;
         this.iWarehouse = iWarehouse;
         this.Barcode = barcode;
         this.fPOQty = fPOQty;
@@ -25,6 +27,22 @@ public class GoodsReceiptBody {
 
     public void setsPONo(String sPONo) {
         this.sPONo = sPONo;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
+    }
+
+    public String getCode() {
+        return Code;
+    }
+
+    public void setCode(String code) {
+        Code = code;
     }
 
     public String getiWarehouse() {

@@ -5,11 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.sangsolutions.powerbear.R;
 
 import java.util.List;
@@ -18,10 +18,17 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
 
   Context context;
   List<GoodsReceiptBody> list;
+    private OnClickListener onClickListener;
 
     public GoodsReceiptBodyAdapter(Context context, List<GoodsReceiptBody> list) {
         this.context = context;
         this.list = list;
+    }
+
+
+
+    public void setOnClickListener(OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
@@ -32,9 +39,11 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GoodsReceiptBodyAdapter.ViewHolder holder, int position) {
-        GoodsReceiptBody body = list.get(position);
+    public void onBindViewHolder(@NonNull GoodsReceiptBodyAdapter.ViewHolder holder, final int position) {
+        final GoodsReceiptBody body = list.get(position);
         holder.PONo.setText(list.get(position).getsPONo());
+        holder.Name.setText(list.get(position).getName());
+        holder.Code.setText(list.get(position).getCode());
         holder.warehouse.setText(list.get(position).getiWarehouse());
         holder.poQty.setText(list.get(position).getfPOQty());
         holder.qty.setText(list.get(position).getfQty());
@@ -44,6 +53,13 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
         holder.minorRemarks.setText(list.get(position).getsMinorRemarks());
         holder.damagedQty.setText(list.get(position).getfDamagedQty());
         holder.damagedRemarks.setText(list.get(position).getsDamagedRemarks());
+
+        holder.rl_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onItemClick(body,position);
+            }
+        });
     }
 
     @Override
@@ -51,12 +67,19 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
         return list.size();
     }
 
+    public interface OnClickListener {
+        void onItemClick(GoodsReceiptBody goodsReceiptBody,int pos);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView PONo,warehouse,poQty,qty,unit,remarks,minorQty,minorRemarks,damagedQty,damagedRemarks;
+        TextView PONo,Name,Code,warehouse,poQty,qty,unit,remarks,minorQty,minorRemarks,damagedQty,damagedRemarks;
         ImageButton delete;
+        RelativeLayout rl_1;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             PONo = itemView.findViewById(R.id.pono);
+            Name = itemView.findViewById(R.id.name);
+            Code = itemView.findViewById(R.id.code);
             warehouse = itemView.findViewById(R.id.warehouse);
             poQty = itemView.findViewById(R.id.poQty);
             qty = itemView.findViewById(R.id.qty);
@@ -67,6 +90,7 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
             damagedQty = itemView.findViewById(R.id.damagedQty);
             damagedRemarks = itemView.findViewById(R.id.damagedRemarks);
             delete = itemView.findViewById(R.id.delete);
+            rl_1 = itemView.findViewById(R.id.rl_1);
         }
     }
 }
