@@ -18,7 +18,7 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
 
   Context context;
   List<GoodsReceiptBody> list;
-    private OnClickListener onClickListener;
+  private OnClickListener onClickListener;
 
     public GoodsReceiptBodyAdapter(Context context, List<GoodsReceiptBody> list) {
         this.context = context;
@@ -44,7 +44,7 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
         holder.PONo.setText(list.get(position).getsPONo());
         holder.Name.setText(list.get(position).getName());
         holder.Code.setText(list.get(position).getCode());
-        holder.warehouse.setText(list.get(position).getiWarehouse());
+        holder.warehouse.setText(list.get(position).getsWarehouse());
         holder.poQty.setText(list.get(position).getfPOQty());
         holder.qty.setText(list.get(position).getfQty());
         holder.unit.setText(list.get(position).getUnit());

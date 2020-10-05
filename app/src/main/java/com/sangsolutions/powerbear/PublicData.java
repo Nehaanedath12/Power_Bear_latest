@@ -7,10 +7,16 @@ public class PublicData {
     public static String warehouse;
 
 
+    public static String image_minor;
+    public static String image_damaged;
+
+
     public static void clearData(){
         narration = "";
         date = "";
         warehouse = "";
+        image_minor ="";
+        image_damaged="";
     }
 
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.ThumbnailUtils;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,7 @@ import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptB
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBodyAdapter;
 import com.sangsolutions.powerbear.Adapter.POListAdaptet.POList;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
 import com.sangsolutions.powerbear.Tools;
@@ -69,10 +72,10 @@ public class GoodsReceiptBodyFragment extends Fragment {
     AlertDialog mainAlertDialog;
     boolean selection_active = false;
 
-    ImageView img_minor ;
+    ImageView img_minor;
     ImageView img_damaged;
 
-    String[] PERMISSIONS = {Manifest.permission.CAMERA};
+    String[] PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE};
 
 
     // methods for selecting product from DocNo
@@ -106,6 +109,8 @@ public class GoodsReceiptBodyFragment extends Fragment {
                              listPOProducts.get(j).getDocNo(),
                              listPOProducts.get(j).getName(),
                              listPOProducts.get(j).getCode(),
+                             listPOProducts.get(j).getProduct(),
+                             "",
                              "",
                              helper.GetBarcodeFromIProduct(listPOProducts.get(j).getProduct()),
                              listPOProducts.get(j).getPOQty(),
@@ -256,14 +261,16 @@ public class GoodsReceiptBodyFragment extends Fragment {
 
     //Alert for main
     @SuppressLint("SetTextI18n")
-    public void GoodsBodyMainAlert(List<GoodsReceiptBody> listMain, int pos){
+    public void GoodsBodyMainAlert(final List<GoodsReceiptBody> listMain, final int pos){
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.goods_body_main_alert,null,false);
 
         ImageView img_close = view.findViewById(R.id.close_alert);
         ImageView img_forward = view.findViewById(R.id.forward);
         ImageView img_backward = view.findViewById(R.id.backward);
-         img_minor = view.findViewById(R.id.minor_img);
-         img_damaged = view.findViewById(R.id.damaged_img);
+        img_minor = view.findViewById(R.id.minor_img);
+        img_damaged = view.findViewById(R.id.damaged_img);
+        ImageView img_add_new = view.findViewById(R.id.add_new);
+
 
 
         TextView tv_doc_no = view.findViewById(R.id.doc_no);
@@ -272,16 +279,16 @@ public class GoodsReceiptBodyFragment extends Fragment {
         TextView tv_unit = view.findViewById(R.id.unit);
         TextView tv_po_qty = view.findViewById(R.id.po_qty);
 
-        EditText et_regular_remarks = view.findViewById(R.id.regular_remarks);
-        EditText et_regular_qty = view.findViewById(R.id.regular_qty);
+        final EditText et_regular_remarks = view.findViewById(R.id.regular_remarks);
+        final EditText et_regular_qty = view.findViewById(R.id.regular_qty);
 
-        EditText et_minor_remarks = view.findViewById(R.id.minor_remarks);
-        EditText et_minor_qty = view.findViewById(R.id.minor_qty);
+        final EditText et_minor_remarks = view.findViewById(R.id.minor_remarks);
+        final EditText et_minor_qty = view.findViewById(R.id.minor_qty);
 
-        EditText et_damaged_remarks = view.findViewById(R.id.damaged_remarks);
-        EditText et_damaged_qty = view.findViewById(R.id.damaged_qty);
+        final EditText et_damaged_remarks = view.findViewById(R.id.damaged_remarks);
+        final EditText et_damaged_qty = view.findViewById(R.id.damaged_qty);
 
-        Spinner sp_warehouse = view.findViewById(R.id.warehouse);
+        final Spinner sp_warehouse = view.findViewById(R.id.warehouse);
 
         AlertDialog.Builder builder= new AlertDialog.Builder(requireActivity() ,android.R.style.Theme_Light_NoTitleBar_Fullscreen);
         builder.setView(view);
@@ -290,38 +297,73 @@ public class GoodsReceiptBodyFragment extends Fragment {
           mainAlertDialog = builder.create();
           mainAlertDialog.show();
 
-          List<Warehouse> list = new ArrayList<>();
+          final List<Warehouse> list = new ArrayList<>();
           WarehouseAdapter warehouseAdapter = new WarehouseAdapter(list);
           sp_warehouse.setAdapter(warehouseAdapter);
 
           if(listMain.get(pos)!=null){
-              tv_doc_no.setText("Doc No : "+listMain.get(pos).getsPONo());
-              tv_product.setText("Name : "+listMain.get(pos).getName());
-              tv_code.setText("Code : "+listMain.get(pos).getCode());
-              tv_unit.setText("Unit : "+listMain.get(pos).getUnit());
-              tv_po_qty.setText("PO Qty : "+listMain.get(pos).getfPOQty());
-
-
-              //set warehouse
               try {
-                  Cursor cursor = helper.GetWarehouse();
-                  if(cursor!=null&&cursor.moveToFirst())
-                  for (int i = 0; i<cursor.getCount();i++){
-                      if(!cursor.getString(cursor.getColumnIndex("Name")).equals(" ")
-                              || !cursor.getString(cursor.getColumnIndex("Name")).equals(" ")){
-                      list.add(new Warehouse(
-                         cursor.getString(cursor.getColumnIndex("MasterId")),
-                              cursor.getString(cursor.getColumnIndex("Name"))
-                      ));}
-                      cursor.moveToNext();
-                      if(cursor.getCount()==i+1){
-                          warehouseAdapter.notifyDataSetChanged();
+                  tv_doc_no.setText("Doc No : " + listMain.get(pos).getsPONo());
+                  tv_product.setText("Name : " + listMain.get(pos).getName());
+                  tv_code.setText("Code : " + listMain.get(pos).getCode());
+                  tv_unit.setText("Unit : " + listMain.get(pos).getUnit());
+                  tv_po_qty.setText("PO Qty : " + listMain.get(pos).getfPOQty());
+
+
+                  et_regular_qty.setText(listMain.get(pos).getfQty());
+                  et_minor_qty.setText(listMain.get(pos).getfMinorDamageQty());
+                  et_damaged_qty.setText(listMain.get(pos).getfDamagedQty());
+
+
+                  et_regular_remarks.setText(listMain.get(pos).getsRemarks());
+                  et_minor_remarks.setText(listMain.get(pos).getsMinorRemarks());
+                  et_damaged_remarks.setText(listMain.get(pos).getsDamagedRemarks());
+
+
+                  Bitmap minorBitmap = BitmapFactory.decodeFile(listMain.get(pos).getsMinorAttachment());
+                  Bitmap damagedBitmap = BitmapFactory.decodeFile(listMain.get(pos).getsDamagedAttachment());
+
+                  if(minorBitmap!=null){
+                      img_minor.setImageBitmap(minorBitmap);
+                  }
+
+                  if(damagedBitmap!=null){
+                      img_damaged.setImageBitmap(damagedBitmap);
+                  }
+
+                  //set warehouse
+                  try {
+                      Cursor cursor = helper.GetWarehouse();
+                      if (cursor != null && cursor.moveToFirst())
+                          for (int i = 0; i < cursor.getCount(); i++) {
+                              if (!cursor.getString(cursor.getColumnIndex("Name")).equals(" ")
+                                      || !cursor.getString(cursor.getColumnIndex("MasterId")).equals(" ")) {
+                                  list.add(new Warehouse(
+                                          cursor.getString(cursor.getColumnIndex("MasterId")),
+                                          cursor.getString(cursor.getColumnIndex("Name"))
+                                  ));
+                              }
+                              cursor.moveToNext();
+                              if (cursor.getCount() == i + 1) {
+                                  warehouseAdapter.notifyDataSetChanged();
+                              }
+                          }
+                  } catch (Exception e) {
+                      e.printStackTrace();
+                  }
+
+
+                  if(!listMain.get(pos).getiWarehouse().isEmpty()){
+                      for(int i=0;i<list.size();i++){
+                          if(list.get(i).getMasterId().equals(listMain.get(pos).getiWarehouse())){
+                              sp_warehouse.setSelection(i);
+                          }
                       }
                   }
+
               }catch (Exception e){
                   e.printStackTrace();
               }
-              //////////////////////////////////////////////////
           }
 
 
@@ -360,8 +402,64 @@ public class GoodsReceiptBodyFragment extends Fragment {
             }
         });
 
+        img_add_new.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    if (et_regular_qty.getText().toString().isEmpty()) {
+                        et_regular_qty.setError("Enter regular qty!");
+
+
+                    } else if (Integer.parseInt(et_regular_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())) {
+                            et_regular_qty.setError("Quantity can't higher then PO Qty");
+
+
+                    } else {
+
+                        if(!et_minor_qty.getText().toString().trim().isEmpty())
+                        if (Integer.parseInt(et_minor_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())) {
+                            et_minor_qty.setError("Quantity can't higher then PO Qty");
+                            return;
+                        }
+
+
+                        if(!et_damaged_qty.getText().toString().trim().isEmpty())
+                        if (Integer.parseInt(et_damaged_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())) {
+                            et_damaged_qty.setError("Quantity can't higher then PO Qty");
+                            return;
+                        }
+
+                        listMain.set(pos, new GoodsReceiptBody(
+                                listMain.get(pos).getsPONo(),
+                                listMain.get(pos).getName(),
+                                listMain.get(pos).getCode(),
+                                listMain.get(pos).getiProduct(),
+                                list.get(sp_warehouse.getSelectedItemPosition()).getName(),
+                                list.get(sp_warehouse.getSelectedItemPosition()).getMasterId(),
+                                helper.GetBarcodeFromIProduct(listMain.get(pos).getiProduct()),
+                                listMain.get(pos).getfPOQty(),
+                                et_regular_qty.getText().toString().trim(),
+                                listMain.get(pos).getUnit(),
+                                et_regular_remarks.getText().toString().trim(),
+                                et_minor_qty.getText().toString().trim(),
+                                et_minor_remarks.getText().toString().trim(),
+                                PublicData.image_minor,
+                                et_damaged_qty.getText().toString().trim(),
+                                et_damaged_remarks.getText().toString().trim(),
+                                PublicData.image_damaged
+                        ));
+                        goodsReceiptBodyAdapter.notifyDataSetChanged();
+                        PublicData.clearData();
+
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
-   ///////////////////////////////////////////
+   //////////////////////////////////////////
 
 
     //General Alert
@@ -426,16 +524,46 @@ public class GoodsReceiptBodyFragment extends Fragment {
             public void onClick(View view) {
                 PhotoResult photoResult = fotoapparat.takePicture();
                 if (type.equals("minor")) {
-                    String filePath = Tools.savePhoto(requireActivity(), photoResult);
-                    Bitmap bm = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(filePath), 100, 100);
-                     img_minor.setImageBitmap(bm);
+                    final String filePath = Tools.savePhoto(requireActivity(), photoResult);
 
+                    final Handler handler = new Handler();
+
+                    final Runnable r = new Runnable() {
+                        public void run() {
+                            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                            if (bitmap != null) {
+                                handler.removeCallbacks(this);
+                                img_minor.setImageBitmap(bitmap);
+                                PublicData.image_minor = filePath;
+                                fotoapparat.stop();
+                                alertDialog.dismiss();
+                            }
+                            handler.postDelayed(this, 1000);
+                        }
+                    };
+
+                    handler.postDelayed(r, 500);
 
                 }else if(type.equals("damaged")){
-                    String filePath = Tools.savePhoto(requireActivity(), photoResult);
-                    Bitmap bm = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(filePath), 100, 100);
-                        img_damaged.setImageBitmap(bm);
+                   final String filePath = Tools.savePhoto(requireActivity(), photoResult);
 
+                   final Handler handler = new Handler();
+
+                    final Runnable r = new Runnable() {
+                        public void run() {
+                            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                            if (bitmap != null) {
+                                handler.removeCallbacks(this);
+                                PublicData.image_damaged = filePath;
+                                img_damaged.setImageBitmap(bitmap);
+                                fotoapparat.stop();
+                                alertDialog.dismiss();
+                            }
+                            handler.postDelayed(this,1000);
+                        }
+                    };
+
+                    handler.postDelayed(r, 500);
                 }
             }
         });
@@ -488,14 +616,17 @@ public class GoodsReceiptBodyFragment extends Fragment {
         final String Name;
 
         public Warehouse(String masterId, String name) {
-            MasterId = masterId;
-            Name = name;
+            this.MasterId = masterId;
+            this.Name = name;
         }
 
         public String getMasterId() {
             return MasterId;
         }
 
+        public String getName() {
+            return Name;
+        }
     }
 
 

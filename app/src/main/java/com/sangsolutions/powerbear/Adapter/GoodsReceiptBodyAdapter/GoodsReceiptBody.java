@@ -1,12 +1,14 @@
 package com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter;
 
 public class GoodsReceiptBody {
-    String sPONo,Name,Code,iWarehouse,Barcode,fPOQty,fQty,Unit,sRemarks,fMinorDamageQty,sMinorRemarks,sMinorAttachment,fDamagedQty,sDamagedRemarks,sDamagedAttachment;
+    String sPONo,Name,Code,iProduct,sWarehouse,iWarehouse,Barcode,fPOQty,fQty,Unit,sRemarks,fMinorDamageQty,sMinorRemarks,sMinorAttachment,fDamagedQty,sDamagedRemarks,sDamagedAttachment;
 
-    public GoodsReceiptBody(String sPONo,String Name,String Code, String iWarehouse, String barcode, String fPOQty, String fQty, String unit, String sRemarks, String fMinorDamageQty, String sMinorRemarks, String sMinorAttachment, String fDamagedQty, String sDamagedRemarks, String sDamagedAttachment) {
+    public GoodsReceiptBody(String sPONo,String Name,String Code,String iProduct,String sWarehouse, String iWarehouse, String barcode, String fPOQty, String fQty, String unit, String sRemarks, String fMinorDamageQty, String sMinorRemarks, String sMinorAttachment, String fDamagedQty, String sDamagedRemarks, String sDamagedAttachment) {
         this.sPONo = sPONo;
         this.Name = Name;
         this.Code = Code;
+        this.iProduct = iProduct;
+        this.sWarehouse = sWarehouse;
         this.iWarehouse = iWarehouse;
         this.Barcode = barcode;
         this.fPOQty = fPOQty;
@@ -43,6 +45,22 @@ public class GoodsReceiptBody {
 
     public void setCode(String code) {
         Code = code;
+    }
+
+    public String getiProduct() {
+        return iProduct;
+    }
+
+    public void setiProduct(String iProduct) {
+        this.iProduct = iProduct;
+    }
+
+    public String getsWarehouse() {
+        return sWarehouse;
+    }
+
+    public void setsWarehouse(String sWarehouse) {
+        this.sWarehouse = sWarehouse;
     }
 
     public String getiWarehouse() {
