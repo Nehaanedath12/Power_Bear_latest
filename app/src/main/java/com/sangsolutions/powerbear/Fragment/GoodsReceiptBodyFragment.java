@@ -46,9 +46,7 @@ import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
 import com.sangsolutions.powerbear.Tools;
-import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -325,6 +323,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
 
                   if(minorBitmap!=null){
                       img_minor.setImageBitmap(minorBitmap);
+                      Log.d("data", "" + pos);
                   }
 
                   if(damagedBitmap!=null){
@@ -337,7 +336,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
                       if (cursor != null && cursor.moveToFirst())
                           for (int i = 0; i < cursor.getCount(); i++) {
                               if (!cursor.getString(cursor.getColumnIndex("Name")).equals(" ")
-                                      || !cursor.getString(cursor.getColumnIndex("MasterId")).equals(" ")) {
+                                      || !cursor.getString(cursor.getColumnIndex("Name")).equals(" ")) {
                                   list.add(new Warehouse(
                                           cursor.getString(cursor.getColumnIndex("MasterId")),
                                           cursor.getString(cursor.getColumnIndex("Name"))
@@ -408,17 +407,19 @@ public class GoodsReceiptBodyFragment extends Fragment {
                 try {
                     if (et_regular_qty.getText().toString().isEmpty()) {
                         et_regular_qty.setError("Enter regular qty!");
+                        Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
 
 
                     } else if (Integer.parseInt(et_regular_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())) {
-                            et_regular_qty.setError("Quantity can't higher then PO Qty");
-
+                        et_regular_qty.setError("Quantity can't higher then PO Qty");
+                        Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
 
                     } else {
 
                         if(!et_minor_qty.getText().toString().trim().isEmpty())
                         if (Integer.parseInt(et_minor_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())) {
                             et_minor_qty.setError("Quantity can't higher then PO Qty");
+                            Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -426,6 +427,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
                         if(!et_damaged_qty.getText().toString().trim().isEmpty())
                         if (Integer.parseInt(et_damaged_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())) {
                             et_damaged_qty.setError("Quantity can't higher then PO Qty");
+                            Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -450,7 +452,8 @@ public class GoodsReceiptBodyFragment extends Fragment {
                         ));
                         goodsReceiptBodyAdapter.notifyDataSetChanged();
                         PublicData.clearData();
-
+                        Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
+                        PublicData.clearData();
                     }
                 }catch (Exception e){
                     e.printStackTrace();

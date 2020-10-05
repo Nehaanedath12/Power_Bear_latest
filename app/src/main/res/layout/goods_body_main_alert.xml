@@ -242,7 +242,7 @@
             android:padding="10dp"
             />
         <ImageView
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:id="@+id/minor_img"
@@ -250,6 +250,7 @@
             android:layout_margin="10dp"
             android:padding="10dp"
             android:textColor="@color/color_black"
+            android:maxHeight="200dp"
             />
     </LinearLayout>
     <LinearLayout
@@ -292,12 +293,13 @@
             />
 
         <ImageView
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:id="@+id/damaged_img"
             android:src="@drawable/ic_camera"
             android:layout_margin="10dp"
+            android:maxHeight="200dp"
             />
     </LinearLayout>
             </LinearLayout>
