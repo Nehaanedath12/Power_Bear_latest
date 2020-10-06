@@ -1,16 +1,12 @@
 package com.sangsolutions.powerbear;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -93,7 +89,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods_receipt_history);
 
-        add_new = findViewById(R.id.add_new);
+        add_new = findViewById(R.id.add_save);
         date = findViewById(R.id.title);
         empty_frame = findViewById(R.id.empty_frame);
         img_home = findViewById(R.id.home);

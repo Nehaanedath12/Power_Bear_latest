@@ -86,7 +86,7 @@ public void SetViewPager(){
         img_forward = findViewById(R.id.forward);
         img_backward = findViewById(R.id.backward);
         img_save = findViewById(R.id.save);
-        img_add_new = findViewById(R.id.add_new);
+        img_add_new = findViewById(R.id.add_save);
 
         img_close.setOnClickListener(this);
         img_delete.setOnClickListener(this);
@@ -117,7 +117,7 @@ switch (v.getId()){
     case R.id.save:
         Alert("Save!","Do you want to save the items?","save");
         break;
-    case R.id.add_new:
+    case R.id.add_save:
         Alert("New!","Do you want to add new?","new");
         break;
 }

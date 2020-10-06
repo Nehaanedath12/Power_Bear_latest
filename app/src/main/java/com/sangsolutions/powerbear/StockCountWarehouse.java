@@ -214,7 +214,7 @@ public class StockCountWarehouse extends AppCompatActivity {
         ImageView img_backward = findViewById(R.id.backward);
         ImageView img_delete = findViewById(R.id.delete);
         ImageView img_close = findViewById(R.id.close);
-        ImageView img_new = findViewById(R.id.add_new);
+        ImageView img_new = findViewById(R.id.add_save);
         toolbar = findViewById(R.id.toolbar);
         helper = new DatabaseHelper(this);
         c = Calendar.getInstance().getTime();

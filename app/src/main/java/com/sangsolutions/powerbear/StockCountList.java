@@ -182,7 +182,7 @@ public class StockCountList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_count_list);
 
-        add_new = findViewById(R.id.add_new);
+        add_new = findViewById(R.id.add_save);
         title = findViewById(R.id.ll_1);
         empty_frame = findViewById(R.id.empty_frame);
         initToolbar();

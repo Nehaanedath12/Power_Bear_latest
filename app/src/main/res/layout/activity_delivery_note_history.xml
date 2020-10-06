@@ -30,12 +30,12 @@
                 android:id="@+id/home"
                 android:src="@drawable/ic_home"
                 android:layout_marginRight="20dp"
-                android:layout_toStartOf="@id/add_new"
+                android:layout_toStartOf="@id/add_save"
                 />
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/add_new"
+                android:id="@+id/add_save"
                 android:src="@drawable/ic_add"
                 android:layout_marginEnd="20dp"
                 android:layout_centerVertical="true"

@@ -113,6 +113,6 @@ SharedPreferences.Editor editor;
         }
             File file = new File(folder, fileName);
             photoResult.saveToFile(file);
-            return file.getAbsolutePath();
+        return file.getAbsolutePath();
     }
 }

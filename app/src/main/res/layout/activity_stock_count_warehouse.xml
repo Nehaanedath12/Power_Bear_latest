@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_add_circle"
                 android:layout_margin="5dp"
-                android:id="@+id/add_new"
+                android:id="@+id/add_save"
                 />
             <ImageView
                 android:layout_width="wrap_content"

@@ -368,7 +368,7 @@ public class AddDeliveryNote extends AppCompatActivity {
         product_name= findViewById(R.id.product_name);
         product_code = findViewById(R.id.product_code);
         qty = findViewById(R.id.qty);
-        ImageView add_new = findViewById(R.id.add_new);
+        ImageView add_new = findViewById(R.id.add_save);
         ImageView save = findViewById(R.id.save);
         ImageView img_home = findViewById(R.id.home);
         TextView title = findViewById(R.id.title);

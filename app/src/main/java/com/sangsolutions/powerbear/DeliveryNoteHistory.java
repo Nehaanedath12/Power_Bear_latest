@@ -92,7 +92,7 @@ public class DeliveryNoteHistory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_count_list);
 
-        add_new = findViewById(R.id.add_new);
+        add_new = findViewById(R.id.add_save);
         date = findViewById(R.id.title);
         empty_frame = findViewById(R.id.empty_frame);
         img_home = findViewById(R.id.home);
