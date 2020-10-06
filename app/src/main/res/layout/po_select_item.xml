@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:background="@drawable/round_rect_lite_blue"
     android:layout_margin="2dp"
-    android:id="@+id/ll_1"
+    android:id="@+id/date"
     >
     <ImageView
         android:layout_width="20dp"

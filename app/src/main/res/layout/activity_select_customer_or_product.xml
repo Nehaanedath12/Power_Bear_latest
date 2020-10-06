@@ -47,7 +47,7 @@
         android:textColor="@color/color_white"
         android:text="Title"
         android:layout_marginStart="20dp"
-        android:id="@+id/ll_1"
+        android:id="@+id/date"
         android:textSize="20dp"
         />
         <ImageView

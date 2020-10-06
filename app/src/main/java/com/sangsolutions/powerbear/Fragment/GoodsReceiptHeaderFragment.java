@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +45,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class GoodsReceiptHeaderFragment extends Fragment {
-    EditText et_date;
+    EditText et_date,et_narration;
     Spinner sp_supplier;
     List<SupplierAdapter.Supplier> supplierList;
     List<POList> poList;
@@ -186,10 +188,14 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         poListAdapter.notifyDataSetChanged();
         LoadPOs(supplierList.get(position).getsSupplierName());
+        PublicData.supplier = supplierList.get(position).getsSupplierName();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+        if(supplierList.get(1)!=null){
+        PublicData.supplier = supplierList.get(1).getsSupplierName();
+    }
     }
 });
 }
@@ -199,12 +205,13 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.good_reseipt_header_fragment,container,false);
         helper = new DatabaseHelper(requireActivity());
-        et_date = view.findViewById(R.id.ll_1);
+        et_date = view.findViewById(R.id.date);
+        et_narration = view.findViewById(R.id.narration);
         tv_add_po = view.findViewById(R.id.add_po);
         sp_supplier = view.findViewById(R.id.supplier);
         tv_doc_no = view.findViewById(R.id.doc_no);
         try {
-            tv_doc_no.setText("Doc No: " + helper.GetNewVoucherNoGoodsReceipt());
+            tv_doc_no.setText("Doc No: " + PublicData.voucher);
         }catch (Exception e) {
         e.printStackTrace();
         }
@@ -220,6 +227,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         rv_pos.setAdapter(poListAdapter);
         LoadSupplier();
         et_date.setText(String.valueOf(DateFormat.format("dd-MM-yyyy", new Date())));
+        PublicData.date = Tools.dateFormat(String.valueOf(DateFormat.format("dd-MM-yyyy", new Date())));
         et_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -263,6 +271,23 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onClick(View v) {
                 POSelectionDialog();
+            }
+        });
+
+        et_narration.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            PublicData.narration = editable.toString();
             }
         });
         return view;

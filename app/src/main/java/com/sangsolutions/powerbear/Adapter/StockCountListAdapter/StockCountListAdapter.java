@@ -159,7 +159,7 @@ final Context context;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             Vno = itemView.findViewById(R.id.vno);
-            date = itemView.findViewById(R.id.ll_1);
+            date = itemView.findViewById(R.id.date);
             totalQty = itemView.findViewById(R.id.total_qty);
             warehouse = itemView.findViewById(R.id.warehouse);
             delete = itemView.findViewById(R.id.delete);

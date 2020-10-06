@@ -186,7 +186,7 @@ Handler handler;
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = LayoutInflater.from(SelectCustomer.this).inflate(R.layout.dno_item,parent,false);
             TextView doc_no = view.findViewById(R.id.dno);
-            TextView date = view.findViewById(R.id.ll_1);
+            TextView date = view.findViewById(R.id.date);
             TextView customer = view.findViewById(R.id.customer);
             RelativeLayout lyt_parent= view.findViewById(R.id.lay_parent);
             doc_no.setText("Doc No : "+ list.get(position).DocNo);

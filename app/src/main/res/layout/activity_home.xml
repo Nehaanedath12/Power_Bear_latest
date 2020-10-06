@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/theme_color_black"
             android:layout_alignParentEnd="true"
-            android:id="@+id/ll_1"
+            android:id="@+id/date"
             android:textSize="20dp"
             android:layout_marginEnd="20dp"
             android:layout_below="@id/toolbar"

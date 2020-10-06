@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -19,7 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     final Context context;
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "PowerBear.db";
     private static final String TABLE_PRODUCT = "tbl_Product";
     private static final String TABLE_PENDING_SO = "tbl_PendingSO";
@@ -169,6 +168,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //create goods receipt body
     private static final String CREATE_TABLE_GOODS_RECEIPT_BODY = "create table if not exists "+TABLE_GOODS_RECEIPT_BODY+" (" +
+            "" + DOC_NO + " TEXT(20) DEFAULT null ," +
             "" + S_PONO + " TEXT(10) DEFAULT null ," +
             "" + I_WAREHOUSE + " INTEGER DEFAULT 0,"  +
             "" + BARCODE + " TEXT(30) DEFAULT null ," +
@@ -208,7 +208,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS tbl_GoodsReceipt");
+            if(oldVersion==1) {
+                db.execSQL("DROP TABLE IF EXISTS tbl_GoodsReceipt");
+            }else if(oldVersion==2){
+                db.execSQL("ALTER TABLE "+TABLE_GOODS_RECEIPT_BODY+" ADD "+DOC_NO+" TEXT(20) DEFAULT null");
+            }
         onCreate(db);
     }
 
@@ -769,6 +773,7 @@ public boolean DeleteStockCount(String voucherNo){
     //  goods receipt header
     public boolean InsertGoodsReceiptHeader(GoodReceiptHeader gh){
         this.db = getWritableDatabase();
+        this.db = getReadableDatabase();
         float status;
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO, gh.getDocNo());
@@ -776,8 +781,14 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(S_SUPPLIER, gh.getsSupplier());
         cv.put(S_PONO,gh.getsPONo());
         cv.put(S_NARRATION,gh.getsNarration());
-        status = db.insert(TABLE_GOODS_RECEIPT_HEADER, null, cv);
 
+        Cursor cursor = db.rawQuery("select "+DOC_NO+" from "+TABLE_GOODS_RECEIPT_HEADER+" Where "+DOC_NO+" = ? ",new String[]{gh.getDocNo()});
+
+        if(cursor!=null&&cursor.moveToFirst()){
+            status = db.update(TABLE_GOODS_RECEIPT_HEADER,cv,DOC_NO+" = ? ",new String[]{gh.getDocNo()});
+        }else {
+            status = db.insert(TABLE_GOODS_RECEIPT_HEADER, null, cv);
+        }
         return status != -1;
     }
 
@@ -798,6 +809,7 @@ public boolean DeleteStockCount(String voucherNo){
         this.db = getWritableDatabase();
         float status;
         ContentValues cv = new ContentValues();
+        cv.put(DOC_NO,gb.getDocNo());
         cv.put(S_PONO, gb.getsPONo());
         cv.put(I_WAREHOUSE, gb.getiWarehouse());
         cv.put(BARCODE, gb.getBarcode());

@@ -450,19 +450,51 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
                     } else {
 
-                        if(!et_minor_qty.getText().toString().trim().isEmpty())
-                        if (Integer.parseInt(et_minor_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())) {
-                            et_minor_qty.setError("Quantity can't higher then PO Qty");
-                            Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
-                            return;
+                        if(!et_minor_qty.getText().toString().trim().isEmpty()){
+                            if(!et_minor_qty.getText().toString().trim().isEmpty()
+                              &&
+                              !et_damaged_qty.getText().toString().trim().isEmpty()) {
+
+                                if (Integer.parseInt(et_minor_qty.getText().toString().trim()) + Integer.parseInt(et_damaged_qty.getText().toString().trim())
+                                        >
+                                        Integer.parseInt(et_regular_qty.getText().toString().trim())) {
+                                    Toast.makeText(getActivity(), "Quantity can't higher then PO Qty", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }else if(!et_minor_qty.getText().toString().trim().isEmpty()
+                                    &&
+                                    et_damaged_qty.getText().toString().trim().isEmpty()){
+                                if (Integer.parseInt(et_minor_qty.getText().toString().trim()) > Integer.parseInt(et_regular_qty.getText().toString().trim())) {
+                                    et_minor_qty.setError("Quantity can't higher then PO Qty");
+                                    Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                            }
                         }
 
 
-                        if(!et_damaged_qty.getText().toString().trim().isEmpty())
-                        if (Integer.parseInt(et_damaged_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())) {
-                            et_damaged_qty.setError("Quantity can't higher then PO Qty");
-                            Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
-                            return;
+                        if(!et_damaged_qty.getText().toString().trim().isEmpty()){
+                            if(!et_minor_qty.getText().toString().trim().isEmpty()
+                                    &&
+                                    !et_damaged_qty.getText().toString().trim().isEmpty()) {
+                                if (Integer.parseInt(et_minor_qty.getText().toString().trim()) + Integer.parseInt(et_damaged_qty.getText().toString().trim())
+                                        >
+                                        Integer.parseInt(et_regular_qty.getText().toString().trim())) {
+                                    Toast.makeText(getActivity(), "Quantity can't higher then PO Qty", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }else if(!et_damaged_qty.getText().toString().trim().isEmpty()
+                                    &&
+                                    et_minor_qty.getText().toString().trim().isEmpty()){
+                                if (Integer.parseInt(et_damaged_qty.getText().toString().trim()) > Integer.parseInt(et_regular_qty.getText().toString().trim())) {
+                                    et_damaged_qty.setError("Quantity can't higher then PO Qty");
+                                    Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                            }
                         }
 
                         listMain.set(pos, new GoodsReceiptBody(

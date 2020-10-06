@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:id="@+id/ll_1"
+    android:id="@+id/date"
     >
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
@@ -148,7 +148,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/details"
-        android:layout_below="@id/ll_1"
+        android:layout_below="@id/date"
         android:visibility="gone"
         android:id="@+id/frame_scan"
         >

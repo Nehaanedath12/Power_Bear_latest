@@ -132,7 +132,7 @@ public class POSelectAdapter extends RecyclerView.Adapter<POSelectAdapter.ViewHo
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
-            ll_1 = itemView.findViewById(R.id.ll_1);
+            ll_1 = itemView.findViewById(R.id.date);
             close = itemView.findViewById(R.id.close);
         }
     }

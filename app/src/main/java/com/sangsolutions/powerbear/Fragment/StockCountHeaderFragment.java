@@ -109,7 +109,7 @@ if(list.size()!=0){
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.header_frgment, container, false);
-    date =   view.findViewById(R.id.ll_1);
+    date =   view.findViewById(R.id.date);
     narration = view.findViewById(R.id.narration);
         VoucherNo = view.findViewById(R.id.voucher_no);
         sp_warehouse = view.findViewById(R.id.warehouse);
