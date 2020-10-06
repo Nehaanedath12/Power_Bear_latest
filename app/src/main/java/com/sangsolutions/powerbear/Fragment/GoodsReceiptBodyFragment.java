@@ -40,9 +40,11 @@ import com.sangsolutions.powerbear.Adapter.POListAdaptet.POList;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
+import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
 import com.sangsolutions.powerbear.Tools;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -77,7 +79,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
 
 
     int current_position = 0;
-    String[] PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE};
+    String[] PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
     // methods for selecting product from DocNo
@@ -130,6 +132,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
              }
              if(i+1==listSelected.size()){
                  goodsReceiptBodyAdapter.notifyDataSetChanged();
+                 GoodsReceiptBodySingleton.getInstance().setList(listMain);
                  closeSelection();
              }
          }
@@ -427,7 +430,7 @@ public void LoadDataToMainAlert(int pos,List<Warehouse> list){
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GeneralAlert("Do you want to close?","Close!","close");
+                GeneralAlert("Do you want to close?","Close!","close",0);
             }
         });
 
@@ -480,6 +483,7 @@ public void LoadDataToMainAlert(int pos,List<Warehouse> list){
                                 et_damaged_remarks.getText().toString().trim(),
                                 PublicData.image_damaged
                         ));
+                        GoodsReceiptBodySingleton.getInstance().setList(listMain);
                         goodsReceiptBodyAdapter.notifyDataSetChanged();
                         PublicData.clearData();
                         Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
@@ -495,9 +499,33 @@ public void LoadDataToMainAlert(int pos,List<Warehouse> list){
     }
    //////////////////////////////////////////
 
+    public void DeleteItem(int pos) {
+        try {
+            if (listMain != null && !listMain.get(pos).getsDamagedAttachment().isEmpty()) {
+                File file = new File(listMain.get(pos).getsDamagedAttachment());
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+            if (listMain != null && !listMain.get(pos).getsMinorAttachment().isEmpty()) {
+                File file = new File(listMain.get(pos).getsMinorAttachment());
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+
+            if (listMain != null) {
+                listMain.remove(pos);
+            }
+            GoodsReceiptBodySingleton.getInstance().setList(listMain);
+            goodsReceiptBodyAdapter.notifyDataSetChanged();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     //General Alert
-    public void GeneralAlert(String message, String title, final String type){
+    public void GeneralAlert(String message, String title, final String type, final int pos){
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setMessage(message)
                 .setTitle(title)
@@ -509,6 +537,8 @@ public void LoadDataToMainAlert(int pos,List<Warehouse> list){
                                 mainAlertDialog.dismiss();
                                 current_position = 0;
                             }
+                        }else if(type.equals("delete_item")){
+                            DeleteItem(pos);
                         }
                     }
                 })
@@ -623,6 +653,11 @@ public void LoadDataToMainAlert(int pos,List<Warehouse> list){
            @Override
            public void onItemClick(GoodsReceiptBody goodsReceiptBody, int pos) {
                GoodsBodyMainAlert(listMain,pos);
+           }
+
+           @Override
+           public void ItemDeleteClick(GoodsReceiptBody goodsReceiptBody, int pos) {
+           GeneralAlert("Delete this item?","Delete!","delete_item",pos);
            }
        });
        return view;

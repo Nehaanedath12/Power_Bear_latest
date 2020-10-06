@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -60,6 +60,13 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
                 onClickListener.onItemClick(body,position);
             }
         });
+
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickListener.ItemDeleteClick(body,position);
+            }
+        });
     }
 
     @Override
@@ -69,11 +76,12 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
 
     public interface OnClickListener {
         void onItemClick(GoodsReceiptBody goodsReceiptBody,int pos);
+        void ItemDeleteClick(GoodsReceiptBody goodsReceiptBody,int pos);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView PONo,Name,Code,warehouse,poQty,qty,unit,remarks,minorQty,minorRemarks,damagedQty,damagedRemarks;
-        ImageButton delete;
+        ImageView delete;
         RelativeLayout rl_1;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -89,7 +97,7 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
             minorRemarks = itemView.findViewById(R.id.minorRemarks);
             damagedQty = itemView.findViewById(R.id.damagedQty);
             damagedRemarks = itemView.findViewById(R.id.damagedRemarks);
-            delete = itemView.findViewById(R.id.delete);
+            delete = itemView.findViewById(R.id.img_delete);
             rl_1 = itemView.findViewById(R.id.rl_1);
         }
     }
