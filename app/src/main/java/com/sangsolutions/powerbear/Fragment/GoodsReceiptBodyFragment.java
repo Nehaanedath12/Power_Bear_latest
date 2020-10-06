@@ -265,7 +265,8 @@ public class GoodsReceiptBodyFragment extends Fragment {
     /////////////////////////////////////////
 
 
-public void LoadDataToMainAlert(int pos,List<Warehouse> list){
+@SuppressLint("SetTextI18n")
+public void LoadDataToMainAlert(int pos, List<Warehouse> list){
         if(mainAlertDialog!=null&&mainAlertDialog.isShowing()) {
             if (listMain.get(pos) != null) {
                 try {
@@ -590,18 +591,22 @@ public void LoadDataToMainAlert(int pos,List<Warehouse> list){
                 final PhotoResult photoResult = fotoapparat.takePicture();
 
                 if (type.equals("minor")) {
-                    photoResult.toBitmap().whenAvailable(new Function1<BitmapPhoto, Unit>() {
-                        @Override
-                        public Unit invoke(BitmapPhoto bitmapPhoto) {
-                            PublicData.image_minor = Tools.savePhoto(requireActivity(), photoResult);
-                            alertDialog.dismiss();
-                            Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
-                            img_minor.setImageBitmap(bitmapPhoto.bitmap);
-                            return Unit.INSTANCE;
-                        }
-                    });
-
+                    try {
+                        photoResult.toBitmap().whenAvailable(new Function1<BitmapPhoto, Unit>() {
+                            @Override
+                            public Unit invoke(BitmapPhoto bitmapPhoto) {
+                                PublicData.image_minor = Tools.savePhoto(requireActivity(), photoResult);
+                                alertDialog.dismiss();
+                                Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
+                                img_minor.setImageBitmap(bitmapPhoto.bitmap);
+                                return Unit.INSTANCE;
+                            }
+                        });
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }else if(type.equals("damaged")){
+                    try {
                     photoResult.toBitmap().whenAvailable(new Function1<BitmapPhoto, Unit>() {
                         @Override
                         public Unit invoke(BitmapPhoto bitmapPhoto) {
@@ -612,6 +617,9 @@ public void LoadDataToMainAlert(int pos,List<Warehouse> list){
                             return Unit.INSTANCE;
                         }
                     });
+                }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
         });
