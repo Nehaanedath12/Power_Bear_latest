@@ -19,14 +19,14 @@ import com.sangsolutions.powerbear.Services.PostStockCount;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class ScheduleJob {
- private static final int MY_BACKGROUND_JOB = 0;
+
 
 
    public void SyncProductData(Context context) {
         JobScheduler js =
                 (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         JobInfo job = new JobInfo.Builder(
-                MY_BACKGROUND_JOB,
+                0,
                 new ComponentName(context, GetProductService.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();
@@ -39,7 +39,7 @@ public class ScheduleJob {
         JobScheduler js =
                 (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         JobInfo job = new JobInfo.Builder(
-                MY_BACKGROUND_JOB,
+                1,
                 new ComponentName(context, GetPendingSoService.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();
@@ -50,7 +50,7 @@ public class ScheduleJob {
         JobScheduler js =
                 (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         JobInfo job = new JobInfo.Builder(
-                MY_BACKGROUND_JOB,
+                2,
                 new ComponentName(context, GetUserService.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();
@@ -62,7 +62,7 @@ public class ScheduleJob {
         JobScheduler js =
                 (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         JobInfo job = new JobInfo.Builder(
-                MY_BACKGROUND_JOB,
+                3,
                 new ComponentName(context, GetWareHouse.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();
@@ -73,7 +73,7 @@ public class ScheduleJob {
         JobScheduler js =
                 (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         JobInfo job = new JobInfo.Builder(
-                MY_BACKGROUND_JOB,
+                4,
                 new ComponentName(context, GetPendingPOService.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();
@@ -85,7 +85,7 @@ public class ScheduleJob {
         JobScheduler js =
                 (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         JobInfo job = new JobInfo.Builder(
-                MY_BACKGROUND_JOB,
+                5,
                 new ComponentName(context, PostDeliveryNote.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();
@@ -97,7 +97,7 @@ public class ScheduleJob {
         JobScheduler js =
                 (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         JobInfo job = new JobInfo.Builder(
-                MY_BACKGROUND_JOB,
+                6,
                 new ComponentName(context, PostGoodsReceipt.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();
@@ -108,7 +108,7 @@ public class ScheduleJob {
         JobScheduler js =
                 (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         JobInfo job = new JobInfo.Builder(
-                MY_BACKGROUND_JOB,
+                7,
                 new ComponentName(context, PostStockCount.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();

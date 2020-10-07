@@ -94,7 +94,6 @@ public class GetPendingSoService extends JobService {
             @Override
             protected void onPostExecute(Void aVoid) {
                 editor.putBoolean("pendingSOFinished",true).apply();
-                new ScheduleJob().SyncWarehouse(getApplicationContext());
             }
         };
         asyncTask.execute();

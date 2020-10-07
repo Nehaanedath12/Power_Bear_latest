@@ -48,6 +48,10 @@ public void syncData(){
 
             } else {
                 scheduleJob.SyncUserData(this);
+                scheduleJob.SyncWarehouse(this);
+                scheduleJob.SyncPendingSOData(this);
+                scheduleJob.SyncPendingPO(this);
+                scheduleJob.SyncProductData(this);
                 editor.putBoolean("WarehouseFinished", false).apply();
                 editor.putBoolean("pendingPOFinished", false).apply();
                 editor.putBoolean("pendingSOFinished", false).apply();
@@ -55,6 +59,10 @@ public void syncData(){
             }
         }else {
             scheduleJob.SyncUserData(this);
+            scheduleJob.SyncWarehouse(this);
+            scheduleJob.SyncPendingSOData(this);
+            scheduleJob.SyncPendingPO(this);
+            scheduleJob.SyncProductData(this);
             editor.putBoolean("WarehouseFinished", false).apply();
             editor.putBoolean("pendingPOFinished", false).apply();
             editor.putBoolean("pendingSOFinished", false).apply();

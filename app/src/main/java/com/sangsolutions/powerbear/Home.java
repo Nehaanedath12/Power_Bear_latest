@@ -2,6 +2,7 @@ package com.sangsolutions.powerbear;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -28,7 +29,7 @@ DatabaseHelper helper;
 ImageView img_logout;
 TextView tv_username,tv_date;
 ImageView img_settings;
-
+    SharedPreferences preferences;
     @Override
     protected void onResume() {
         super.onResume();
@@ -41,6 +42,7 @@ ImageView img_settings;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        preferences = getSharedPreferences("sync",MODE_PRIVATE);
         sync_btn= findViewById(R.id.sync);
         delivery_btn= findViewById(R.id.delivery);
         stock_count_btn = findViewById(R.id.stock_count);
@@ -57,7 +59,14 @@ ImageView img_settings;
     stock_count_btn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (preferences.getBoolean("WarehouseFinished", false)
+                    && preferences.getBoolean("pendingPOFinished", false)
+                    && preferences.getBoolean("pendingSOFinished", false)){
             startActivity(new Intent(Home.this,StockCountList.class));
+        }
+            else {
+                Toast.makeText(Home.this, "Wait for the data to be synced..", Toast.LENGTH_SHORT).show();
+            }
         }
     });
 
@@ -84,6 +93,8 @@ ImageView img_settings;
                 public boolean onMenuItemClick(MenuItem item) {
                     if(item.getItemId()==R.id.logout){
                     if(helper.DeleteCurrentUser()){
+
+
                         startActivity(new Intent(Home.this,MainActivity.class));
                         finish();
                     }
@@ -98,16 +109,29 @@ ImageView img_settings;
     goods_btn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(Home.this,GoodsReceiptHistory.class);
-            startActivity(intent);
+            if (preferences.getBoolean("WarehouseFinished", false)
+                    && preferences.getBoolean("pendingPOFinished", false)
+                    && preferences.getBoolean("pendingSOFinished", false)){
+
+                    Intent intent = new Intent(Home.this, GoodsReceiptHistory.class);
+                    startActivity(intent);
+                }else {
+                Toast.makeText(Home.this, "Wait for the data to be synced..", Toast.LENGTH_SHORT).show();
+            }
         }
     });
 
         delivery_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (preferences.getBoolean("WarehouseFinished", false)
+                        && preferences.getBoolean("pendingPOFinished", false)
+                        && preferences.getBoolean("pendingSOFinished", false)){
                 Intent intent = new Intent(Home.this,DeliveryNoteHistory.class);
                 startActivity(intent);
+            }else {
+                Toast.makeText(Home.this, "Wait for the data to be synced..", Toast.LENGTH_SHORT).show();
+            }
             }
         });
 

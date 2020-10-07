@@ -103,7 +103,6 @@ public class GetWareHouse extends JobService {
 
                 Log.d("Status:", "data synced");
                 editor.putBoolean("WarehouseFinished",true).apply();
-                new ScheduleJob().SyncPendingPO(GetWareHouse.this);
                 jobFinished(params,false);
             }
         };

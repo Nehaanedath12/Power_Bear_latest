@@ -79,7 +79,6 @@ public class GetUserService extends JobService {
 
                 Log.d("Status:", "data synced");
 
-                new ScheduleJob().SyncProductData(getApplicationContext());
 
                 jobFinished(params,false);
             }

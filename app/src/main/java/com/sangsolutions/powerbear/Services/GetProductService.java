@@ -101,7 +101,6 @@ public class GetProductService extends JobService {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-            new ScheduleJob().SyncPendingSOData(getApplicationContext());
                 jobFinished(params,false);
             }
         };
