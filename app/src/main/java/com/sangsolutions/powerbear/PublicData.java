@@ -13,6 +13,12 @@ public class PublicData {
     public static String POs;
     public static String voucher;
 
+    public static void clearDataIgnoreHeader(){
+        warehouse = "";
+        image_minor ="";
+        image_damaged="";
+    }
+
     public static void clearData(){
         narration = "";
         date = "";
@@ -23,5 +29,4 @@ public class PublicData {
         supplier = "";
         voucher ="";
     }
-
 }

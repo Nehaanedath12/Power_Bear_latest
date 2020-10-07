@@ -19,7 +19,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
-import com.sangsolutions.powerbear.Adapter.POAdapter.PO;
 import com.sangsolutions.powerbear.Adapter.POListAdaptet.POList;
 import com.sangsolutions.powerbear.Adapter.ViewPager2AdapterGoodsReceipt.ViewPager2AdapterGoodsReceipt;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
@@ -65,9 +64,11 @@ String POs="",date = "",supplier="",narration="",voucher="";
     try {
         if (listMain != null && listMain.size() > 0 && PublicData.voucher != null && !PublicData.voucher.isEmpty()) {
             com.sangsolutions.powerbear.Database.GoodsReceiptBody gb = new com.sangsolutions.powerbear.Database.GoodsReceiptBody();
+
             for (int i = 0; i < listMain.size(); i++) {
                 gb.setDocNo(PublicData.voucher);
                 gb.setsPONo(listMain.get(i).getsPONo());
+                gb.setiProduct(listMain.get(i).getiProduct());
                 gb.setiWarehouse(listMain.get(i).getiWarehouse());
                 gb.setBarcode(listMain.get(i).getBarcode());
                 gb.setfPOQty(listMain.get(i).getfPOQty());
@@ -83,31 +84,44 @@ String POs="",date = "",supplier="",narration="",voucher="";
 
                 if(helper.InsertGoodsReceiptBody(gb)){
                     body_success_counter ++;
+                }else Log.d("message","failed to insert");
+
+                if(i+1==listMain.size()) {
+                    if (body_success_counter == listMain.size()) {
+                        try {
+
+                            if (!date.isEmpty() && !POs.isEmpty() && !supplier.isEmpty()) {
+
+                                GoodReceiptHeader gh = new GoodReceiptHeader();
+                                gh.setDocNo(voucher);
+                                gh.setDocDate(date);
+                                gh.setsSupplier(supplier);
+                                gh.setsPONo(POs);
+                                gh.setsNarration(narration);
+                                if (helper.InsertGoodsReceiptHeader(gh)) {
+                                    Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+                                    PublicData.clearData();
+                                }else {
+                                    Toast.makeText(this, "Failed to save!", Toast.LENGTH_SHORT).show();
+                                    helper.deleteGoodsBodyItem(voucher);
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
 
+        }else {
+            Log.d("body","body is empty");
         }
     }catch (Exception e){
         e.printStackTrace();
     }
 
 
-            try {
-                if (!voucher.isEmpty() && !date.isEmpty() && !POs.isEmpty() && !supplier.isEmpty()) {
 
-                    GoodReceiptHeader gh = new GoodReceiptHeader();
-                    gh.setDocNo(voucher);
-                    gh.setDocDate(date);
-                    gh.setsSupplier(supplier);
-                    gh.setsPONo(POs);
-                    gh.setsNarration(narration);
-                    if (helper.InsertGoodsReceiptHeader(gh)) {
-                        Toast.makeText(this, "Inserted!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
 
 
 
@@ -185,6 +199,8 @@ public void SetViewPager(){
         img_add_new.setOnClickListener(this);
 
         PublicData.voucher = "G-"+ DateFormat.format("ddMMyy-HHmmss", new Date());
+        Log.d("body",PublicData.voucher);
+
 
         tabLayout = findViewById(R.id.tabLay);
         tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF0000"));

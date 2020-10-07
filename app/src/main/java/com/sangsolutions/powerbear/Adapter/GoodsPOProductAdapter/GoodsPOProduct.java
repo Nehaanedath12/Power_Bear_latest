@@ -1,14 +1,15 @@
 package com.sangsolutions.powerbear.Adapter.GoodsPOProductAdapter;
 
 public class GoodsPOProduct {
-    String DocNo,Name,code,Product,POQty,Unit;
+    String DocNo,Name,code,Product,POQty,TempQty,Unit;
 
-    public GoodsPOProduct(String docNo, String name,String code, String product, String POQty, String unit) {
+    public GoodsPOProduct(String docNo, String name,String code, String product, String POQty,String TempQty, String unit) {
         this.DocNo = docNo;
         this.Name = name;
         this.code = code;
         this.Product = product;
         this.POQty = POQty;
+        this.TempQty = TempQty;
         this.Unit = unit;
     }
 
@@ -50,6 +51,14 @@ public class GoodsPOProduct {
 
     public void setPOQty(String POQty) {
         this.POQty = POQty;
+    }
+
+    public String getTempQty() {
+        return TempQty;
+    }
+
+    public void setTempQty(String tempQty) {
+        TempQty = tempQty;
     }
 
     public String getUnit() {

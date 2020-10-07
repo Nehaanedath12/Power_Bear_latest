@@ -165,23 +165,27 @@ public class GoodsReceiptBodyFragment extends Fragment {
                                 break;
                             }
                             if (listMain.size() == j + 1) {
+                                if(!cursor.getString(cursor.getColumnIndex("Qty")).equals(cursor.getString(cursor.getColumnIndex("TempQty"))))
                                 listPOProducts.add(new GoodsPOProduct(
                                         cursor.getString(cursor.getColumnIndex("DocNo")),
                                         cursor.getString(cursor.getColumnIndex("Name")),
                                         cursor.getString(cursor.getColumnIndex("Code")),
                                         cursor.getString(cursor.getColumnIndex("Product")),
                                         cursor.getString(cursor.getColumnIndex("Qty")),
+                                        cursor.getString(cursor.getColumnIndex("TempQty")),
                                         cursor.getString(cursor.getColumnIndex("Unit"))
                                 ));
                             }
                         }
                     }else {
+                        if(!cursor.getString(cursor.getColumnIndex("Qty")).equals(cursor.getString(cursor.getColumnIndex("TempQty"))))
                         listPOProducts.add(new GoodsPOProduct(
                                 cursor.getString(cursor.getColumnIndex("DocNo")),
                                 cursor.getString(cursor.getColumnIndex("Name")),
                                 cursor.getString(cursor.getColumnIndex("Code")),
                                 cursor.getString(cursor.getColumnIndex("Product")),
                                 cursor.getString(cursor.getColumnIndex("Qty")),
+                                cursor.getString(cursor.getColumnIndex("TempQty")),
                                 cursor.getString(cursor.getColumnIndex("Unit"))
                         ));
                     }
@@ -497,6 +501,23 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                             }
                         }
 
+                        String minorImage,damagedImage;
+                        if(listMain.get(pos).getsMinorAttachment().isEmpty()){
+                            minorImage = PublicData.image_minor;
+                        }else if(!listMain.get(pos).getsMinorAttachment().isEmpty()&&!PublicData.image_minor.isEmpty()){
+                            minorImage = PublicData.image_minor;
+                        }else{
+                            minorImage = listMain.get(pos).getsMinorAttachment();
+                        }
+
+                        if(listMain.get(pos).getsDamagedAttachment().isEmpty()){
+                            damagedImage = PublicData.image_damaged;
+                        }else if(!listMain.get(pos).getsDamagedAttachment().isEmpty()&&!PublicData.image_damaged.isEmpty()){
+                            damagedImage = PublicData.image_damaged;
+                        }else{
+                            damagedImage = listMain.get(pos).getsDamagedAttachment();
+                        }
+
                         listMain.set(pos, new GoodsReceiptBody(
                                 listMain.get(pos).getsPONo(),
                                 listMain.get(pos).getName(),
@@ -511,14 +532,14 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                                 et_regular_remarks.getText().toString().trim(),
                                 et_minor_qty.getText().toString().trim(),
                                 et_minor_remarks.getText().toString().trim(),
-                                PublicData.image_minor,
+                                minorImage,
                                 et_damaged_qty.getText().toString().trim(),
                                 et_damaged_remarks.getText().toString().trim(),
-                                PublicData.image_damaged
+                                damagedImage
                         ));
                         GoodsReceiptBodySingleton.getInstance().setList(listMain);
                         goodsReceiptBodyAdapter.notifyDataSetChanged();
-                        PublicData.clearData();
+                        PublicData.clearDataIgnoreHeader();
                         Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
                         current_position=0;
                         mainAlertDialog.dismiss();

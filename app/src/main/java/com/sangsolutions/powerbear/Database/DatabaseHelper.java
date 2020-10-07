@@ -46,6 +46,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CUSTOMER = "Cusomer";//spelling is not right
     private static final String PRODUCT = "Product";
     private static final String QTY = "Qty";
+    private static final String TEMP_QTY = "TempQty";
 
     //tbl_DeliveryNote
     private static final String I_STATUS = "iStatus";
@@ -153,6 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + SI_NO + "  INTEGER DEFAULT 0," +
             "" + PRODUCT + "  INTEGER DEFAULT 0," +
             "" + QTY + "  TEXT(10) DEFAULT null," +
+            "" + TEMP_QTY + " TEXT(10) DEFAULT '0',"+
             "" + CUSTOMER + "  TEXT(20) DEFAULT null," +
             "" + UNIT + " TEXT(15) DEFAULT null" +
             ")";
@@ -170,6 +172,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_GOODS_RECEIPT_BODY = "create table if not exists "+TABLE_GOODS_RECEIPT_BODY+" (" +
             "" + DOC_NO + " TEXT(20) DEFAULT null ," +
             "" + S_PONO + " TEXT(10) DEFAULT null ," +
+            "" + I_PRODUCT + " INTEGER DEFAULT 0, "+
             "" + I_WAREHOUSE + " INTEGER DEFAULT 0,"  +
             "" + BARCODE + " TEXT(30) DEFAULT null ," +
             "" + F_PO_QTY + "  TEXT(10) DEFAULT null," +
@@ -212,6 +215,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 db.execSQL("DROP TABLE IF EXISTS tbl_GoodsReceipt");
             }else if(oldVersion==2){
                 db.execSQL("ALTER TABLE "+TABLE_GOODS_RECEIPT_BODY+" ADD "+DOC_NO+" TEXT(20) DEFAULT null");
+                db.execSQL("ALTER TABLE "+TABLE_PENDING_PO+" ADD "+ TEMP_QTY +" TEXT(10) DEFAULT null");
+                db.execSQL("ALTER TABLE "+TABLE_GOODS_RECEIPT_BODY+" ADD "+ I_PRODUCT + " INTEGER DEFAULT 0 ");
             }
         onCreate(db);
     }
@@ -807,6 +812,10 @@ public boolean DeleteStockCount(String voucherNo){
     //goods receipt body
     public boolean InsertGoodsReceiptBody(GoodsReceiptBody gb){
         this.db = getWritableDatabase();
+        this.db = getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("select "+DOC_NO+","+S_PONO+" from "+TABLE_GOODS_RECEIPT_BODY+" where "+DOC_NO+" = ? and "+S_PONO+" = ? ",new String[]{gb.getDocNo(),gb.getsPONo()});
+
         float status;
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO,gb.getDocNo());
@@ -814,7 +823,7 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(I_WAREHOUSE, gb.getiWarehouse());
         cv.put(BARCODE, gb.getBarcode());
         cv.put(F_PO_QTY, gb.getfPOQty());
-        cv.put(QTY, gb.getfQty());
+        cv.put(F_QTY, gb.getfQty());
         cv.put(UNIT, gb.getUnit());
         cv.put(S_REMARKS, gb.getsRemarks());
         cv.put(F_MINOR_DAMAGE_QTY, gb.getfMinorDamageQty());
@@ -824,8 +833,26 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(S_DAMAGED_REMARKS, gb.getsDamagedRemarks());
         cv.put(S_DAMAGED_ATTACHMENT, gb.getsDamagedAttachment());
 
-        status = db.insert(TABLE_GOODS_RECEIPT_BODY, null, cv);
+        if(cursor!=null&&cursor.moveToFirst()){
+            status = db.update(TABLE_GOODS_RECEIPT_BODY, cv, DOC_NO+" = ? and "+S_PONO+" = ? ",new String[]{gb.getDocNo(),gb.getsPONo()});
+        }else {
+            status = db.insert(TABLE_GOODS_RECEIPT_BODY, null, cv);
+        }
 
+        ContentValues cv2 = new ContentValues();
+
+        cv2.put(TEMP_QTY,gb.getfQty());
+        float status2 = -1;
+        if(status != -1) {
+            status2 = db.update(TABLE_PENDING_PO, cv2, DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ?", new String[]{gb.getsPONo(), gb.getiProduct(), gb.getUnit()});
+        }
+        cursor.close();
+        return status2 != -1;
+    }
+
+    public boolean deleteGoodsBodyItem(String DocNo){
+        this.db = getWritableDatabase();
+        float status = db.delete(TABLE_GOODS_RECEIPT_BODY,DOC_NO+" = ? ",new String[]{DocNo});
         return status != -1;
     }
 
@@ -844,7 +871,7 @@ public boolean DeleteStockCount(String voucherNo){
                 .collect(Collectors.toList()));
 
 
-        Cursor cursor = db.rawQuery("SELECT po.Unit as Unit,po.Qty as Qty,p.Name as Name,p.Code as Code,po.Product as Product,po.DocNo as DocNo FROM tbl_Product p " +
+        Cursor cursor = db.rawQuery("SELECT po.Unit as Unit,po.Qty as Qty,po.TempQty as TempQty,p.Name as Name,p.Code as Code,po.Product as Product,po.DocNo as DocNo FROM tbl_Product p " +
                 "INNER JOIN tbl_PendingPO po on p.MasterId = po.Product " +
                 "WHERE po.DocNo in ( "+docNo+" )",null);
         if(cursor.moveToFirst()){
@@ -858,7 +885,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetPOs(String customer){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT HeaderId,DocNo from tbl_PendingPO WHERE Cusomer = ? GROUP by HeaderId ",new String[]{customer});
+        Cursor cursor = db.rawQuery("SELECT HeaderId,DocNo from tbl_PendingPO WHERE Cusomer = ? and TempQty != Qty GROUP by HeaderId ",new String[]{customer});
         if(cursor.moveToFirst()){
             return cursor;
         }else {
