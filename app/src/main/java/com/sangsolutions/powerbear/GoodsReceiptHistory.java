@@ -1,12 +1,16 @@
 package com.sangsolutions.powerbear;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,9 +35,9 @@ public class GoodsReceiptHistory extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //setRecyclerView();
+        setRecyclerView();
     }
-/*
+
     public void setRecyclerView(){
         list.clear();
 
@@ -69,12 +73,12 @@ public class GoodsReceiptHistory extends AppCompatActivity {
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(helper.DeleteGoodsReceipt(goodsReceiptHistory.getHeaderId(),goodsReceiptHistory.getiVoucherNo())) {
+                       /* if(helper.DeleteGoodsReceipt(goodsReceiptHistory.getHeaderId(),goodsReceiptHistory.getiVoucherNo())) {
                             list.remove(pos);
                             adapter.notifyDataSetChanged();
                             setRecyclerView();
                             Toast.makeText(GoodsReceiptHistory.this, "Deleted!", Toast.LENGTH_SHORT).show();
-                        }
+                        }*/
                     }
                 }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
@@ -83,7 +87,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
             }
         }).create().show();
     }
-*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

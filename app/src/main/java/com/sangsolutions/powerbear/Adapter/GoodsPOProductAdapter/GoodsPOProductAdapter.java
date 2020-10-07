@@ -91,7 +91,7 @@ Context context;
         GoodsPOProduct goodsPOProduct = list.get(position);
         holder.poNo.setText(list.get(position).getDocNo());
         holder.productName.setText(list.get(position).getName());
-        holder.POQty.setText(list.get(position).getPOQty());
+        holder.POQty.setText(String.valueOf(Integer.parseInt(list.get(position).getPOQty())-Integer.parseInt(list.get(position).getTempQty())));
         holder.Unit.setText(list.get(position).getUnit());
 
         holder.rl_1.setOnClickListener(new View.OnClickListener() {

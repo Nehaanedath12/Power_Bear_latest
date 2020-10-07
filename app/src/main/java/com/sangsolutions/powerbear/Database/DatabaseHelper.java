@@ -815,15 +815,23 @@ public boolean DeleteStockCount(String voucherNo){
         this.db = getReadableDatabase();
 
         Cursor cursor = db.rawQuery("select "+DOC_NO+","+S_PONO+" from "+TABLE_GOODS_RECEIPT_BODY+" where "+DOC_NO+" = ? and "+S_PONO+" = ? ",new String[]{gb.getDocNo(),gb.getsPONo()});
+        Cursor cursor2 = db.rawQuery("select "+DOC_NO+","+PRODUCT+","+TEMP_QTY+","+QTY+" from "+TABLE_PENDING_PO+" where "+DOC_NO+" = ? and "+PRODUCT+" = ? ",new String[]{gb.getsPONo(),gb.getiProduct()});
 
         float status;
+        int qty = 0,poQty=0;
+        if(cursor2!=null&&cursor2.moveToFirst()){
+            qty = cursor2.getInt(cursor2.getColumnIndex(TEMP_QTY))+Integer.parseInt(gb.getfQty());
+            poQty = cursor2.getInt(cursor2.getColumnIndex(QTY));
+        }
+
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO,gb.getDocNo());
         cv.put(S_PONO, gb.getsPONo());
+        cv.put(I_PRODUCT,gb.getiProduct());
         cv.put(I_WAREHOUSE, gb.getiWarehouse());
         cv.put(BARCODE, gb.getBarcode());
         cv.put(F_PO_QTY, gb.getfPOQty());
-        cv.put(F_QTY, gb.getfQty());
+        cv.put(F_QTY, String.valueOf(qty));
         cv.put(UNIT, gb.getUnit());
         cv.put(S_REMARKS, gb.getsRemarks());
         cv.put(F_MINOR_DAMAGE_QTY, gb.getfMinorDamageQty());
@@ -841,12 +849,13 @@ public boolean DeleteStockCount(String voucherNo){
 
         ContentValues cv2 = new ContentValues();
 
-        cv2.put(TEMP_QTY,gb.getfQty());
+        cv2.put(TEMP_QTY,String.valueOf(qty));
         float status2 = -1;
         if(status != -1) {
-            status2 = db.update(TABLE_PENDING_PO, cv2, DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ?", new String[]{gb.getsPONo(), gb.getiProduct(), gb.getUnit()});
+            status2 = db.update(TABLE_PENDING_PO, cv2, DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ? and "+QTY+" = ?", new String[]{gb.getsPONo(), gb.getiProduct(), gb.getUnit(),String.valueOf(poQty)});
         }
         cursor.close();
+        cursor2.close();
         return status2 != -1;
     }
 
@@ -881,6 +890,12 @@ public boolean DeleteStockCount(String voucherNo){
         }
     }
 
+    public Cursor GetAllGoodsReceipt(){
+        this.db = getReadableDatabase();
+        Cursor cursor = null;
+
+        return cursor;
+    }
 
 
     public Cursor GetPOs(String customer){

@@ -119,6 +119,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
                              helper.GetBarcodeFromIProduct(listPOProducts.get(j).getProduct()),
                              listPOProducts.get(j).getPOQty(),
                              "",
+                             listPOProducts.get(j).getTempQty(),
                              listPOProducts.get(j).getUnit(),
                              "",
                              "",
@@ -278,8 +279,15 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     tv_product.setText("Name : " + listMain.get(pos).getName());
                     tv_code.setText("Code : " + listMain.get(pos).getCode());
                     tv_unit.setText("Unit : " + listMain.get(pos).getUnit());
-                    tv_po_qty.setText("PO Qty : " + listMain.get(pos).getfPOQty());
-
+                    if(listMain.get(pos).getTempQty().equals("0")) {
+                        tv_po_qty.setText("Qty : " + listMain.get(pos).getfPOQty());
+                    }else {try {
+                        int qty = Integer.parseInt(listMain.get(pos).getfPOQty()) - Integer.parseInt(listMain.get(pos).getTempQty());
+                        tv_po_qty.setText("Qty : " + qty);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    }
 
                     et_regular_qty.setText(listMain.get(pos).getfQty());
                     et_minor_qty.setText(listMain.get(pos).getfMinorDamageQty());
@@ -448,7 +456,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
 
 
-                    } else if (Integer.parseInt(et_regular_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())) {
+                    } else if (Integer.parseInt(et_regular_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty())) {
                         et_regular_qty.setError("Quantity can't higher then PO Qty");
                         Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
 
@@ -528,6 +536,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                                 helper.GetBarcodeFromIProduct(listMain.get(pos).getiProduct()),
                                 listMain.get(pos).getfPOQty(),
                                 et_regular_qty.getText().toString().trim(),
+                                listMain.get(pos).getTempQty(),
                                 listMain.get(pos).getUnit(),
                                 et_regular_remarks.getText().toString().trim(),
                                 et_minor_qty.getText().toString().trim(),

@@ -131,7 +131,7 @@
         android:ellipsize="marquee"
         android:textAlignment="inherit"
         android:singleLine="true"
-        android:text="PO Qty: "
+        android:text="Qty: "
         android:textSize="16sp"
         android:id="@+id/po_qty"
         android:gravity="center_vertical"

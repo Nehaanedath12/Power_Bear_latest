@@ -1,9 +1,9 @@
 package com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter;
 
 public class GoodsReceiptBody {
-    String sPONo,Name,Code,iProduct,sWarehouse,iWarehouse,Barcode,fPOQty,fQty,Unit,sRemarks,fMinorDamageQty,sMinorRemarks,sMinorAttachment,fDamagedQty,sDamagedRemarks,sDamagedAttachment;
+    String sPONo,Name,Code,iProduct,sWarehouse,iWarehouse,Barcode,fPOQty,fQty,TempQty,Unit,sRemarks,fMinorDamageQty,sMinorRemarks,sMinorAttachment,fDamagedQty,sDamagedRemarks,sDamagedAttachment;
 
-    public GoodsReceiptBody(String sPONo,String Name,String Code,String iProduct,String sWarehouse, String iWarehouse, String barcode, String fPOQty, String fQty, String unit, String sRemarks, String fMinorDamageQty, String sMinorRemarks, String sMinorAttachment, String fDamagedQty, String sDamagedRemarks, String sDamagedAttachment) {
+    public GoodsReceiptBody(String sPONo,String Name,String Code,String iProduct,String sWarehouse, String iWarehouse, String barcode, String fPOQty, String fQty,String TempQty, String unit, String sRemarks, String fMinorDamageQty, String sMinorRemarks, String sMinorAttachment, String fDamagedQty, String sDamagedRemarks, String sDamagedAttachment) {
         this.sPONo = sPONo;
         this.Name = Name;
         this.Code = Code;
@@ -13,6 +13,7 @@ public class GoodsReceiptBody {
         this.Barcode = barcode;
         this.fPOQty = fPOQty;
         this.fQty = fQty;
+        this.TempQty = TempQty;
         this.Unit = unit;
         this.sRemarks = sRemarks;
         this.fMinorDamageQty = fMinorDamageQty;
@@ -93,6 +94,14 @@ public class GoodsReceiptBody {
 
     public void setfQty(String fQty) {
         this.fQty = fQty;
+    }
+
+    public String getTempQty() {
+        return TempQty;
+    }
+
+    public void setTempQty(String tempQty) {
+        TempQty = tempQty;
     }
 
     public String getUnit() {
