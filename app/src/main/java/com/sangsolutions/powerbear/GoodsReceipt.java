@@ -66,7 +66,7 @@ String POs="",date = "",supplier="",narration="",voucher="";
             com.sangsolutions.powerbear.Database.GoodsReceiptBody gb = new com.sangsolutions.powerbear.Database.GoodsReceiptBody();
 
             for (int i = 0; i < listMain.size(); i++) {
-                gb.setDocNo(PublicData.voucher);
+                gb.setDocNo(voucher);
                 gb.setsPONo(listMain.get(i).getsPONo());
                 gb.setiProduct(listMain.get(i).getiProduct());
                 gb.setiWarehouse(listMain.get(i).getiWarehouse());
@@ -101,6 +101,9 @@ String POs="",date = "",supplier="",narration="",voucher="";
                                 if (helper.InsertGoodsReceiptHeader(gh)) {
                                     Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
                                     PublicData.clearData();
+                                    GoodsReceiptBodySingleton.getInstance().clearList();
+                                    GoodsReceiptPoSingleton.getInstance().clearList();
+                                    this.finish();
                                 }else {
                                     Toast.makeText(this, "Failed to save!", Toast.LENGTH_SHORT).show();
                                     helper.deleteGoodsBodyItem(voucher);
@@ -136,7 +139,20 @@ public void Alert(String title, String message, final String type){
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if(type.equals("save")) {
-                        Save();
+                        List<GoodsReceiptBody> listMain = GoodsReceiptBodySingleton.getInstance().getList();
+                        if (listMain != null && listMain.size() > 0) {
+
+
+                            for (int i = 0; i <listMain.size();i++) {
+                             if(listMain.get(i).getfQty().equals("")) {
+                                 Toast.makeText(GoodsReceipt.this,"Enter all qty or remove empty items!",Toast.LENGTH_SHORT).show();
+                             break;
+                             }
+                             if(listMain.size()==i+1) {
+                                 Save();
+                             }
+                            }
+                        }
                     }
                 }
             })

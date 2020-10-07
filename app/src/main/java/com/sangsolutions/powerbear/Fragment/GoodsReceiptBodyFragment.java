@@ -510,17 +510,17 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         }
 
                         String minorImage,damagedImage;
-                        if(listMain.get(pos).getsMinorAttachment().isEmpty()){
+                        if(listMain.get(pos).getsMinorAttachment()==null||listMain.get(pos).getsMinorAttachment().isEmpty()){
                             minorImage = PublicData.image_minor;
-                        }else if(!listMain.get(pos).getsMinorAttachment().isEmpty()&&!PublicData.image_minor.isEmpty()){
+                        }else if(listMain.get(pos).getsMinorAttachment()!=null&&!listMain.get(pos).getsMinorAttachment().isEmpty()&&!PublicData.image_minor.isEmpty()){
                             minorImage = PublicData.image_minor;
                         }else{
                             minorImage = listMain.get(pos).getsMinorAttachment();
                         }
 
-                        if(listMain.get(pos).getsDamagedAttachment().isEmpty()){
+                        if(listMain.get(pos).getsDamagedAttachment()==null||listMain.get(pos).getsDamagedAttachment().isEmpty()){
                             damagedImage = PublicData.image_damaged;
-                        }else if(!listMain.get(pos).getsDamagedAttachment().isEmpty()&&!PublicData.image_damaged.isEmpty()){
+                        }else if(listMain.get(pos).getsDamagedAttachment()!=null&&!listMain.get(pos).getsDamagedAttachment().isEmpty()&&!PublicData.image_damaged.isEmpty()){
                             damagedImage = PublicData.image_damaged;
                         }else{
                             damagedImage = listMain.get(pos).getsDamagedAttachment();

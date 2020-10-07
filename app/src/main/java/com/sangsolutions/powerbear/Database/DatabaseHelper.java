@@ -814,6 +814,7 @@ public boolean DeleteStockCount(String voucherNo){
         this.db = getWritableDatabase();
         this.db = getReadableDatabase();
 
+        //TODO ivide anu error fix it
         Cursor cursor = db.rawQuery("select "+DOC_NO+","+S_PONO+" from "+TABLE_GOODS_RECEIPT_BODY+" where "+DOC_NO+" = ? and "+S_PONO+" = ? ",new String[]{gb.getDocNo(),gb.getsPONo()});
         Cursor cursor2 = db.rawQuery("select "+DOC_NO+","+PRODUCT+","+TEMP_QTY+","+QTY+" from "+TABLE_PENDING_PO+" where "+DOC_NO+" = ? and "+PRODUCT+" = ? ",new String[]{gb.getsPONo(),gb.getiProduct()});
 
