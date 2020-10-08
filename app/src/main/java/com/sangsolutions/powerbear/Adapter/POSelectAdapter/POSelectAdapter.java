@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class POSelectAdapter extends RecyclerView.Adapter<POSelectAdapter.ViewHolder> {
-    List<POSelect> list;
+    List<String> list;
     Context context;
     private SparseBooleanArray selected_items;
     private int current_selected_idx = -1;
@@ -84,7 +84,7 @@ public class POSelectAdapter extends RecyclerView.Adapter<POSelectAdapter.ViewHo
     }
 
 
-    public POSelectAdapter(List<POSelect> list, Context context) {
+    public POSelectAdapter(List<String> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -100,7 +100,7 @@ public class POSelectAdapter extends RecyclerView.Adapter<POSelectAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.ll_1.setActivated(selected_items.get(position,false));
 
-        holder.title.setText(list.get(position).getDocNo());
+        holder.title.setText(list.get(position));
         holder.ll_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

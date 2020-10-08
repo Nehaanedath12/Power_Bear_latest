@@ -40,7 +40,7 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final GoodsReceiptHistory goodsReceiptHistory = list.get(position);
 
-        holder.HeaderId.setText("Id :" + list.get(position).getHeaderId());
+        holder.DocNo.setText("DocNo :" + list.get(position).getDocNo());
         holder.Qty.setText("Total Qty :" + list.get(position).getQty());
 
 
@@ -72,14 +72,14 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView HeaderId;
+        final TextView DocNo;
         final TextView Qty;
         final ImageButton edit;
         final ImageButton delete;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            HeaderId = itemView.findViewById(R.id.header_id);
+            DocNo = itemView.findViewById(R.id.DocNo);
             Qty = itemView.findViewById(R.id.total_qty);
             edit = itemView.findViewById(R.id.edit);
             delete = itemView.findViewById(R.id.delete);

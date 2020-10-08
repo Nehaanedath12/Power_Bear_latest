@@ -8,8 +8,8 @@ public class PublicData {
     public static String supplier;
 
 
-    public static String image_minor;
-    public static String image_damaged;
+    public static String image_minor="";
+    public static String image_damaged="";
     public static String POs;
     public static String voucher;
 

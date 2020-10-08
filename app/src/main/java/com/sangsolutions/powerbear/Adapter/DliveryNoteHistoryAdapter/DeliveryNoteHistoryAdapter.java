@@ -75,7 +75,7 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
         final ImageButton delete;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            HeaderId = itemView.findViewById(R.id.header_id);
+            HeaderId = itemView.findViewById(R.id.DocNo);
             Qty = itemView.findViewById(R.id.total_qty);
             edit = itemView.findViewById(R.id.edit);
             delete = itemView.findViewById(R.id.delete);

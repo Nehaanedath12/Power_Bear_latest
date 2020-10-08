@@ -9,6 +9,8 @@ import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
+import com.sangsolutions.powerbear.Adapter.ListProduct.ListProduct;
+
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -808,18 +810,28 @@ public boolean DeleteStockCount(String voucherNo){
         return "1";
     }
 
+    public boolean DeleteBodyItems(List<String> iProduct,List<String> PoNo,String DocNo){
+        this.db = getWritableDatabase();
+
+        for(int i = 0; i<iProduct.size();i++){
+            ContentValues cv = new ContentValues();
+            cv.put(TEMP_QTY,"0");
+            db.update(TABLE_PENDING_PO,cv,  DOC_NO + " = ? and " + PRODUCT + " = ? ", new String[]{PoNo.get(i), iProduct.get(i)});
+        }
+        float status =  db.delete(TABLE_GOODS_RECEIPT_BODY,DOC_NO+" = ? ",new String[]{DocNo});
+        return status == -1;
+        }
 
     //goods receipt body
     public boolean InsertGoodsReceiptBody(GoodsReceiptBody gb){
         this.db = getWritableDatabase();
         this.db = getReadableDatabase();
 
-        //TODO ivide anu error fix it
         Cursor cursor = db.rawQuery("select " + DOC_NO + "," + S_PONO + "," + F_QTY + "," + I_PRODUCT + " from " + TABLE_GOODS_RECEIPT_BODY + " where " + DOC_NO + " = ? and " + S_PONO + " = ? and " + I_PRODUCT + " = ? ", new String[]{gb.getDocNo(), gb.getsPONo(), gb.getiProduct()});
         Cursor cursor2 = db.rawQuery("select " + DOC_NO + "," + PRODUCT + "," + TEMP_QTY + "," + QTY + " from " + TABLE_PENDING_PO + " where " + DOC_NO + " = ? and " + PRODUCT + " = ? ", new String[]{gb.getsPONo(), gb.getiProduct()});
 
         float status;
-        int qty = 0,poQty=0;
+        int qty = 0,poQty= 0;
         if(cursor2!=null&&cursor2.moveToFirst()){
             qty = cursor2.getInt(cursor2.getColumnIndex(TEMP_QTY))+Integer.parseInt(gb.getfQty());
             poQty = cursor2.getInt(cursor2.getColumnIndex(QTY));
@@ -893,15 +905,38 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetAllGoodsReceipt(){
         this.db = getReadableDatabase();
-        Cursor cursor = null;
+        Cursor cursor = db.rawQuery("SELECT h.DocNo as DocNo ,h.DocDate as DocDate, sum(b.fQty) as sumQty from tbl_GoodsReceiptHeader h " +
+                "INNER join tbl_GoodsReceiptBody b on h.DocNo =b.DocNo " +
+                " GROUP by h.DocNo",null);
 
-        return cursor;
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }else
+        return null;
+    }
+
+    public Cursor GetGoodsHeaderData(String DocNo){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from "+TABLE_GOODS_RECEIPT_HEADER+" where "+DOC_NO+" = ? ",new String[]{DocNo});
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
+    }
+
+    public Cursor GetGoodsBodyData(String DocNo){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from "+TABLE_GOODS_RECEIPT_BODY+" where "+DOC_NO+" = ? ",new String[]{DocNo});
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
     }
 
 
     public Cursor GetPOs(String customer){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT HeaderId,DocNo from tbl_PendingPO WHERE Cusomer = ? and TempQty != Qty GROUP by HeaderId ",new String[]{customer});
+        Cursor cursor = db.rawQuery("SELECT DocNo from tbl_PendingPO WHERE Cusomer = ? and TempQty != Qty GROUP by HeaderId ",new String[]{customer});
         if(cursor.moveToFirst()){
             return cursor;
         }else {
@@ -911,7 +946,6 @@ public boolean DeleteStockCount(String voucherNo){
 
 
     // Insert Pending PO
-
     public boolean InsertPendingPO(PendingSO p){
         this.db = getWritableDatabase();
         db.execSQL(CREATE_TABLE_PENDING_PO);
@@ -929,6 +963,16 @@ public boolean DeleteStockCount(String voucherNo){
         status = db.insert(TABLE_PENDING_PO, null, cv);
 
         return status != -1;
+    }
+
+
+    public String GetPendingPOTempQty(String sPONo,String iProduct){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select " +TEMP_QTY+" from " + TABLE_PENDING_PO + " where " + DOC_NO + " = ? and " + PRODUCT + " = ? ", new String[]{sPONo, iProduct});
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor.getString(cursor.getColumnIndex(TEMP_QTY));
+        }
+        return "0";
     }
 
     public boolean DeleteOldPendingPO() {

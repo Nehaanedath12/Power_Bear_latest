@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -36,7 +37,6 @@ import com.sangsolutions.powerbear.Adapter.GoodsPOProductAdapter.GoodsPOProduct;
 import com.sangsolutions.powerbear.Adapter.GoodsPOProductAdapter.GoodsPOProductAdapter;
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBodyAdapter;
-import com.sangsolutions.powerbear.Adapter.POListAdaptet.POList;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
@@ -76,7 +76,8 @@ public class GoodsReceiptBodyFragment extends Fragment {
     EditText et_regular_remarks,et_regular_qty,et_minor_remarks,et_minor_qty,et_damaged_remarks,et_damaged_qty;
     Spinner sp_warehouse;
 
-
+    boolean EditMode = false;
+    String DocNo = "";
 
     int current_position = 0;
     String[] PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -145,12 +146,9 @@ public class GoodsReceiptBodyFragment extends Fragment {
 
     //Alert for selecting products from DocNo
     public void POProductSelectAlert(){
-        List<POList> list = GoodsReceiptPoSingleton.getInstance().getList();
-        List<String> ListPONos = new ArrayList<>();
+        List<String> list = GoodsReceiptPoSingleton.getInstance().getList();
         if(list!=null&&list.size()>0) {
-            for (int i = 0; i < list.size(); i++) {
-                ListPONos.add(list.get(i).getDocNo());
-            }
+            List<String> ListPONos = new ArrayList<>(list);
             try {
             Cursor cursor = helper.GetGoodsPOProdcut(ListPONos);
 
@@ -282,8 +280,13 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     if(listMain.get(pos).getTempQty().equals("0")) {
                         tv_po_qty.setText("Qty : " + listMain.get(pos).getfPOQty());
                     }else {try {
-                        int qty = Integer.parseInt(listMain.get(pos).getfPOQty()) - Integer.parseInt(listMain.get(pos).getTempQty());
-                        tv_po_qty.setText("Qty : " + qty);
+                        int qty=0;
+                        if(EditMode) {
+                            qty = Integer.parseInt(listMain.get(pos).getfPOQty());
+                        }else {
+                             qty = Integer.parseInt(listMain.get(pos).getfPOQty()) - Integer.parseInt(listMain.get(pos).getTempQty());
+                        }
+                        tv_po_qty.setText("Qty : " +qty);
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -455,8 +458,19 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         et_regular_qty.setError("Enter regular qty!");
                         Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
 
+                            return;
+                    }
 
-                    } else if (Integer.parseInt(et_regular_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty())) {
+                    boolean condition;
+                    if(!EditMode){
+                         condition =  Integer.parseInt(et_regular_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                    }else {
+                         condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <  Integer.parseInt(et_regular_qty.getText().toString().trim());
+                    }
+
+
+
+                    if (condition) {
                         et_regular_qty.setError("Quantity can't higher then PO Qty");
                         Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
 
@@ -691,6 +705,53 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
     ////////////////////////////////////////
 
 
+
+    //Load values for editing operation
+
+
+    private void LoadBodyValues() {
+        try {
+           Cursor cursor =  helper.GetGoodsBodyData(DocNo);
+
+           if(cursor!=null&&cursor.moveToFirst()) {
+               for (int i = 0; i < cursor.getCount(); i++) {
+                   listMain.add(new GoodsReceiptBody(
+                           cursor.getString(cursor.getColumnIndex("sPONo")),
+                           helper.GetProductName(cursor.getString(cursor.getColumnIndex("iProduct"))),
+                           helper.GetProductCode(cursor.getString(cursor.getColumnIndex("iProduct"))),
+                           cursor.getString(cursor.getColumnIndex("iProduct")),
+                           helper.GetWarehouse(cursor.getString(cursor.getColumnIndex("iWarehouse"))),
+                           cursor.getString(cursor.getColumnIndex("iWarehouse")),
+                           cursor.getString(cursor.getColumnIndex("Barcode")),
+                           cursor.getString(cursor.getColumnIndex("fPOQty")),
+                           cursor.getString(cursor.getColumnIndex("fQty")),
+                           helper.GetPendingPOTempQty(cursor.getString(cursor.getColumnIndex("sPONo")),cursor.getString(cursor.getColumnIndex("iProduct"))),
+                           cursor.getString(cursor.getColumnIndex("Unit")),
+                           cursor.getString(cursor.getColumnIndex("sRemarks")),
+                           cursor.getString(cursor.getColumnIndex("fMinorDamageQty")),
+                           cursor.getString(cursor.getColumnIndex("sMinorRemarks")),
+                           cursor.getString(cursor.getColumnIndex("sMinorAttachment")),
+                           cursor.getString(cursor.getColumnIndex("fDamagedQty")),
+                           cursor.getString(cursor.getColumnIndex("sDamagedRemarks")),
+                           cursor.getString(cursor.getColumnIndex("sDamagedAttachment"))
+                   ));
+                   cursor.moveToNext();
+                   if(i+1==cursor.getCount()){
+                       goodsReceiptBodyAdapter.notifyDataSetChanged();
+                   }
+               }
+
+
+           }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    ////////////////////////////////////////
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -707,6 +768,20 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
        rv_products.setLayoutManager(new LinearLayoutManager(requireActivity()));
        rv_products.setAdapter(goodsReceiptBodyAdapter);
+
+
+       Bundle bundle = getArguments();
+
+       if(bundle!=null){
+           EditMode = bundle.getBoolean("EditMode");
+           DocNo = bundle.getString("DocNo");
+
+           if(EditMode){
+               LoadBodyValues();
+           }
+       }
+
+
        add_fab.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -732,6 +807,8 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
        });
        return view;
     }
+
+
 
     private static class Warehouse {
 

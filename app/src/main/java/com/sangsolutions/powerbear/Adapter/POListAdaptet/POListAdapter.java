@@ -16,7 +16,7 @@ import java.util.List;
 
 public class POListAdapter extends RecyclerView.Adapter<POListAdapter.ViewHolder> {
 
-    List<POList> list;
+    List<String> list;
     Context context;
     private OnClickListener onClickListener;
 
@@ -24,7 +24,7 @@ public class POListAdapter extends RecyclerView.Adapter<POListAdapter.ViewHolder
         this.onClickListener = onClickListener;
     }
 
-    public POListAdapter(List<POList> list, Context context) {
+    public POListAdapter(List<String> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -38,8 +38,8 @@ public class POListAdapter extends RecyclerView.Adapter<POListAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        final POList poList = list.get(position);
-        holder.DocNo.setText(list.get(position).getDocNo());
+        final String poList = list.get(position);
+        holder.DocNo.setText(list.get(position));
         holder.close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,7 +55,7 @@ public class POListAdapter extends RecyclerView.Adapter<POListAdapter.ViewHolder
     }
 
     public interface OnClickListener {
-        void onRemoveItemClick(POList poList, int pos);
+        void onRemoveItemClick(String poList, int pos);
     }
 
 

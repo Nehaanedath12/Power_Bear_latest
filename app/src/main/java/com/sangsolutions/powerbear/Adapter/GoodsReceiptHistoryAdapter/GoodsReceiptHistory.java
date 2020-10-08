@@ -3,20 +3,20 @@ package com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter;
 @SuppressWarnings("ALL")
 public class GoodsReceiptHistory {
 
-    String HeaderId,Qty,iVoucherNo;
+    String DocNo,Qty, DocDate;
 
     public GoodsReceiptHistory(String headerId, String qty, String iVoucherNo) {
-        this.HeaderId = headerId;
+        this.DocNo = headerId;
         this.Qty = qty;
-        this.iVoucherNo = iVoucherNo;
+        this.DocDate = iVoucherNo;
     }
 
-    public String getHeaderId() {
-        return HeaderId;
+    public String getDocNo() {
+        return DocNo;
     }
 
-    public void setHeaderId(String headerId) {
-        HeaderId = headerId;
+    public void setDocNo(String docNo) {
+        DocNo = docNo;
     }
 
     public String getQty() {
@@ -27,11 +27,11 @@ public class GoodsReceiptHistory {
         Qty = qty;
     }
 
-    public String getiVoucherNo() {
-        return iVoucherNo;
+    public String getDocDate() {
+        return DocDate;
     }
 
-    public void setiVoucherNo(String iVoucherNo) {
-        this.iVoucherNo = iVoucherNo;
+    public void setDocDate(String docDate) {
+        this.DocDate = docDate;
     }
 }

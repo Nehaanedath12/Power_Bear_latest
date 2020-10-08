@@ -20,7 +20,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/header_id"
+                    android:id="@+id/DocNo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="XXX" />

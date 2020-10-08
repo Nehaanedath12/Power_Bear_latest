@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,12 +45,12 @@ public class GoodsReceiptHistory extends AppCompatActivity {
             cursor.moveToFirst();
             empty_frame.setVisibility(View.GONE);
             for (int i = 0; i < cursor.getCount(); i++) {
-                String Header_id,TotalQty,iVoucherNo;
+                String DocNo,TotalQty,DocDate;
 
-                Header_id = cursor.getString(cursor.getColumnIndex("HeaderId"));
-                TotalQty = cursor.getString(cursor.getColumnIndex("Qty"));
-                iVoucherNo = cursor.getString(cursor.getColumnIndex("iVoucherNo"));
-                list.add(new com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory(Header_id,TotalQty,iVoucherNo));
+                DocNo = cursor.getString(cursor.getColumnIndex("DocNo"));
+                TotalQty = cursor.getString(cursor.getColumnIndex("sumQty"));
+                DocDate = cursor.getString(cursor.getColumnIndex("DocDate"));
+                list.add(new com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory(DocNo,TotalQty,DocDate));
                 cursor.moveToNext();
 
                 if (i + 1 == cursor.getCount()) {
@@ -133,8 +132,7 @@ adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
     @Override
     public void onEditItemClick(com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory) {
         Intent intent1 = new Intent(GoodsReceiptHistory.this,GoodsReceipt.class);
-        intent1.putExtra("HeaderId",goodsReceiptHistory.getHeaderId());
-        intent1.putExtra("iVoucherNo",goodsReceiptHistory.getiVoucherNo());
+        intent1.putExtra("DocNo",goodsReceiptHistory.getDocNo());
         intent1.putExtra("EditMode", true);
         startActivity(intent1);
     }

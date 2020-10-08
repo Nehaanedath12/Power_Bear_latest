@@ -2,6 +2,7 @@ package com.sangsolutions.powerbear.Fragment;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +29,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sangsolutions.powerbear.Adapter.POListAdaptet.POList;
 import com.sangsolutions.powerbear.Adapter.POListAdaptet.POListAdapter;
-import com.sangsolutions.powerbear.Adapter.POSelectAdapter.POSelect;
 import com.sangsolutions.powerbear.Adapter.POSelectAdapter.POSelectAdapter;
 import com.sangsolutions.powerbear.Adapter.SupplierAdapter.SupplierAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
@@ -39,6 +39,7 @@ import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
 import com.sangsolutions.powerbear.Tools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -48,14 +49,17 @@ public class GoodsReceiptHeaderFragment extends Fragment {
     EditText et_date,et_narration;
     Spinner sp_supplier;
     List<SupplierAdapter.Supplier> supplierList;
-    List<POList> poList;
-    List<POSelect> poSelectList;
+    List<String> poList;
+    List<String> poSelectList;
     POSelectAdapter poSelectAdapter;
     POListAdapter poListAdapter;
     SupplierAdapter supplierAdapter;
     DatabaseHelper helper;
     RecyclerView rv_pos;
     TextView tv_add_po,tv_doc_no;
+   String DocNo  = "";
+   boolean EditMode = false;
+
     private boolean selection_active = false ;
 
     public void closeSelection(){
@@ -69,11 +73,9 @@ public class GoodsReceiptHeaderFragment extends Fragment {
             closeSelection();
         }
     }
-
     private void enableActionMode(int position) {
         toggleSelection(position);
     }
-
     public void POSelectionDialog(){
         View view = LayoutInflater.from(requireActivity()).inflate(R.layout.select_po_layout,null,false);
         ImageView img_close = view.findViewById(R.id.close);
@@ -124,15 +126,12 @@ public class GoodsReceiptHeaderFragment extends Fragment {
     }
 
 
-public void setPORecycler(List<Integer> list){
+    public void setPORecycler(List<Integer> list){
     poList.clear();
     for(int i=0;i<list.size();i++){
         for (int j=0;j<poSelectList.size();j++){
             if(list.get(i)==j){
-                poList.add(new POList(
-                       poSelectList.get(j).getDocNo(),
-                        poSelectList.get(j).getHeaderId()
-                ));
+                poList.add(poSelectList.get(j));
             }
         }
         if(i+1==list.size()){
@@ -141,29 +140,25 @@ public void setPORecycler(List<Integer> list){
             closeSelection();
         }
     }
-
 }
 
-public void LoadPOs(String customer){
+    public void LoadPOs(String customer){
     poList.clear();
     poSelectList.clear();
     Cursor cursor = helper.GetPOs(customer);
     if(cursor!=null&&cursor.moveToFirst()){
         for(int i=0;i<cursor.getCount();i++){
-            poSelectList.add(new POSelect(
-                    cursor.getString(cursor.getColumnIndex("DocNo")),
-                    cursor.getString(cursor.getColumnIndex("HeaderId"))
-            ));
+            poSelectList.add(cursor.getString(cursor.getColumnIndex("DocNo")));
             cursor.moveToNext();
             if(i+1==cursor.getCount()){
-                poListAdapter.notifyDataSetChanged();
+                poSelectAdapter.notifyDataSetChanged();
             }
         }
     }
 }
 
 
-public void LoadSupplier(){
+    public void LoadSupplier(){
     supplierList.clear();
     supplierList.add(new SupplierAdapter.Supplier("---Select Supplier---","0"));
     try {
@@ -186,7 +181,7 @@ public void LoadSupplier(){
 sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        poListAdapter.notifyDataSetChanged();
+        poSelectList.clear();
         LoadPOs(supplierList.get(position).getsSupplierName());
         PublicData.supplier = supplierList.get(position).getsSupplierName();
     }
@@ -200,6 +195,51 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 });
 }
 
+    public void LoadValueForEditing(){
+        try {
+            Cursor cursor = helper.GetGoodsHeaderData(DocNo);
+            if(cursor!=null&&cursor.moveToFirst()){
+                //LoadDate
+                et_date.setText(Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("DocDate"))));
+
+                //LoadSupplier
+                String supplier =  cursor.getString(cursor.getColumnIndex("sSupplier"));
+                if(supplierList.size()>0)
+                {
+                    for(int i = 0;i<supplierList.size();i++){
+                        if(supplier.equals(supplierList.get(i).getsSupplierName())){
+                            sp_supplier.setSelection(i);
+                            LoadPOs(supplier);
+                        }
+                    }
+                }
+
+                //Load POs
+                String pos =  cursor.getString(cursor.getColumnIndex("sPONo"));
+                if(!pos.isEmpty()){
+                   String[] array =   pos.split(",");
+                    poList.addAll(Arrays.asList(array));
+                        GoodsReceiptPoSingleton.getInstance().setList(poList);
+                        poListAdapter.notifyDataSetChanged();
+                    }
+
+
+
+
+
+
+                et_narration.setText(cursor.getString(cursor.getColumnIndex("sNarration")));
+
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -210,14 +250,15 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         tv_add_po = view.findViewById(R.id.add_po);
         sp_supplier = view.findViewById(R.id.supplier);
         tv_doc_no = view.findViewById(R.id.doc_no);
-        try {
-            tv_doc_no.setText("Doc No: " + PublicData.voucher);
-        }catch (Exception e) {
-        e.printStackTrace();
-        }
+
+        Bundle bundle = getArguments();
+
+
         supplierList = new ArrayList<>();
         poList = new ArrayList<>();
         poSelectList = new ArrayList<>();
+
+
         supplierAdapter =new SupplierAdapter(supplierList,requireActivity());
         poListAdapter = new POListAdapter(poList,requireActivity());
         poSelectAdapter = new POSelectAdapter(poSelectList,requireActivity());
@@ -225,9 +266,19 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         rv_pos = view.findViewById(R.id.rv_po);
         rv_pos.setLayoutManager(new GridLayoutManager(requireActivity(),3));
         rv_pos.setAdapter(poListAdapter);
+
+        try {
+            tv_doc_no.setText("Doc No: " + PublicData.voucher);
+        }catch (Exception e) {
+        e.printStackTrace();
+        }
+
         LoadSupplier();
-        et_date.setText(String.valueOf(DateFormat.format("dd-MM-yyyy", new Date())));
-        PublicData.date = Tools.dateFormat(String.valueOf(DateFormat.format("dd-MM-yyyy", new Date())));
+
+        if(!EditMode) {
+            et_date.setText(String.valueOf(DateFormat.format("dd-MM-yyyy", new Date())));
+            PublicData.date = Tools.dateFormat(String.valueOf(DateFormat.format("dd-MM-yyyy", new Date())));
+        }
         et_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -256,9 +307,19 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         });
 
 
+        if(bundle!=null)
+        {
+            DocNo = bundle.getString("DocNo");
+            EditMode = bundle.getBoolean("EditMode");
+            if(EditMode){
+                LoadValueForEditing();
+            }
+        }
+
+
         poListAdapter.setOnClickListener(new POListAdapter.OnClickListener() {
             @Override
-            public void onRemoveItemClick(POList po, int pos) {
+            public void onRemoveItemClick(String po, int pos) {
                 if(poList!=null && poList.size()>0){
                     poList.remove(pos);
                         poListAdapter.notifyDataSetChanged();

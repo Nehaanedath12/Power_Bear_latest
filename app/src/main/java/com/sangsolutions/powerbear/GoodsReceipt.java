@@ -1,6 +1,7 @@
 package com.sangsolutions.powerbear;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,7 +20,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
-import com.sangsolutions.powerbear.Adapter.POListAdaptet.POList;
 import com.sangsolutions.powerbear.Adapter.ViewPager2AdapterGoodsReceipt.ViewPager2AdapterGoodsReceipt;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.GoodReceiptHeader;
@@ -39,18 +39,17 @@ ViewPager2AdapterGoodsReceipt viewPager2AdapterGoodsReceipt;
 ImageView img_close,img_delete,img_forward,img_backward,img_save,img_add_new;
 DatabaseHelper helper;
 
+boolean EditMode = false;
+String DocNo = "";
 
 private void Save(){
 String POs="",date = "",supplier="",narration="",voucher="";
-    List<POList> listPO=GoodsReceiptPoSingleton.getInstance().getList();
+    List<String> listPO=GoodsReceiptPoSingleton.getInstance().getList();
     List<GoodsReceiptBody> listMain = GoodsReceiptBodySingleton.getInstance().getList();
 
 
-    List<String> list = new ArrayList<>();
     if(listPO!=null&&listPO.size()>0){
-        for (int i = 0; i < listPO.size(); i++) {
-            list.add(listPO.get(i).getDocNo());
-        }
+        List<String> list = new ArrayList<>(listPO);
         POs = TextUtils.join(",",list);
     }
     date = PublicData.date;
@@ -58,9 +57,25 @@ String POs="",date = "",supplier="",narration="",voucher="";
     narration = PublicData.narration;
     voucher = PublicData.voucher;
 
+    if(EditMode){
 
-    //TODO complete insertion
-    int body_success_counter =0;
+        List<String> listProduct =new ArrayList<>();
+        List<String> listPo = new ArrayList<>();
+        listProduct.clear();
+        listPo.clear();
+
+        for(int i = 0;i<listMain.size();i++){
+            listProduct.add(listMain.get(i).getiProduct());
+            listPo.add(listMain.get(i).getsPONo());
+        }
+        try {
+            helper.DeleteBodyItems(listProduct,listPo,DocNo);
+            Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    int body_success_counter = 0;
     try {
         if (listMain != null && listMain.size() > 0 && PublicData.voucher != null && !PublicData.voucher.isEmpty()) {
             com.sangsolutions.powerbear.Database.GoodsReceiptBody gb = new com.sangsolutions.powerbear.Database.GoodsReceiptBody();
@@ -168,8 +183,18 @@ public void Alert(String title, String message, final String type){
 
 public void SetViewPager(){
     List<Fragment> fragmentList = new ArrayList<>();
-    fragmentList.add(new GoodsReceiptHeaderFragment());
-    fragmentList.add(new GoodsReceiptBodyFragment());
+    Bundle bundle = new Bundle();
+    bundle.putString("DocNo",DocNo);
+    bundle.putBoolean("EditMode",EditMode);
+
+    GoodsReceiptBodyFragment bodyFragment = new GoodsReceiptBodyFragment();
+    bodyFragment.setArguments(bundle);
+
+    GoodsReceiptHeaderFragment headerFragment = new GoodsReceiptHeaderFragment();
+    headerFragment.setArguments(bundle);
+
+    fragmentList.add(headerFragment);
+    fragmentList.add(bodyFragment);
     viewPager2AdapterGoodsReceipt = new ViewPager2AdapterGoodsReceipt(getSupportFragmentManager(),getLifecycle(),fragmentList);
     viewPager2.setUserInputEnabled(false);
     viewPager2.setAdapter(viewPager2AdapterGoodsReceipt);
@@ -213,10 +238,20 @@ public void SetViewPager(){
         img_backward.setOnClickListener(this);
         img_save.setOnClickListener(this);
         img_add_new.setOnClickListener(this);
+        Intent intent = getIntent();
 
-        PublicData.voucher = "G-"+ DateFormat.format("ddMMyy-HHmmss", new Date());
-        Log.d("body",PublicData.voucher);
+        if(intent!=null) {
+            EditMode =intent.getBooleanExtra("EditMode",false);
+            if(EditMode){
+                PublicData.voucher= intent.getStringExtra("DocNo");
+                DocNo = PublicData.voucher;
+            }else {
+                PublicData.voucher = "G-" + DateFormat.format("ddMMyy-HHmmss", new Date());
+            }
+        }else {
+            PublicData.voucher = "G-" + DateFormat.format("ddMMyy-HHmmss", new Date());
 
+        }
 
         tabLayout = findViewById(R.id.tabLay);
         tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF0000"));
