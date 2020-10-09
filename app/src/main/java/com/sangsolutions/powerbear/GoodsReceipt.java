@@ -42,10 +42,13 @@ DatabaseHelper helper;
 boolean EditMode = false;
 String DocNo = "";
 
+
 private void Save(){
 String POs="",date = "",supplier="",narration="",voucher="";
     List<String> listPO=GoodsReceiptPoSingleton.getInstance().getList();
     List<GoodsReceiptBody> listMain = GoodsReceiptBodySingleton.getInstance().getList();
+
+    Log.d("listPo", String.valueOf(listPO.size()));
 
 
     if(listPO!=null&&listPO.size()>0){
@@ -70,7 +73,6 @@ String POs="",date = "",supplier="",narration="",voucher="";
         }
         try {
             helper.DeleteBodyItems(listProduct,listPo,DocNo);
-            Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -154,9 +156,9 @@ public void Alert(String title, String message, final String type){
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if(type.equals("save")) {
+
                         List<GoodsReceiptBody> listMain = GoodsReceiptBodySingleton.getInstance().getList();
                         if (listMain != null && listMain.size() > 0) {
-
 
                             for (int i = 0; i <listMain.size();i++) {
                              if(listMain.get(i).getfQty().equals("")) {

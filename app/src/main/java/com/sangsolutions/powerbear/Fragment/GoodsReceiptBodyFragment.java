@@ -4,8 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -485,7 +485,6 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                                         >
                                         Integer.parseInt(et_regular_qty.getText().toString().trim())) {
                                     Toast.makeText(getActivity(), "Quantity can't higher then PO Qty", Toast.LENGTH_SHORT).show();
-                                    Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                             }else if(!et_minor_qty.getText().toString().trim().isEmpty()
@@ -738,6 +737,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                    cursor.moveToNext();
                    if(i+1==cursor.getCount()){
                        goodsReceiptBodyAdapter.notifyDataSetChanged();
+                       GoodsReceiptBodySingleton.getInstance().setList(listMain);
                    }
                }
 

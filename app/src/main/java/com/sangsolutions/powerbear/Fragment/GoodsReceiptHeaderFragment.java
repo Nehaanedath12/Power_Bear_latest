@@ -7,10 +7,12 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +31,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
 import com.sangsolutions.powerbear.Adapter.POListAdaptet.POListAdapter;
 import com.sangsolutions.powerbear.Adapter.POSelectAdapter.POSelectAdapter;
 import com.sangsolutions.powerbear.Adapter.SupplierAdapter.SupplierAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
+import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
 import com.sangsolutions.powerbear.Tools;
 
@@ -50,6 +54,7 @@ public class GoodsReceiptHeaderFragment extends Fragment {
     Spinner sp_supplier;
     List<SupplierAdapter.Supplier> supplierList;
     List<String> poList;
+    List<String> goodsPoList;
     List<String> poSelectList;
     POSelectAdapter poSelectAdapter;
     POListAdapter poListAdapter;
@@ -127,7 +132,7 @@ public class GoodsReceiptHeaderFragment extends Fragment {
 
 
     public void setPORecycler(List<Integer> list){
-    poList.clear();
+        poList.clear();
     for(int i=0;i<list.size();i++){
         for (int j=0;j<poSelectList.size();j++){
             if(list.get(i)==j){
@@ -195,6 +200,8 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 });
 }
 
+
+
     public void LoadValueForEditing(){
         try {
             Cursor cursor = helper.GetGoodsHeaderData(DocNo);
@@ -218,18 +225,19 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 String pos =  cursor.getString(cursor.getColumnIndex("sPONo"));
                 if(!pos.isEmpty()){
                    String[] array =   pos.split(",");
-                    poList.addAll(Arrays.asList(array));
+                   for(int i = 0 ; i<array.length;i++)
+                   {
+                       poList.add(array[i]);
+                   }
                         GoodsReceiptPoSingleton.getInstance().setList(poList);
                         poListAdapter.notifyDataSetChanged();
+                    Log.d("listPO", String.valueOf(GoodsReceiptPoSingleton.getInstance().getList()));
+
                     }
 
 
 
-
-
-
                 et_narration.setText(cursor.getString(cursor.getColumnIndex("sNarration")));
-
 
             }
         }catch (Exception e){
@@ -239,6 +247,46 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
     }
 
+    private void LoadBodyValues() {
+        List<GoodsReceiptBody> listMain = new ArrayList<>();
+        try {
+            Cursor cursor =  helper.GetGoodsBodyData(DocNo);
+
+            if(cursor!=null&&cursor.moveToFirst()) {
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    listMain.add(new GoodsReceiptBody(
+                            cursor.getString(cursor.getColumnIndex("sPONo")),
+                            helper.GetProductName(cursor.getString(cursor.getColumnIndex("iProduct"))),
+                            helper.GetProductCode(cursor.getString(cursor.getColumnIndex("iProduct"))),
+                            cursor.getString(cursor.getColumnIndex("iProduct")),
+                            helper.GetWarehouse(cursor.getString(cursor.getColumnIndex("iWarehouse"))),
+                            cursor.getString(cursor.getColumnIndex("iWarehouse")),
+                            cursor.getString(cursor.getColumnIndex("Barcode")),
+                            cursor.getString(cursor.getColumnIndex("fPOQty")),
+                            cursor.getString(cursor.getColumnIndex("fQty")),
+                            helper.GetPendingPOTempQty(cursor.getString(cursor.getColumnIndex("sPONo")),cursor.getString(cursor.getColumnIndex("iProduct"))),
+                            cursor.getString(cursor.getColumnIndex("Unit")),
+                            cursor.getString(cursor.getColumnIndex("sRemarks")),
+                            cursor.getString(cursor.getColumnIndex("fMinorDamageQty")),
+                            cursor.getString(cursor.getColumnIndex("sMinorRemarks")),
+                            cursor.getString(cursor.getColumnIndex("sMinorAttachment")),
+                            cursor.getString(cursor.getColumnIndex("fDamagedQty")),
+                            cursor.getString(cursor.getColumnIndex("sDamagedRemarks")),
+                            cursor.getString(cursor.getColumnIndex("sDamagedAttachment"))
+                    ));
+                    cursor.moveToNext();
+                    if(i+1==cursor.getCount()){
+                        GoodsReceiptBodySingleton.getInstance().setList(listMain);
+                    }
+                }
+
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     @Nullable
     @Override
@@ -312,6 +360,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             DocNo = bundle.getString("DocNo");
             EditMode = bundle.getBoolean("EditMode");
             if(EditMode){
+                LoadBodyValues();
                 LoadValueForEditing();
             }
         }
@@ -351,6 +400,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             PublicData.narration = editable.toString();
             }
         });
+
         return view;
     }
 }
