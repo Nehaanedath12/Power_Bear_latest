@@ -40,7 +40,8 @@
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".GoodsReceipt"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".PendingPO"
             android:configChanges="keyboardHidden|orientation|screenSize" />

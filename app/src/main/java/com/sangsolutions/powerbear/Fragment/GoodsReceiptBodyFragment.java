@@ -71,6 +71,8 @@ public class GoodsReceiptBodyFragment extends Fragment {
     AlertDialog mainAlertDialog;
     boolean selection_active = false;
 
+    AlertDialog CameraAlertDialog;
+
     ImageView img_minor,img_damaged,img_close,img_forward,img_backward,img_save;
     TextView tv_doc_no,tv_product,tv_code,tv_unit,tv_po_qty;
     EditText et_regular_remarks,et_regular_qty,et_minor_remarks,et_minor_qty,et_damaged_remarks,et_damaged_qty;
@@ -144,6 +146,14 @@ public class GoodsReceiptBodyFragment extends Fragment {
     ///////////////////////////////////////////
 
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(CameraAlertDialog!=null&&CameraAlertDialog.isShowing()){
+            CameraAlertDialog.dismiss();
+        }
+    }
+
     //Alert for selecting products from DocNo
     public void POProductSelectAlert(){
         List<String> list = GoodsReceiptPoSingleton.getInstance().getList();
@@ -210,7 +220,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
 
         rv_product_select.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv_product_select.setAdapter(goodsPOProductAdapter);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity())
                 .setView(view);
         final AlertDialog alertDialog = builder.create();
         Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -352,21 +362,20 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
         img_save = view.findViewById(R.id.add_save);
 
 
+        tv_doc_no = view.findViewById(R.id.doc_no);
+        tv_product = view.findViewById(R.id.product);
+        tv_code = view.findViewById(R.id.code);
+        tv_unit = view.findViewById(R.id.unit);
+        tv_po_qty = view.findViewById(R.id.po_qty);
 
-          tv_doc_no = view.findViewById(R.id.doc_no);
-          tv_product = view.findViewById(R.id.product);
-          tv_code = view.findViewById(R.id.code);
-          tv_unit = view.findViewById(R.id.unit);
-          tv_po_qty = view.findViewById(R.id.po_qty);
+        et_regular_remarks = view.findViewById(R.id.regular_remarks);
+        et_regular_qty = view.findViewById(R.id.regular_qty);
 
-          et_regular_remarks = view.findViewById(R.id.regular_remarks);
-          et_regular_qty = view.findViewById(R.id.regular_qty);
+        et_minor_remarks = view.findViewById(R.id.minor_remarks);
+        et_minor_qty = view.findViewById(R.id.minor_qty);
 
-          et_minor_remarks = view.findViewById(R.id.minor_remarks);
-          et_minor_qty = view.findViewById(R.id.minor_qty);
-
-          et_damaged_remarks = view.findViewById(R.id.damaged_remarks);
-          et_damaged_qty = view.findViewById(R.id.damaged_qty);
+        et_damaged_remarks = view.findViewById(R.id.damaged_remarks);
+        et_damaged_qty = view.findViewById(R.id.damaged_qty);
 
          sp_warehouse = view.findViewById(R.id.warehouse);
 
@@ -629,6 +638,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
     /////////////////////////////////////////
 
 
+
     //Camera Alert
     public void CameraAlert(final String type){
 
@@ -639,11 +649,11 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setView(view);
-        final AlertDialog alertDialog = builder.create();
+        CameraAlertDialog = builder.create();
         if(!hasPermissions(getActivity(), PERMISSIONS)){
             ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, 100);
         }else {
-            alertDialog.show();
+            CameraAlertDialog.show();
         }
         final Fotoapparat fotoapparat;
         fotoapparat = new Fotoapparat(Objects.requireNonNull(getActivity()), cameraView);
@@ -657,7 +667,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
             @Override
             public void onClick(View view) {
                 fotoapparat.stop();
-                alertDialog.dismiss();
+                CameraAlertDialog.dismiss();
             }
         });
         Click.setOnClickListener(new View.OnClickListener() {
@@ -671,7 +681,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                             @Override
                             public Unit invoke(BitmapPhoto bitmapPhoto) {
                                 PublicData.image_minor = Tools.savePhoto(requireActivity(), photoResult);
-                                alertDialog.dismiss();
+                                CameraAlertDialog.dismiss();
                                 Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
                                 img_minor.setImageBitmap(bitmapPhoto.bitmap);
                                 return Unit.INSTANCE;
@@ -686,7 +696,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         @Override
                         public Unit invoke(BitmapPhoto bitmapPhoto) {
                             PublicData.image_damaged = Tools.savePhoto(requireActivity(), photoResult);
-                            alertDialog.dismiss();
+                            CameraAlertDialog.dismiss();
                             Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
                             img_damaged.setImageBitmap(bitmapPhoto.bitmap);
                             return Unit.INSTANCE;

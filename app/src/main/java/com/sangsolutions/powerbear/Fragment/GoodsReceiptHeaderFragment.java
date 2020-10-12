@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -205,6 +206,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
     public void LoadValueForEditing(){
         try {
+            poList.clear();
             Cursor cursor = helper.GetGoodsHeaderData(DocNo);
             if(cursor!=null&&cursor.moveToFirst()){
                 //LoadDate
@@ -225,12 +227,13 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 //Load POs
                 String pos =  cursor.getString(cursor.getColumnIndex("sPONo"));
                 if(!pos.isEmpty()){
-                   String[] array =   pos.split(",");
+                   String[] array =   pos.split("\\s*,\\s*");
                      c =new ArrayList<>(Arrays.asList(array));
                         poList.addAll(c);
+                        goodsPoList.addAll(c);
                         GoodsReceiptPoSingleton.getInstance().setList(poList);
                         poListAdapter.notifyDataSetChanged();
-                    Log.d("listPO", poList.toString());
+                        Log.d("listPO", goodsPoList.toString());
 
                     }
 
@@ -325,8 +328,17 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             DocNo = bundle.getString("DocNo");
             EditMode = bundle.getBoolean("EditMode");
             if(EditMode){
-                LoadBodyValues();
-                LoadValueForEditing();
+                final Handler handler = new Handler();
+
+                final Runnable r = new Runnable() {
+                    public void run() {
+                        LoadBodyValues();
+                        LoadValueForEditing();
+                    }
+                };
+
+                handler.postDelayed(r, 500);
+
             }
         }
 

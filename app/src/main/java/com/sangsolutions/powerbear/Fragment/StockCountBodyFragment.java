@@ -179,7 +179,6 @@ public class StockCountBodyFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toast.makeText(getActivity(), "Hello", Toast.LENGTH_SHORT).show();
         StockCountProductSingleton.getInstance().clearList();
         StockCountSingleton.getInstance().clearList();
     }
