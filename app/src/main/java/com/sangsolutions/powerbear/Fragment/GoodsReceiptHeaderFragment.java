@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -45,6 +44,7 @@ import com.sangsolutions.powerbear.Tools;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -62,8 +62,9 @@ public class GoodsReceiptHeaderFragment extends Fragment {
     DatabaseHelper helper;
     RecyclerView rv_pos;
     TextView tv_add_po,tv_doc_no;
-   String DocNo  = "";
-   boolean EditMode = false;
+    String DocNo  = "";
+    Collection<String> c;
+    boolean EditMode = false;
 
     private boolean selection_active = false ;
 
@@ -225,10 +226,11 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 String pos =  cursor.getString(cursor.getColumnIndex("sPONo"));
                 if(!pos.isEmpty()){
                    String[] array =   pos.split(",");
-                    poList.addAll(Arrays.asList(array));
+                     c =new ArrayList<>(Arrays.asList(array));
+                        poList.addAll(c);
                         GoodsReceiptPoSingleton.getInstance().setList(poList);
                         poListAdapter.notifyDataSetChanged();
-                    Log.d("listPO", String.valueOf(GoodsReceiptPoSingleton.getInstance().getList()));
+                    Log.d("listPO", poList.toString());
 
                     }
 
@@ -400,7 +402,15 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             PublicData.narration = editable.toString();
             }
         });
+/*      final Handler handler = new Handler();
 
+        final Runnable r = new Runnable() {
+            public void run() {
+                handler.postDelayed(this, 1000);
+            }
+        };
+
+        handler.postDelayed(r, 1000);*/
         return view;
     }
 }

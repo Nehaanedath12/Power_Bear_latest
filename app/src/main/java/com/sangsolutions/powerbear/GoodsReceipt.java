@@ -48,99 +48,101 @@ String POs="",date = "",supplier="",narration="",voucher="";
     List<String> listPO=GoodsReceiptPoSingleton.getInstance().getList();
     List<GoodsReceiptBody> listMain = GoodsReceiptBodySingleton.getInstance().getList();
 
-    Log.d("listPo", String.valueOf(listPO.size()));
 
 
-    if(listPO!=null&&listPO.size()>0){
+
+    if(listPO!=null&&listPO.size()>0) {
         List<String> list = new ArrayList<>(listPO);
-        POs = TextUtils.join(",",list);
-    }
-    date = PublicData.date;
-    supplier = PublicData.supplier;
-    narration = PublicData.narration;
-    voucher = PublicData.voucher;
+        POs = TextUtils.join(",", list);
 
-    if(EditMode){
+        date = PublicData.date;
+        supplier = PublicData.supplier;
+        narration = PublicData.narration;
+        voucher = PublicData.voucher;
 
-        List<String> listProduct =new ArrayList<>();
-        List<String> listPo = new ArrayList<>();
-        listProduct.clear();
-        listPo.clear();
+        if (EditMode) {
 
-        for(int i = 0;i<listMain.size();i++){
-            listProduct.add(listMain.get(i).getiProduct());
-            listPo.add(listMain.get(i).getsPONo());
-        }
-        try {
-            helper.DeleteBodyItems(listProduct,listPo,DocNo);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-    int body_success_counter = 0;
-    try {
-        if (listMain != null && listMain.size() > 0 && PublicData.voucher != null && !PublicData.voucher.isEmpty()) {
-            com.sangsolutions.powerbear.Database.GoodsReceiptBody gb = new com.sangsolutions.powerbear.Database.GoodsReceiptBody();
+            List<String> listProduct = new ArrayList<>();
+            List<String> listPo = new ArrayList<>();
+            listProduct.clear();
+            listPo.clear();
 
             for (int i = 0; i < listMain.size(); i++) {
-                gb.setDocNo(voucher);
-                gb.setsPONo(listMain.get(i).getsPONo());
-                gb.setiProduct(listMain.get(i).getiProduct());
-                gb.setiWarehouse(listMain.get(i).getiWarehouse());
-                gb.setBarcode(listMain.get(i).getBarcode());
-                gb.setfPOQty(listMain.get(i).getfPOQty());
-                gb.setfQty(listMain.get(i).getfQty());
-                gb.setUnit(listMain.get(i).getUnit());
-                gb.setsRemarks(listMain.get(i).getsRemarks());
-                gb.setfMinorDamageQty(listMain.get(i).getfMinorDamageQty());
-                gb.setsMinorRemarks(listMain.get(i).getsMinorRemarks());
-                gb.setsMinorAttachment(listMain.get(i).getsMinorAttachment());
-                gb.setfDamagedQty(listMain.get(i).getfDamagedQty());
-                gb.setsDamagedRemarks(listMain.get(i).getsDamagedRemarks());
-                gb.setsDamagedAttachment(listMain.get(i).getsDamagedAttachment());
+                listProduct.add(listMain.get(i).getiProduct());
+                listPo.add(listMain.get(i).getsPONo());
+            }
+            try {
+                helper.DeleteBodyItems(listProduct, listPo, DocNo);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        int body_success_counter = 0;
+        try {
+            if (listMain != null && listMain.size() > 0 && PublicData.voucher != null && !PublicData.voucher.isEmpty()) {
+                com.sangsolutions.powerbear.Database.GoodsReceiptBody gb = new com.sangsolutions.powerbear.Database.GoodsReceiptBody();
 
-                if(helper.InsertGoodsReceiptBody(gb)){
-                    body_success_counter ++;
-                }else Log.d("message","failed to insert");
+                for (int i = 0; i < listMain.size(); i++) {
+                    gb.setDocNo(voucher);
+                    gb.setsPONo(listMain.get(i).getsPONo());
+                    gb.setiProduct(listMain.get(i).getiProduct());
+                    gb.setiWarehouse(listMain.get(i).getiWarehouse());
+                    gb.setBarcode(listMain.get(i).getBarcode());
+                    gb.setfPOQty(listMain.get(i).getfPOQty());
+                    gb.setfQty(listMain.get(i).getfQty());
+                    gb.setUnit(listMain.get(i).getUnit());
+                    gb.setsRemarks(listMain.get(i).getsRemarks());
+                    gb.setfMinorDamageQty(listMain.get(i).getfMinorDamageQty());
+                    gb.setsMinorRemarks(listMain.get(i).getsMinorRemarks());
+                    gb.setsMinorAttachment(listMain.get(i).getsMinorAttachment());
+                    gb.setfDamagedQty(listMain.get(i).getfDamagedQty());
+                    gb.setsDamagedRemarks(listMain.get(i).getsDamagedRemarks());
+                    gb.setsDamagedAttachment(listMain.get(i).getsDamagedAttachment());
 
-                if(i+1==listMain.size()) {
-                    if (body_success_counter == listMain.size()) {
-                        try {
+                    if (helper.InsertGoodsReceiptBody(gb)) {
+                        body_success_counter++;
+                    } else Log.d("message", "failed to insert");
 
-                            if (!date.isEmpty() && !POs.isEmpty() && !supplier.isEmpty()) {
+                    if (i + 1 == listMain.size()) {
+                        if (body_success_counter == listMain.size()) {
+                            try {
 
-                                GoodReceiptHeader gh = new GoodReceiptHeader();
-                                gh.setDocNo(voucher);
-                                gh.setDocDate(date);
-                                gh.setsSupplier(supplier);
-                                gh.setsPONo(POs);
-                                gh.setsNarration(narration);
-                                if (helper.InsertGoodsReceiptHeader(gh)) {
-                                    Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
-                                    PublicData.clearData();
-                                    GoodsReceiptBodySingleton.getInstance().clearList();
-                                    GoodsReceiptPoSingleton.getInstance().clearList();
-                                    this.finish();
-                                }else {
-                                    Toast.makeText(this, "Failed to save!", Toast.LENGTH_SHORT).show();
-                                    helper.deleteGoodsBodyItem(voucher);
+                                if (!date.isEmpty() && !POs.isEmpty() && !supplier.isEmpty()) {
+
+                                    GoodReceiptHeader gh = new GoodReceiptHeader();
+                                    gh.setDocNo(voucher);
+                                    gh.setDocDate(date);
+                                    gh.setsSupplier(supplier);
+                                    gh.setsPONo(POs);
+                                    gh.setsNarration(narration);
+                                    if (helper.InsertGoodsReceiptHeader(gh)) {
+                                        Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+                                        PublicData.clearData();
+                                        GoodsReceiptBodySingleton.getInstance().clearList();
+                                        GoodsReceiptPoSingleton.getInstance().clearList();
+                                        this.finish();
+                                    } else {
+                                        Toast.makeText(this, "Failed to save!", Toast.LENGTH_SHORT).show();
+                                        helper.deleteGoodsBodyItem(voucher);
+                                    }
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
                     }
                 }
+
+            } else {
+                Log.d("body", "body is empty");
             }
-
-        }else {
-            Log.d("body","body is empty");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }catch (Exception e){
-        e.printStackTrace();
+
+    }else {
+        Toast.makeText(this, "Failed to save!", Toast.LENGTH_SHORT).show();
     }
-
-
 
 
 

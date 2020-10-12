@@ -50,6 +50,7 @@ import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.ScanDrawable;
 import com.sangsolutions.powerbear.Singleton.StockCountProductSingleton;
+import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -99,19 +100,19 @@ public class StockCountBodyFragment extends Fragment {
     }
 
 
-    public void SetUnit(String units,int position) {
+    public void SetUnit(String units, int position) {
         List<String> list;
         list = Arrays.asList(units.split("\\s*,\\s*"));
         UnitAdapter unitAdapter = new UnitAdapter(list, requireActivity());
         sp_unit.setAdapter(unitAdapter);
 
-        if(listProduct.size()>0){
-            if(position != -1)
-            for(int i = 0 ;i< list.size();i++){
-                if(list.get(i).equals(listProduct.get(position).getUnit())){
-                    sp_unit.setSelection(i);
+        if (listProduct.size() > 0) {
+            if (position != -1)
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).equals(listProduct.get(position).getUnit())) {
+                        sp_unit.setSelection(i);
+                    }
                 }
-            }
         }
     }
 
@@ -153,12 +154,34 @@ public class StockCountBodyFragment extends Fragment {
     }
 
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (cameraSource != null)
-            cameraSource.release();
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            if (frame_scan.getVisibility() == View.VISIBLE) {
+                if (cameraSource != null) {
+                    try {
+                        cameraSource.stop();
+                    } catch (NullPointerException e) {
+                        cameraSource = null;
+                    }
+                }
+                frame_scan.setVisibility(View.GONE);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(getActivity(), "Hello", Toast.LENGTH_SHORT).show();
+        StockCountProductSingleton.getInstance().clearList();
+        StockCountSingleton.getInstance().clearList();
     }
 
     private void initFab(View view) {
@@ -292,25 +315,29 @@ public class StockCountBodyFragment extends Fragment {
         barcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
 
-                if (frame_scan.getVisibility() == View.VISIBLE) {
-                    if (cameraSource != null) {
-                        try {
-                            cameraSource.stop();
-                        } catch (NullPointerException e) {
-                            cameraSource = null;
+                    if (frame_scan.getVisibility() == View.VISIBLE) {
+                        if (cameraSource != null) {
+                            try {
+                                cameraSource.stop();
+                            } catch (NullPointerException e) {
+                                cameraSource = null;
+                            }
+
                         }
-
-                    }
-                    frame_scan.setVisibility(View.GONE);
-                } else {
-                    frame_scan.setVisibility(View.VISIBLE);
-                    frame_scan.setForeground(new ScanDrawable(requireActivity(),15));
-                    if (!hasPermissions(getActivity(), PERMISSIONS)) {
-                        ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, 100);
+                        frame_scan.setVisibility(View.GONE);
                     } else {
-                        InitialiseDetectorsAndSources();
+                        frame_scan.setVisibility(View.VISIBLE);
+                        frame_scan.setForeground(new ScanDrawable(requireActivity(), 15));
+                        if (!hasPermissions(getActivity(), PERMISSIONS)) {
+                            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, 100);
+                        } else {
+                            InitialiseDetectorsAndSources();
+                        }
                     }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         });
@@ -463,20 +490,20 @@ if(!EditModeInner) {
         barcodeDetector = new BarcodeDetector.Builder(getActivity())
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
                 .build();
-        cameraSource = new CameraSource.Builder(Objects.requireNonNull(getActivity()), barcodeDetector)
+        cameraSource = new CameraSource.Builder(requireActivity(), barcodeDetector)
                 .setRequestedPreviewSize(1080, 1920)
                 .setAutoFocusEnabled(true)
                 .build();
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
-            public void surfaceCreated(SurfaceHolder holder) {
+            public void surfaceCreated(@NonNull SurfaceHolder holder) {
 
                 if (!barcodeDetector.isOperational()) {
                     Log.d("Detector", "Detector dependencies are not yet available.");
                 } else {
                     try {
                         if (cameraSource != null) {
-                            if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                            if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                                 return;
                             }
                             cameraSource.start(surfaceView.getHolder());
@@ -488,13 +515,13 @@ if(!EditModeInner) {
             }
 
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
 
             }
 
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                //barcodeDetector.release();
+            public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+              //  barcodeDetector.release();
             }
         });
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {

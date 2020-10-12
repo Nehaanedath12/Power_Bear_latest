@@ -200,12 +200,6 @@ public class StockCountWarehouse extends AppCompatActivity {
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        setUpViewPager(viewPager);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_count_warehouse);
@@ -237,6 +231,7 @@ public class StockCountWarehouse extends AppCompatActivity {
         }
         tabLayout = findViewById(R.id.tabLay);
         viewPager = findViewById(R.id.viewpager);
+        viewPager.setOffscreenPageLimit(2);
         tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF0000"));
         tabLayout.setTabTextColors(Color.parseColor("#e58989"), Color.parseColor("#ffffff"));
         tabLayout.setupWithViewPager(viewPager);
