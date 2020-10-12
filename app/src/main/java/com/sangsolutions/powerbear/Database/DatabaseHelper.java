@@ -406,7 +406,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor SearchProduct(String keyword) {
      this.db = getReadableDatabase();
-      Cursor cursor = db.rawQuery("select "+NAME+","+CODE+","+BARCODE+" from "+TABLE_PRODUCT+" where "+CODE+" like '"+keyword+"%' limit 10",null);
+      Cursor cursor = db.rawQuery("select "+NAME+","+CODE+","+BARCODE+" from "+TABLE_PRODUCT+"  where "+CODE+" like '"+keyword+"%' or "+NAME+" like '"+keyword+"%' limit 10",null);
 
         if (cursor.moveToFirst()) {
             return cursor;

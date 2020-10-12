@@ -225,10 +225,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 String pos =  cursor.getString(cursor.getColumnIndex("sPONo"));
                 if(!pos.isEmpty()){
                    String[] array =   pos.split(",");
-                   for(int i = 0 ; i<array.length;i++)
-                   {
-                       poList.add(array[i]);
-                   }
+                    poList.addAll(Arrays.asList(array));
                         GoodsReceiptPoSingleton.getInstance().setList(poList);
                         poListAdapter.notifyDataSetChanged();
                     Log.d("listPO", String.valueOf(GoodsReceiptPoSingleton.getInstance().getList()));
@@ -305,7 +302,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         supplierList = new ArrayList<>();
         poList = new ArrayList<>();
         poSelectList = new ArrayList<>();
-
+        goodsPoList = new ArrayList<>();
 
         supplierAdapter =new SupplierAdapter(supplierList,requireActivity());
         poListAdapter = new POListAdapter(poList,requireActivity());
@@ -320,6 +317,17 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         }catch (Exception e) {
         e.printStackTrace();
         }
+
+        if(bundle!=null)
+        {
+            DocNo = bundle.getString("DocNo");
+            EditMode = bundle.getBoolean("EditMode");
+            if(EditMode){
+                LoadBodyValues();
+                LoadValueForEditing();
+            }
+        }
+
 
         LoadSupplier();
 
@@ -355,15 +363,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         });
 
 
-        if(bundle!=null)
-        {
-            DocNo = bundle.getString("DocNo");
-            EditMode = bundle.getBoolean("EditMode");
-            if(EditMode){
-                LoadBodyValues();
-                LoadValueForEditing();
-            }
-        }
+
 
 
         poListAdapter.setOnClickListener(new POListAdapter.OnClickListener() {
