@@ -20,6 +20,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
+import com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory;
 import com.sangsolutions.powerbear.Adapter.ViewPager2AdapterGoodsReceipt.ViewPager2AdapterGoodsReceipt;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.GoodReceiptHeader;
@@ -27,6 +28,7 @@ import com.sangsolutions.powerbear.Fragment.GoodsReceiptBodyFragment;
 import com.sangsolutions.powerbear.Fragment.GoodsReceiptHeaderFragment;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
+import com.sangsolutions.powerbear.Singleton.GoodsReceiptHistorySingleton;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +43,7 @@ DatabaseHelper helper;
 
 boolean EditMode = false;
 String DocNo = "";
-
+int current_position = 0;
 
 private void Save(){
 String POs="",date = "",supplier="",narration="",voucher="";
@@ -164,10 +166,20 @@ public void Alert(String title, String message, final String type){
                              break;
                              }
                              if(listMain.size()==i+1) {
-                                 Save();
+                             Save();
                              }
                             }
                         }
+                    }else if(type.equals("new")){
+                        GoodsReceiptPoSingleton.getInstance().clearList();
+                        GoodsReceiptBodySingleton.getInstance().clearList();
+                        PublicData.voucher = "G-" + DateFormat.format("ddMMyy-HHmmss", new Date());
+                        SetViewPager(PublicData.voucher,false);
+                    }else if(type.equals("close")){
+                        GoodsReceiptPoSingleton.getInstance().clearList();
+                        GoodsReceiptBodySingleton.getInstance().clearList();
+                        PublicData.clearData();
+                        finish();
                     }
                 }
             })
@@ -181,9 +193,10 @@ public void Alert(String title, String message, final String type){
 }
 
 
-public void SetViewPager(){
+public void SetViewPager(String DocNo,boolean EditMode){
     List<Fragment> fragmentList = new ArrayList<>();
     Bundle bundle = new Bundle();
+    PublicData.voucher = DocNo;
     bundle.putString("DocNo",DocNo);
     bundle.putBoolean("EditMode",EditMode);
 
@@ -216,6 +229,7 @@ public void SetViewPager(){
     protected void onDestroy() {
         super.onDestroy();
         GoodsReceiptPoSingleton.getInstance().clearList();
+        GoodsReceiptBodySingleton.getInstance().clearList();
     }
 
     @Override
@@ -250,27 +264,41 @@ public void SetViewPager(){
             }
         }else {
             PublicData.voucher = "G-" + DateFormat.format("ddMMyy-HHmmss", new Date());
-
         }
 
         tabLayout = findViewById(R.id.tabLay);
         tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF0000"));
         tabLayout.setTabTextColors(Color.parseColor("#e58989"), Color.parseColor("#ffffff"));
-        SetViewPager();
+        SetViewPager(DocNo,EditMode);
         }
+
+   List<GoodsReceiptHistory> listHistory = GoodsReceiptHistorySingleton.getInstance().getList();
+
 
     @Override
     public void onClick(View v) {
 switch (v.getId()){
     case R.id.close:
-        finish();
+        Alert("Close!","Do you want to close before saving?","close");
         break;
     case R.id.delete:
         Alert("Delete!","Do you want to delete?","delete");
         break;
     case R.id.forward:
+        if (listHistory.size() > 1) {
+            if (current_position < listHistory.size()) {
+                SetViewPager(listHistory.get(current_position).getDocNo(),true);
+                current_position++;
+            }
+        }
         break;
     case R.id.backward:
+        if (listHistory.size() > 1) {
+            if (current_position > 0) {
+                current_position--;
+                SetViewPager(listHistory.get(current_position).getDocNo(),true);
+            }
+        }
         break;
     case R.id.save:
         Alert("Save!","Do you want to save the items?","save");

@@ -341,22 +341,26 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                 final Runnable r = new Runnable() {
                     public void run() {
-                        poListAdapter = new POListAdapter(goodsPoList,requireActivity());
-                        rv_pos.setAdapter(poListAdapter);
-                        LoadBodyValues();
-                        LoadValueForEditing();
+                        try {
+                            poListAdapter = new POListAdapter(goodsPoList, requireActivity());
+                            rv_pos.setAdapter(poListAdapter);
+                            LoadBodyValues();
+                            LoadValueForEditing();
 
-                        poListAdapter.setOnClickListener(new POListAdapter.OnClickListener() {
-                            @Override
-                            public void onRemoveItemClick(String po, int pos) {
-                                if(goodsPoList!=null && goodsPoList.size()>0){
-                                    goodsPoList.remove(pos);
-                                    poListAdapter.notifyDataSetChanged();
+                            poListAdapter.setOnClickListener(new POListAdapter.OnClickListener() {
+                                @Override
+                                public void onRemoveItemClick(String po, int pos) {
+                                    if (goodsPoList != null && goodsPoList.size() > 0) {
+                                        goodsPoList.remove(pos);
+                                        poListAdapter.notifyDataSetChanged();
+                                    }
+                                    GoodsReceiptPoSingleton.getInstance().setList(poList);
                                 }
-                                GoodsReceiptPoSingleton.getInstance().setList(poList);
-                            }
-                        });
+                            });
 
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 };
 

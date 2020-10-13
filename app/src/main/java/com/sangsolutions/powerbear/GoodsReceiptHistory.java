@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistoryAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.Singleton.GoodsReceiptHistorySingleton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
 
                 if (i + 1 == cursor.getCount()) {
                     rv.setAdapter(adapter);
+                    GoodsReceiptHistorySingleton.getInstance().setList(list);
                     cursor.close();
                 }
             }
