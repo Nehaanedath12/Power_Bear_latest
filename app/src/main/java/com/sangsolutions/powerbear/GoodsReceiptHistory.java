@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -74,12 +75,14 @@ public class GoodsReceiptHistory extends AppCompatActivity {
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                       /* if(helper.DeleteGoodsReceipt(goodsReceiptHistory.getHeaderId(),goodsReceiptHistory.getiVoucherNo())) {
-                            list.remove(pos);
-                            adapter.notifyDataSetChanged();
-                            setRecyclerView();
-                            Toast.makeText(GoodsReceiptHistory.this, "Deleted!", Toast.LENGTH_SHORT).show();
-                        }*/
+                 if(helper.deleteGoodsBodyItem(goodsReceiptHistory.getDocNo())) {
+                     if (helper.deleteGoodsHeaderItem(goodsReceiptHistory.getDocNo())) {
+                         list.remove(pos);
+                         adapter.notifyDataSetChanged();
+                         setRecyclerView();
+                         Toast.makeText(GoodsReceiptHistory.this, "Deleted!", Toast.LENGTH_SHORT).show();
+                        }
+                     }
                     }
                 }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
@@ -141,7 +144,7 @@ adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
 
     @Override
     public void onDeleteItemClick(com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory, int pos) {
-        //DeleteGoodsReceiptItemAlert(goodsReceiptHistory, pos);
+        DeleteGoodsReceiptItemAlert(goodsReceiptHistory, pos);
     }
 });
     }

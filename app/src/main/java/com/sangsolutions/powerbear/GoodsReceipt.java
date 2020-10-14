@@ -45,6 +45,8 @@ boolean EditMode = false;
 String DocNo = "";
 int current_position = 0;
 
+
+
 private void Save(){
 String POs="",date = "",supplier="",narration="",voucher="";
     List<String> listPO=GoodsReceiptPoSingleton.getInstance().getList();
@@ -148,7 +150,12 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
 }
 
 
-public void Alert(String title, String message, final String type){
+    @Override
+    public void onBackPressed() {
+        Alert("Close!","Do you want to close before saving?","close");
+    }
+
+    public void Alert(String title, String message, final String type){
     AlertDialog.Builder builder= new AlertDialog.Builder(this);
     builder.setTitle(title)
             .setMessage(message)
@@ -180,6 +187,17 @@ public void Alert(String title, String message, final String type){
                         GoodsReceiptBodySingleton.getInstance().clearList();
                         PublicData.clearData();
                         finish();
+                    }else if(type.equals("delete")){
+                        try {
+                        if(helper.deleteGoodsBodyItem(DocNo)) {
+                            if (helper.deleteGoodsHeaderItem(DocNo)) {
+                                Toast.makeText(GoodsReceipt.this, "Deleted!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        }
                     }
                 }
             })
@@ -261,9 +279,11 @@ public void SetViewPager(String DocNo,boolean EditMode){
                 DocNo = PublicData.voucher;
             }else {
                 PublicData.voucher = "G-" + DateFormat.format("ddMMyy-HHmmss", new Date());
+                DocNo = PublicData.voucher;
             }
         }else {
             PublicData.voucher = "G-" + DateFormat.format("ddMMyy-HHmmss", new Date());
+            DocNo = PublicData.voucher;
         }
 
         tabLayout = findViewById(R.id.tabLay);
@@ -282,6 +302,7 @@ switch (v.getId()){
         Alert("Close!","Do you want to close before saving?","close");
         break;
     case R.id.delete:
+        if(EditMode)
         Alert("Delete!","Do you want to delete?","delete");
         break;
     case R.id.forward:

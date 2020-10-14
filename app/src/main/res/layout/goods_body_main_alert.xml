@@ -241,6 +241,11 @@
             android:hint="Remarks"
             android:padding="10dp"
             />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:orientation="horizontal"
+            >
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -248,10 +253,15 @@
             android:id="@+id/minor_img"
             android:src="@drawable/ic_camera"
             android:layout_margin="10dp"
-            android:padding="10dp"
             android:textColor="@color/color_black"
             android:maxHeight="200dp"
             />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_minor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -291,7 +301,9 @@
             android:padding="10dp"
             android:textColor="@color/color_black"
             />
-
+    <LinearLayout android:layout_height="150dp"
+        android:layout_width="match_parent"
+        >
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -301,6 +313,11 @@
             android:layout_margin="10dp"
             android:maxHeight="200dp"
             />
+          <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_damaged"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
     </LinearLayout>
             </LinearLayout>
         </ScrollView>

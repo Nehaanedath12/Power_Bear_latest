@@ -878,6 +878,11 @@ public boolean DeleteStockCount(String voucherNo){
         return status != -1;
     }
 
+    public boolean deleteGoodsHeaderItem(String DocNo){
+        this.db = getWritableDatabase();
+        float status = db.delete(TABLE_GOODS_RECEIPT_HEADER,DOC_NO+" = ? ",new String[]{DocNo});
+        return status != -1;
+    }
 
     public Cursor GetGoodsPOProdcut(List<String> list){
         this.db = getReadableDatabase();

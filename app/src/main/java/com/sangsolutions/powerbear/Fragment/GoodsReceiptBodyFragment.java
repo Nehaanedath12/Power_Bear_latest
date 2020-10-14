@@ -7,11 +7,10 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,10 +32,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.sangsolutions.powerbear.Adapter.DamagedPhotoAdapter.DamagedPhotoAdapter;
 import com.sangsolutions.powerbear.Adapter.GoodsPOProductAdapter.GoodsPOProduct;
 import com.sangsolutions.powerbear.Adapter.GoodsPOProductAdapter.GoodsPOProductAdapter;
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBodyAdapter;
+import com.sangsolutions.powerbear.Adapter.MinorDamagedPhotoAdapter.MinorDamagedPhotoAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
@@ -44,8 +45,8 @@ import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
 import com.sangsolutions.powerbear.Tools;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -67,6 +68,14 @@ public class GoodsReceiptBodyFragment extends Fragment {
     GoodsPOProductAdapter goodsPOProductAdapter;
     List<GoodsPOProduct> listPOProducts;
 
+    //photo minor
+    List<String> listMinorImage;
+    MinorDamagedPhotoAdapter minorDamagedPhotoAdapter;
+
+    //photo damaged
+    List<String> listDamagedImage;
+    DamagedPhotoAdapter damagedPhotoAdapter;
+
     DatabaseHelper helper;
     AlertDialog mainAlertDialog;
     boolean selection_active = false;
@@ -77,7 +86,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
     TextView tv_doc_no,tv_product,tv_code,tv_unit,tv_po_qty;
     EditText et_regular_remarks,et_regular_qty,et_minor_remarks,et_minor_qty,et_damaged_remarks,et_damaged_qty;
     Spinner sp_warehouse;
-
+    RecyclerView rv_minor,rv_damaged;
     boolean EditMode = false;
     String DocNo = "";
 
@@ -101,6 +110,45 @@ public class GoodsReceiptBodyFragment extends Fragment {
         toggleSelection(position);
     }
     ///////////////////////////////////////////
+
+
+
+    //Image DeleteAlert
+    public void ImageDeleteAlert(final String type, final int pos){
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setTitle("Delete Image!")
+                .setMessage("Do you want to delete this image?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(type.equals("minor")){
+                            try {
+                             listMinorImage.remove(pos);
+                             minorDamagedPhotoAdapter.notifyDataSetChanged();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }else if(type.equals("damaged")){
+                            try {
+                                listDamagedImage.remove(pos);
+                                damagedPhotoAdapter.notifyDataSetChanged();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create().show();
+
+    }
+    ///////////////////////////////////////////////////////////
+
 
 
     //set's main recyclerView
@@ -312,23 +360,22 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     et_damaged_remarks.setText(listMain.get(pos).getsDamagedRemarks());
 
 
-                    if (!listMain.get(pos).getsMinorAttachment().equals("")){
-                    Bitmap minorBitmap = BitmapFactory.decodeFile(listMain.get(pos).getsMinorAttachment());
-                    if (minorBitmap != null) {
-                        img_minor.setImageBitmap(minorBitmap);
-                    }
+                    if (!listMain.get(pos).getsMinorAttachment().equals("")) {
+                        listMinorImage.addAll(Arrays.asList(listMain.get(pos).getsMinorAttachment().split(",")));
                     }else {
-                        img_minor.setImageResource(R.drawable.ic_camera);
+                        listMinorImage.clear();
                     }
+                    minorDamagedPhotoAdapter.notifyDataSetChanged();
+
 
                     if (!listMain.get(pos).getsDamagedAttachment().equals("")) {
-                        Bitmap damagedBitmap = BitmapFactory.decodeFile(listMain.get(pos).getsDamagedAttachment());
-                        if (damagedBitmap != null) {
-                            img_damaged.setImageBitmap(damagedBitmap);
-                        }
+                        listDamagedImage.addAll(Arrays.asList(listMain.get(pos).getsDamagedAttachment().split(",")));
                     }else {
-                        img_damaged.setImageResource(R.drawable.ic_camera);
+                        listDamagedImage.clear();
                     }
+                    damagedPhotoAdapter.notifyDataSetChanged();
+
+
                     if(list!=null)
                     if (!listMain.get(pos).getiWarehouse().isEmpty()) {
                         for (int i = 0; i < list.size(); i++) {
@@ -352,253 +399,258 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
     //Alert for main
     @SuppressLint("SetTextI18n")
     public void GoodsBodyMainAlert(final List<GoodsReceiptBody> listMain, final int pos){
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.goods_body_main_alert,null,false);
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.goods_body_main_alert,null,false);
 
-        img_close = view.findViewById(R.id.close_alert);
-        img_forward = view.findViewById(R.id.forward);
-        img_backward = view.findViewById(R.id.backward);
-        img_minor = view.findViewById(R.id.minor_img);
-        img_damaged = view.findViewById(R.id.damaged_img);
-        img_save = view.findViewById(R.id.add_save);
+            img_close = view.findViewById(R.id.close_alert);
+            img_forward = view.findViewById(R.id.forward);
+            img_backward = view.findViewById(R.id.backward);
+            img_minor = view.findViewById(R.id.minor_img);
+            img_damaged = view.findViewById(R.id.damaged_img);
+            img_save = view.findViewById(R.id.add_save);
 
 
-        tv_doc_no = view.findViewById(R.id.doc_no);
-        tv_product = view.findViewById(R.id.product);
-        tv_code = view.findViewById(R.id.code);
-        tv_unit = view.findViewById(R.id.unit);
-        tv_po_qty = view.findViewById(R.id.po_qty);
+            tv_doc_no = view.findViewById(R.id.doc_no);
+            tv_product = view.findViewById(R.id.product);
+            tv_code = view.findViewById(R.id.code);
+            tv_unit = view.findViewById(R.id.unit);
+            tv_po_qty = view.findViewById(R.id.po_qty);
 
-        et_regular_remarks = view.findViewById(R.id.regular_remarks);
-        et_regular_qty = view.findViewById(R.id.regular_qty);
+            et_regular_remarks = view.findViewById(R.id.regular_remarks);
+            et_regular_qty = view.findViewById(R.id.regular_qty);
 
-        et_minor_remarks = view.findViewById(R.id.minor_remarks);
-        et_minor_qty = view.findViewById(R.id.minor_qty);
+            et_minor_remarks = view.findViewById(R.id.minor_remarks);
+            et_minor_qty = view.findViewById(R.id.minor_qty);
 
-        et_damaged_remarks = view.findViewById(R.id.damaged_remarks);
-        et_damaged_qty = view.findViewById(R.id.damaged_qty);
+            et_damaged_remarks = view.findViewById(R.id.damaged_remarks);
+            et_damaged_qty = view.findViewById(R.id.damaged_qty);
 
-         sp_warehouse = view.findViewById(R.id.warehouse);
+             sp_warehouse = view.findViewById(R.id.warehouse);
 
-        AlertDialog.Builder builder= new AlertDialog.Builder(requireActivity() ,android.R.style.Theme_Light_NoTitleBar_Fullscreen);
-        builder.setView(view);
-        builder.setCancelable(false);
 
-          mainAlertDialog = builder.create();
-          mainAlertDialog.show();
 
-          final List<Warehouse> list = new ArrayList<>();
-          final WarehouseAdapter warehouseAdapter = new WarehouseAdapter(list);
-          sp_warehouse.setAdapter(warehouseAdapter);
+            rv_minor = view.findViewById(R.id.rv_minor);
+            rv_damaged = view.findViewById(R.id.rv_damaged);
 
-        //set warehouse
-        try {
-            Cursor cursor = helper.GetWarehouse();
-            if (cursor != null && cursor.moveToFirst())
-                for (int i = 0; i < cursor.getCount(); i++) {
-                    if (!cursor.getString(cursor.getColumnIndex("Name")).equals(" ")
-                            || !cursor.getString(cursor.getColumnIndex("Name")).equals(" ")) {
-                        list.add(new Warehouse(
-                                cursor.getString(cursor.getColumnIndex("MasterId")),
-                                cursor.getString(cursor.getColumnIndex("Name"))
-                        ));
+            rv_minor.setLayoutManager(new LinearLayoutManager(requireActivity(),RecyclerView.HORIZONTAL,false));
+            rv_minor.setAdapter(minorDamagedPhotoAdapter);
+
+            rv_damaged.setLayoutManager(new LinearLayoutManager(requireActivity(),RecyclerView.HORIZONTAL,false));
+             rv_damaged.setAdapter(damagedPhotoAdapter);
+
+            AlertDialog.Builder builder= new AlertDialog.Builder(requireActivity() ,android.R.style.Theme_Light_NoTitleBar_Fullscreen);
+            builder.setView(view);
+            builder.setCancelable(false);
+
+              mainAlertDialog = builder.create();
+              mainAlertDialog.show();
+
+              final List<Warehouse> list = new ArrayList<>();
+              final WarehouseAdapter warehouseAdapter = new WarehouseAdapter(list);
+              sp_warehouse.setAdapter(warehouseAdapter);
+
+            //set warehouse
+            try {
+                Cursor cursor = helper.GetWarehouse();
+                if (cursor != null && cursor.moveToFirst())
+                    for (int i = 0; i < cursor.getCount(); i++) {
+                        if (!cursor.getString(cursor.getColumnIndex("Name")).equals(" ")
+                                || !cursor.getString(cursor.getColumnIndex("Name")).equals(" ")) {
+                            list.add(new Warehouse(
+                                    cursor.getString(cursor.getColumnIndex("MasterId")),
+                                    cursor.getString(cursor.getColumnIndex("Name"))
+                            ));
+                        }
+                        cursor.moveToNext();
+                        if (cursor.getCount() == i + 1) {
+                            warehouseAdapter.notifyDataSetChanged();
+                        }
                     }
-                    cursor.moveToNext();
-                    if (cursor.getCount() == i + 1) {
-                        warehouseAdapter.notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+              LoadDataToMainAlert(pos,list);
+
+
+            img_forward.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listMain.size() > 1) {
+                        if (current_position < listMain.size()) {
+                            LoadDataToMainAlert(current_position,list);
+                            current_position++;
+                        }
                     }
                 }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            });
 
-          LoadDataToMainAlert(pos,list);
-
-
-        img_forward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listMain.size() > 1) {
-                    if (current_position < listMain.size()) {
-                        LoadDataToMainAlert(current_position,list);
-                        current_position++;
+            img_backward.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listMain.size() > 1) {
+                        if (current_position > 0) {
+                            current_position--;
+                            LoadDataToMainAlert(current_position,list);
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        img_backward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listMain.size() > 1) {
-                    if (current_position > 0) {
-                        current_position--;
-                        LoadDataToMainAlert(current_position,list);
-                    }
+            img_minor.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CameraAlert("minor");
                 }
-            }
-        });
+            });
 
-        img_minor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CameraAlert("minor");
-            }
-        });
+            img_damaged.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CameraAlert("damaged");
+                }
+            });
 
-        img_damaged.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CameraAlert("damaged");
-            }
-        });
+            img_close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    GeneralAlert("Do you want to close?","Close!","close",0);
+                }
+            });
 
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GeneralAlert("Do you want to close?","Close!","close",0);
-            }
-        });
+            img_save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        if (et_regular_qty.getText().toString().isEmpty()) {
+                            et_regular_qty.setError("Enter regular qty!");
+                            Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
 
-        img_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    if (et_regular_qty.getText().toString().isEmpty()) {
-                        et_regular_qty.setError("Enter regular qty!");
-                        Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
+                                return;
+                        }
 
-                            return;
-                    }
-
-                    boolean condition;
-                    if(!EditMode){
-                         condition =  Integer.parseInt(et_regular_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
-                    }else {
-                         condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <  Integer.parseInt(et_regular_qty.getText().toString().trim());
-                    }
+                        boolean condition;
+                        if(!EditMode){
+                             condition =  Integer.parseInt(et_regular_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                        }else {
+                             condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <  Integer.parseInt(et_regular_qty.getText().toString().trim());
+                        }
 
 
 
-                    if (condition) {
-                        et_regular_qty.setError("Quantity can't higher then PO Qty");
-                        Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
+                        if (condition) {
+                            et_regular_qty.setError("Quantity can't higher then PO Qty");
+                            Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
 
-                    } else {
+                        } else {
 
-                        if(!et_minor_qty.getText().toString().trim().isEmpty()){
-                            if(!et_minor_qty.getText().toString().trim().isEmpty()
-                              &&
-                              !et_damaged_qty.getText().toString().trim().isEmpty()) {
+                            if(!et_minor_qty.getText().toString().trim().isEmpty()){
+                                if(!et_minor_qty.getText().toString().trim().isEmpty()
+                                  &&
+                                  !et_damaged_qty.getText().toString().trim().isEmpty()) {
 
-                                if (Integer.parseInt(et_minor_qty.getText().toString().trim()) + Integer.parseInt(et_damaged_qty.getText().toString().trim())
-                                        >
-                                        Integer.parseInt(et_regular_qty.getText().toString().trim())) {
-                                    Toast.makeText(getActivity(), "Quantity can't higher then PO Qty", Toast.LENGTH_SHORT).show();
-                                    return;
+                                    if (Integer.parseInt(et_minor_qty.getText().toString().trim()) + Integer.parseInt(et_damaged_qty.getText().toString().trim())
+                                            >
+                                            Integer.parseInt(et_regular_qty.getText().toString().trim())) {
+                                        Toast.makeText(getActivity(), "Quantity can't higher then PO Qty", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }else if(!et_minor_qty.getText().toString().trim().isEmpty()
+                                        &&
+                                        et_damaged_qty.getText().toString().trim().isEmpty()){
+                                    if (Integer.parseInt(et_minor_qty.getText().toString().trim()) > Integer.parseInt(et_regular_qty.getText().toString().trim())) {
+                                        et_minor_qty.setError("Quantity can't higher then PO Qty");
+                                        Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
                                 }
-                            }else if(!et_minor_qty.getText().toString().trim().isEmpty()
-                                    &&
-                                    et_damaged_qty.getText().toString().trim().isEmpty()){
-                                if (Integer.parseInt(et_minor_qty.getText().toString().trim()) > Integer.parseInt(et_regular_qty.getText().toString().trim())) {
-                                    et_minor_qty.setError("Quantity can't higher then PO Qty");
-                                    Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
                             }
-                        }
 
 
-                        if(!et_damaged_qty.getText().toString().trim().isEmpty()){
-                            if(!et_minor_qty.getText().toString().trim().isEmpty()
-                                    &&
-                                    !et_damaged_qty.getText().toString().trim().isEmpty()) {
-                                if (Integer.parseInt(et_minor_qty.getText().toString().trim()) + Integer.parseInt(et_damaged_qty.getText().toString().trim())
-                                        >
-                                        Integer.parseInt(et_regular_qty.getText().toString().trim())) {
-                                    Toast.makeText(getActivity(), "Quantity can't higher then PO Qty", Toast.LENGTH_SHORT).show();
-                                    return;
+                            if(!et_damaged_qty.getText().toString().trim().isEmpty()){
+                                if(!et_minor_qty.getText().toString().trim().isEmpty()
+                                        &&
+                                        !et_damaged_qty.getText().toString().trim().isEmpty()) {
+                                    if (Integer.parseInt(et_minor_qty.getText().toString().trim()) + Integer.parseInt(et_damaged_qty.getText().toString().trim())
+                                            >
+                                            Integer.parseInt(et_regular_qty.getText().toString().trim())) {
+                                        Toast.makeText(getActivity(), "Quantity can't higher then PO Qty", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }else if(!et_damaged_qty.getText().toString().trim().isEmpty()
+                                        &&
+                                        et_minor_qty.getText().toString().trim().isEmpty()){
+                                    if (Integer.parseInt(et_damaged_qty.getText().toString().trim()) > Integer.parseInt(et_regular_qty.getText().toString().trim())) {
+                                        et_damaged_qty.setError("Quantity can't higher then PO Qty");
+                                        Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
                                 }
-                            }else if(!et_damaged_qty.getText().toString().trim().isEmpty()
-                                    &&
-                                    et_minor_qty.getText().toString().trim().isEmpty()){
-                                if (Integer.parseInt(et_damaged_qty.getText().toString().trim()) > Integer.parseInt(et_regular_qty.getText().toString().trim())) {
-                                    et_damaged_qty.setError("Quantity can't higher then PO Qty");
-                                    Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
                             }
-                        }
 
-                        String minorImage,damagedImage;
-                        if(listMain.get(pos).getsMinorAttachment()==null||listMain.get(pos).getsMinorAttachment().isEmpty()){
-                            minorImage = PublicData.image_minor;
-                        }else if(listMain.get(pos).getsMinorAttachment()!=null&&!listMain.get(pos).getsMinorAttachment().isEmpty()&&!PublicData.image_minor.isEmpty()){
-                            minorImage = PublicData.image_minor;
-                        }else{
-                            minorImage = listMain.get(pos).getsMinorAttachment();
-                        }
+                            String minorImage,damagedImage;
 
-                        if(listMain.get(pos).getsDamagedAttachment()==null||listMain.get(pos).getsDamagedAttachment().isEmpty()){
-                            damagedImage = PublicData.image_damaged;
-                        }else if(listMain.get(pos).getsDamagedAttachment()!=null&&!listMain.get(pos).getsDamagedAttachment().isEmpty()&&!PublicData.image_damaged.isEmpty()){
-                            damagedImage = PublicData.image_damaged;
-                        }else{
-                            damagedImage = listMain.get(pos).getsDamagedAttachment();
-                        }
+                            minorImage = TextUtils.join(",",listMinorImage);
 
-                        listMain.set(pos, new GoodsReceiptBody(
-                                listMain.get(pos).getsPONo(),
-                                listMain.get(pos).getName(),
-                                listMain.get(pos).getCode(),
-                                listMain.get(pos).getiProduct(),
-                                list.get(sp_warehouse.getSelectedItemPosition()).getName(),
-                                list.get(sp_warehouse.getSelectedItemPosition()).getMasterId(),
-                                helper.GetBarcodeFromIProduct(listMain.get(pos).getiProduct()),
-                                listMain.get(pos).getfPOQty(),
-                                et_regular_qty.getText().toString().trim(),
-                                listMain.get(pos).getTempQty(),
-                                listMain.get(pos).getUnit(),
-                                et_regular_remarks.getText().toString().trim(),
-                                et_minor_qty.getText().toString().trim(),
-                                et_minor_remarks.getText().toString().trim(),
-                                minorImage,
-                                et_damaged_qty.getText().toString().trim(),
-                                et_damaged_remarks.getText().toString().trim(),
-                                damagedImage
-                        ));
-                        GoodsReceiptBodySingleton.getInstance().setList(listMain);
-                        goodsReceiptBodyAdapter.notifyDataSetChanged();
-                        PublicData.clearDataIgnoreHeader();
-                        Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
-                        current_position=0;
-                        mainAlertDialog.dismiss();
+                            damagedImage = TextUtils.join(",",listDamagedImage);
+
+
+                            listMain.set(pos, new GoodsReceiptBody(
+                                    listMain.get(pos).getsPONo(),
+                                    listMain.get(pos).getName(),
+                                    listMain.get(pos).getCode(),
+                                    listMain.get(pos).getiProduct(),
+                                    list.get(sp_warehouse.getSelectedItemPosition()).getName(),
+                                    list.get(sp_warehouse.getSelectedItemPosition()).getMasterId(),
+                                    helper.GetBarcodeFromIProduct(listMain.get(pos).getiProduct()),
+                                    listMain.get(pos).getfPOQty(),
+                                    et_regular_qty.getText().toString().trim(),
+                                    listMain.get(pos).getTempQty(),
+                                    listMain.get(pos).getUnit(),
+                                    et_regular_remarks.getText().toString().trim(),
+                                    et_minor_qty.getText().toString().trim(),
+                                    et_minor_remarks.getText().toString().trim(),
+                                    minorImage,
+                                    et_damaged_qty.getText().toString().trim(),
+                                    et_damaged_remarks.getText().toString().trim(),
+                                    damagedImage
+                            ));
+                            GoodsReceiptBodySingleton.getInstance().setList(listMain);
+                            goodsReceiptBodyAdapter.notifyDataSetChanged();
+                            PublicData.clearDataIgnoreHeader();
+                            Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
+                            current_position=0;
+                            mainAlertDialog.dismiss();
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
-                }catch (Exception e){
-                    e.printStackTrace();
                 }
+            });
+
+            minorDamagedPhotoAdapter.setOnClickListener(new MinorDamagedPhotoAdapter.OnClickListener() {
+                @Override
+                public void OnDeleteListener(String photo, int position) {
+                    ImageDeleteAlert("minor", position);
+                }
+            });
+
+
+        damagedPhotoAdapter.setOnClickListener(new DamagedPhotoAdapter.OnClickListener() {
+            @Override
+            public void OnDeleteListener(String photo, int position) {
+                ImageDeleteAlert("damaged", position);
             }
         });
+
+
 
     }
    //////////////////////////////////////////
 
     public void DeleteItem(int pos) {
         try {
-            if (listMain != null && !listMain.get(pos).getsDamagedAttachment().isEmpty()) {
-                File file = new File(listMain.get(pos).getsDamagedAttachment());
-                if (file.exists()) {
-                    file.delete();
-                }
-            }
-            if (listMain != null && !listMain.get(pos).getsMinorAttachment().isEmpty()) {
-                File file = new File(listMain.get(pos).getsMinorAttachment());
-                if (file.exists()) {
-                    file.delete();
-                }
-            }
-
             if (listMain != null) {
                 listMain.remove(pos);
             }
@@ -680,10 +732,10 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         photoResult.toBitmap().whenAvailable(new Function1<BitmapPhoto, Unit>() {
                             @Override
                             public Unit invoke(BitmapPhoto bitmapPhoto) {
-                                PublicData.image_minor = Tools.savePhoto(requireActivity(), photoResult);
+                                listMinorImage.add(Tools.savePhoto(requireActivity(), photoResult));
                                 CameraAlertDialog.dismiss();
                                 Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
-                                img_minor.setImageBitmap(bitmapPhoto.bitmap);
+                                minorDamagedPhotoAdapter.notifyDataSetChanged();
                                 return Unit.INSTANCE;
                             }
                         });
@@ -695,10 +747,10 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     photoResult.toBitmap().whenAvailable(new Function1<BitmapPhoto, Unit>() {
                         @Override
                         public Unit invoke(BitmapPhoto bitmapPhoto) {
-                            PublicData.image_damaged = Tools.savePhoto(requireActivity(), photoResult);
+                            listDamagedImage.add(Tools.savePhoto(requireActivity(), photoResult));
                             CameraAlertDialog.dismiss();
                             Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
-                            img_damaged.setImageBitmap(bitmapPhoto.bitmap);
+                            damagedPhotoAdapter.notifyDataSetChanged();
                             return Unit.INSTANCE;
                         }
                     });
@@ -773,6 +825,11 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
        goodsReceiptBodyAdapter = new GoodsReceiptBodyAdapter(requireActivity(), listMain);
        goodsPOProductAdapter = new GoodsPOProductAdapter(listPOProducts,requireActivity());
+       listMinorImage = new ArrayList<>();
+       listDamagedImage = new ArrayList<>();
+
+       minorDamagedPhotoAdapter = new MinorDamagedPhotoAdapter(getActivity(),listMinorImage);
+       damagedPhotoAdapter = new DamagedPhotoAdapter(getActivity(),listDamagedImage);
 
        helper = new DatabaseHelper(requireActivity());
 
@@ -850,6 +907,8 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
         @Override
         public int getCount() {
             return list.size();
+
+
         }
 
         @Override
@@ -866,7 +925,11 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = LayoutInflater.from(requireActivity()).inflate(R.layout.warehouse_item,parent,false);
             TextView warehouse = view.findViewById(R.id.warehouse);
-            warehouse.setText(list.get(position).Name);
+            try {
+                warehouse.setText(list.get(position).getName());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             return view;
         }
     }

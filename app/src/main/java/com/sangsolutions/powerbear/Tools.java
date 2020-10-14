@@ -3,6 +3,7 @@ package com.sangsolutions.powerbear;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
@@ -10,6 +11,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.util.TypedValue;
 import android.widget.Toast;
 
 import java.io.File;
@@ -115,4 +117,21 @@ SharedPreferences.Editor editor;
             photoResult.saveToFile(file);
         return file.getAbsolutePath();
     }
+
+    public int GetPixels(int dp,Context context){
+        float px = dp;
+        try {
+            Resources r = context.getResources();
+             px = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    dp,
+                    r.getDisplayMetrics()
+            );
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+      return (int)px;
+    }
+
+
 }
