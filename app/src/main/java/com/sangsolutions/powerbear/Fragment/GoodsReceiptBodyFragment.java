@@ -359,7 +359,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     et_minor_remarks.setText(listMain.get(pos).getsMinorRemarks());
                     et_damaged_remarks.setText(listMain.get(pos).getsDamagedRemarks());
 
-
+                        listMinorImage.clear();
                     if (!listMain.get(pos).getsMinorAttachment().equals("")) {
                         listMinorImage.addAll(Arrays.asList(listMain.get(pos).getsMinorAttachment().split(",")));
                     }else {
@@ -367,7 +367,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     }
                     minorDamagedPhotoAdapter.notifyDataSetChanged();
 
-
+                        listDamagedImage.clear();
                     if (!listMain.get(pos).getsDamagedAttachment().equals("")) {
                         listDamagedImage.addAll(Arrays.asList(listMain.get(pos).getsDamagedAttachment().split(",")));
                     }else {
@@ -643,9 +643,6 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                 ImageDeleteAlert("damaged", position);
             }
         });
-
-
-
     }
    //////////////////////////////////////////
 
@@ -673,6 +670,8 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                             if (mainAlertDialog.isShowing()){
                                 mainAlertDialog.dismiss();
                                 current_position = 0;
+                                listDamagedImage.clear();
+                                listMinorImage.clear();
                             }
                         }else if(type.equals("delete_item")){
                             DeleteItem(pos);
