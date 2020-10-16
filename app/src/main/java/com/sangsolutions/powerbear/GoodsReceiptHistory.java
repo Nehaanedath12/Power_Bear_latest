@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -12,9 +13,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistoryAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptHistorySingleton;
@@ -26,17 +29,93 @@ public class GoodsReceiptHistory extends AppCompatActivity {
     ImageView add_new;
     RecyclerView rv;
     FrameLayout empty_frame;
-    TextView date;
+    TextView date,title_selection;
     GoodsReceiptHistoryAdapter adapter;
     DatabaseHelper helper;
     ImageView img_home;
-
+    ImageView close,delete;
+    AppBarLayout appbar;
+    Toolbar toolbar;
     List<com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory> list;
 
     @Override
     protected void onResume() {
         super.onResume();
         setRecyclerView();
+    }
+
+    public void DeleteItems(){
+        List<Integer> listSelectedItem = adapter.getSelectedItems();
+        for(int i = 0 ; i<listSelectedItem.size();i++) {
+            for(int j = 0 ;j<list.size();j++) {
+                if(listSelectedItem.get(i)==j)
+                    if (helper.deleteGoodsBodyItem(list.get(j).getDocNo())) {
+                        helper.deleteGoodsHeaderItem(list.get(j).getDocNo());
+                        Log.d("StockCount", "deleted!");
+                    }
+            }
+            if(i+1 == listSelectedItem.size()){
+                setRecyclerView();
+                closeSelection();
+            }
+        }
+
+    }
+
+
+    public void deleteAlert(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete!")
+                .setMessage("Do you want to delete "+adapter.getSelectedItemCount()+" items?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        DeleteItems();
+                    }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).create()
+                .show();
+    }
+
+
+    private void initToolbar() {
+        appbar = findViewById(R.id.appbar);
+        close = findViewById(R.id.close);
+        delete = findViewById(R.id.delete);
+        toolbar = findViewById(R.id.toolbar);
+        title_selection = findViewById(R.id.title_selection);
+        setSupportActionBar(toolbar);
+        close.setVisibility(View.INVISIBLE);
+        delete.setVisibility(View.INVISIBLE);
+        appbar.setVisibility(View.GONE);
+    }
+
+
+    public void closeSelection(){
+        adapter.clearSelections();
+        appbar.setVisibility(View.GONE);
+    }
+
+    private void toggleSelection(int position) {
+        appbar.setVisibility(View.VISIBLE);
+        adapter.toggleSelection(position);
+        int count = adapter.getSelectedItemCount();
+        if(count==0){
+            closeSelection();
+        }
+        title_selection.setText("Selected "+count+" item's");
+        close.setVisibility(View.VISIBLE);
+        delete.setVisibility(View.VISIBLE);
+    }
+
+    private void enableActionMode(int position) {
+        toggleSelection(position);
     }
 
     public void setRecyclerView(){
@@ -103,6 +182,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
         img_home = findViewById(R.id.home);
         helper = new DatabaseHelper(this);
 
+        initToolbar();
 
         img_home.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,6 +226,24 @@ adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
     public void onDeleteItemClick(com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory, int pos) {
         DeleteGoodsReceiptItemAlert(goodsReceiptHistory, pos);
     }
+
+    @Override
+    public void onItemClick(com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory, int pos) {
+        enableActionMode(pos);
+    }
+
+    @Override
+    public void onItemLongClick(int pos) {
+        enableActionMode(pos);
+    }
 });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAlert();
+            }
+        });
+
     }
 }

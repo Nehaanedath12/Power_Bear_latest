@@ -45,6 +45,7 @@ import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
 import com.sangsolutions.powerbear.Tools;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -634,6 +635,11 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                 public void OnDeleteListener(String photo, int position) {
                     ImageDeleteAlert("minor", position);
                 }
+
+                @Override
+                public void OnImageClickListener(ImageView view, List<String> photo, int potions) {
+                    }
+
             });
 
 

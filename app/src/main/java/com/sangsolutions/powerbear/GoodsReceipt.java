@@ -52,6 +52,14 @@ String POs="",date = "",supplier="",narration="",voucher="";
     List<String> listPO=GoodsReceiptPoSingleton.getInstance().getList();
     List<GoodsReceiptBody> listMain = GoodsReceiptBodySingleton.getInstance().getList();
 
+    for(int i = 0 ;i<listMain.size();i++){
+        if(!listPO.contains(listMain.get(i).getsPONo())){
+            Toast.makeText(this, "PO numbers don't match! check header an body.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
+
+
 if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
 
 

@@ -21,8 +21,8 @@ import java.util.List;
 public class MinorDamagedPhotoAdapter extends RecyclerView.Adapter<MinorDamagedPhotoAdapter.ViewHolder> {
 
     OnClickListener listener;
-    private Context context;
-    private List<String> list;
+    private final Context context;
+    private final List<String> list;
 
     public MinorDamagedPhotoAdapter(Context context, List<String> list) {
         this.context = context;
@@ -41,7 +41,8 @@ public class MinorDamagedPhotoAdapter extends RecyclerView.Adapter<MinorDamagedP
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        final String photo = list.get(position);
         Bitmap bm = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(list.get(position)), new Tools().GetPixels(100,context), new Tools().GetPixels(150,context));
         holder.photo.setImageBitmap(bm);
         holder.delete.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +52,12 @@ public class MinorDamagedPhotoAdapter extends RecyclerView.Adapter<MinorDamagedP
             }
         });
 
-
+        holder.photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.OnImageClickListener(holder.photo,list,position);
+            }
+        });
     }
 
     @Override
@@ -61,6 +67,7 @@ public class MinorDamagedPhotoAdapter extends RecyclerView.Adapter<MinorDamagedP
 
     public interface OnClickListener {
         void OnDeleteListener(String photo, int potions);
+        void OnImageClickListener(ImageView view,List<String> photo, int potions);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
