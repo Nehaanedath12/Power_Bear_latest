@@ -85,7 +85,7 @@ public class StockCountBodyFragment extends Fragment {
     private FrameLayout frame_scan;
     int current_position = 0;
     private Spinner sp_unit;
-    Animation move_down_anim, move_up_anim;//clock_wise_rotate_anim,//anti_clock_wise_rotate_anim;
+    Animation move_down_anim, move_up_anim;
     private boolean selection_active = false;
 
     private static boolean hasPermissions(Context context, String... permissions) {
@@ -705,7 +705,10 @@ if(!EditModeInner) {
 
             @Override
             public void onItemDeleteClickListener(int pos) {
+
+                if(!selection_active){
                 DeleteStockCountItemAlert(pos);
+                }
             }
 
             @Override

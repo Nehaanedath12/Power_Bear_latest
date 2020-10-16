@@ -10,11 +10,14 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,6 +46,7 @@ import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
+import com.sangsolutions.powerbear.Singleton.StockCountProductSingleton;
 import com.sangsolutions.powerbear.Tools;
 
 
@@ -59,59 +63,161 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
 public class GoodsReceiptBodyFragment extends Fragment {
-    FloatingActionButton add_fab;
-    RecyclerView rv_products;
+
+    private FloatingActionButton add_fab, fab_delete, fab_close_all;
+    private  RecyclerView rv_products;
     // to load main recyclerView
-    GoodsReceiptBodyAdapter goodsReceiptBodyAdapter;
-    List<GoodsReceiptBody> listMain;
+    private  GoodsReceiptBodyAdapter goodsReceiptBodyAdapter;
+    private List<GoodsReceiptBody> listMain;
 
     //To load Alert With product recyclerView
-    GoodsPOProductAdapter goodsPOProductAdapter;
-    List<GoodsPOProduct> listPOProducts;
+    private GoodsPOProductAdapter goodsPOProductAdapter;
+    private  List<GoodsPOProduct> listPOProducts;
 
     //photo minor
-    List<String> listMinorImage;
-    MinorDamagedPhotoAdapter minorDamagedPhotoAdapter;
+    private List<String> listMinorImage;
+    private MinorDamagedPhotoAdapter minorDamagedPhotoAdapter;
 
     //photo damaged
-    List<String> listDamagedImage;
-    DamagedPhotoAdapter damagedPhotoAdapter;
+    private List<String> listDamagedImage;
+    private DamagedPhotoAdapter damagedPhotoAdapter;
 
-    DatabaseHelper helper;
-    AlertDialog mainAlertDialog;
-    boolean selection_active = false;
+    private DatabaseHelper helper;
+    private AlertDialog mainAlertDialog;
+    boolean selection_active = false,selection_active_main = false;
 
-    AlertDialog CameraAlertDialog;
+    private AlertDialog CameraAlertDialog;
 
     ImageView img_minor,img_damaged,img_close,img_forward,img_backward,img_save;
-    TextView tv_doc_no,tv_product,tv_code,tv_unit,tv_po_qty;
-    EditText et_regular_remarks,et_regular_qty,et_minor_remarks,et_minor_qty,et_damaged_remarks,et_damaged_qty;
-    Spinner sp_warehouse;
+    private TextView tv_doc_no,tv_product,tv_code,tv_unit,tv_po_qty;
+    private EditText et_regular_remarks,et_regular_qty,et_minor_remarks,et_minor_qty,et_damaged_remarks,et_damaged_qty;
+    private Spinner sp_warehouse;
     RecyclerView rv_minor,rv_damaged;
     boolean EditMode = false;
     String DocNo = "";
 
     int current_position = 0;
+
+    Animation move_down_anim, move_up_anim;
+
     String[] PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
     // methods for selecting product from DocNo
-    public void closeSelection(){
+    public void closeProductSelection(){
         goodsPOProductAdapter.clearSelections();
         selection_active = false;
     }
-    private void toggleSelection(int position) {
+    private void toggleProductSelection(int position) {
         goodsPOProductAdapter.toggleSelection(position);
         int count = goodsPOProductAdapter.getSelectedItemCount();
         if(count==0){
-            closeSelection();
+            closeProductSelection();
         }
     }
-    private void enableActionMode(int position) {
-        toggleSelection(position);
+    private void enableProductActionMode(int position) {
+        toggleProductSelection(position);
     }
     ///////////////////////////////////////////
 
+
+    // methods for selecting main list item
+    public void closeMainSelection(){
+        goodsReceiptBodyAdapter.clearSelections();
+        add_fab.setVisibility(View.VISIBLE);
+        add_fab.startAnimation(move_up_anim);
+
+
+        fab_delete.startAnimation(move_down_anim);
+        fab_close_all.startAnimation(move_down_anim);
+
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fab_delete.setVisibility(View.GONE);
+                fab_close_all.setVisibility(View.GONE);
+            }
+        }, 300);
+        selection_active_main = false;
+    }
+    private void toggleMainSelection(int position) {
+        goodsReceiptBodyAdapter.toggleSelection(position);
+        int count = goodsReceiptBodyAdapter.getSelectedItemCount();
+        if(count==0){
+            closeMainSelection();
+        }
+
+        if (count == 1 && fab_delete.getVisibility() != View.VISIBLE) {
+
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    add_fab.startAnimation(move_down_anim);
+                    add_fab.setVisibility(View.GONE);
+
+                    fab_delete.startAnimation(move_up_anim);
+                    fab_close_all.startAnimation(move_up_anim);
+                    fab_delete.setVisibility(View.VISIBLE);
+                    fab_close_all.setVisibility(View.VISIBLE);
+                }
+            }, 300);
+        }
+    }
+    private void enableMainActionMode(int position) {
+        toggleMainSelection(position);
+    }
+    private void initFab(View view) {
+        move_down_anim = AnimationUtils.loadAnimation(requireActivity(), R.anim.move_down);
+        move_up_anim = AnimationUtils.loadAnimation(requireActivity(), R.anim.move_up);
+        fab_delete = view.findViewById(R.id.fab_delete);
+        fab_close_all = view.findViewById(R.id.fab_close_all);
+        fab_delete.setVisibility(View.GONE);
+        fab_close_all.setVisibility(View.GONE);
+        add_fab.setVisibility(View.VISIBLE);
+    }
+    ///////////////////////////////////////////
+
+
+
+    public void deleteAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setTitle("Delete!")
+                .setMessage("Do you want to delete " + goodsReceiptBodyAdapter.getSelectedItemCount() + " items?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        DeleteItems();
+                    }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).create()
+                .show();
+    }
+
+    private void DeleteItems() {
+        List<Integer> listSelectedItem = goodsReceiptBodyAdapter.getSelectedItems();
+
+        for (int i = listSelectedItem.size() - 1; i >= 0; i--) {
+            for (int j = listMain.size() - 1; j >= 0; j--) {
+                if (listSelectedItem.get(i) == j)
+                    listMain.remove(j);
+            }
+            if (i + 1 == listSelectedItem.size()) {
+                goodsReceiptBodyAdapter.notifyDataSetChanged();
+                GoodsReceiptBodySingleton.getInstance().setList(listMain);
+                closeMainSelection();
+            }
+        }
+
+    }
 
 
     //Image DeleteAlert
@@ -186,7 +292,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
              if(i+1==listSelected.size()){
                  goodsReceiptBodyAdapter.notifyDataSetChanged();
                  GoodsReceiptBodySingleton.getInstance().setList(listMain);
-                 closeSelection();
+                 closeProductSelection();
              }
          }
      }
@@ -299,10 +405,10 @@ public class GoodsReceiptBodyFragment extends Fragment {
       @Override
       public void onItemClick(int pos) {
           if (selection_active) {
-              enableActionMode(pos);
+              enableProductActionMode(pos);
           } else {
               selection_active = true;
-              enableActionMode(pos);
+              enableProductActionMode(pos);
           }
       }
   });
@@ -825,6 +931,9 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
        View view = LayoutInflater.from(getActivity()).inflate(R.layout.good_reseipt_body_fragment,container,false);
        add_fab = view.findViewById(R.id.fab_controller);
        rv_products = view.findViewById(R.id.rv_product);
+
+        initFab(view);
+
        listMain = new ArrayList<>();
        listPOProducts = new ArrayList<>();
 
@@ -840,6 +949,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
        rv_products.setLayoutManager(new LinearLayoutManager(requireActivity()));
        rv_products.setAdapter(goodsReceiptBodyAdapter);
+
 
 
        Bundle bundle = getArguments();
@@ -869,15 +979,44 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
        goodsReceiptBodyAdapter.setOnClickListener(new GoodsReceiptBodyAdapter.OnClickListener() {
            @Override
            public void onItemClick(GoodsReceiptBody goodsReceiptBody, int pos) {
-               GoodsBodyMainAlert(listMain,pos);
+               if (!selection_active_main) {
+                   current_position = pos;
+                   GoodsBodyMainAlert(listMain,pos);
+               } else {
+                   enableMainActionMode(pos);
+               }
+
            }
 
            @Override
            public void ItemDeleteClick(GoodsReceiptBody goodsReceiptBody, int pos) {
-           GeneralAlert("Delete this item?","Delete!","delete_item",pos);
+               if (!selection_active_main) {
+                   GeneralAlert("Delete this item?", "Delete!", "delete_item", pos);
+               }
+           }
+
+           @Override
+           public void onItemLongClick(int pos) {
+               enableMainActionMode(pos);
+               selection_active_main = true;
            }
        });
-       return view;
+
+        fab_close_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeMainSelection();
+            }
+        });
+
+        fab_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAlert();
+            }
+        });
+
+        return view;
     }
 
 

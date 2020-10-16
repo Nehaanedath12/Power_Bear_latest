@@ -165,7 +165,7 @@
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:visibility="gone"
+        android:visibility="visible"
         >
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
