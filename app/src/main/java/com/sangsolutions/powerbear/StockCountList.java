@@ -207,7 +207,7 @@ public class StockCountList extends AppCompatActivity {
 
 
 
-        setRecyclerView();
+
 
         add_new.setOnClickListener(new View.OnClickListener() {
          @Override

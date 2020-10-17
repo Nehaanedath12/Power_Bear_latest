@@ -37,6 +37,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
     AppBarLayout appbar;
     Toolbar toolbar;
     List<com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory> list;
+    boolean selection_active=false;
 
     @Override
     protected void onResume() {
@@ -229,12 +230,15 @@ adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
 
     @Override
     public void onItemClick(com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory, int pos) {
-        enableActionMode(pos);
+        if(selection_active) {
+            enableActionMode(pos);
+        }
     }
 
     @Override
     public void onItemLongClick(int pos) {
         enableActionMode(pos);
+        selection_active = true;
     }
 });
 
@@ -242,6 +246,13 @@ adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
             @Override
             public void onClick(View view) {
                 deleteAlert();
+            }
+        });
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeSelection();
             }
         });
 
