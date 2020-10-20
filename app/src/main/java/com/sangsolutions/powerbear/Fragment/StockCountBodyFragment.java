@@ -327,11 +327,12 @@ public class StockCountBodyFragment extends Fragment {
                         }
                         frame_scan.setVisibility(View.GONE);
                     } else {
-                        frame_scan.setVisibility(View.VISIBLE);
-                        frame_scan.setForeground(new ScanDrawable(requireActivity(), 15));
+
                         if (!hasPermissions(getActivity(), PERMISSIONS)) {
-                            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, 100);
+                            ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS, 100);
                         } else {
+                            frame_scan.setVisibility(View.VISIBLE);
+                            frame_scan.setForeground(new ScanDrawable(requireActivity(), 15));
                             InitialiseDetectorsAndSources();
                         }
                     }
@@ -486,7 +487,7 @@ if(!EditModeInner) {
     }
 
     private void InitialiseDetectorsAndSources() {
-        barcodeDetector = new BarcodeDetector.Builder(getActivity())
+        barcodeDetector = new BarcodeDetector.Builder(requireActivity())
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
                 .build();
         cameraSource = new CameraSource.Builder(requireActivity(), barcodeDetector)
