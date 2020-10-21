@@ -8,6 +8,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.sangsolutions.powerbear.Services.GetGoodsReceiptTypeService;
 import com.sangsolutions.powerbear.Services.GetPendingPOService;
 import com.sangsolutions.powerbear.Services.GetPendingSoService;
 import com.sangsolutions.powerbear.Services.GetProductService;
@@ -110,6 +111,18 @@ public class ScheduleJob {
         JobInfo job = new JobInfo.Builder(
                 7,
                 new ComponentName(context, PostStockCount.class))
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .build();
+        assert js != null;
+        js.schedule(job);
+    }
+
+    public void SyncGoodsReceiptType(Context context) {
+        JobScheduler js =
+                (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        JobInfo job = new JobInfo.Builder(
+                8,
+                new ComponentName(context, GetGoodsReceiptTypeService.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();
         assert js != null;

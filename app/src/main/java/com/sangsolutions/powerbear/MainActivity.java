@@ -44,7 +44,8 @@ public void syncData(){
         if(!Objects.equals(preferences.getString("syncDate", ""),String.valueOf(DateFormat.format("yyyy-MM-dd", new java.util.Date())))) {
             if (preferences.getBoolean("WarehouseFinished", false)
                     && preferences.getBoolean("pendingPOFinished", false)
-                    && preferences.getBoolean("pendingSOFinished", false)) {
+                    && preferences.getBoolean("pendingSOFinished", false)
+                    && preferences.getBoolean("goodsReceiptTypeFinished", false)) {
 
             } else {
                 scheduleJob.SyncUserData(this);
@@ -52,9 +53,11 @@ public void syncData(){
                 scheduleJob.SyncPendingSOData(this);
                 scheduleJob.SyncPendingPO(this);
                 scheduleJob.SyncProductData(this);
+                scheduleJob.SyncGoodsReceiptType(this);
                 editor.putBoolean("WarehouseFinished", false).apply();
                 editor.putBoolean("pendingPOFinished", false).apply();
                 editor.putBoolean("pendingSOFinished", false).apply();
+                editor.putBoolean("goodsReceiptTypeFinished",false).apply();
                 editor.putString("syncDate", "").apply();
             }
         }else {
@@ -63,9 +66,12 @@ public void syncData(){
             scheduleJob.SyncPendingSOData(this);
             scheduleJob.SyncPendingPO(this);
             scheduleJob.SyncProductData(this);
+            scheduleJob.SyncGoodsReceiptType(this);
             editor.putBoolean("WarehouseFinished", false).apply();
             editor.putBoolean("pendingPOFinished", false).apply();
             editor.putBoolean("pendingSOFinished", false).apply();
+            editor.putBoolean("goodsReceiptTypeFinished",false).apply();
+            editor.putString("syncDate", "").apply();
         }
 
     }else {

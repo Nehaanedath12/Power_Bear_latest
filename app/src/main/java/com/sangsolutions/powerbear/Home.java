@@ -61,7 +61,9 @@ ImageView img_settings;
         public void onClick(View v) {
             if (preferences.getBoolean("WarehouseFinished", false)
                     && preferences.getBoolean("pendingPOFinished", false)
-                    && preferences.getBoolean("pendingSOFinished", false)){
+                    && preferences.getBoolean("pendingSOFinished", false)
+                    &&  preferences.getBoolean("goodsReceiptTypeFinished", false)
+                    ){
             startActivity(new Intent(Home.this,StockCountList.class));
         }
             else {
@@ -111,7 +113,9 @@ ImageView img_settings;
         public void onClick(View v) {
             if (preferences.getBoolean("WarehouseFinished", false)
                     && preferences.getBoolean("pendingPOFinished", false)
-                    && preferences.getBoolean("pendingSOFinished", false)){
+                    && preferences.getBoolean("pendingSOFinished", false)
+                    &&  preferences.getBoolean("goodsReceiptTypeFinished", false)
+                    ){
 
                     Intent intent = new Intent(Home.this, GoodsReceiptHistory.class);
                     startActivity(intent);
@@ -126,7 +130,9 @@ ImageView img_settings;
             public void onClick(View v) {
                 if (preferences.getBoolean("WarehouseFinished", false)
                         && preferences.getBoolean("pendingPOFinished", false)
-                        && preferences.getBoolean("pendingSOFinished", false)){
+                        && preferences.getBoolean("pendingSOFinished", false)
+                        &&  preferences.getBoolean("goodsReceiptTypeFinished", false)
+                ){
                 Intent intent = new Intent(Home.this,DeliveryNoteHistory.class);
                 startActivity(intent);
             }else {

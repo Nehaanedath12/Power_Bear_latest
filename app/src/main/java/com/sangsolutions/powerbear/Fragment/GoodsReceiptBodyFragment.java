@@ -627,112 +627,75 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
             img_save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    try {
-                        if (et_regular_qty.getText().toString().isEmpty()) {
-                            et_regular_qty.setError("Enter regular qty!");
-                            Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
 
-                                return;
-                        }
-
-                        boolean condition;
-                        if(!EditMode){
-                             condition =  Integer.parseInt(et_regular_qty.getText().toString().trim()) > Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
-                        }else {
-                             condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <  Integer.parseInt(et_regular_qty.getText().toString().trim());
-                        }
+                   try {
+                     int regular = et_regular_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_regular_qty.getText().toString());
+                     int minor = et_minor_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_minor_qty.getText().toString());
+                     int damaged = et_damaged_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_damaged_qty.getText().toString());
 
 
 
-                        if (condition) {
-                            et_regular_qty.setError("Quantity can't higher then PO Qty");
-                            Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
+                       boolean condition;
+                       if(!EditMode){
+                           condition = (regular+minor+damaged) > Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                       }else {
+                           condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <  (regular+minor+damaged);
+                       }
 
-                        } else {
+                       if (condition) {
+                           if(!et_regular_qty.getText().toString().isEmpty()){
+                               et_regular_qty.setError("Error in entered Quantity");
+                           }
+                           if(!et_minor_qty.getText().toString().isEmpty()){
+                               et_minor_qty.setError("Error in entered Quantity");
+                           }
+                           if(!et_damaged_qty.getText().toString().isEmpty()){
+                               et_damaged_qty.setError("Error in entered Quantity");
+                           }
 
-                            if(!et_minor_qty.getText().toString().trim().isEmpty()){
-                                if(!et_minor_qty.getText().toString().trim().isEmpty()
-                                  &&
-                                  !et_damaged_qty.getText().toString().trim().isEmpty()) {
+                           Toast.makeText(getActivity(), "Quantity can't higher then PO Qty", Toast.LENGTH_SHORT).show();
 
-                                    if (Integer.parseInt(et_minor_qty.getText().toString().trim()) + Integer.parseInt(et_damaged_qty.getText().toString().trim())
-                                            >
-                                            Integer.parseInt(et_regular_qty.getText().toString().trim())) {
-                                        Toast.makeText(getActivity(), "Quantity can't higher then PO Qty", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                }else if(!et_minor_qty.getText().toString().trim().isEmpty()
-                                        &&
-                                        et_damaged_qty.getText().toString().trim().isEmpty()){
-                                    if (Integer.parseInt(et_minor_qty.getText().toString().trim()) > Integer.parseInt(et_regular_qty.getText().toString().trim())) {
-                                        et_minor_qty.setError("Quantity can't higher then PO Qty");
-                                        Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
+                       } else {
+                           String minorImage,damagedImage;
 
-                                }
-                            }
+                           minorImage = TextUtils.join(",",listMinorImage);
+
+                           damagedImage = TextUtils.join(",",listDamagedImage);
 
 
-                            if(!et_damaged_qty.getText().toString().trim().isEmpty()){
-                                if(!et_minor_qty.getText().toString().trim().isEmpty()
-                                        &&
-                                        !et_damaged_qty.getText().toString().trim().isEmpty()) {
-                                    if (Integer.parseInt(et_minor_qty.getText().toString().trim()) + Integer.parseInt(et_damaged_qty.getText().toString().trim())
-                                            >
-                                            Integer.parseInt(et_regular_qty.getText().toString().trim())) {
-                                        Toast.makeText(getActivity(), "Quantity can't higher then PO Qty", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                }else if(!et_damaged_qty.getText().toString().trim().isEmpty()
-                                        &&
-                                        et_minor_qty.getText().toString().trim().isEmpty()){
-                                    if (Integer.parseInt(et_damaged_qty.getText().toString().trim()) > Integer.parseInt(et_regular_qty.getText().toString().trim())) {
-                                        et_damaged_qty.setError("Quantity can't higher then PO Qty");
-                                        Toast.makeText(getActivity(), "Entry error!", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
+                           listMain.set(pos, new GoodsReceiptBody(
+                                   listMain.get(pos).getsPONo(),
+                                   listMain.get(pos).getName(),
+                                   listMain.get(pos).getCode(),
+                                   listMain.get(pos).getiProduct(),
+                                   list.get(sp_warehouse.getSelectedItemPosition()).getName(),
+                                   list.get(sp_warehouse.getSelectedItemPosition()).getMasterId(),
+                                   helper.GetBarcodeFromIProduct(listMain.get(pos).getiProduct()),
+                                   listMain.get(pos).getfPOQty(),
+                                   et_regular_qty.getText().toString().trim(),
+                                   listMain.get(pos).getTempQty(),
+                                   listMain.get(pos).getUnit(),
+                                   et_regular_remarks.getText().toString().trim(),
+                                   et_minor_qty.getText().toString().trim(),
+                                   et_minor_remarks.getText().toString().trim(),
+                                   minorImage,
+                                   et_damaged_qty.getText().toString().trim(),
+                                   et_damaged_remarks.getText().toString().trim(),
+                                   damagedImage
+                           ));
+                           GoodsReceiptBodySingleton.getInstance().setList(listMain);
+                           goodsReceiptBodyAdapter.notifyDataSetChanged();
+                           PublicData.clearDataIgnoreHeader();
+                           Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
+                           current_position=0;
+                           mainAlertDialog.dismiss();
+                       }
 
-                                }
-                            }
 
-                            String minorImage,damagedImage;
+                   }catch (Exception e){
+                       e.printStackTrace();
+                   }
 
-                            minorImage = TextUtils.join(",",listMinorImage);
-
-                            damagedImage = TextUtils.join(",",listDamagedImage);
-
-
-                            listMain.set(pos, new GoodsReceiptBody(
-                                    listMain.get(pos).getsPONo(),
-                                    listMain.get(pos).getName(),
-                                    listMain.get(pos).getCode(),
-                                    listMain.get(pos).getiProduct(),
-                                    list.get(sp_warehouse.getSelectedItemPosition()).getName(),
-                                    list.get(sp_warehouse.getSelectedItemPosition()).getMasterId(),
-                                    helper.GetBarcodeFromIProduct(listMain.get(pos).getiProduct()),
-                                    listMain.get(pos).getfPOQty(),
-                                    et_regular_qty.getText().toString().trim(),
-                                    listMain.get(pos).getTempQty(),
-                                    listMain.get(pos).getUnit(),
-                                    et_regular_remarks.getText().toString().trim(),
-                                    et_minor_qty.getText().toString().trim(),
-                                    et_minor_remarks.getText().toString().trim(),
-                                    minorImage,
-                                    et_damaged_qty.getText().toString().trim(),
-                                    et_damaged_remarks.getText().toString().trim(),
-                                    damagedImage
-                            ));
-                            GoodsReceiptBodySingleton.getInstance().setList(listMain);
-                            goodsReceiptBodyAdapter.notifyDataSetChanged();
-                            PublicData.clearDataIgnoreHeader();
-                            Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
-                            current_position=0;
-                            mainAlertDialog.dismiss();
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
                 }
             });
 

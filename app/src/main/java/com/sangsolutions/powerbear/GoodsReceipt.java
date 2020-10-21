@@ -72,7 +72,6 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
     voucher = PublicData.voucher;
 
     if (EditMode) {
-
         List<String> listProduct = new ArrayList<>();
         List<String> listPo = new ArrayList<>();
         listProduct.clear();
@@ -176,7 +175,7 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
                         if (listMain != null && listMain.size() > 0) {
 
                             for (int i = 0; i <listMain.size();i++) {
-                             if(listMain.get(i).getfQty().equals("")) {
+                             if(listMain.get(i).getfQty().equals("")&&listMain.get(i).getfMinorDamageQty().equals("")&&listMain.get(i).getfDamagedQty().equals("")) {
                                  Toast.makeText(GoodsReceipt.this,"Enter all qty or remove empty items!",Toast.LENGTH_SHORT).show();
                              break;
                              }

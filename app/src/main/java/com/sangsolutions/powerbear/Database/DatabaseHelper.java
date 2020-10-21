@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -20,7 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     final Context context;
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "PowerBear.db";
     private static final String TABLE_PRODUCT = "tbl_Product";
     private static final String TABLE_PENDING_SO = "tbl_PendingSO";
@@ -32,6 +33,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_PENDING_PO = "tbl_PendingPO";
     private static final String TABLE_GOODS_RECEIPT_HEADER = "tbl_GoodsReceiptHeader";
     private static final String TABLE_GOODS_RECEIPT_BODY = "tbl_GoodsReceiptBody";
+    private static final String TABLE_GOOD_RECEIPT_TYPE = "tbl_GoodsReceiptType";
+
 
     //Product
     private static final String MASTER_ID = "MasterId";
@@ -83,6 +86,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String F_PO_QTY = "fPOQty";
     private static final String S_MINOR_ATTACHMENT = "sMinorAttachment";
     private static final String S_DAMAGED_ATTACHMENT = "sDamagedAttachment";
+    private static final String I_MINOR_TYPE = "iMinorId";
+    private static final String I_DAMAGED_TYPE = "iDamagedId";
+
+    //goods receipt damage type
+    private static final String S_NAME  = "sName";
+
 
 
 //create table Product
@@ -96,8 +105,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_CURRENT_LOGIN = "create table if not exists  " + TABLE_CURRENT_LOGIN + " (" +
             "" + I_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "" + USER_ID + " INTEGER DEFAULT null)";
-
-
 
 
     //create table User
@@ -189,6 +196,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + S_DAMAGED_ATTACHMENT+ "  TEXT(100) DEFAULT null" +
             ")";
 
+    //create goods receipt body type
+    private static final String CREATE_TABLE_GOODS_RECEIPT_TYPE = "create table if not exists "+TABLE_GOOD_RECEIPT_TYPE+" (" +
+            "" + I_ID + " INTEGER DEFAULT 0," +
+            "" + S_NAME + " TEXT(50) DEFAULT null )";
+
+
     private SQLiteDatabase db;
 
     public DatabaseHelper(@Nullable Context context) {
@@ -209,6 +222,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_STOCK_COUNT);
         db.execSQL(CREATE_TABLE_GOODS_RECEIPT_HEADER);
         db.execSQL(CREATE_TABLE_GOODS_RECEIPT_BODY);
+        db.execSQL(CREATE_TABLE_GOODS_RECEIPT_TYPE);
     }
 
     @Override
@@ -219,6 +233,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 db.execSQL("ALTER TABLE "+TABLE_GOODS_RECEIPT_BODY+" ADD "+DOC_NO+" TEXT(20) DEFAULT null");
                 db.execSQL("ALTER TABLE "+TABLE_PENDING_PO+" ADD "+ TEMP_QTY +" TEXT(10) DEFAULT null");
                 db.execSQL("ALTER TABLE "+TABLE_GOODS_RECEIPT_BODY+" ADD "+ I_PRODUCT + " INTEGER DEFAULT 0 ");
+            }else if(oldVersion==3){
+                db.execSQL("ALTER TABLE "+TABLE_GOODS_RECEIPT_BODY+" ADD " + I_MINOR_TYPE + " INTEGER DEFAULT 0 ");
+                db.execSQL("ALTER TABLE "+TABLE_GOODS_RECEIPT_BODY+" ADD " + I_DAMAGED_TYPE + " INTEGER DEFAULT 0 ");
             }
         onCreate(db);
     }
@@ -833,7 +850,9 @@ public boolean DeleteStockCount(String voucherNo){
         float status;
         int qty = 0,poQty= 0;
         if(cursor2!=null&&cursor2.moveToFirst()){
-            qty = cursor2.getInt(cursor2.getColumnIndex(TEMP_QTY))+Integer.parseInt(gb.getfQty());
+            qty = cursor2.getInt(cursor2.getColumnIndex(TEMP_QTY))+Integer.parseInt(gb.getfQty().isEmpty()?"0":gb.getfQty())
+                    +Integer.parseInt(gb.getfMinorDamageQty().isEmpty()?"0":gb.getfMinorDamageQty())
+                    +Integer.parseInt(gb.getfDamagedQty().isEmpty()?"0":gb.getfDamagedQty());
             poQty = cursor2.getInt(cursor2.getColumnIndex(QTY));
         }
 
@@ -844,7 +863,7 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(I_WAREHOUSE, gb.getiWarehouse());
         cv.put(BARCODE, gb.getBarcode());
         cv.put(F_PO_QTY, gb.getfPOQty());
-        cv.put(F_QTY, String.valueOf(qty));
+        cv.put(F_QTY, gb.getfQty());
         cv.put(UNIT, gb.getUnit());
         cv.put(S_REMARKS, gb.getsRemarks());
         cv.put(F_MINOR_DAMAGE_QTY, gb.getfMinorDamageQty());
@@ -865,7 +884,7 @@ public boolean DeleteStockCount(String voucherNo){
         cv2.put(TEMP_QTY,String.valueOf(qty));
         float status2 = -1;
         if(status != -1) {
-            status2 = db.update(TABLE_PENDING_PO, cv2, DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ? and "+QTY+" = ?", new String[]{gb.getsPONo(), gb.getiProduct(), gb.getUnit(),String.valueOf(poQty)});
+            status2 = db.update(TABLE_PENDING_PO, cv2, DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ?", new String[]{gb.getsPONo(), gb.getiProduct(), gb.getUnit()});
         }
         cursor.close();
         cursor2.close();
@@ -874,6 +893,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public boolean deleteGoodsBodyItem(String DocNo){
         this.db = getWritableDatabase();
+        //TODO
         float status = db.delete(TABLE_GOODS_RECEIPT_BODY,DOC_NO+" = ? ",new String[]{DocNo});
         return status != -1;
     }
@@ -910,7 +930,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetAllGoodsReceipt(){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT h.DocNo as DocNo ,h.DocDate as DocDate, sum(b.fQty) as sumQty from tbl_GoodsReceiptHeader h " +
+        Cursor cursor = db.rawQuery("SELECT h.DocNo as DocNo ,h.DocDate as DocDate, sum(b.fQty+b.fMinorDamageQty+fDamagedQty) as sumQty from tbl_GoodsReceiptHeader h " +
                 "INNER join tbl_GoodsReceiptBody b on h.DocNo =b.DocNo " +
                 " GROUP by h.DocNo",null);
 
@@ -1021,8 +1041,23 @@ public boolean DeleteStockCount(String voucherNo){
 
 
 
+    public boolean InsertGoodsType(GoodsDamageType gt){
+        this.db = getWritableDatabase();
+        float status = -1;
+        ContentValues cv = new ContentValues();
+        cv.put(S_NAME,gt.getsName());
+        cv.put(I_ID,gt.getiId());
+        status = db.insert(TABLE_GOOD_RECEIPT_TYPE,null,cv);
+        return status!=-1;
+    }
 
 
+    public boolean DeleteGoodsType(){
+        this.db = getWritableDatabase();
+        float status = -1;
+        status = db.delete(TABLE_GOOD_RECEIPT_TYPE,null,null);
+        return status!=-1;
+    }
 
 
 

@@ -33,5 +33,6 @@ public class URLs {
     public static final String GetDeliveryNote = domain + "GetDeliveryNote";
     public static final String GetGRNote = domain + "GetGRNote";
     public static final String GetStockCount= domain +"GetStockCount";
+    public static final String GetRemarksType = domain + "GetRemarksType";
 
 }

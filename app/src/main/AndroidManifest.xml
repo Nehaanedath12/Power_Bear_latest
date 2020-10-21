@@ -105,6 +105,9 @@
         <service
             android:name=".Services.PostStockCount"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".Services.GetGoodsReceiptTypeService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>
