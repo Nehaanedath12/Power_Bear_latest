@@ -872,6 +872,8 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(F_DAMAGED_QTY, gb.getfDamagedQty());
         cv.put(S_DAMAGED_REMARKS, gb.getsDamagedRemarks());
         cv.put(S_DAMAGED_ATTACHMENT, gb.getsDamagedAttachment());
+        cv.put(I_MINOR_TYPE, gb.getiMinorType());
+        cv.put(I_DAMAGED_TYPE, gb.getiDamageType());
 
         if(cursor!=null&&cursor.moveToFirst()){
             status = db.update(TABLE_GOODS_RECEIPT_BODY, cv, DOC_NO+" = ? and "+S_PONO+" = ? ",new String[]{gb.getDocNo(),gb.getsPONo()});
@@ -1060,6 +1062,24 @@ public boolean DeleteStockCount(String voucherNo){
     }
 
 
+    public Cursor GetGoodsType(){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from "+TABLE_GOOD_RECEIPT_TYPE,null);
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
+    }
 
+    public String GetRemarksTypeName(String iId){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+S_NAME+" from "+TABLE_GOOD_RECEIPT_TYPE +" where "+I_ID+" = ?",new String[]{iId});
+        String sName = "";
+        if(cursor!=null&&cursor.moveToFirst()){
+            sName = cursor.getString(cursor.getColumnIndex(S_NAME));
+            cursor.close();
+        }
+        return sName;
+    }
 
 }

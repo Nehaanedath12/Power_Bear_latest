@@ -41,6 +41,8 @@ import com.sangsolutions.powerbear.Adapter.GoodsPOProductAdapter.GoodsPOProductA
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBodyAdapter;
 import com.sangsolutions.powerbear.Adapter.MinorDamagedPhotoAdapter.MinorDamagedPhotoAdapter;
+import com.sangsolutions.powerbear.Adapter.RemarksTypeAdapter.RemarksType;
+import com.sangsolutions.powerbear.Adapter.RemarksTypeAdapter.RemarksTypeAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
@@ -82,6 +84,11 @@ public class GoodsReceiptBodyFragment extends Fragment {
     private List<String> listDamagedImage;
     private DamagedPhotoAdapter damagedPhotoAdapter;
 
+    //remarks type
+    private List<RemarksType> listRemarks;
+    private RemarksTypeAdapter remarksTypeAdapter;
+
+
     private DatabaseHelper helper;
     private AlertDialog mainAlertDialog;
     boolean selection_active = false,selection_active_main = false;
@@ -91,7 +98,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
     ImageView img_minor,img_damaged,img_close,img_forward,img_backward,img_save;
     private TextView tv_doc_no,tv_product,tv_code,tv_unit,tv_po_qty;
     private EditText et_regular_remarks,et_regular_qty,et_minor_remarks,et_minor_qty,et_damaged_remarks,et_damaged_qty;
-    private Spinner sp_warehouse;
+    private Spinner sp_warehouse,sp_minor_type,sp_damage_type;
     RecyclerView rv_minor,rv_damaged;
     boolean EditMode = false;
     String DocNo = "";
@@ -285,6 +292,8 @@ public class GoodsReceiptBodyFragment extends Fragment {
                              "",
                              "",
                              "",
+                             "",
+                             "",
                              ""
                      ));
                  }
@@ -429,7 +438,6 @@ public class GoodsReceiptBodyFragment extends Fragment {
         }
         return true;
     }
-
     /////////////////////////////////////////
 
 
@@ -494,6 +502,31 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         sp_warehouse.setSelection(0);
                     }
 
+
+                    if(listRemarks!=null)
+                        if (!listMain.get(pos).getRemarksMinorType().isEmpty()) {
+                            for (int i = 0; i < listRemarks.size(); i++) {
+                                if(!listMain.get(pos).getRemarksMinorType().equals("0"))
+                                if (listRemarks.get(i).getiId().equals(listMain.get(pos).getRemarksMinorType())) {
+                                    sp_minor_type.setSelection(i);
+                                }
+                            }
+                        }else {
+                            sp_minor_type.setSelection(0);
+                        }
+                    if(listRemarks!=null)
+                        if (!listMain.get(pos).getRemarksDamagedType().isEmpty()) {
+                            for (int i = 0; i < listRemarks.size(); i++) {
+                                if(!listMain.get(pos).getRemarksDamagedType().equals("0"))
+                                if (listRemarks.get(i).getiId().equals(listMain.get(pos).getRemarksDamagedType())) {
+                                    sp_damage_type.setSelection(i);
+                                }
+                            }
+                        }else {
+                            sp_damage_type.setSelection(0);
+                        }
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -531,9 +564,10 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
             et_damaged_remarks = view.findViewById(R.id.damaged_remarks);
             et_damaged_qty = view.findViewById(R.id.damaged_qty);
 
-             sp_warehouse = view.findViewById(R.id.warehouse);
+            sp_warehouse = view.findViewById(R.id.warehouse);
 
-
+            sp_minor_type = view.findViewById(R.id.minor_type);
+            sp_damage_type = view.findViewById(R.id.damaged_type);
 
             rv_minor = view.findViewById(R.id.rv_minor);
             rv_damaged = view.findViewById(R.id.rv_damaged);
@@ -542,7 +576,34 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
             rv_minor.setAdapter(minorDamagedPhotoAdapter);
 
             rv_damaged.setLayoutManager(new LinearLayoutManager(requireActivity(),RecyclerView.HORIZONTAL,false));
-             rv_damaged.setAdapter(damagedPhotoAdapter);
+            rv_damaged.setAdapter(damagedPhotoAdapter);
+
+            listRemarks = new ArrayList<>();
+            remarksTypeAdapter = new RemarksTypeAdapter(listRemarks,requireActivity());
+            sp_minor_type.setAdapter(remarksTypeAdapter);
+            sp_damage_type.setAdapter(remarksTypeAdapter);
+
+
+        //set remarks type
+        try {
+            listRemarks.clear();
+            listRemarks.add(new RemarksType("0","--Select Type--"));
+            Cursor cursor = helper.GetGoodsType();
+            if (cursor != null && cursor.moveToFirst())
+                for (int i = 0; i < cursor.getCount(); i++) {
+                        listRemarks.add(new RemarksType(
+                                cursor.getString(cursor.getColumnIndex("iId")),
+                                cursor.getString(cursor.getColumnIndex("sName"))
+                        ));
+
+                    cursor.moveToNext();
+                    if (cursor.getCount() == i + 1) {
+                        remarksTypeAdapter.notifyDataSetChanged();
+                    }
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
             AlertDialog.Builder builder= new AlertDialog.Builder(requireActivity() ,android.R.style.Theme_Light_NoTitleBar_Fullscreen);
             builder.setView(view);
@@ -638,60 +699,65 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                        boolean condition;
                        if(!EditMode){
                            condition = (regular+minor+damaged) > Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                           Log.d("data",""+(regular+minor+damaged));
                        }else {
                            condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <  (regular+minor+damaged);
                        }
+                        if((regular+minor+damaged)!=0) {
+                            if (condition) {
+                                if (!et_regular_qty.getText().toString().isEmpty()) {
+                                    et_regular_qty.setError("Error in entered Quantity");
+                                }
+                                if (!et_minor_qty.getText().toString().isEmpty()) {
+                                    et_minor_qty.setError("Error in entered Quantity");
+                                }
+                                if (!et_damaged_qty.getText().toString().isEmpty()) {
+                                    et_damaged_qty.setError("Error in entered Quantity");
+                                }
 
-                       if (condition) {
-                           if(!et_regular_qty.getText().toString().isEmpty()){
-                               et_regular_qty.setError("Error in entered Quantity");
-                           }
-                           if(!et_minor_qty.getText().toString().isEmpty()){
-                               et_minor_qty.setError("Error in entered Quantity");
-                           }
-                           if(!et_damaged_qty.getText().toString().isEmpty()){
-                               et_damaged_qty.setError("Error in entered Quantity");
-                           }
+                                Toast.makeText(getActivity(), "Quantity can't higher then PO Qty", Toast.LENGTH_SHORT).show();
 
-                           Toast.makeText(getActivity(), "Quantity can't higher then PO Qty", Toast.LENGTH_SHORT).show();
+                            } else {
+                                String minorImage, damagedImage;
 
-                       } else {
-                           String minorImage,damagedImage;
+                                minorImage = TextUtils.join(",", listMinorImage);
 
-                           minorImage = TextUtils.join(",",listMinorImage);
-
-                           damagedImage = TextUtils.join(",",listDamagedImage);
-
-
-                           listMain.set(pos, new GoodsReceiptBody(
-                                   listMain.get(pos).getsPONo(),
-                                   listMain.get(pos).getName(),
-                                   listMain.get(pos).getCode(),
-                                   listMain.get(pos).getiProduct(),
-                                   list.get(sp_warehouse.getSelectedItemPosition()).getName(),
-                                   list.get(sp_warehouse.getSelectedItemPosition()).getMasterId(),
-                                   helper.GetBarcodeFromIProduct(listMain.get(pos).getiProduct()),
-                                   listMain.get(pos).getfPOQty(),
-                                   et_regular_qty.getText().toString().trim(),
-                                   listMain.get(pos).getTempQty(),
-                                   listMain.get(pos).getUnit(),
-                                   et_regular_remarks.getText().toString().trim(),
-                                   et_minor_qty.getText().toString().trim(),
-                                   et_minor_remarks.getText().toString().trim(),
-                                   minorImage,
-                                   et_damaged_qty.getText().toString().trim(),
-                                   et_damaged_remarks.getText().toString().trim(),
-                                   damagedImage
-                           ));
-                           GoodsReceiptBodySingleton.getInstance().setList(listMain);
-                           goodsReceiptBodyAdapter.notifyDataSetChanged();
-                           PublicData.clearDataIgnoreHeader();
-                           Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
-                           current_position=0;
-                           mainAlertDialog.dismiss();
-                       }
+                                damagedImage = TextUtils.join(",", listDamagedImage);
 
 
+                                listMain.set(pos, new GoodsReceiptBody(
+                                        listMain.get(pos).getsPONo(),
+                                        listMain.get(pos).getName(),
+                                        listMain.get(pos).getCode(),
+                                        listMain.get(pos).getiProduct(),
+                                        list.get(sp_warehouse.getSelectedItemPosition()).getName(),
+                                        list.get(sp_warehouse.getSelectedItemPosition()).getMasterId(),
+                                        helper.GetBarcodeFromIProduct(listMain.get(pos).getiProduct()),
+                                        listMain.get(pos).getfPOQty(),
+                                        et_regular_qty.getText().toString().trim(),
+                                        listMain.get(pos).getTempQty(),
+                                        listMain.get(pos).getUnit(),
+                                        et_regular_remarks.getText().toString().trim(),
+                                        et_minor_qty.getText().toString().trim(),
+                                        et_minor_remarks.getText().toString().trim(),
+                                        minorImage,
+                                        et_damaged_qty.getText().toString().trim(),
+                                        et_damaged_remarks.getText().toString().trim(),
+                                        damagedImage,
+                                        listRemarks.get(sp_minor_type.getSelectedItemPosition()).getiId(),
+                                        listRemarks.get(sp_damage_type.getSelectedItemPosition()).getiId()
+                                ));
+                                GoodsReceiptBodySingleton.getInstance().setList(listMain);
+                                goodsReceiptBodyAdapter.notifyDataSetChanged();
+                                PublicData.clearDataIgnoreHeader();
+                                Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
+                                current_position = 0;
+                                mainAlertDialog.dismiss();
+                            }
+
+                        }else {
+                            Toast.makeText(getActivity(), "Enter quantity first!", Toast.LENGTH_SHORT).show();
+                        }
                    }catch (Exception e){
                        e.printStackTrace();
                    }
@@ -868,7 +934,10 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                            cursor.getString(cursor.getColumnIndex("sMinorAttachment")),
                            cursor.getString(cursor.getColumnIndex("fDamagedQty")),
                            cursor.getString(cursor.getColumnIndex("sDamagedRemarks")),
-                           cursor.getString(cursor.getColumnIndex("sDamagedAttachment"))
+                           cursor.getString(cursor.getColumnIndex("sDamagedAttachment")),
+                           cursor.getString(cursor.getColumnIndex("iMinorId")),
+                           cursor.getString(cursor.getColumnIndex("iDamagedId"))
+
                    ));
                    cursor.moveToNext();
                    if(i+1==cursor.getCount()){

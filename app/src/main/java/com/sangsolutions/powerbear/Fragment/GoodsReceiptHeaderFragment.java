@@ -281,7 +281,9 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             cursor.getString(cursor.getColumnIndex("sMinorAttachment")),
                             cursor.getString(cursor.getColumnIndex("fDamagedQty")),
                             cursor.getString(cursor.getColumnIndex("sDamagedRemarks")),
-                            cursor.getString(cursor.getColumnIndex("sDamagedAttachment"))
+                            cursor.getString(cursor.getColumnIndex("sDamagedAttachment")),
+                            cursor.getString(cursor.getColumnIndex("iMinorId")),
+                            cursor.getString(cursor.getColumnIndex("iDamagedId"))
                     ));
                     cursor.moveToNext();
                     if(i+1==cursor.getCount()){

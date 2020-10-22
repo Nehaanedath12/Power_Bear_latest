@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sangsolutions.powerbear.Adapter.ListProduct2.ListProductAdapter;
+import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.R;
 
 import java.util.ArrayList;
@@ -22,12 +23,12 @@ import java.util.List;
 
 public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBodyAdapter.ViewHolder> {
 
-  Context context;
-  List<GoodsReceiptBody> list;
-  private OnClickListener onClickListener;
+    Context context;
+    List<GoodsReceiptBody> list;
+    private OnClickListener onClickListener;
     private SparseBooleanArray selected_items;
     private int current_selected_idx = -1;
-
+    DatabaseHelper helper;
 
     private void resetCurrentIndex() {
         current_selected_idx = -1;
@@ -78,6 +79,7 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
     public GoodsReceiptBodyAdapter(Context context, List<GoodsReceiptBody> list) {
         this.context = context;
         this.list = list;
+        helper = new DatabaseHelper(context);
     }
 
 
@@ -109,6 +111,8 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
         holder.minorRemarks.setText(list.get(position).getsMinorRemarks());
         holder.damagedQty.setText(list.get(position).getfDamagedQty());
         holder.damagedRemarks.setText(list.get(position).getsDamagedRemarks());
+        holder.remarksMinorType.setText(helper.GetRemarksTypeName(list.get(position).getRemarksMinorType()));
+        holder.remarksDamagedType.setText(helper.GetRemarksTypeName(list.get(position).getRemarksDamagedType()));
 
         holder.rl_1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +153,7 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView PONo,Name,Code,warehouse,poQty,qty,unit,remarks,minorQty,minorRemarks,damagedQty,damagedRemarks;
+        final TextView PONo,Name,Code,warehouse,poQty,qty,unit,remarks,minorQty,minorRemarks,damagedQty,damagedRemarks,remarksMinorType,remarksDamagedType;
         final ImageView delete;
         final RelativeLayout rl_1;
         final ImageView img_check;
@@ -167,6 +171,8 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
             minorRemarks = itemView.findViewById(R.id.minorRemarks);
             damagedQty = itemView.findViewById(R.id.damagedQty);
             damagedRemarks = itemView.findViewById(R.id.damagedRemarks);
+            remarksMinorType = itemView.findViewById(R.id.remarksMinorType);
+            remarksDamagedType = itemView.findViewById(R.id.remarksDamagedType);
             delete = itemView.findViewById(R.id.img_delete);
             rl_1 = itemView.findViewById(R.id.rl_1);
             img_check = itemView.findViewById(R.id.check);

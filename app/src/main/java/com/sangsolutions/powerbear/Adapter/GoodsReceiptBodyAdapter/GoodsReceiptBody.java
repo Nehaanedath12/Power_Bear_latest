@@ -1,9 +1,16 @@
 package com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter;
 
-public class GoodsReceiptBody {
-    String sPONo,Name,Code,iProduct,sWarehouse,iWarehouse,Barcode,fPOQty,fQty,TempQty,Unit,sRemarks,fMinorDamageQty,sMinorRemarks,sMinorAttachment,fDamagedQty,sDamagedRemarks,sDamagedAttachment;
+import com.sangsolutions.powerbear.Adapter.RemarksTypeAdapter.RemarksType;
 
-    public GoodsReceiptBody(String sPONo,String Name,String Code,String iProduct,String sWarehouse, String iWarehouse, String barcode, String fPOQty, String fQty,String TempQty, String unit, String sRemarks, String fMinorDamageQty, String sMinorRemarks, String sMinorAttachment, String fDamagedQty, String sDamagedRemarks, String sDamagedAttachment) {
+public class GoodsReceiptBody {
+    String sPONo,Name,Code,iProduct,sWarehouse,iWarehouse,Barcode,fPOQty,fQty,TempQty,Unit,
+            sRemarks,fMinorDamageQty,sMinorRemarks,sMinorAttachment,
+            fDamagedQty,sDamagedRemarks,sDamagedAttachment,RemarksMinorType,RemarksDamagedType;
+
+    public GoodsReceiptBody(String sPONo, String Name, String Code, String iProduct, String sWarehouse, String iWarehouse,
+                            String barcode, String fPOQty, String fQty, String TempQty,
+                            String unit, String sRemarks, String fMinorDamageQty, String sMinorRemarks, String sMinorAttachment,
+                            String fDamagedQty, String sDamagedRemarks, String sDamagedAttachment, String RemarksMinorType,String RemarksDamagedType) {
         this.sPONo = sPONo;
         this.Name = Name;
         this.Code = Code;
@@ -22,6 +29,8 @@ public class GoodsReceiptBody {
         this.fDamagedQty = fDamagedQty;
         this.sDamagedRemarks = sDamagedRemarks;
         this.sDamagedAttachment = sDamagedAttachment;
+        this.RemarksMinorType= RemarksMinorType;
+        this.RemarksDamagedType =RemarksDamagedType;
     }
 
     public String getsPONo() {
@@ -166,5 +175,21 @@ public class GoodsReceiptBody {
 
     public void setsDamagedAttachment(String sDamagedAttachment) {
         this.sDamagedAttachment = sDamagedAttachment;
+    }
+
+    public String getRemarksMinorType() {
+        return RemarksMinorType;
+    }
+
+    public void setRemarksMinorType(String remarksMinorType) {
+        RemarksMinorType = remarksMinorType;
+    }
+
+    public String getRemarksDamagedType() {
+        return RemarksDamagedType;
+    }
+
+    public void setRemarksDamagedType(String remarksDamagedType) {
+        RemarksDamagedType = remarksDamagedType;
     }
 }

@@ -97,11 +97,20 @@
             android:textColor="@color/color_white"
             android:gravity="center"
             />
+
         <TextView
             android:layout_weight="1"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="Minor"
+            android:textColor="@color/color_white"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Type"
             android:textColor="@color/color_white"
             android:gravity="center"
             />
@@ -118,6 +127,14 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="Damaged"
+            android:textColor="@color/color_white"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Type"
             android:textColor="@color/color_white"
             android:gravity="center"
             />

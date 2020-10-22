@@ -1,7 +1,7 @@
 package com.sangsolutions.powerbear.Database;
 
 public class GoodsReceiptBody {
-    String DocNo,sPONo,iProduct,iWarehouse,Barcode,fPOQty,fQty,Unit,sRemarks,fMinorDamageQty,sMinorRemarks,sMinorAttachment,fDamagedQty,sDamagedRemarks,sDamagedAttachment;
+    String DocNo,sPONo,iProduct,iWarehouse,Barcode,fPOQty,fQty,Unit,sRemarks,fMinorDamageQty,sMinorRemarks,sMinorAttachment,fDamagedQty,sDamagedRemarks,sDamagedAttachment,iMinorType,iDamageType;
 
     public String getDocNo() {
         return DocNo;
@@ -121,5 +121,21 @@ public class GoodsReceiptBody {
 
     public void setsDamagedAttachment(String sDamagedAttachment) {
         this.sDamagedAttachment = sDamagedAttachment;
+    }
+
+    public String getiMinorType() {
+        return iMinorType;
+    }
+
+    public void setiMinorType(String iMinorType) {
+        this.iMinorType = iMinorType;
+    }
+
+    public String getiDamageType() {
+        return iDamageType;
+    }
+
+    public void setiDamageType(String iDamageType) {
+        this.iDamageType = iDamageType;
     }
 }

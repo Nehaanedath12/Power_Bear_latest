@@ -108,6 +108,8 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
                 gb.setfDamagedQty(listMain.get(i).getfDamagedQty());
                 gb.setsDamagedRemarks(listMain.get(i).getsDamagedRemarks());
                 gb.setsDamagedAttachment(listMain.get(i).getsDamagedAttachment());
+                gb.setiMinorType(listMain.get(i).getRemarksMinorType());
+                gb.setiDamageType(listMain.get(i).getRemarksDamagedType());
 
                 if (helper.InsertGoodsReceiptBody(gb)) {
                     body_success_counter++;
