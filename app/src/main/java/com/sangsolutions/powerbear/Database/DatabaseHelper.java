@@ -981,12 +981,14 @@ public boolean DeleteStockCount(String voucherNo){
                         }
 
                         db.update(TABLE_PENDING_PO, cv2, DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ?", new String[]{sPONO, iProduct, unit});
+                        cursor2.close();
                     }
 
 
                     cursor.moveToNext();
                     if (i + 1 == cursor.getCount()) {
                         status = db.delete(TABLE_GOODS_RECEIPT_BODY, DOC_NO + " = ? ", new String[]{DocNo});
+                        cursor.close();
                     }
                 }
             }
@@ -1041,6 +1043,15 @@ public boolean DeleteStockCount(String voucherNo){
     public Cursor GetGoodsHeaderData(String DocNo){
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from "+TABLE_GOODS_RECEIPT_HEADER+" where "+DOC_NO+" = ? ",new String[]{DocNo});
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
+    }
+
+    public Cursor GetAllGoodsHeader(){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from "+TABLE_GOODS_RECEIPT_HEADER,null);
         if(cursor!=null&&cursor.moveToFirst()){
             return cursor;
         }
@@ -1177,5 +1188,8 @@ public boolean DeleteStockCount(String voucherNo){
         }
         return sName;
     }
+
+
+
 
 }

@@ -3,6 +3,15 @@ package com.sangsolutions.powerbear.Database;
 public class GoodReceiptHeader {
     String DocNo,DocDate,sSupplier,sPONo,sNarration;
 
+
+    public GoodReceiptHeader(String docNo, String docDate, String sSupplier, String sPONo, String sNarration) {
+        this.DocNo = docNo;
+        this.DocDate = docDate;
+        this.sSupplier = sSupplier;
+        this.sPONo = sPONo;
+        this.sNarration = sNarration;
+    }
+
     public String getDocNo() {
         return DocNo;
     }
