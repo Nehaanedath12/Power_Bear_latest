@@ -1,0 +1,2 @@
+ALTER TABLE tbl_GoodsReceiptBody ADD iMinorId INTEGER DEFAULT 0;
+ALTER TABLE tbl_GoodsReceiptBody ADD iDamagedId INTEGER DEFAULT 0;

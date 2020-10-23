@@ -2,16 +2,22 @@ package com.sangsolutions.powerbear.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.sangsolutions.powerbear.Adapter.ListProduct.ListProduct;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -193,7 +199,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + S_MINOR_ATTACHMENT + "  TEXT(100) DEFAULT null," +
             "" + F_DAMAGED_QTY + "  TEXT(10) DEFAULT null," +
             "" + S_DAMAGED_REMARKS + "  TEXT(50) DEFAULT null," +
-            "" + S_DAMAGED_ATTACHMENT+ "  TEXT(100) DEFAULT null" +
+            "" + S_DAMAGED_ATTACHMENT+ "  TEXT(100) DEFAULT null," +
+            "" + I_MINOR_TYPE + "  INTEGER DEFAULT 0," +
+            "" + I_DAMAGED_TYPE+ " INTEGER DEFAULT 0" +
             ")";
 
     //create goods receipt body type
@@ -227,18 +235,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            if(oldVersion==1) {
-                db.execSQL("DROP TABLE IF EXISTS tbl_GoodsReceipt");
-            }else if(oldVersion==2){
-                db.execSQL("ALTER TABLE "+TABLE_GOODS_RECEIPT_BODY+" ADD "+DOC_NO+" TEXT(20) DEFAULT null");
-                db.execSQL("ALTER TABLE "+TABLE_PENDING_PO+" ADD "+ TEMP_QTY +" TEXT(10) DEFAULT null");
-                db.execSQL("ALTER TABLE "+TABLE_GOODS_RECEIPT_BODY+" ADD "+ I_PRODUCT + " INTEGER DEFAULT 0 ");
-            }else if(oldVersion==3){
-                db.execSQL("ALTER TABLE "+TABLE_GOODS_RECEIPT_BODY+" ADD " + I_MINOR_TYPE + " INTEGER DEFAULT 0 ");
-                db.execSQL("ALTER TABLE "+TABLE_GOODS_RECEIPT_BODY+" ADD " + I_DAMAGED_TYPE + " INTEGER DEFAULT 0 ");
-            }
+        for (int i = oldVersion; i < newVersion; ++i) {
+            String migrationName = String.format("from_%d_to_%d.sql", i, (i + 1));
+            Log.d("databasehelper", "Looking for migration file: " + migrationName);
+            readAndExecuteSQLScript(db, context, migrationName);
+        }
         onCreate(db);
     }
+
+
+
+
+//Tools for sqlite exicution
+
+    private void executeSQLScript(SQLiteDatabase db, BufferedReader reader) throws IOException {
+        String line;
+        StringBuilder statement = new StringBuilder();
+            try {
+                while ((line = reader.readLine()) != null) {
+                    statement.append(line);
+                    statement.append("\n");
+                    if (line.endsWith(";")) {
+                        db.execSQL(statement.toString());
+                        statement = new StringBuilder();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
+
+    private void readAndExecuteSQLScript(SQLiteDatabase db, Context ctx, String fileName) {
+        if (TextUtils.isEmpty(fileName)) {
+            return;
+        }
+
+        Log.d("Databasehelper", "Script found. Executing...");
+        AssetManager assetManager = ctx.getAssets();
+        BufferedReader reader = null;
+
+        try {
+            InputStream is = assetManager.open(fileName);
+            InputStreamReader isr = new InputStreamReader(is);
+            reader = new BufferedReader(isr);
+            executeSQLScript(db, reader);
+        } catch (IOException e) {
+            Log.e("Databasehelper", "IOException:", e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    Log.e("Databasehelper", "IOException:", e);
+                }
+            }
+        }
+
+    }
+
+/////////////////////////////////////////////////////
 
 
 
@@ -894,9 +949,50 @@ public boolean DeleteStockCount(String voucherNo){
     }
 
     public boolean deleteGoodsBodyItem(String DocNo){
-        this.db = getWritableDatabase();
-        //TODO
-        float status = db.delete(TABLE_GOODS_RECEIPT_BODY,DOC_NO+" = ? ",new String[]{DocNo});
+        float status = -1;
+        try {
+            this.db = getWritableDatabase();
+            Cursor cursor = db.rawQuery("select * from " + TABLE_GOODS_RECEIPT_BODY + " where " + DOC_NO + " = ?", new String[]{DocNo});
+            if (cursor != null && cursor.moveToFirst()) {
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    String sPONO = cursor.getString(cursor.getColumnIndex(S_PONO));
+                    String iProduct = cursor.getString(cursor.getColumnIndex(I_PRODUCT));
+                    String unit = cursor.getString(cursor.getColumnIndex(UNIT));
+
+                    int qty = cursor.getString(cursor.getColumnIndex(F_QTY)).isEmpty()?0:Integer.parseInt(cursor.getString(cursor.getColumnIndex(F_QTY)));
+                    int minor = cursor.getString(cursor.getColumnIndex(F_MINOR_DAMAGE_QTY)).isEmpty()?0:Integer.parseInt(cursor.getString(cursor.getColumnIndex(F_MINOR_DAMAGE_QTY)));
+                    int damaged = cursor.getString(cursor.getColumnIndex(F_DAMAGED_QTY)).isEmpty()?0:Integer.parseInt(cursor.getString(cursor.getColumnIndex(F_DAMAGED_QTY)));
+
+                    int totalQty =  (qty+minor+damaged);
+
+
+                    Cursor cursor2 = db.rawQuery("select " + DOC_NO + "," + PRODUCT + "," + TEMP_QTY + "," + QTY + " from " + TABLE_PENDING_PO + " where " + DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ?", new String[]{sPONO, iProduct, unit});
+
+
+                    if (cursor2 != null && cursor2.moveToFirst()) {
+                        ContentValues cv2 = new ContentValues();
+
+                        int tempQty = Integer.parseInt(cursor2.getString(cursor2.getColumnIndex(TEMP_QTY)));
+                          int restQty =   tempQty - totalQty;
+                        if (restQty<0) {
+                            cv2.put(TEMP_QTY, "0");
+                        }else {
+                            cv2.put(TEMP_QTY, String.valueOf(restQty));
+                        }
+
+                        db.update(TABLE_PENDING_PO, cv2, DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ?", new String[]{sPONO, iProduct, unit});
+                    }
+
+
+                    cursor.moveToNext();
+                    if (i + 1 == cursor.getCount()) {
+                        status = db.delete(TABLE_GOODS_RECEIPT_BODY, DOC_NO + " = ? ", new String[]{DocNo});
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return status != -1;
     }
 
