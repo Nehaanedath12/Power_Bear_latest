@@ -16,6 +16,7 @@ import com.sangsolutions.powerbear.Services.GetUserService;
 import com.sangsolutions.powerbear.Services.GetWareHouse;
 import com.sangsolutions.powerbear.Services.PostDeliveryNote;
 import com.sangsolutions.powerbear.Services.PostGoodsReceipt;
+import com.sangsolutions.powerbear.Services.PostGoodsReceipt2;
 import com.sangsolutions.powerbear.Services.PostStockCount;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -99,7 +100,7 @@ public class ScheduleJob {
                 (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         JobInfo job = new JobInfo.Builder(
                 6,
-                new ComponentName(context, PostGoodsReceipt.class))
+                new ComponentName(context, PostGoodsReceipt2.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();
         assert js != null;

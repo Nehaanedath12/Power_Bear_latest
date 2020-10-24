@@ -6,18 +6,33 @@ import android.app.job.JobService;
 import android.database.Cursor;
 
 import android.os.Build;
+import android.util.Log;
+import android.widget.Toast;
 
 
 import androidx.annotation.RequiresApi;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.GoodReceiptHeader;
 import com.sangsolutions.powerbear.Tools;
+import com.sangsolutions.powerbear.URLs;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.RequestBody;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class PostGoodsReceipt2 extends JobService {
@@ -27,9 +42,150 @@ public class PostGoodsReceipt2 extends JobService {
     Cursor cursor;
     String sDeviceId="";
     List<GoodReceiptHeader> list;
+    int ReceiptCount = 0;
+
+    private void UploadGoodsReceipt() {
+        JSONObject mainJsonObject = new JSONObject();
+        try {
+            mainJsonObject.put("sVoucherNo",list.get(ReceiptCount).getDocNo());
+            mainJsonObject.put("iDocDate",list.get(ReceiptCount).getDocDate());
+            mainJsonObject.put("iSupplier",list.get(ReceiptCount).getsSupplier());
+            mainJsonObject.put("iUser",helper.GetUserId());
+            mainJsonObject.put("sDeviceId",sDeviceId);
+            mainJsonObject.put("sNarration",list.get(ReceiptCount).getsNarration());
+            mainJsonObject.put("iProcessDate","");
+
+            List<File> file = new ArrayList<>();
+            Cursor cursor2 = helper.GetGoodsBodyData(list.get(ReceiptCount).getDocNo());
+            if(cursor2!=null&&cursor2.moveToFirst()){
+
+                JSONArray jsonArray = new JSONArray();
+                String SEPARATOR = "";
+                StringBuilder stringBuilder = new StringBuilder();
+                for(int i = 0;i<cursor2.getCount();i++){
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("sPoNo",cursor2.getString(cursor2.getColumnIndex("sPONo")));
+                    jsonObject.put("iProduct",cursor2.getString(cursor2.getColumnIndex("iProduct")));
+                    jsonObject.put("iWarehouse",cursor2.getString(cursor2.getColumnIndex("iWarehouse")));
+                    jsonObject.put("nQty",cursor2.getString(cursor2.getColumnIndex("fQty")));
+                    jsonObject.put("sUnit",cursor2.getString(cursor2.getColumnIndex("Unit")));
+                    jsonObject.put("sRemarks",cursor2.getString(cursor2.getColumnIndex("sRemarks")));
+                    jsonObject.put("nMQty",cursor2.getString(cursor2.getColumnIndex("fMinorDamageQty")));
+                    jsonObject.put("sMAttatchMent",Tools.getFileList(cursor2.getString(cursor2.getColumnIndex("sMinorAttachment"))));
+                    jsonObject.put("iMRemarks",cursor2.getString(cursor2.getColumnIndex("iMinorId")));
+                    jsonObject.put("sMRemarks",cursor2.getString(cursor2.getColumnIndex("sMinorRemarks")));
+                    jsonObject.put("nDQty",cursor2.getString(cursor2.getColumnIndex("fDamagedQty")));
+                    jsonObject.put("sDAttatchMent",Tools.getFileList(cursor2.getString(cursor2.getColumnIndex("sDamagedAttachment"))));
+                    jsonObject.put("iDRemarks",cursor2.getString(cursor2.getColumnIndex("iDamagedId")));
+                    jsonObject.put("sDRemarks",cursor2.getString(cursor2.getColumnIndex("sDamagedRemarks")));
+                    jsonArray.put(jsonObject);
+
+
+                    String minorFilePaths = cursor2.getString(cursor2.getColumnIndex("sMinorAttachment"));
+                    String damagedFilePaths= cursor2.getString(cursor2.getColumnIndex("sDamagedAttachment"));
+
+                    String mainFilePaths ="";
+                    if(!minorFilePaths.isEmpty()||!damagedFilePaths.isEmpty()){
+                        if(minorFilePaths.isEmpty()&&!damagedFilePaths.isEmpty()){
+                            mainFilePaths = damagedFilePaths;
+                        }
+
+                        if(!minorFilePaths.isEmpty()&&damagedFilePaths.isEmpty()){
+                            mainFilePaths = minorFilePaths;
+                        }
+
+                        if(!minorFilePaths.isEmpty()&&!damagedFilePaths.isEmpty()){
+                            mainFilePaths=  minorFilePaths+","+damagedFilePaths;
+                        }
+                        stringBuilder.append(SEPARATOR);
+                        stringBuilder.append(mainFilePaths);
+                        stringBuilder.append(",");
+
+
+                    }
+                    SEPARATOR = "";
+                    cursor2.moveToNext();
+
+                }
+
+
+                mainJsonObject.put("GoodsRBody",jsonArray);
+
+                List<String> filePathList = Arrays.asList(stringBuilder.toString().split(","));
+
+
+                for(int i=0;i<filePathList.size();i++){
+                    File file1 = new File(filePathList.get(i));
+                    if(file1.exists()){
+                        file.add(file1);
+                    }
+                }
+
+
+                UploadData(mainJsonObject,file);
+
+            }
 
 
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void UploadData(JSONObject mainJsonObject, List<File> files) {
+
+
+        /*AndroidNetworking.upload(URLs.domain)
+                .addQueryParameter("data")
+                .addMultipartFileList("file",files)
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsString(new StringRequestListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("data",response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.d("error",anError.getErrorDetail());
+                    }
+                });*/
+        try {
+            AndroidNetworking.post("http://" + new Tools().getIP(PostGoodsReceipt2.this) + URLs.PostGR)
+                    .addJSONObjectBody(mainJsonObject)
+                    .setPriority(Priority.MEDIUM)
+                    .build()
+                    .getAsString(new StringRequestListener() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                if (helper.deleteGoodsBodyItem(mainJsonObject.getString("DocNo"))) {
+                                    helper.deleteGoodsHeaderItem(mainJsonObject.getString("DocNo"));
+                                    Log.d("goods", "deleted!");
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            Log.d("data", response);
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            Log.d("error", anError.getErrorDetail());
+                        }
+                    });
+            if (ReceiptCount + 1 == list.size()) {
+                return;
+            }
+            ReceiptCount++;
+            UploadGoodsReceipt();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 
     private void InitializeHeader(Cursor cursor){
@@ -43,20 +199,26 @@ public class PostGoodsReceipt2 extends JobService {
                     cursor.getString(cursor.getColumnIndex("sNarration"))
             ));
             cursor.moveToNext();
+
+            if(cursor.getCount()==i+1){
+                UploadGoodsReceipt();
+            }
         }
     }
+
 
     @Override
     public boolean onStartJob(JobParameters params) {
         sDeviceId = Tools.getDeviceId(getApplicationContext());
         helper = new DatabaseHelper(this);
         this.params = params;
+        list = new ArrayList<>();
          cursor = helper.GetAllGoodsHeader();
         if(cursor!=null&&cursor.moveToFirst()) {
             InitializeHeader(cursor);
         }
         map = new HashMap<>();
-        list = new ArrayList<>();
+
         return true;
     }
 

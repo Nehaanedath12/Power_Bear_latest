@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -133,5 +136,22 @@ SharedPreferences.Editor editor;
       return (int)px;
     }
 
+
+    public static String getFileList(String filepath){
+        List<String> list = Arrays.asList(filepath.split(","));
+        StringBuilder sb = new StringBuilder();
+    try {
+    String SEPARATOR = "";
+    for (int i = 0; i < list.size(); i++) {
+        sb.append(SEPARATOR);
+        sb.append(list.get(i).substring(list.get(i).lastIndexOf("/") + 1));
+        SEPARATOR = ",";
+    }
+    SEPARATOR = "";
+    }catch (Exception e){
+    e.printStackTrace();
+    }
+       return sb.toString();
+    }
 
 }

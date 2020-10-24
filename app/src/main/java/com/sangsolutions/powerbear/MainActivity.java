@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.androidnetworking.AndroidNetworking;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.User;
 
@@ -94,8 +95,8 @@ public void syncData(){
     login_btn = findViewById(R.id.login);
     login_name = findViewById(R.id.username);
     password = findViewById(R.id.password);
-
     settings = findViewById(R.id.settings);
+    AndroidNetworking.initialize(this);
     helper = new DatabaseHelper(this);
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
         editor = preferences.edit();

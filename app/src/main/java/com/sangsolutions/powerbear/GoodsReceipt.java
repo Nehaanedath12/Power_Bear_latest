@@ -121,12 +121,8 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
 
                             if (!date.isEmpty() && !POs.isEmpty() && !supplier.isEmpty()) {
 
-                                GoodReceiptHeader gh = new GoodReceiptHeader();
-                                gh.setDocNo(voucher);
-                                gh.setDocDate(date);
-                                gh.setsSupplier(supplier);
-                                gh.setsPONo(POs);
-                                gh.setsNarration(narration);
+                                GoodReceiptHeader gh = new GoodReceiptHeader(voucher,date,supplier,POs,narration);
+
                                 if (helper.InsertGoodsReceiptHeader(gh)) {
                                     Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
                                     PublicData.clearData();

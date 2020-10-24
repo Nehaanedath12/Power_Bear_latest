@@ -100,7 +100,7 @@
             android:name=".Services.PostDeliveryNote"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".Services.PostGoodsReceipt"
+            android:name=".Services.PostGoodsReceipt2"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".Services.PostStockCount"

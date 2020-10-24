@@ -1040,6 +1040,40 @@ public boolean DeleteStockCount(String voucherNo){
         return null;
     }
 
+    public Cursor GetAllGoodsDamagedAttachment(String DocNo){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("WITH RECURSIVE split(sDamagedAttachment,str) AS (" +
+                "    SELECT '',sDamagedAttachment||',' FROM tbl_GoodsReceiptBody WHERE DocNo = "+DocNo+" " +
+                "    UNION SELECT " +
+                "    substr(str, 0, instr(str,','))," +
+                "    substr(str, instr(str, ',')+1)" +
+                "    FROM split WHERE str!=''" +
+                ") " +
+                "SELECT sDamagedAttachment " +
+                "FROM split where sDamagedAttachment !=''",null);
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
+    }
+
+    public Cursor GetAllGoodsMinorAttachment(String DocNo){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("WITH RECURSIVE split(sMinorAttachment,str) AS (" +
+                "    SELECT '',sMinorAttachment||',' FROM tbl_GoodsReceiptBody WHERE DocNo = "+DocNo+" " +
+                "UNION SELECT " +
+                "    substr(str, 0, instr(str,','))," +
+                "    substr(str, instr(str, ',')+1)" +
+                "    FROM split WHERE str!=''" +
+                ") " +
+                "SELECT sMinorAttachment " +
+                "FROM split where sMinorAttachment !=''",null);
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
+    }
+
     public Cursor GetGoodsHeaderData(String DocNo){
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from "+TABLE_GOODS_RECEIPT_HEADER+" where "+DOC_NO+" = ? ",new String[]{DocNo});

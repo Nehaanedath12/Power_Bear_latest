@@ -104,7 +104,6 @@ public class GetUserService extends JobService {
     }
     @Override
     public boolean onStartJob(JobParameters params) {
-        AndroidNetworking.initialize(getApplicationContext());
         helper = new DatabaseHelper(this);
         this.params = params;
         GetProduct();
