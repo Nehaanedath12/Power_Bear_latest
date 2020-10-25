@@ -48,7 +48,7 @@ int current_position = 0;
 
 
 private void Save(){
-String POs="",date = "",supplier="",narration="",voucher="";
+String POs="",date = "",supplier="",narration="",voucher="" ,ProcessedDate ="";
     List<String> listPO=GoodsReceiptPoSingleton.getInstance().getList();
     List<GoodsReceiptBody> listMain = GoodsReceiptBodySingleton.getInstance().getList();
 
@@ -71,6 +71,7 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
     narration = PublicData.narration;
     voucher = PublicData.voucher;
 
+    ProcessedDate = String.valueOf(DateFormat.format("yyyy-MM-dd hh:mm:ss a", new Date()));
     if (EditMode) {
         List<String> listProduct = new ArrayList<>();
         List<String> listPo = new ArrayList<>();
@@ -121,7 +122,7 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
 
                             if (!date.isEmpty() && !POs.isEmpty() && !supplier.isEmpty()) {
 
-                                GoodReceiptHeader gh = new GoodReceiptHeader(voucher,date,supplier,POs,narration);
+                                GoodReceiptHeader gh = new GoodReceiptHeader(voucher,date,ProcessedDate,supplier,POs,narration);
 
                                 if (helper.InsertGoodsReceiptHeader(gh)) {
                                     Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();

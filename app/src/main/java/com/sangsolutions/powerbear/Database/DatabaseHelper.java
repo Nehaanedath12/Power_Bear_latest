@@ -27,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     final Context context;
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "PowerBear.db";
     private static final String TABLE_PRODUCT = "tbl_Product";
     private static final String TABLE_PENDING_SO = "tbl_PendingSO";
@@ -180,6 +180,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + DOC_DATE + " TEXT(10) DEFAULT null ," +
             "" + S_SUPPLIER + " TEXT(50) DEFAULT null ," +
             "" + S_PONO + "  TEXT(150) DEFAULT null," +
+            ""+D_PROCESSED_DATE+ " TEXT(10) DEFAULT null ,"+
             "" + S_NARRATION + "  TEXT(50) DEFAULT null" +
             ")";
 
@@ -857,6 +858,7 @@ public boolean DeleteStockCount(String voucherNo){
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO, gh.getDocNo());
         cv.put(DOC_DATE, gh.getDocDate());
+        cv.put(D_PROCESSED_DATE,gh.getdProcessedDate());
         cv.put(S_SUPPLIER, gh.getsSupplier());
         cv.put(S_PONO,gh.getsPONo());
         cv.put(S_NARRATION,gh.getsNarration());

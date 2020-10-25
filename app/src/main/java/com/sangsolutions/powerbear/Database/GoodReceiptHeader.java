@@ -1,12 +1,14 @@
 package com.sangsolutions.powerbear.Database;
 
+
 public class GoodReceiptHeader {
-    String DocNo,DocDate,sSupplier,sPONo,sNarration;
+    String DocNo,DocDate,dProcessedDate,sSupplier,sPONo,sNarration;
 
 
-    public GoodReceiptHeader(String docNo, String docDate, String sSupplier, String sPONo, String sNarration) {
+    public GoodReceiptHeader(String docNo, String docDate,String dProcessedDate, String sSupplier, String sPONo, String sNarration) {
         this.DocNo = docNo;
         this.DocDate = docDate;
+        this.dProcessedDate = dProcessedDate;
         this.sSupplier = sSupplier;
         this.sPONo = sPONo;
         this.sNarration = sNarration;
@@ -26,6 +28,14 @@ public class GoodReceiptHeader {
 
     public void setDocDate(String docDate) {
         DocDate = docDate;
+    }
+
+    public String getdProcessedDate() {
+        return dProcessedDate;
+    }
+
+    public void setdProcessedDate(String dProcessedDate) {
+        this.dProcessedDate = dProcessedDate;
     }
 
     public String getsSupplier() {

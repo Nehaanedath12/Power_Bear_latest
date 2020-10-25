@@ -1,0 +1,1 @@
+ALTER TABLE tbl_GoodsReceiptHeader ADD dProcessedDate TEXT(10) DEFAULT null;
