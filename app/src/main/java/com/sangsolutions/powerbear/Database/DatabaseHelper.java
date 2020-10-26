@@ -175,7 +175,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_GOODS_RECEIPT_HEADER = "create table if not exists "+TABLE_GOODS_RECEIPT_HEADER+" (" +
             "" + DOC_NO + " TEXT(30) DEFAULT null ," +
             "" + DOC_DATE + " TEXT(10) DEFAULT null ," +
-            "" + I_SUPPLIER + "INTEGER DEFAULT 0 ," +
+            "" + I_SUPPLIER + " INTEGER DEFAULT 0 ," +
             "" + S_PONO + "  TEXT(150) DEFAULT null," +
             ""+D_PROCESSED_DATE+ " TEXT(10) DEFAULT null ,"+
             "" + S_NARRATION + "  TEXT(50) DEFAULT null" +

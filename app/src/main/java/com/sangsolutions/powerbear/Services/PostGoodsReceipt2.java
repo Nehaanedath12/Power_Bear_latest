@@ -7,6 +7,7 @@ import android.database.Cursor;
 
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import androidx.annotation.RequiresApi;
@@ -128,6 +129,8 @@ public class PostGoodsReceipt2 extends JobService {
 
                     }
 
+                }else {
+                    Toast.makeText(this, "GRN Synced!", Toast.LENGTH_SHORT).show();
                 }
                 } catch(Exception e){
                     e.printStackTrace();
