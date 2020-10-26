@@ -1,32 +1,22 @@
 package com.sangsolutions.powerbear.Services;
 
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
-import android.content.Context;
 import android.database.Cursor;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 
 import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
 
 import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
-import com.androidnetworking.interfaces.UploadProgressListener;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.GoodReceiptHeader;
-import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 
@@ -40,10 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import okhttp3.RequestBody;
-
-import static androidx.core.app.NotificationCompat.PRIORITY_MIN;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class PostGoodsReceipt2 extends JobService {
@@ -65,11 +51,11 @@ public class PostGoodsReceipt2 extends JobService {
                 if (ReceiptCount < list.size()) {
                     mainJsonObject.put("sVoucherNo", list.get(ReceiptCount).getDocNo());
                     mainJsonObject.put("iDocDate", list.get(ReceiptCount).getDocDate());
-                    mainJsonObject.put("iSupplier", Integer.parseInt(list.get(ReceiptCount).getsSupplier()));
+                    mainJsonObject.put("iSupplier", Integer.parseInt(list.get(ReceiptCount).getiSupplier()));
                     mainJsonObject.put("iUser", Integer.parseInt(helper.GetUserId()));
                     mainJsonObject.put("sDeviceId", sDeviceId);
                     mainJsonObject.put("sNarration", list.get(ReceiptCount).getsNarration());
-                    mainJsonObject.put("iProcessDate", "2020-10-10");
+                    mainJsonObject.put("iProcessDate", list.get(ReceiptCount).getdProcessedDate());
 
                     List<File> file = new ArrayList<>();
                     Cursor cursor2 = helper.GetGoodsBodyData(list.get(ReceiptCount).getDocNo());
@@ -152,24 +138,20 @@ public class PostGoodsReceipt2 extends JobService {
 
 
     private void UploadData(final JSONObject mainJsonObject, List<File> files) {
-        Log.d("data",mainJsonObject.toString());
+
        AndroidNetworking.upload("http://" + new Tools().getIP(PostGoodsReceipt2.this) + URLs.PostGR)
              .addMultipartParameter("json_content",mainJsonObject.toString())
                 .setContentType("multipart/form-data")
                 .addMultipartFileList("file",files)
                 .setPriority(Priority.HIGH)
                 .build()
-               .setUploadProgressListener(new UploadProgressListener() {
-                   @Override
-                   public void onProgress(long bytesUploaded, long totalBytes) {
-                       Log.d("Uploaded","Byte:"+totalBytes+":"+bytesUploaded);
-                   }
-               })
+               .setUploadProgressListener((bytesUploaded, totalBytes) ->
+                       Log.d("Uploaded","Byte:"+totalBytes+":"+bytesUploaded))
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("data",response);
-                        if(response.contains("FileCreated")){
+                        if(response.contains("Created")){
                              try {
                                 if (helper.deleteGoodsBodyItem(mainJsonObject.getString("sVoucherNo"))) {
                                     helper.deleteGoodsHeaderItem(mainJsonObject.getString("sVoucherNo"));
@@ -231,21 +213,25 @@ public class PostGoodsReceipt2 extends JobService {
 
 
     private void InitializeHeader(Cursor cursor){
-        cursor.moveToFirst();
-        for (int i = 0;i<cursor.getCount();i++){
-            list.add(new GoodReceiptHeader(
-                    cursor.getString(cursor.getColumnIndex("DocNo")),
-                    cursor.getString(cursor.getColumnIndex("DocDate")),
-                    cursor.getString(cursor.getColumnIndex("dProcessedDate")),
-                    /*cursor.getString(cursor.getColumnIndex("sSupplier"))*/"0",
-                    cursor.getString(cursor.getColumnIndex("sPONo")),
-                    cursor.getString(cursor.getColumnIndex("sNarration"))
-            ));
-            cursor.moveToNext();
+        try {
+            cursor.moveToFirst();
+            for (int i = 0; i < cursor.getCount(); i++) {
+                list.add(new GoodReceiptHeader(
+                        cursor.getString(cursor.getColumnIndex("DocNo")),
+                        cursor.getString(cursor.getColumnIndex("DocDate")),
+                        cursor.getString(cursor.getColumnIndex("dProcessedDate")),
+                        cursor.getString(cursor.getColumnIndex("iSupplier")),
+                        cursor.getString(cursor.getColumnIndex("sPONo")),
+                        cursor.getString(cursor.getColumnIndex("sNarration"))
+                ));
+                cursor.moveToNext();
 
-            if(cursor.getCount()==i+1){
-                UploadGoodsReceipt();
+                if (cursor.getCount() == i + 1) {
+                    UploadGoodsReceipt();
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

@@ -38,7 +38,7 @@ public class GoodReceiptHeader {
         this.dProcessedDate = dProcessedDate;
     }
 
-    public String getsSupplier() {
+    public String getiSupplier() {
         return sSupplier;
     }
 

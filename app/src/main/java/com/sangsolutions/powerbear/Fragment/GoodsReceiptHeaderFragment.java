@@ -195,14 +195,14 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         poSelectList.clear();
-        LoadPOs(supplierList.get(position).getsSupplierName());
-        PublicData.supplier = supplierList.get(position).getsSupplierName();
+        LoadPOs(supplierList.get(position).getsSupplierId());
+        PublicData.supplier = supplierList.get(position).getsSupplierId();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         if(supplierList.get(1)!=null){
-        PublicData.supplier = supplierList.get(1).getsSupplierName();
+        PublicData.supplier = supplierList.get(1).getsSupplierId();
     }
     }
 });
@@ -224,7 +224,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 if(supplierList.size()>0)
                 {
                     for(int i = 0;i<supplierList.size();i++){
-                        if(supplier.equals(supplierList.get(i).getsSupplierName())){
+                        if(supplier.equals(supplierList.get(i).getsSupplierId())){
                             sp_supplier.setSelection(i);
                             LoadPOs(supplier);
                         }

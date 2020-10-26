@@ -1,0 +1,1 @@
+ALTER TABLE tbl_GoodsReceiptHeader RENAME COLUMN sSupplier TO iSupplier;

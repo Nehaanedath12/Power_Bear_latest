@@ -8,11 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-
-import com.sangsolutions.powerbear.Adapter.ListProduct.ListProduct;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     final Context context;
 
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     private static final String DATABASE_NAME = "PowerBear.db";
     private static final String TABLE_PRODUCT = "tbl_Product";
     private static final String TABLE_PENDING_SO = "tbl_PendingSO";
@@ -81,7 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String S_NARRATION = "sNarration";
 
     //goods receipt header
-    private static final String S_SUPPLIER = "sSupplier";
+    private static final String I_SUPPLIER = "iSupplier";
     private static final String S_PONO = "sPONo";
 
     //goods receipt body
@@ -178,7 +175,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_GOODS_RECEIPT_HEADER = "create table if not exists "+TABLE_GOODS_RECEIPT_HEADER+" (" +
             "" + DOC_NO + " TEXT(30) DEFAULT null ," +
             "" + DOC_DATE + " TEXT(10) DEFAULT null ," +
-            "" + S_SUPPLIER + " TEXT(50) DEFAULT null ," +
+            "" + I_SUPPLIER + "INTEGER DEFAULT 0 ," +
             "" + S_PONO + "  TEXT(150) DEFAULT null," +
             ""+D_PROCESSED_DATE+ " TEXT(10) DEFAULT null ,"+
             "" + S_NARRATION + "  TEXT(50) DEFAULT null" +
@@ -197,10 +194,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + S_REMARKS + "  TEXT(50) DEFAULT null," +
             "" + F_MINOR_DAMAGE_QTY + "  TEXT(10) DEFAULT null," +
             "" + S_MINOR_REMARKS+ "  TEXT(50) DEFAULT null," +
-            "" + S_MINOR_ATTACHMENT + "  TEXT(100) DEFAULT null," +
+            "" + S_MINOR_ATTACHMENT + "  TEXT DEFAULT null," +
             "" + F_DAMAGED_QTY + "  TEXT(10) DEFAULT null," +
             "" + S_DAMAGED_REMARKS + "  TEXT(50) DEFAULT null," +
-            "" + S_DAMAGED_ATTACHMENT+ "  TEXT(100) DEFAULT null," +
+            "" + S_DAMAGED_ATTACHMENT+ "  TEXT DEFAULT null," +
             "" + I_MINOR_TYPE + "  INTEGER DEFAULT 0," +
             "" + I_DAMAGED_TYPE+ " INTEGER DEFAULT 0" +
             ")";
@@ -216,6 +213,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
+    }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        super.onDowngrade(db, oldVersion, newVersion);
+
     }
 
     @Override
@@ -859,7 +862,7 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(DOC_NO, gh.getDocNo());
         cv.put(DOC_DATE, gh.getDocDate());
         cv.put(D_PROCESSED_DATE,gh.getdProcessedDate());
-        cv.put(S_SUPPLIER, gh.getsSupplier());
+        cv.put(I_SUPPLIER, gh.getiSupplier());
         cv.put(S_PONO,gh.getsPONo());
         cv.put(S_NARRATION,gh.getsNarration());
 
@@ -1104,9 +1107,9 @@ public boolean DeleteStockCount(String voucherNo){
     }
 
 
-    public Cursor GetPOs(String customer){
+    public Cursor GetPOs(String HeaderId){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DocNo from tbl_PendingPO WHERE Cusomer = ? and TempQty != Qty GROUP by HeaderId ",new String[]{customer});
+        Cursor cursor = db.rawQuery("SELECT DocNo from tbl_PendingPO WHERE HeaderId = ? and TempQty != Qty GROUP by HeaderId ",new String[]{HeaderId});
         if(cursor.moveToFirst()){
             return cursor;
         }else {
