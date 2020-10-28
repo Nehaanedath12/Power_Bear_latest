@@ -40,8 +40,7 @@ public class PostGoodsReceipt2 extends JobService {
     Cursor cursor;
     String sDeviceId="";
     List<GoodReceiptHeader> list;
-    int ReceiptCount = 0;
-
+    int ReceiptCount = 0,successCounter=0;
 
 
     private void UploadGoodsReceipt() {
@@ -130,8 +129,12 @@ public class PostGoodsReceipt2 extends JobService {
                     }
 
                 }else {
-                    Toast.makeText(this, "GRN Synced!", Toast.LENGTH_SHORT).show();
-                }
+                    if(successCounter+1==list.size()) {
+                        Toast.makeText(this, "GRN Synced!", Toast.LENGTH_SHORT).show();
+                    }else if(successCounter+1<list.size()){
+                        Toast.makeText(this, "GRN Sync exited with an error!", Toast.LENGTH_SHORT).show();
+                    }
+                    }
                 } catch(Exception e){
                     e.printStackTrace();
                 }
@@ -156,6 +159,7 @@ public class PostGoodsReceipt2 extends JobService {
                         Log.d("data",response);
                         if(response.contains("Created")){
                              try {
+                                 successCounter++;
                                 if (helper.deleteGoodsBodyItem(mainJsonObject.getString("sVoucherNo"))) {
                                     helper.deleteGoodsHeaderItem(mainJsonObject.getString("sVoucherNo"));
                                     Log.d("goods", "deleted!");

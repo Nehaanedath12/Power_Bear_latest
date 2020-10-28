@@ -9,14 +9,18 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.Fragment.SyncFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -76,10 +80,18 @@ ImageView img_settings;
             @Override
             public void onClick(View v) {
                 Toast.makeText(Home.this, "Sync started...", Toast.LENGTH_SHORT).show();
-               //start with SyncGoodsReceipt
+
+                Fragment fragment = new SyncFragment();
+                FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+                tx.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+                tx.replace(R.id.fragment, fragment).addToBackStack("sync").commit();
+
+
+                //start with SyncGoodsReceipt
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     new ScheduleJob().SyncGoodsReceipt(Home.this);
                 }
+
 
             }
         });

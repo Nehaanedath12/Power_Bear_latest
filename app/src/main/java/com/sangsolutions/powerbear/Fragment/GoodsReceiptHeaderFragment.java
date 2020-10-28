@@ -219,7 +219,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 et_date.setText(Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("DocDate"))));
 
                 //LoadSupplier
-                String supplier =  cursor.getString(cursor.getColumnIndex("sSupplier"));
+                String supplier =  cursor.getString(cursor.getColumnIndex("iSupplier"));
                 PublicData.supplier = supplier;
                 if(supplierList.size()>0)
                 {

@@ -2,6 +2,7 @@ package com.sangsolutions.powerbear.Services;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
 import android.util.Log;
@@ -31,7 +32,8 @@ public class PostStockCount extends JobService {
     int upload_list_portion = 0;
     Cursor cursor;
     String UserId="";
-
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
     private void vouchersToBeUploaded() {
         try {
             if (upload_list_portion < list.size()) {
@@ -42,6 +44,8 @@ public class PostStockCount extends JobService {
                     GetDataToUpload(cursor);
                 }
 
+            }else {
+              //  editor.putBoolean("pendingSOFinished",true).apply();
             }
 
         } catch (Exception e) {
@@ -134,6 +138,9 @@ public class PostStockCount extends JobService {
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
         list = new ArrayList<>();
+        preferences = getSharedPreferences("sync",MODE_PRIVATE);
+        editor = preferences.edit();
+
         Cursor cursor = helper.GetAllStockCountVoucher();
         UserId = helper.GetUserId();
         if(cursor!=null) {
