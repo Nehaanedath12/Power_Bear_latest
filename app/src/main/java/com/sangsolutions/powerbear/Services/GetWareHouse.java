@@ -14,6 +14,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.sangsolutions.powerbear.Commons;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.Warehouse;
 import com.sangsolutions.powerbear.ScheduleJob;
@@ -24,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@SuppressWarnings("ALL")
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class GetWareHouse extends JobService {
     JobParameters params;
@@ -44,7 +46,8 @@ public class GetWareHouse extends JobService {
 
                     @Override
                     public void onError(ANError anError) {
-                Log.d("error",anError.getErrorDetail());
+                        editor.putString(Commons.WAREHOUSE_FINISHED,"error").apply();
+                        Log.d("error",anError.getErrorDetail());
                     }
                 });
     }
@@ -102,7 +105,7 @@ public class GetWareHouse extends JobService {
             protected void onPostExecute(Void aVoid) {
 
                 Log.d("Status:", "data synced");
-                editor.putBoolean("WarehouseFinished",true).apply();
+                editor.putString(Commons.WAREHOUSE_FINISHED,"true").apply();
                 jobFinished(params,false);
             }
         };
@@ -113,7 +116,7 @@ public class GetWareHouse extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
-        preferences = getSharedPreferences("sync",MODE_PRIVATE);
+        preferences = getSharedPreferences(Commons.PREFERENCE_SYNC,MODE_PRIVATE);
         editor = preferences.edit();
         AndroidNetworking.initialize(getApplicationContext());
         this.params = params;
@@ -123,6 +126,7 @@ public class GetWareHouse extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        return false;
+        jobFinished(params,false);
+        return true;
     }
 }

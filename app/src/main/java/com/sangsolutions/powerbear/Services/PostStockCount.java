@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -13,7 +14,9 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
+import com.sangsolutions.powerbear.Commons;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.ScheduleJob;
 import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 
@@ -29,23 +32,30 @@ public class PostStockCount extends JobService {
 
     DatabaseHelper helper;
     List<String> list;
-    int upload_list_portion = 0;
+    int upload_list_portion = 0,successCounter=0;
     Cursor cursor;
     String UserId="";
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
+    JobParameters params;
     private void vouchersToBeUploaded() {
         try {
             if (upload_list_portion < list.size()) {
                 Log.d("list", String.valueOf(upload_list_portion));
                 cursor = helper.GetAllStockCountFromVoucher(list.get(upload_list_portion));
-                upload_list_portion++;
                 if (cursor != null) {
+                    upload_list_portion++;
                     GetDataToUpload(cursor);
                 }
 
             }else {
-              //  editor.putBoolean("pendingSOFinished",true).apply();
+                if(successCounter+1==list.size()) {
+                    editor.putString(Commons.STOCK_COUNT_FINISHED,"true").apply();
+                }else if(successCounter+1<list.size()){
+                    editor.putString(Commons.STOCK_COUNT_FINISHED,"error").apply();
+                    Toast.makeText(this, "Stock Count Sync exited with an error!", Toast.LENGTH_SHORT).show();
+                }
+                onStopJob(params);
             }
 
         } catch (Exception e) {
@@ -66,6 +76,7 @@ public class PostStockCount extends JobService {
                         Log.d("Upload", response);
                         try {
                             if (Integer.parseInt(response) > 0) {
+                                successCounter++;
                                 helper.DeleteStockCount(jsonObject.getString("iVoucherNo"));
                             }
                         } catch (Exception e) {
@@ -138,13 +149,15 @@ public class PostStockCount extends JobService {
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
         list = new ArrayList<>();
+        this.params = params;
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
         editor = preferences.edit();
-
+        editor.putString(Commons.STOCK_COUNT_FINISHED,"false").apply();
         Cursor cursor = helper.GetAllStockCountVoucher();
+
         UserId = helper.GetUserId();
-        if(cursor!=null) {
-            cursor.moveToFirst();
+        if(cursor!=null&&cursor.moveToFirst()) {
+
            for(int i=0;i<cursor.getCount();i++){
                list.add(cursor.getString(cursor.getColumnIndex("iVoucherNo")));
                 cursor.moveToNext();
@@ -153,6 +166,8 @@ public class PostStockCount extends JobService {
                    cursor.close();
                }
            }
+        }else {
+           onStopJob(params);
         }
         return true;
     }
@@ -161,6 +176,32 @@ public class PostStockCount extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
+        jobFinished(jobParameters,false);
+        String Goods="",Delivery="",Stocks="";
+        Goods = preferences.getString(Commons.GOODS_RECEIPT_FINISHED,"false");
+        Delivery = preferences.getString(Commons.DELIVERY_NOTE_FINISHED,"false");
+        Stocks = preferences.getString(Commons.STOCK_COUNT_FINISHED,"false");
+
+        if(Goods!=null&&Delivery!=null&&Stocks!=null)
+        if((Goods.equals("true")||Goods.equals("false"))
+           &&(Delivery.equals("true")||Delivery.equals("false"))
+           &&(Stocks.equals("true")||Stocks.equals("false"))
+        ){
+            ScheduleJob scheduleJob= new ScheduleJob();
+
+            scheduleJob.SyncUserData(this);
+            scheduleJob.SyncWarehouse(this);
+            scheduleJob.SyncPendingSOData(this);
+            scheduleJob.SyncPendingPO(this);
+            scheduleJob.SyncProductData(this);
+            scheduleJob.SyncGoodsReceiptType(this);
+            editor.putString(Commons.WAREHOUSE_FINISHED, "false").apply();
+            editor.putString(Commons.PENDING_PO_FINISHED, "false").apply();
+            editor.putString(Commons.PENDING_SO_FINISHED, "false").apply();
+            editor.putString(Commons.PRODUCT_FINISHED, "false").apply();
+            editor.putString(Commons.REMARKS_FINISHED,"false").apply();
+            editor.putString(Commons.SYNC_DATE, "").apply();
+        }
         return true;
     }
 }

@@ -3,6 +3,7 @@ package com.sangsolutions.powerbear.Services;
 import android.annotation.SuppressLint;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.sangsolutions.powerbear.Commons;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.Product;
 import com.sangsolutions.powerbear.ScheduleJob;
@@ -32,6 +34,8 @@ public class GetProductService extends JobService {
     JobParameters params;
     DatabaseHelper helper;
     Product p;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
 
 
 
@@ -47,6 +51,7 @@ public class GetProductService extends JobService {
 
                     @Override
                     public void onError(ANError anError) {
+                        editor.putString(Commons.PENDING_SO_FINISHED,"error").apply();
                         Log.d("error",anError.getErrorBody());
                     }
                 });
@@ -78,7 +83,7 @@ public class GetProductService extends JobService {
                             Handler handler = new Handler(Looper.getMainLooper());
                             handler.post(new Runnable() {
                                 public void run() {
-                                    Toast.makeText(GetProductService.this, "Product Synced", Toast.LENGTH_SHORT).show();
+                                    Log.d("GetProductService", "Product Synced");
 
                                 }
                             });
@@ -101,6 +106,7 @@ public class GetProductService extends JobService {
 
             @Override
             protected void onPostExecute(Void aVoid) {
+                editor.putString(Commons.PRODUCT_FINISHED,"true").apply();
                 jobFinished(params,false);
             }
         };
@@ -117,6 +123,8 @@ public class GetProductService extends JobService {
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
         AndroidNetworking.initialize(getApplicationContext());
+        preferences = getSharedPreferences(Commons.PREFERENCE_SYNC,MODE_PRIVATE);
+        editor = preferences.edit();
         p = new Product();
         GetProduct();
         this.params = params;
@@ -125,7 +133,8 @@ public class GetProductService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        return false;
+        jobFinished(params,false);
+        return true;
 
 
     }

@@ -10,7 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.widget.Toast;
+
 
 import androidx.annotation.RequiresApi;
 
@@ -18,8 +18,10 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.sangsolutions.powerbear.Commons;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.GoodsDamageType;
+import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 
@@ -42,7 +44,6 @@ public class GetGoodsReceiptTypeService extends JobService {
             protected void onPreExecute() {
             }
 
-            @SuppressWarnings("SpellCheckingInspection")
             @Override
             protected Void doInBackground(Void... voids) {
                 try {
@@ -59,7 +60,7 @@ public class GetGoodsReceiptTypeService extends JobService {
                                 Handler handler = new Handler(Looper.getMainLooper());
                                 handler.post(new Runnable() {
                                     public void run() {
-                                        Toast.makeText(GetGoodsReceiptTypeService.this, "Type Synced", Toast.LENGTH_SHORT).show();
+                                        Log.d("GetGoodsReceiptType", "Type Synced");
 
 
                                     }
@@ -85,9 +86,9 @@ public class GetGoodsReceiptTypeService extends JobService {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                editor.putBoolean("goodsReceiptTypeFinished",true).apply();
+                editor.putString(Commons.REMARKS_FINISHED,"true").apply();
                 editor.putString("syncDate",String.valueOf(DateFormat.format("yyyy-MM-dd", new java.util.Date()))).apply();
-                jobFinished(params,false);
+                onStopJob(params);
             }
         };
         asyncTask.execute();
@@ -105,6 +106,7 @@ public class GetGoodsReceiptTypeService extends JobService {
 
                     @Override
                     public void onError(ANError anError) {
+                        editor.putString(Commons.REMARKS_FINISHED,"error").apply();
                         Log.d("error",anError.getErrorDetail());
                     }
                 });
@@ -116,7 +118,7 @@ public class GetGoodsReceiptTypeService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         helper = new DatabaseHelper(this);
-        preferences = getSharedPreferences("sync",MODE_PRIVATE);
+        preferences = getSharedPreferences(Commons.PREFERENCE_SYNC,MODE_PRIVATE);
         editor = preferences.edit();
         AndroidNetworking.initialize(getApplicationContext());
         gt = new GoodsDamageType();
@@ -126,7 +128,10 @@ public class GetGoodsReceiptTypeService extends JobService {
     }
 
     @Override
-    public boolean onStopJob(JobParameters params) {
-        return false;
+    public boolean onStopJob(JobParameters params)
+    {
+        PublicData.Syncing = false;
+        jobFinished(params,false);
+        return true;
     }
 }

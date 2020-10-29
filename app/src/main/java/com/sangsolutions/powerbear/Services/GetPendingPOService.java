@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -18,6 +17,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.sangsolutions.powerbear.Commons;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.PendingSO;
 import com.sangsolutions.powerbear.Tools;
@@ -64,7 +64,7 @@ public class GetPendingPOService extends JobService {
                                 Handler handler = new Handler(Looper.getMainLooper());
                                 handler.post(new Runnable() {
                                     public void run() {
-                                        Toast.makeText(GetPendingPOService.this, "Pending SO Synced", Toast.LENGTH_SHORT).show();
+                                        Log.d("GetPendingPOService", "Pending SO Synced");
 
 
                                     }
@@ -90,9 +90,9 @@ public class GetPendingPOService extends JobService {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                editor.putBoolean("pendingPOFinished",true).apply();
+                editor.putString(Commons.PENDING_PO_FINISHED,"true").apply();
                 editor.putString("syncDate",String.valueOf(DateFormat.format("yyyy-MM-dd", new java.util.Date()))).apply();
-                jobFinished(params,false);
+                onStopJob(params);
             }
         };
         asyncTask.execute();
@@ -110,6 +110,7 @@ public class GetPendingPOService extends JobService {
 
                     @Override
                     public void onError(ANError anError) {
+                        editor.putString(Commons.PENDING_PO_FINISHED,"error").apply();
                         Log.d("error",anError.getErrorDetail());
                     }
                 });
@@ -131,7 +132,8 @@ public class GetPendingPOService extends JobService {
     }
 
     @Override
-    public boolean onStopJob(JobParameters params) {
-        return false;
+    public boolean onStopJob(JobParameters params)
+    {   jobFinished(params,false);
+        return true;
     }
 }

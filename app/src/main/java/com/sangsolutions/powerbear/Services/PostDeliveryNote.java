@@ -3,6 +3,7 @@ package com.sangsolutions.powerbear.Services;
 import android.annotation.SuppressLint;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 
 import com.sangsolutions.powerbear.AsyncConnection;
+import com.sangsolutions.powerbear.Commons;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.ScheduleJob;
 import com.sangsolutions.powerbear.Tools;
@@ -26,18 +28,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class PostDeliveryNote extends JobService {
     JobParameters params;
     DatabaseHelper helper;
-    int DeliveryCount = 0;
+    int DeliveryCount = 0, successCounter =0;
     HashMap<String,String> map;
     String response = "";
     Cursor cursor;
     AsyncConnection connection;
     String sDeviceId="";
-
+    SharedPreferences preferences;
+    SharedPreferences.Editor  editor;
     public void UploadDeliveryNote(final HashMap<String,String> map){
         @SuppressLint("StaticFieldLeak") final AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
 
@@ -72,6 +76,7 @@ public class PostDeliveryNote extends JobService {
                 if(response.equals("1"))
                 if(helper.DeleteDeliveryNote(map.get("SiNo"),map.get("iVoucherNo"))){
                     Log.d("status change","true");
+                successCounter++;
                 }
                 return null;
             }
@@ -108,13 +113,17 @@ public class PostDeliveryNote extends JobService {
                 Log.d("data",DeliveryCount+"");
             }
             if(cursor.getCount()==DeliveryCount+1){
-                jobFinished(params,false);
-                new ScheduleJob().SyncStockCount(getApplicationContext());
-                Toast.makeText(this, "Delivery note uploaded!", Toast.LENGTH_SHORT).show();
+                if(successCounter == cursor.getCount()) {
+                    editor.putString(Commons.DELIVERY_NOTE_FINISHED, "true").apply();
+                }else if(successCounter < cursor.getCount()){
+                    editor.putString(Commons.DELIVERY_NOTE_FINISHED, "error").apply();
+                    Toast.makeText(this, "Delivery note sync exited with an error!", Toast.LENGTH_SHORT).show();
+                }
+                onStopJob(params);
             }
         }else {
-            jobFinished(params,false);
-            new ScheduleJob().SyncStockCount(getApplicationContext());
+            editor.putString(Commons.DELIVERY_NOTE_FINISHED,"true").apply();editor.putString(Commons.DELIVERY_NOTE_FINISHED,"true").apply();
+            onStopJob(params);
         }
 
     }
@@ -125,19 +134,25 @@ public class PostDeliveryNote extends JobService {
     public boolean onStartJob(JobParameters params) {
         sDeviceId = Tools.getDeviceId(getApplicationContext());
         helper = new DatabaseHelper(this);
+        preferences = getSharedPreferences(Commons.PREFERENCE_SYNC,MODE_PRIVATE);
+        editor =  preferences.edit();
+        editor.putString(Commons.DELIVERY_NOTE_FINISHED,"false").apply();
         this.params = params;
         cursor = helper.GetDeliveryNote();
-        if(cursor!=null) {
-            cursor.moveToFirst();
+        if(cursor!=null&& cursor.moveToFirst()) {
+        }else {
+           onStopJob(params);
         }
         map = new HashMap<>();
         syncDeliveryNote();
-
         return true;
     }
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
+        jobFinished(jobParameters,false);
+        if(!Objects.equals(preferences.getString(Commons.DELIVERY_NOTE_FINISHED, "false"), "error"))
+        new ScheduleJob().SyncStockCount(getApplicationContext());
         return true;
     }
 }

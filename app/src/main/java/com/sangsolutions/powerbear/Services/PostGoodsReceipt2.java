@@ -3,6 +3,7 @@ package com.sangsolutions.powerbear.Services;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 
 import android.os.Build;
@@ -16,8 +17,10 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
+import com.sangsolutions.powerbear.Commons;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.GoodReceiptHeader;
+import com.sangsolutions.powerbear.ScheduleJob;
 import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
 
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class PostGoodsReceipt2 extends JobService {
@@ -41,7 +45,8 @@ public class PostGoodsReceipt2 extends JobService {
     String sDeviceId="";
     List<GoodReceiptHeader> list;
     int ReceiptCount = 0,successCounter=0;
-
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
 
     private void UploadGoodsReceipt() {
 
@@ -129,12 +134,15 @@ public class PostGoodsReceipt2 extends JobService {
                     }
 
                 }else {
-                    if(successCounter+1==list.size()) {
-                        Toast.makeText(this, "GRN Synced!", Toast.LENGTH_SHORT).show();
-                    }else if(successCounter+1<list.size()){
+                    if(successCounter==list.size()) {
+                        editor.putString(Commons.GOODS_RECEIPT_FINISHED,"true").apply();
+                    }else if(successCounter<list.size()){
+                        editor.putString(Commons.GOODS_RECEIPT_FINISHED,"error").apply();
                         Toast.makeText(this, "GRN Sync exited with an error!", Toast.LENGTH_SHORT).show();
                     }
+                   onStopJob(params);
                     }
+
                 } catch(Exception e){
                     e.printStackTrace();
                 }
@@ -159,10 +167,10 @@ public class PostGoodsReceipt2 extends JobService {
                         Log.d("data",response);
                         if(response.contains("Created")){
                              try {
-                                 successCounter++;
                                 if (helper.deleteGoodsBodyItem(mainJsonObject.getString("sVoucherNo"))) {
                                     helper.deleteGoodsHeaderItem(mainJsonObject.getString("sVoucherNo"));
                                     Log.d("goods", "deleted!");
+                                    successCounter++;
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -243,15 +251,22 @@ public class PostGoodsReceipt2 extends JobService {
     }
 
 
+
+
     @Override
     public boolean onStartJob(JobParameters params) {
         sDeviceId = Tools.getDeviceId(getApplicationContext());
         helper = new DatabaseHelper(this);
+        preferences = getSharedPreferences(Commons.PREFERENCE_SYNC,MODE_PRIVATE);
+        editor = preferences.edit();
+        editor.putString(Commons.GOODS_RECEIPT_FINISHED,"false").apply();
         this.params = params;
         list = new ArrayList<>();
          cursor = helper.GetAllGoodsHeader();
         if(cursor!=null&&cursor.moveToFirst()) {
             InitializeHeader(cursor);
+        }else {
+            onStopJob(params);
         }
         map = new HashMap<>();
 
@@ -261,7 +276,10 @@ public class PostGoodsReceipt2 extends JobService {
 
 
     @Override
-    public boolean onStopJob(JobParameters jobParameters) {
+    public boolean onStopJob(JobParameters jobParameters)
+    {  jobFinished(jobParameters,false);
+        if(!Objects.equals(preferences.getString(Commons.GOODS_RECEIPT_FINISHED, "false"), "error"))
+        new ScheduleJob().SyncDeliveryNote(getApplicationContext());
         return true;
     }
 }

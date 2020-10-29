@@ -1,8 +1,10 @@
 package com.sangsolutions.powerbear;
 
 import android.annotation.SuppressLint;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -19,6 +21,7 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Fragment.SyncFragment;
 
@@ -42,6 +45,12 @@ ImageView img_settings;
         tv_date.setText(df.format(c));
     }
 
+
+    @Override
+    public void onBackPressed() {
+            super.onBackPressed();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,15 +72,16 @@ ImageView img_settings;
     stock_count_btn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (preferences.getBoolean("WarehouseFinished", false)
-                    && preferences.getBoolean("pendingPOFinished", false)
-                    && preferences.getBoolean("pendingSOFinished", false)
-                    &&  preferences.getBoolean("goodsReceiptTypeFinished", false)
+            if (preferences.getString(Commons.WAREHOUSE_FINISHED, "false").equals("true")
+                    && preferences.getString(Commons.PENDING_PO_FINISHED, "false").equals("true")
+                    && preferences.getString(Commons.PENDING_SO_FINISHED, "false").equals("true")
+                    &&  preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
+                    &&  preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
                     ){
             startActivity(new Intent(Home.this,StockCountList.class));
         }
             else {
-                Toast.makeText(Home.this, "Wait for the data to be synced..", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Home.this, "Sync data before you do anything..", Toast.LENGTH_SHORT).show();
             }
         }
     });
@@ -79,18 +89,27 @@ ImageView img_settings;
         sync_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(Home.this, "Sync started...", Toast.LENGTH_SHORT).show();
 
-                Fragment fragment = new SyncFragment();
-                FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-                tx.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-                tx.replace(R.id.fragment, fragment).addToBackStack("sync").commit();
-
-
-                //start with SyncGoodsReceipt
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    new ScheduleJob().SyncGoodsReceipt(Home.this);
+                if(Tools.isConnected(Home.this)) {
+                    Fragment fragment = new SyncFragment();
+                    FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+                    tx.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+                    tx.replace(R.id.fragment, fragment).addToBackStack("sync").commit();
+                    //start with SyncGoodsReceipt
+                    if(!PublicData.Syncing) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            new ScheduleJob().SyncGoodsReceipt(Home.this);
+                        }
+                        Toast.makeText(Home.this, "Sync started...", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Snackbar snackBar = Snackbar .make(v, "You are offline!", Snackbar.LENGTH_SHORT);
+                    snackBar.setTextColor(Color.WHITE);
+                    snackBar.setBackgroundTint(Color.RED);
+                    snackBar.show();
                 }
+
+
 
 
             }
@@ -123,16 +142,17 @@ ImageView img_settings;
     goods_btn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (preferences.getBoolean("WarehouseFinished", false)
-                    && preferences.getBoolean("pendingPOFinished", false)
-                    && preferences.getBoolean("pendingSOFinished", false)
-                    &&  preferences.getBoolean("goodsReceiptTypeFinished", false)
-                    ){
+            if (preferences.getString(Commons.WAREHOUSE_FINISHED, "false").equals("true")
+                    && preferences.getString(Commons.PENDING_PO_FINISHED, "false").equals("true")
+                    && preferences.getString(Commons.PENDING_SO_FINISHED, "false").equals("true")
+                    &&  preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
+                    &&  preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
+            ){
 
                     Intent intent = new Intent(Home.this, GoodsReceiptHistory.class);
                     startActivity(intent);
                 }else {
-                Toast.makeText(Home.this, "Wait for the data to be synced..", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Home.this, "Sync data before you do anything..", Toast.LENGTH_SHORT).show();
             }
         }
     });
@@ -140,15 +160,16 @@ ImageView img_settings;
         delivery_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (preferences.getBoolean("WarehouseFinished", false)
-                        && preferences.getBoolean("pendingPOFinished", false)
-                        && preferences.getBoolean("pendingSOFinished", false)
-                        &&  preferences.getBoolean("goodsReceiptTypeFinished", false)
+                if (preferences.getString(Commons.WAREHOUSE_FINISHED, "false").equals("true")
+                        && preferences.getString(Commons.PENDING_PO_FINISHED, "false").equals("true")
+                        && preferences.getString(Commons.PENDING_SO_FINISHED, "false").equals("true")
+                        &&  preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
+                        &&  preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
                 ){
                 Intent intent = new Intent(Home.this,DeliveryNoteHistory.class);
                 startActivity(intent);
             }else {
-                Toast.makeText(Home.this, "Wait for the data to be synced..", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Home.this, "Sync data before you do anything..", Toast.LENGTH_SHORT).show();
             }
             }
         });

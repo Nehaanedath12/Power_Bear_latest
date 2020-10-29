@@ -12,6 +12,7 @@ public class PublicData {
     public static String image_damaged="";
     public static String POs="";
     public static String voucher="";
+    public static boolean Syncing = false;
 
     public static void clearDataIgnoreHeader(){
         warehouse = "";

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
@@ -152,6 +154,19 @@ SharedPreferences.Editor editor;
     e.printStackTrace();
     }
        return sb.toString();
+    }
+
+    public static boolean isConnected(Context context){
+        try {
+            ConnectivityManager cm =
+                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            return activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting();
+        }catch (Exception e){
+            return false;
+        }
     }
 
 }

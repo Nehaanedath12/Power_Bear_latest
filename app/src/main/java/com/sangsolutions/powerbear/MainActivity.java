@@ -43,36 +43,30 @@ public void syncData(){
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         ScheduleJob scheduleJob = new ScheduleJob();
         if(!Objects.equals(preferences.getString("syncDate", ""),String.valueOf(DateFormat.format("yyyy-MM-dd", new java.util.Date())))) {
-            if (preferences.getBoolean("WarehouseFinished", false)
-                    && preferences.getBoolean("pendingPOFinished", false)
-                    && preferences.getBoolean("pendingSOFinished", false)
-                    && preferences.getBoolean("goodsReceiptTypeFinished", false)) {
+            if (Objects.equals(preferences.getString(Commons.WAREHOUSE_FINISHED, "false"), "true")
+                    && Objects.equals(preferences.getString(Commons.PENDING_PO_FINISHED, "false"), "true")
+                    && Objects.equals(preferences.getString(Commons.PENDING_SO_FINISHED, "false"), "true")
+                    && Objects.equals(preferences.getString(Commons.REMARKS_FINISHED, "false"), "true")) {
 
             } else {
+
                 scheduleJob.SyncUserData(this);
-                scheduleJob.SyncWarehouse(this);
-                scheduleJob.SyncPendingSOData(this);
-                scheduleJob.SyncPendingPO(this);
-                scheduleJob.SyncProductData(this);
-                scheduleJob.SyncGoodsReceiptType(this);
-                editor.putBoolean("WarehouseFinished", false).apply();
-                editor.putBoolean("pendingPOFinished", false).apply();
-                editor.putBoolean("pendingSOFinished", false).apply();
-                editor.putBoolean("goodsReceiptTypeFinished",false).apply();
-                editor.putString("syncDate", "").apply();
+
+                editor.putString(Commons.WAREHOUSE_FINISHED, "false").apply();
+                editor.putString(Commons.PENDING_PO_FINISHED, "false").apply();
+                editor.putString(Commons.PENDING_SO_FINISHED, "false").apply();
+                editor.putString(Commons.PRODUCT_FINISHED, "false").apply();
+                editor.putString(Commons.REMARKS_FINISHED,"false").apply();
+                editor.putString(Commons.SYNC_DATE, "").apply();
             }
         }else {
             scheduleJob.SyncUserData(this);
-            scheduleJob.SyncWarehouse(this);
-            scheduleJob.SyncPendingSOData(this);
-            scheduleJob.SyncPendingPO(this);
-            scheduleJob.SyncProductData(this);
-            scheduleJob.SyncGoodsReceiptType(this);
-            editor.putBoolean("WarehouseFinished", false).apply();
-            editor.putBoolean("pendingPOFinished", false).apply();
-            editor.putBoolean("pendingSOFinished", false).apply();
-            editor.putBoolean("goodsReceiptTypeFinished",false).apply();
-            editor.putString("syncDate", "").apply();
+            editor.putString(Commons.WAREHOUSE_FINISHED, "false").apply();
+            editor.putString(Commons.PENDING_PO_FINISHED, "false").apply();
+            editor.putString(Commons.PENDING_SO_FINISHED, "false").apply();
+            editor.putString(Commons.PRODUCT_FINISHED, "false").apply();
+            editor.putString(Commons.REMARKS_FINISHED,"false").apply();
+            editor.putString(Commons.SYNC_DATE, "").apply();
         }
 
     }else {
@@ -92,10 +86,10 @@ public void syncData(){
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    login_btn = findViewById(R.id.login);
-    login_name = findViewById(R.id.username);
-    password = findViewById(R.id.password);
-    settings = findViewById(R.id.settings);
+        login_btn = findViewById(R.id.login);
+        login_name = findViewById(R.id.username);
+        password = findViewById(R.id.password);
+        settings = findViewById(R.id.settings);
     AndroidNetworking.initialize(this);
     helper = new DatabaseHelper(this);
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
