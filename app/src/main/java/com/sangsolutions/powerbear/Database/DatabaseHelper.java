@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     final Context context;
 
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "PowerBear.db";
     private static final String TABLE_PRODUCT = "tbl_Product";
     private static final String TABLE_PENDING_SO = "tbl_PendingSO";
@@ -73,6 +73,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static  final String I_PRODUCT = "iProduct";
     private static  final String F_QTY = "fQty";
     private static  final String S_UNIT = "sUnit";
+    private static  final String I_USER = "iUser";
     private static  final String S_REMARKS = "sRemarks";
     private static  final String D_PROCESSED_DATE ="dProcessedDate";
     private static final String S_NARRATION = "sNarration";
@@ -136,6 +137,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_STOCK_COUNT = "create table if not exists " + TABLE_STOCK_COUNT + " (" +
             "" + I_VOUCHER_NO + "  INTEGER DEFAULT 0," +
             "" + D_DATE + "  TEXT(10) DEFAULT null," +
+            "" + I_USER + " INTEGER DEFAULT 0,"+
             "" + I_WAREHOUSE + "  INTEGER DEFAULT 0," +
             "" + I_PRODUCT + "  INTEGER DEFAULT 0," +
             "" + F_QTY + "  TEXT(10) DEFAULT null," +
@@ -176,6 +178,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + DOC_NO + " TEXT(30) DEFAULT null ," +
             "" + DOC_DATE + " TEXT(10) DEFAULT null ," +
             "" + I_SUPPLIER + " INTEGER DEFAULT 0 ," +
+            "" + I_USER + " INTEGER DEFAULT 0 ,"+
             "" + S_PONO + "  TEXT(150) DEFAULT null," +
             ""+D_PROCESSED_DATE+ " TEXT(10) DEFAULT null ,"+
             "" + S_NARRATION + "  TEXT(50) DEFAULT null" +
@@ -187,6 +190,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + S_PONO + " TEXT(10) DEFAULT null ," +
             "" + I_PRODUCT + " INTEGER DEFAULT 0, "+
             "" + I_WAREHOUSE + " INTEGER DEFAULT 0,"  +
+            "" + I_USER + " INTEGER DEFAULT 0 ,"+
             "" + BARCODE + " TEXT(30) DEFAULT null ," +
             "" + F_PO_QTY + "  TEXT(10) DEFAULT null," +
             "" + F_QTY + "  TEXT(10) DEFAULT null," +
@@ -218,7 +222,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         super.onDowngrade(db, oldVersion, newVersion);
-
     }
 
     @Override
@@ -744,6 +747,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     cv.put(I_PRODUCT,s.getiProduct());
     cv.put(F_QTY,s.getfQty());
     cv.put(S_UNIT,s.getsUnit());
+    cv.put(I_USER,s.getiUser());
     cv.put(S_NARRATION,s.getsNarration());
     cv.put(S_REMARKS,s.getsRemarks());
     cv.put(D_PROCESSED_DATE,s.getdProcessedDate());
@@ -775,7 +779,12 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetStockCountList() {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT iVoucherNo,iWarehouse,dDate,sum(fQty) as SumQty FROM tbl_StockCount GROUP BY iVoucherNo",null);
+        Cursor cursor;
+        if(GetUserId().equals("1")) {
+             cursor = db.rawQuery("SELECT iVoucherNo,iWarehouse,dDate,sum(fQty) as SumQty FROM tbl_StockCount  GROUP BY iVoucherNo",null);
+        }else {
+            cursor = db.rawQuery("SELECT iVoucherNo,iWarehouse,dDate,sum(fQty) as SumQty FROM tbl_StockCount where iUser = ? GROUP BY iVoucherNo", new String[]{GetUserId()});
+        }
         if(cursor.moveToFirst())
             return cursor;
         else
@@ -861,6 +870,7 @@ public boolean DeleteStockCount(String voucherNo){
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO, gh.getDocNo());
         cv.put(DOC_DATE, gh.getDocDate());
+        cv.put(I_USER,gh.getiUser());
         cv.put(D_PROCESSED_DATE,gh.getdProcessedDate());
         cv.put(I_SUPPLIER, gh.getiSupplier());
         cv.put(S_PONO,gh.getsPONo());
@@ -924,6 +934,7 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(BARCODE, gb.getBarcode());
         cv.put(F_PO_QTY, gb.getfPOQty());
         cv.put(F_QTY, gb.getfQty());
+        cv.put(I_USER,gb.getiUser());
         cv.put(UNIT, gb.getUnit());
         cv.put(S_REMARKS, gb.getsRemarks());
         cv.put(F_MINOR_DAMAGE_QTY, gb.getfMinorDamageQty());
@@ -1035,10 +1046,16 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetAllGoodsReceipt(){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT h.DocNo as DocNo ,h.DocDate as DocDate, sum(b.fQty+b.fMinorDamageQty+fDamagedQty) as sumQty from tbl_GoodsReceiptHeader h " +
-                "INNER join tbl_GoodsReceiptBody b on h.DocNo =b.DocNo " +
-                " GROUP by h.DocNo",null);
-
+        Cursor cursor;
+        if(GetUserId().equals("1")){
+             cursor = db.rawQuery("SELECT h.DocNo as DocNo ,h.DocDate as DocDate, sum(b.fQty+b.fMinorDamageQty+fDamagedQty) as sumQty from tbl_GoodsReceiptHeader h " +
+                    "INNER join tbl_GoodsReceiptBody b on h.DocNo =b.DocNo " +
+                    " GROUP by h.DocNo",null);
+        }else {
+             cursor = db.rawQuery("SELECT h.DocNo as DocNo ,h.DocDate as DocDate, sum(b.fQty+b.fMinorDamageQty+fDamagedQty) as sumQty from tbl_GoodsReceiptHeader h " +
+                    "INNER join tbl_GoodsReceiptBody b on h.DocNo =b.DocNo where h.iUser = ? " +
+                    " GROUP by h.DocNo", new String[]{GetUserId()});
+        }
         if(cursor!=null&&cursor.moveToFirst()){
             return cursor;
         }else

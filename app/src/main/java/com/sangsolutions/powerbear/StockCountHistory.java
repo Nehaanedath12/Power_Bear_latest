@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class StockCountList extends AppCompatActivity {
+public class StockCountHistory extends AppCompatActivity {
     ImageView add_new;
     RecyclerView rv;
     FrameLayout empty_frame;
@@ -166,7 +166,7 @@ public class StockCountList extends AppCompatActivity {
                             list.remove(pos);
                             setRecyclerView();
                             StockCountSingleton.getInstance().setList(list);
-                            Toast.makeText(StockCountList.this, "Deleted!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(StockCountHistory.this, "Deleted!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -196,7 +196,7 @@ public class StockCountList extends AppCompatActivity {
         img_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(StockCountList.this,Home.class));
+                startActivity(new Intent(StockCountHistory.this,Home.class));
                 finishAffinity();
             }
         });
@@ -212,7 +212,7 @@ public class StockCountList extends AppCompatActivity {
         add_new.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-             Intent intent = new Intent(StockCountList.this,StockCountWarehouse.class);
+             Intent intent = new Intent(StockCountHistory.this,StockCountWarehouse.class);
              // new for new entry
              intent.putExtra("EditMode", "new");
              startActivity(intent);
@@ -231,7 +231,7 @@ public class StockCountList extends AppCompatActivity {
             public void onItemClick(com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList stockCountList, int pos) {
 
               if(!selection_active) {
-                  Intent intent1 = new Intent(StockCountList.this, StockCountWarehouse.class);
+                  Intent intent1 = new Intent(StockCountHistory.this, StockCountWarehouse.class);
                   intent1.putExtra("warehouse", stockCountList.getWarehouseId());
                   intent1.putExtra("voucherNo", stockCountList.getVNo());
                   intent1.putExtra("EditMode", "edit");

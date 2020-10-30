@@ -83,6 +83,7 @@ public class StockCountWarehouse extends AppCompatActivity {
                 s.setfQty(list.get(i).getQty());
                 s.setsUnit(list.get(i).getUnit());
                 s.setsNarration(str_narration);
+                s.setiUser(helper.GetUserId());
                 s.setsRemarks(list.get(i).getsRemarks());
                 s.setdProcessedDate(String.valueOf(DateFormat.format("yyyy-MM-dd hh:mm:ss a", new Date())));
                 s.setiStatus("0");

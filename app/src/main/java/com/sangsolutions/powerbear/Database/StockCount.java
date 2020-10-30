@@ -2,7 +2,7 @@ package com.sangsolutions.powerbear.Database;
 
 @SuppressWarnings("ALL")
 public class StockCount {
-String iVoucherNo,dDate,iWarehouse,iProduct,fQty,sUnit,sRemarks,sNarration,dProcessedDate,iStatus;
+String iVoucherNo,dDate,iUser,iWarehouse,iProduct,fQty,sUnit,sRemarks,sNarration,dProcessedDate,iStatus;
 
     public String getsNarration() {
         return sNarration;
@@ -18,6 +18,14 @@ String iVoucherNo,dDate,iWarehouse,iProduct,fQty,sUnit,sRemarks,sNarration,dProc
 
     public void setiVoucherNo(String iVoucherNo) {
         this.iVoucherNo = iVoucherNo;
+    }
+
+    public String getiUser() {
+        return iUser;
+    }
+
+    public void setiUser(String iUser) {
+        this.iUser = iUser;
     }
 
     public String getdDate() {

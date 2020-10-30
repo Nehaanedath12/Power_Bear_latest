@@ -84,8 +84,8 @@ public class SyncFragment extends Fragment {
       View view = LayoutInflater.from(requireActivity()).inflate(R.layout.sync_fragment,container,false);
         mProgressBar = view.findViewById(R.id.main_progress);
         mProgressBar.setBackgroundResource(R.drawable.loading);
-         fadeIn = AnimationUtils.loadAnimation(requireActivity(), android.R.anim.fade_in);
-         fadeOut = AnimationUtils.loadAnimation(requireActivity(), android.R.anim.fade_out);
+        fadeIn = AnimationUtils.loadAnimation(requireActivity(), android.R.anim.fade_in);
+        fadeOut = AnimationUtils.loadAnimation(requireActivity(), android.R.anim.fade_out);
         preferences = getActivity().getSharedPreferences(Commons.PREFERENCE_SYNC,MODE_PRIVATE);
         editor = preferences.edit();
         txt = view.findViewById(R.id.title_text);

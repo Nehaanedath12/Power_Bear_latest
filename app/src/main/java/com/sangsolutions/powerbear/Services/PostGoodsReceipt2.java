@@ -57,7 +57,7 @@ public class PostGoodsReceipt2 extends JobService {
                     mainJsonObject.put("sVoucherNo", list.get(ReceiptCount).getDocNo());
                     mainJsonObject.put("iDocDate", list.get(ReceiptCount).getDocDate());
                     mainJsonObject.put("iSupplier", Integer.parseInt(list.get(ReceiptCount).getiSupplier()));
-                    mainJsonObject.put("iUser", Integer.parseInt(helper.GetUserId()));
+                    mainJsonObject.put("iUser", list.get(ReceiptCount).getiUser());
                     mainJsonObject.put("sDeviceId", sDeviceId);
                     mainJsonObject.put("sNarration", list.get(ReceiptCount).getsNarration());
                     mainJsonObject.put("iProcessDate", list.get(ReceiptCount).getdProcessedDate());
@@ -134,6 +134,7 @@ public class PostGoodsReceipt2 extends JobService {
                     }
 
                 }else {
+                    Log.d("PostGoods",successCounter+":"+list.size());
                     if(successCounter==list.size()) {
                         editor.putString(Commons.GOODS_RECEIPT_FINISHED,"true").apply();
                     }else if(successCounter<list.size()){
@@ -157,14 +158,14 @@ public class PostGoodsReceipt2 extends JobService {
              .addMultipartParameter("json_content",mainJsonObject.toString())
                 .setContentType("multipart/form-data")
                 .addMultipartFileList("file",files)
-                .setPriority(Priority.HIGH)
+                .setPriority(Priority.IMMEDIATE)
                 .build()
                .setUploadProgressListener((bytesUploaded, totalBytes) ->
                        Log.d("Uploaded","Byte:"+totalBytes+":"+bytesUploaded))
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("data",response);
+                        Log.d("data",response+" "+"http://" + new Tools().getIP(PostGoodsReceipt2.this) + URLs.PostGR);
                         if(response.contains("Created")){
                              try {
                                 if (helper.deleteGoodsBodyItem(mainJsonObject.getString("sVoucherNo"))) {
@@ -176,15 +177,16 @@ public class PostGoodsReceipt2 extends JobService {
                                 e.printStackTrace();
                             }
                         }
-                        ReceiptCount++;
                         UploadGoodsReceipt();
+                        ReceiptCount++;
                     }
 
                     @Override
                     public void onError(ANError anError) {
                         Log.d("error",anError.getErrorDetail());
-                        ReceiptCount++;
+                        Log.d("data"," "+"http://" + new Tools().getIP(PostGoodsReceipt2.this) + URLs.PostGR);
                         UploadGoodsReceipt();
+                        ReceiptCount++;
                     }
                 });
 
@@ -236,6 +238,7 @@ public class PostGoodsReceipt2 extends JobService {
                         cursor.getString(cursor.getColumnIndex("DocDate")),
                         cursor.getString(cursor.getColumnIndex("dProcessedDate")),
                         cursor.getString(cursor.getColumnIndex("iSupplier")),
+                        cursor.getString(cursor.getColumnIndex("iUser")),
                         cursor.getString(cursor.getColumnIndex("sPONo")),
                         cursor.getString(cursor.getColumnIndex("sNarration"))
                 ));

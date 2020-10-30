@@ -103,6 +103,7 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
                 gb.setfQty(listMain.get(i).getfQty());
                 gb.setUnit(listMain.get(i).getUnit());
                 gb.setsRemarks(listMain.get(i).getsRemarks());
+                gb.setiUser(helper.GetUserId());
                 gb.setfMinorDamageQty(listMain.get(i).getfMinorDamageQty());
                 gb.setsMinorRemarks(listMain.get(i).getsMinorRemarks());
                 gb.setsMinorAttachment(listMain.get(i).getsMinorAttachment());
@@ -122,7 +123,12 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
 
                             if (!date.isEmpty() && !POs.isEmpty() && !supplier.isEmpty()) {
 
-                                GoodReceiptHeader gh = new GoodReceiptHeader(voucher,date,ProcessedDate,supplier,POs,narration);
+                                GoodReceiptHeader gh = new GoodReceiptHeader(voucher
+                                        ,date
+                                        ,ProcessedDate
+                                        ,supplier
+                                        ,helper.GetUserId()
+                                        ,POs,narration);
 
                                 if (helper.InsertGoodsReceiptHeader(gh)) {
                                     Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();

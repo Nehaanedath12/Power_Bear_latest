@@ -52,21 +52,9 @@ public void syncData(){
 
                 scheduleJob.SyncUserData(this);
 
-                editor.putString(Commons.WAREHOUSE_FINISHED, "false").apply();
-                editor.putString(Commons.PENDING_PO_FINISHED, "false").apply();
-                editor.putString(Commons.PENDING_SO_FINISHED, "false").apply();
-                editor.putString(Commons.PRODUCT_FINISHED, "false").apply();
-                editor.putString(Commons.REMARKS_FINISHED,"false").apply();
-                editor.putString(Commons.SYNC_DATE, "").apply();
             }
         }else {
             scheduleJob.SyncUserData(this);
-            editor.putString(Commons.WAREHOUSE_FINISHED, "false").apply();
-            editor.putString(Commons.PENDING_PO_FINISHED, "false").apply();
-            editor.putString(Commons.PENDING_SO_FINISHED, "false").apply();
-            editor.putString(Commons.PRODUCT_FINISHED, "false").apply();
-            editor.putString(Commons.REMARKS_FINISHED,"false").apply();
-            editor.putString(Commons.SYNC_DATE, "").apply();
         }
 
     }else {

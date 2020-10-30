@@ -46,7 +46,7 @@
             android:name=".PendingPO"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name=".StockCountList"
+            android:name=".StockCountHistory"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".StockCountWarehouse"

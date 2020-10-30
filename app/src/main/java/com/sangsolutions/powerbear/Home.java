@@ -1,7 +1,6 @@
 package com.sangsolutions.powerbear;
 
 import android.annotation.SuppressLint;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -11,7 +10,6 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,7 +76,7 @@ ImageView img_settings;
                     &&  preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
                     &&  preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
                     ){
-            startActivity(new Intent(Home.this,StockCountList.class));
+            startActivity(new Intent(Home.this, StockCountHistory.class));
         }
             else {
                 Toast.makeText(Home.this, "Sync data before you do anything..", Toast.LENGTH_SHORT).show();

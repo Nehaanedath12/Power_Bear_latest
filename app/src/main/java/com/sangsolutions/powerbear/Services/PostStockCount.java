@@ -103,7 +103,7 @@ public class PostStockCount extends JobService {
                 mainJsonObject.put("iVoucherNo", cursor.getString(cursor.getColumnIndex("iVoucherNo")));
                 mainJsonObject.put("iDocDate", cursor.getString(cursor.getColumnIndex("dProcessedDate")));
                 mainJsonObject.put("iWarehouse", cursor.getString(cursor.getColumnIndex("iWarehouse")));
-                mainJsonObject.put("iUser", UserId);
+                mainJsonObject.put("iUser", cursor.getString(cursor.getColumnIndex("iUser")));
                 mainJsonObject.put("iProcessDate",cursor.getString(cursor.getColumnIndex("dProcessedDate")));
                 if(cursor.getString(cursor.getColumnIndex("sNarration"))==null){
                     mainJsonObject.put("sNarration","");
