@@ -78,6 +78,23 @@ Context context;
         this.context = context;
     }
 
+
+    public void DeselectAll(){
+        if(list.size()>0){
+            clearSelections();
+        }
+    }
+
+    public void SelectAll(){
+        if(list.size()>0){
+            for(int i = 0;i<list.size();i++) {
+                selected_items.put(i, true);
+                notifyDataSetChanged();
+            }
+        }
+    }
+
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

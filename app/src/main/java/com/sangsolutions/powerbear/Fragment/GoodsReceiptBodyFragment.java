@@ -75,6 +75,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
     //To load Alert With product recyclerView
     private GoodsPOProductAdapter goodsPOProductAdapter;
     private  List<GoodsPOProduct> listPOProducts;
+    boolean productSelection = false;
 
     //photo minor
     private List<String> listMinorImage;
@@ -379,6 +380,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
 
     View view = LayoutInflater.from(getActivity()).inflate(R.layout.goods_product_select_alert,null,false);
         Button btn_apply = view.findViewById(R.id.apply);
+        FloatingActionButton fab_select = view.findViewById(R.id.select);
         RecyclerView rv_product_select = view.findViewById(R.id.rv_product_selection);
         ImageView ic_close = view.findViewById(R.id.close);
 
@@ -421,7 +423,20 @@ public class GoodsReceiptBodyFragment extends Fragment {
           }
       }
   });
+        fab_select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listPOProducts.size()>0)
+                if(productSelection){
+                    goodsPOProductAdapter.DeselectAll();
+                    productSelection =false;
+                }else {
+                    goodsPOProductAdapter.SelectAll();
+                    productSelection = true;
+                }
 
+            }
+        });
 
     }
     ///////////////////////////////////////////
