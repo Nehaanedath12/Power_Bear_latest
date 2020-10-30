@@ -51,8 +51,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class GoodsReceiptHeaderFragment extends Fragment {
-    EditText et_date,et_narration;
-    Spinner sp_supplier;
+    EditText et_date,et_narration,et_supplier;
+    Spinner sp_supplier;//remove
     List<SupplierAdapter.Supplier> supplierList;
     List<String> poList;
     List<String> goodsPoList;
@@ -171,11 +171,11 @@ public class GoodsReceiptHeaderFragment extends Fragment {
 }
 
 
-    public void LoadSupplier(){
+    public void LoadSupplier(String keyword){
     supplierList.clear();
     supplierList.add(new SupplierAdapter.Supplier("---Select Supplier---","0"));
     try {
-        Cursor cursor = helper.GetSupplier();
+        Cursor cursor = helper.GetSupplier(keyword);
         if (cursor != null && cursor.moveToFirst()) {
             for (int i = 0; i < cursor.getCount(); i++) {
                 supplierList.add(new SupplierAdapter.Supplier(
@@ -299,6 +299,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         }
     }
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -308,9 +309,8 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         et_date = view.findViewById(R.id.date);
         et_narration = view.findViewById(R.id.narration);
         tv_add_po = view.findViewById(R.id.add_po);
-        sp_supplier = view.findViewById(R.id.supplier);
         tv_doc_no = view.findViewById(R.id.doc_no);
-
+        et_supplier = view.findViewById(R.id.supplier);
         Bundle bundle = getArguments();
 
 
@@ -386,7 +386,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         }
 
 
-        LoadSupplier();
+        LoadSupplier("");
 
         if(!EditMode) {
             et_date.setText(String.valueOf(DateFormat.format("dd-MM-yyyy", new Date())));
