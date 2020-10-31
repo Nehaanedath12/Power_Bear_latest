@@ -11,7 +11,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -799,6 +801,118 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                 ImageDeleteAlert("damaged", position);
             }
         });
+
+        et_regular_qty.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int regular = et_regular_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_regular_qty.getText().toString());
+                int minor = et_minor_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_minor_qty.getText().toString());
+                int damaged = et_damaged_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_damaged_qty.getText().toString());
+
+                boolean condition;
+                if(!EditMode){
+                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                }else {
+                    condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <=  (regular+minor+damaged);
+                }
+                if(condition){
+                    if(et_minor_remarks.getText().toString().isEmpty()){
+                        et_minor_qty.setActivated(false);
+                        et_minor_qty.setFocusable(false);
+                    }
+
+                    if(et_damaged_qty.getText().toString().isEmpty()){
+                        et_damaged_qty.setActivated(false);
+                        et_damaged_qty.setFocusable(false);
+                    }
+                }
+            }
+        });
+
+        et_minor_qty.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int regular = et_regular_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_regular_qty.getText().toString());
+                int minor = et_minor_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_minor_qty.getText().toString());
+                int damaged = et_damaged_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_damaged_qty.getText().toString());
+
+                boolean condition;
+                if(!EditMode){
+                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                }else {
+                    condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <=  (regular+minor+damaged);
+                }
+                if(condition){
+                    if(et_regular_remarks.getText().toString().isEmpty()){
+                        et_regular_qty.setActivated(false);
+                        et_regular_qty.setFocusable(false);
+                    }
+
+                    if(et_damaged_qty.getText().toString().isEmpty()){
+                        et_damaged_qty.setActivated(false);
+                        et_damaged_qty.setFocusable(false);
+                    }
+                }
+            }
+        });
+
+        et_damaged_qty.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int regular = et_regular_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_regular_qty.getText().toString());
+                int minor = et_minor_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_minor_qty.getText().toString());
+                int damaged = et_damaged_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_damaged_qty.getText().toString());
+
+                boolean condition;
+                if(!EditMode){
+                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                }else {
+                    condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <=  (regular+minor+damaged);
+                }
+                if(condition){
+                    if(et_minor_remarks.getText().toString().isEmpty()){
+                        et_minor_qty.setActivated(false);
+                        et_minor_qty.setFocusable(false);
+                    }
+
+                    if(et_regular_remarks.getText().toString().isEmpty()){
+                        et_regular_qty.setActivated(false);
+                        et_regular_qty.setFocusable(false);
+                    }
+                }
+            }
+        });
+
     }
    //////////////////////////////////////////
 
@@ -841,9 +955,9 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     }
                 })
                 .create().show();
+
     }
     /////////////////////////////////////////
-
 
 
     //Camera Alert
