@@ -24,11 +24,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     final Context context;
 
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
     private static final String DATABASE_NAME = "PowerBear.db";
     private static final String TABLE_PRODUCT = "tbl_Product";
     private static final String TABLE_PENDING_SO = "tbl_PendingSO";
-    private static final String TABLE_DELIVERY_NOTE = "tbl_DeliveryNote";
     private static final String TABLE_USER = "user";
     private static final String TABLE_CURRENT_LOGIN = "current_login";
     private static final String TABLE_WAREHOUSE = "tbl_warehouse";
@@ -37,7 +36,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_GOODS_RECEIPT_HEADER = "tbl_GoodsReceiptHeader";
     private static final String TABLE_GOODS_RECEIPT_BODY = "tbl_GoodsReceiptBody";
     private static final String TABLE_GOOD_RECEIPT_TYPE = "tbl_GoodsReceiptType";
-
+    private static final String TABLE_DELIVERY_NOTE_HEADER = "tbl_DeliveryNoteHeader";
+    private static final String TABLE_DELIVERY_NOTE_BODY = "tbl_DeliveryNoteBody";
 
     //Product
     private static final String MASTER_ID = "MasterId";
@@ -96,9 +96,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //goods receipt damage type
     private static final String S_NAME  = "sName";
 
+    //delivery note header
+    private static final String S_SALESMAN = "sSalesman";
+    private static final String S_JOB_NO = "sJobNo";
+    private static final String S_CONTACT_PERSON = "sContactPerson";
+    private static final String I_CUST_LPO_NO = "iCustLPONo";
+    private static final String S_DELIVERY_LOCATION = "sDeliveryLocation";
+    private static final String I_CUSTOMER = "iCustomerRef";
+    private static final String S_DATE = "sDate";
+    private static final String S_CUSTOMER_REF = "sCustomerRef";
 
+    //delivery note body
+    private static final String S_ITEM_CODE = "iItemCode";
+    private static final String S_DESCRIPTION = "sDescription";
+    private static final String S_ATTACHMENT = "sAttachment";
 
-//create table Product
+    //create table Product
     private static final String CREATE_TABLE_PRODUCT = "create table if not exists  " + TABLE_PRODUCT + " (" +
             "" + MASTER_ID + " INTEGER PRIMARY KEY ," +
             "" + NAME + " TEXT(65) DEFAULT null ," +
@@ -106,6 +119,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + BARCODE + "  TEXT(30) DEFAULT null," +
             "" + UNIT + " TEXT(20) DEFAULT null" +
             ")";
+
     private static final String CREATE_CURRENT_LOGIN = "create table if not exists  " + TABLE_CURRENT_LOGIN + " (" +
             "" + I_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "" + USER_ID + " INTEGER DEFAULT null)";
@@ -117,15 +131,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + S_LOGIN_NAME + " TEXT DEFAULT null," +
             "" + S_PASSWORD + " TEXT DEFAULT null" + ");";
 
-    //create table DeliveryNote
-    private static final String CREATE_TABLE_DELIVERY_NOTE = "create table if not exists  " + TABLE_DELIVERY_NOTE + " (" +
-            "" + I_VOUCHER_NO + "  INTEGER DEFAULT 0," +
-            "" + HEADER_ID + "  INTEGER DEFAULT 0," +
-            "" + SI_NO + "  INTEGER DEFAULT 0," +
-            "" + PRODUCT + "  INTEGER DEFAULT 0," +
-            "" + QTY + "  TEXT(10) DEFAULT null," +
-            "" + I_STATUS + "  INTEGER DEFAULT 0" +
-            ")";
 
     //create table warehouse
     private static final String CREATE_TABLE_WAREHOUSE = "create table if not exists  " + TABLE_WAREHOUSE + " (" +
@@ -211,6 +216,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + I_ID + " INTEGER DEFAULT 0," +
             "" + S_NAME + " TEXT(50) DEFAULT null )";
 
+    //create Delivery note header
+    private static final String CREATE_TABLE_DELIVERY_NOTE_HEADER = "create table if not exists "+TABLE_DELIVERY_NOTE_HEADER+" (" +
+            "" + S_DATE + " TEXT(10) DEFAULT null ," +
+            "" + S_SALESMAN + " TEXT(50) DEFAULT null ," +
+            "" + S_JOB_NO + " TEXT(50) DEFAULT null ," +
+            "" + S_CONTACT_PERSON + " TEXT(50) DEFAULT null ," +
+            "" + I_CUST_LPO_NO + " INTEGER DEFAULT 0," +
+            "" + S_DELIVERY_LOCATION + " TEXT(50) DEFAULT null ," +
+            "" + I_CUSTOMER + " INTEGER DEFAULT 0," +
+            "" + S_NARRATION + " TEXT(50) DEFAULT null ," +
+            "" + S_CUSTOMER_REF + " TEXT(50) DEFAULT null " +
+            ")";
+
+
+
+    //create Delivery note body
+    private static final String CREATE_TABLE_DELIVERY_NOTE_BODY = "create table if not exists "+TABLE_DELIVERY_NOTE_BODY+" (" +
+            "" + S_ITEM_CODE + " TEXT(20) DEFAULT null ," +
+            "" + S_DESCRIPTION + " TEXT DEFAULT null ," +
+            "" + I_WAREHOUSE + " INTEGER DEFAULT 0,"  +
+            "" + S_ATTACHMENT + " TEXT DEFAULT null ," +
+            "" + S_REMARKS + " TEXT DEFAULT null ," +
+            "" + F_QTY + "  TEXT(10) DEFAULT null," +
+            "" + UNIT + "  TEXT(15) DEFAULT null" +
+            ")";
+
 
     private SQLiteDatabase db;
 
@@ -230,7 +261,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_PRODUCT);
         db.execSQL(CREATE_TABLE_PENDING_SO);
         db.execSQL(CREATE_TABLE_PENDING_PO);
-        db.execSQL(CREATE_TABLE_DELIVERY_NOTE);
         db.execSQL(CREATE_TABLE_USER);
         db.execSQL(CREATE_CURRENT_LOGIN);
         db.execSQL(CREATE_TABLE_WAREHOUSE);
@@ -238,6 +268,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_GOODS_RECEIPT_HEADER);
         db.execSQL(CREATE_TABLE_GOODS_RECEIPT_BODY);
         db.execSQL(CREATE_TABLE_GOODS_RECEIPT_TYPE);
+        db.execSQL(CREATE_TABLE_DELIVERY_NOTE_HEADER);
+        db.execSQL(CREATE_TABLE_DELIVERY_NOTE_BODY);
     }
 
     @Override
@@ -537,14 +569,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean IsDeliveryNotePresent(String HeaderId){
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from "+TABLE_DELIVERY_NOTE+" where "+HEADER_ID+"= ? ",new String[]{HeaderId});
-        if(cursor!=null){
-            return cursor.moveToFirst();
-        }
-       return false;
-    }
 
     public Cursor SearchProductDeliveryNote(String keyword,String HeaderId) {
         this.db = getReadableDatabase();
@@ -561,28 +585,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-
-
-    public String GetDeliveryNoteVoucherNo(){
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select "+I_VOUCHER_NO+" from  "+TABLE_DELIVERY_NOTE+" ORDER BY "+I_VOUCHER_NO,null);
-        if(cursor!=null){
-            if(cursor.moveToLast()){
-                return String.valueOf(cursor.getInt(cursor.getColumnIndex(I_VOUCHER_NO))+1);
-            }
-        }
-        return "1";
-    }
-
-
-
-    public boolean DeleteDeliveryNote(String sino,String iVoucherNo){
-        this.db = getWritableDatabase();
-        float status;
-        status = db.delete(TABLE_DELIVERY_NOTE,SI_NO+" = ? and iVoucherNo = ? ",new String[]{sino,iVoucherNo});
-        return status != -1;
-
-    }
 
     public String GetProductBarcode(String barcode) {
         this.db = getReadableDatabase();
@@ -645,29 +647,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    //Delivery Note
-    public void InsertDelivery(DeliveryNote d){
-        this.db = getWritableDatabase();
-        float status;
-
-        ContentValues cv = new ContentValues();
-        cv.put(I_VOUCHER_NO, d.getiVoucherNo());
-        cv.put(HEADER_ID, d.getHeaderId());
-        cv.put(SI_NO, d.getSiNo());
-        cv.put(PRODUCT, d.getProduct());
-        cv.put(QTY, d.getQty());
-        cv.put(I_STATUS, d.getiStatus());
-                status = db.insert(TABLE_DELIVERY_NOTE, null, cv);
-    }
-
-    public Cursor GetDeliveryNote(){
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from "+TABLE_DELIVERY_NOTE+" where "+QTY+" != ? ",new String[]{"0"});
-        if(cursor.moveToFirst()){
-            return cursor;
-        }
-        return null;
-    }
 
     public Cursor GetDeliveryNoteList() {
         this.db = getReadableDatabase();
@@ -677,13 +656,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else
             return null;
     }
-
-    public boolean DeleteDeliveryNoteHeaderIdAndVoucherNO(String id, String iVoucherNo){
-        this.db = getWritableDatabase();
-        db.delete(TABLE_DELIVERY_NOTE,HEADER_ID+" = ? and "+I_VOUCHER_NO+" = ? ",new String[]{id,iVoucherNo});
-        return true;
-    }
-
 
     public Cursor GetAllDeliveryNote(String HeaderId) {
         this.db = getReadableDatabase();
@@ -1083,7 +1055,7 @@ public boolean DeleteStockCount(String voucherNo){
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("WITH RECURSIVE split(sMinorAttachment,str) AS (" +
                 "    SELECT '',sMinorAttachment||',' FROM tbl_GoodsReceiptBody WHERE DocNo = "+DocNo+" " +
-                "UNION SELECT " +
+                "    UNION SELECT " +
                 "    substr(str, 0, instr(str,','))," +
                 "    substr(str, instr(str, ',')+1)" +
                 "    FROM split WHERE str!=''" +
@@ -1247,5 +1219,16 @@ public boolean DeleteStockCount(String voucherNo){
 
 
 
+
+    //delivery note header
+    public void InsertDeliverNoteHeader(){
+
+    }
+
+
+    //delivery note body
+    public void InsertDeliverNoteBody(){
+
+    }
 
 }

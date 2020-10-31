@@ -33,6 +33,7 @@
   </component>
   <component name="DBNavigator.Project.FileConnectionMappingManager">
     <mapping file-url="file://$PROJECT_DIR$/app/src/main/assets/from_7_to_8.sql" connection-id="virtual-sqlite-connection" session-id="MAIN" current-schema="" />
+    <mapping file-url="file://$PROJECT_DIR$/app/src/main/assets/from_8_to_9.sql" connection-id="virtual-sqlite-connection" session-id="MAIN" current-schema="" />
     <mapping file-url="file://$PROJECT_DIR$/app/src/main/assets/from_5_to_6.sql" connection-id="virtual-sqlite-connection" session-id="MAIN" current-schema="" />
     <mapping file-url="file://$PROJECT_DIR$/app/src/main/assets/from_2_to_3.sql" connection-id="virtual-sqlite-connection" session-id="MAIN" current-schema="" />
     <mapping file-url="file://$PROJECT_DIR$/app/src/main/assets/from_3_to_4.sql" connection-id="virtual-sqlite-connection" session-id="MAIN" current-schema="" />
