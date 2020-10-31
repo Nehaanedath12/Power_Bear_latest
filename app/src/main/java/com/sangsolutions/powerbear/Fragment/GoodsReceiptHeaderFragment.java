@@ -1,8 +1,9 @@
 package com.sangsolutions.powerbear.Fragment;
 
-import android.app.AlertDialog;
+
 import android.app.DatePickerDialog;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -16,7 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -27,14 +28,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
 import com.sangsolutions.powerbear.Adapter.POListAdaptet.POListAdapter;
 import com.sangsolutions.powerbear.Adapter.POSelectAdapter.POSelectAdapter;
-import com.sangsolutions.powerbear.Adapter.SupplierAdapter.SupplierAdapter;
+import com.sangsolutions.powerbear.Adapter.SupplierSearchAdapter.SupplierSearch;
+import com.sangsolutions.powerbear.Adapter.SupplierSearchAdapter.SupplierSearchAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
@@ -52,20 +56,22 @@ import java.util.Objects;
 
 public class GoodsReceiptHeaderFragment extends Fragment {
     EditText et_date,et_narration,et_supplier;
-    Spinner sp_supplier;//remove
-    List<SupplierAdapter.Supplier> supplierList;
+    List<SupplierSearch> supplierList;
     List<String> poList;
     List<String> goodsPoList;
     List<String> poSelectList;
     POSelectAdapter poSelectAdapter;
     POListAdapter poListAdapter;
-    SupplierAdapter supplierAdapter;
+    SupplierSearchAdapter supplierAdapter;
     DatabaseHelper helper;
     RecyclerView rv_pos;
     TextView tv_add_po,tv_doc_no;
     String DocNo  = "";
     Collection<String> c;
     boolean EditMode = false;
+    AlertDialog supplierSearchAlert;
+    EditText et_search_input;
+    RecyclerView rv_search;
 
     private boolean selection_active = false ;
 
@@ -89,7 +95,7 @@ public class GoodsReceiptHeaderFragment extends Fragment {
         Button btn_apply = view.findViewById(R.id.apply);
         RecyclerView rv_po_select = view.findViewById(R.id.rv_po_select);
         rv_po_select.setLayoutManager(new GridLayoutManager(requireActivity(),3));
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         builder.setView(view);
 
         final AlertDialog alertDialog = builder.create();
@@ -173,42 +179,89 @@ public class GoodsReceiptHeaderFragment extends Fragment {
 
     public void LoadSupplier(String keyword){
     supplierList.clear();
-    supplierList.add(new SupplierAdapter.Supplier("---Select Supplier---","0"));
     try {
         Cursor cursor = helper.GetSupplier(keyword);
         if (cursor != null && cursor.moveToFirst()) {
             for (int i = 0; i < cursor.getCount(); i++) {
-                supplierList.add(new SupplierAdapter.Supplier(
+                supplierList.add(new SupplierSearch(
                         cursor.getString(cursor.getColumnIndex("Cusomer")),
                         cursor.getString(cursor.getColumnIndex("HeaderId"))
                 ));
                 cursor.moveToNext();
                 if (i + 1 == cursor.getCount()) {
-                    sp_supplier.setAdapter(supplierAdapter);
+                    rv_search.setAdapter(supplierAdapter);
                 }
             }
+        }else {
+            supplierList.add(new SupplierSearch(
+                   "--Empty result--",
+                    "0"
+            ));
+            rv_search.setAdapter(supplierAdapter);
         }
     }catch (Exception e) {
     e.printStackTrace();
     }
-sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        poSelectList.clear();
-        LoadPOs(supplierList.get(position).getsSupplierId());
-        PublicData.supplier = supplierList.get(position).getsSupplierId();
-    }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        if(supplierList.get(1)!=null){
-        PublicData.supplier = supplierList.get(1).getsSupplierId();
-    }
-    }
-});
 }
 
+    public void searchSupplierAlert(){
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.search_layout, null);
+        et_search_input = view.findViewById(R.id.search_edit);
+        rv_search = view.findViewById(R.id.search_recycler);
+        rv_search.setLayoutManager(new LinearLayoutManager(getActivity()));
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        builder.setView(view);
+        supplierSearchAlert = builder.create();
+        supplierSearchAlert.show();
 
+        if (supplierSearchAlert.isShowing()) {
+            LoadSupplier("");
+            et_search_input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    et_search_input.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            InputMethodManager inputMethodManager = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
+                            Objects.requireNonNull(inputMethodManager).showSoftInput(et_search_input, InputMethodManager.SHOW_IMPLICIT);
+                        }
+                    });
+                }
+            });
+            et_search_input.requestFocus();
+            et_search_input.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    LoadSupplier(s.toString());
+                }
+            });
+
+            supplierAdapter.setOnClickListener(new SupplierSearchAdapter.OnClickListener() {
+                @Override
+                public void onItemClick(SupplierSearch search_item) {
+                   if(!search_item.getsSupplierId().equals("0"))
+                   if(supplierSearchAlert.isShowing()) {
+                       poSelectList.clear();
+                       LoadPOs(search_item.getsSupplierId());
+                       PublicData.supplier = search_item.getsSupplierId();
+                       et_supplier.setText(search_item.getsSupplierName());
+                       supplierSearchAlert.dismiss();
+                   }
+                }
+            });
+        }
+    }
 
     public void LoadValueForEditing(){
         try {
@@ -225,7 +278,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 {
                     for(int i = 0;i<supplierList.size();i++){
                         if(supplier.equals(supplierList.get(i).getsSupplierId())){
-                            sp_supplier.setSelection(i);
+                            et_supplier.setText(supplierList.get(i).getsSupplierName());
                             LoadPOs(supplier);
                         }
                     }
@@ -319,7 +372,7 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         poSelectList = new ArrayList<>();
         goodsPoList = new ArrayList<>();
 
-        supplierAdapter =new SupplierAdapter(supplierList,requireActivity());
+        supplierAdapter =new SupplierSearchAdapter(requireActivity(),supplierList);
         poSelectAdapter = new POSelectAdapter(poSelectList,requireActivity());
         poListAdapter = new POListAdapter(poList,requireActivity());
 
@@ -384,7 +437,12 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 });
             }
         }
-
+        et_supplier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchSupplierAlert();
+            }
+        });
 
         LoadSupplier("");
 
@@ -466,15 +524,6 @@ sp_supplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             }
         });
 
-        /*final Handler handler = new Handler();
-
-        final Runnable r = new Runnable() {
-            public void run() {
-                handler.postDelayed(this, 1000);
-            }
-        };
-
-        handler.postDelayed(r, 1000);*/
         return view;
     }
 }

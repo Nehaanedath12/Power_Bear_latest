@@ -1197,7 +1197,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetSupplier(String keyword) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT Cusomer,HeaderId from tbl_PendingPO where Cusomer like '"+keyword+"%'  GROUP BY Cusomer", new String[]{keyword});
+        Cursor cursor = db.rawQuery("SELECT Cusomer,HeaderId from tbl_PendingPO where Cusomer like '"+keyword+"%'  GROUP BY Cusomer ",null);
         if (cursor.moveToFirst())
             return cursor;
         else
