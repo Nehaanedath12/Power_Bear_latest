@@ -1,358 +1,269 @@
 package com.sangsolutions.powerbear;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
+
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
-import android.util.SparseArray;
-import android.util.SparseBooleanArray;
-import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.gms.vision.CameraSource;
-import com.google.android.gms.vision.Detector;
-import com.google.android.gms.vision.barcode.Barcode;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.sangsolutions.powerbear.Adapter.ListProduct.ListProduct;
-import com.sangsolutions.powerbear.Adapter.ListProduct.ListProductAdapter;
-import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProduct;
-import com.sangsolutions.powerbear.Adapter.SearchProduct.SearchProductAdapter;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
+import com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory;
+import com.sangsolutions.powerbear.Adapter.ViewPager2AdapterGoodsReceipt.ViewPager2AdapterGoodsReceipt;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
-import com.sangsolutions.powerbear.Database.DeliveryNote;
+import com.sangsolutions.powerbear.Database.GoodReceiptHeader;
+import com.sangsolutions.powerbear.Fragment.GoodsReceiptBodyFragment;
+import com.sangsolutions.powerbear.Fragment.GoodsReceiptHeaderFragment;
+import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
+import com.sangsolutions.powerbear.Singleton.GoodsReceiptHistorySingleton;
+import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+
 
 @SuppressWarnings("ALL")
-public class AddDeliveryNote extends AppCompatActivity {
-    private FloatingActionButton fab_controller;
-    private LinearLayout barcodeLinear, linear_search;
-    private BarcodeDetector barcodeDetector;
-    private CameraSource cameraSource;
-    private final String[] PERMISSIONS = {Manifest.permission.CAMERA};
-    private SurfaceView surfaceView;
-    private EditText et_barcode, et_search_input, qty;
-    private DatabaseHelper helper;
-    private RelativeLayout rl_showProductInfo;
-    private HashMap<String, String> map;
-    private TextView product_name, product_code;
-    private RecyclerView rv_search, rv_product;
-    private AlertDialog dialog;
-    private List<SearchProduct> productList;
-    private SearchProductAdapter adapter;
-    private ListProductAdapter listProductAdapter;
-    private List<ListProduct> list;
-    private String HeaderId = "";
-    private boolean EditMode = false;
-    private String iVoucherNo;
-    private boolean saveStatus = true;
-    final SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
-    private static boolean hasPermissions(Context context, String... permissions) {
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
+public class AddDeliveryNote extends AppCompatActivity implements View.OnClickListener {
+    ViewPager2 viewPager2;
+    TabLayout tabLayout;
+    ViewPager2AdapterGoodsReceipt viewPager2AdapterGoodsReceipt;
+    ImageView img_close,img_delete,img_forward,img_backward,img_save,img_add_new;
+    DatabaseHelper helper;
+
+    boolean EditMode = false;
+    String DocNo = "";
+    int current_position = 0;
+
+
+
+    private void Save(){
+        String POs="",date = "",supplier="",narration="",voucher="" ,ProcessedDate ="";
+        List<String> listPO= GoodsReceiptPoSingleton.getInstance().getList();
+        List<GoodsReceiptBody> listMain = GoodsReceiptBodySingleton.getInstance().getList();
+
+        for(int i = 0 ;i<listMain.size();i++){
+            if(!listPO.contains(listMain.get(i).getsPONo())){
+                Toast.makeText(this, "SO numbers don't match! check header an body.", Toast.LENGTH_SHORT).show();
+                return;
             }
         }
-        return true;
+
+
+        if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
+
+
+            List<String> list = new ArrayList<>(listPO);
+            POs = TextUtils.join(",", list);
+
+            date = PublicData.date;
+            supplier = PublicData.supplier;
+            narration = PublicData.narration;
+            voucher = PublicData.voucher;
+
+            ProcessedDate = String.valueOf(DateFormat.format("yyyy-MM-dd hh:mm:ss a", new Date()));
+            if (EditMode) {
+                List<String> listProduct = new ArrayList<>();
+                List<String> listPo = new ArrayList<>();
+                listProduct.clear();
+                listPo.clear();
+
+                for (int i = 0; i < listMain.size(); i++) {
+                    listProduct.add(listMain.get(i).getiProduct());
+                    listPo.add(listMain.get(i).getsPONo());
+                }
+                try {
+                    helper.DeleteBodyItems(listProduct, listPo, DocNo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            int body_success_counter = 0;
+            try {
+                if (listMain.size() > 0 && PublicData.voucher != null && !PublicData.voucher.isEmpty()) {
+                    com.sangsolutions.powerbear.Database.GoodsReceiptBody gb = new com.sangsolutions.powerbear.Database.GoodsReceiptBody();
+
+                    for (int i = 0; i < listMain.size(); i++) {
+                        gb.setDocNo(voucher);
+                        gb.setsPONo(listMain.get(i).getsPONo());
+                        gb.setiProduct(listMain.get(i).getiProduct());
+                        gb.setiWarehouse(listMain.get(i).getiWarehouse());
+                        gb.setBarcode(listMain.get(i).getBarcode());
+                        gb.setfPOQty(listMain.get(i).getfPOQty());
+                        gb.setfQty(listMain.get(i).getfQty());
+                        gb.setUnit(listMain.get(i).getUnit());
+                        gb.setsRemarks(listMain.get(i).getsRemarks());
+                        gb.setiUser(helper.GetUserId());
+                        gb.setfMinorDamageQty(listMain.get(i).getfMinorDamageQty());
+                        gb.setsMinorRemarks(listMain.get(i).getsMinorRemarks());
+                        gb.setsMinorAttachment(listMain.get(i).getsMinorAttachment());
+                        gb.setfDamagedQty(listMain.get(i).getfDamagedQty());
+                        gb.setsDamagedRemarks(listMain.get(i).getsDamagedRemarks());
+                        gb.setsDamagedAttachment(listMain.get(i).getsDamagedAttachment());
+                        gb.setiMinorType(listMain.get(i).getRemarksMinorType());
+                        gb.setiDamageType(listMain.get(i).getRemarksDamagedType());
+
+                        if (helper.InsertGoodsReceiptBody(gb)) {
+                            body_success_counter++;
+                        } else Log.d("message", "failed to insert");
+
+                        if (i + 1 == listMain.size()) {
+                            if (body_success_counter == listMain.size()) {
+                                try {
+
+                                    if (!date.isEmpty() && !POs.isEmpty() && !supplier.isEmpty()) {
+
+                                        GoodReceiptHeader gh = new GoodReceiptHeader(voucher
+                                                ,date
+                                                ,ProcessedDate
+                                                ,supplier
+                                                ,helper.GetUserId()
+                                                ,POs,narration);
+
+                                        if (helper.InsertGoodsReceiptHeader(gh)) {
+                                            Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+                                            PublicData.clearData();
+                                            GoodsReceiptBodySingleton.getInstance().clearList();
+                                            GoodsReceiptPoSingleton.getInstance().clearList();
+                                            this.finish();
+                                        } else {
+                                            Toast.makeText(this, "Failed to save!", Toast.LENGTH_SHORT).show();
+                                            helper.deleteGoodsBodyItem(voucher);
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                } else {
+                    Log.d("body", "body is empty");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        }else {
+            Toast.makeText(this, "No data to save", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void setRecyclerView(int position) {
-        String  Qty;
 
-        Qty = map.get("Qty");
+    @Override
+    public void onBackPressed() {
+        Alert("Close!","Do you want to close before saving?","close");
+    }
 
-        assert Qty != null;
-        if (Integer.parseInt(list.get(position).getQty()) >= Integer.parseInt(Qty)&&Integer.parseInt(Qty)!=0) {
-            list.set(position, new ListProduct(
-                    list.get(position).getiVoucherNo(),
-                    list.get(position).getName(),
-                    list.get(position).getCode(),
-                    list.get(position).getQty(),
-                    Qty,
-                    list.get(position).getHeaderId(),
-                    list.get(position).getProduct(),
-                    list.get(position).getSiNo(),
-                    list.get(position).getUnit()
-            ));
-            Toast.makeText(this, "Added!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Picked Qty should not exceed Qty ", Toast.LENGTH_SHORT).show();
-        }
+    public void Alert(String title, String message, final String type){
+        AlertDialog.Builder builder= new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(type.equals("save")) {
+
+                            List<GoodsReceiptBody> listMain = GoodsReceiptBodySingleton.getInstance().getList();
+                            if (listMain != null && listMain.size() > 0) {
+
+                                for (int i = 0; i <listMain.size();i++) {
+                                    if(listMain.get(i).getfQty().equals("")&&listMain.get(i).getfMinorDamageQty().equals("")&&listMain.get(i).getfDamagedQty().equals("")) {
+                                        Toast.makeText(AddDeliveryNote.this,"Enter all qty or remove empty items!",Toast.LENGTH_SHORT).show();
+                                        break;
+                                    }
+                                    if(listMain.size()==i+1) {
+                                        Save();
+                                    }
+                                }
+                            }
+                        }else if(type.equals("new")){
+                            GoodsReceiptPoSingleton.getInstance().clearList();
+                            GoodsReceiptBodySingleton.getInstance().clearList();
+                            PublicData.voucher = "D-" + DateFormat.format("ddMMyy-HHmmss", new Date());
+                            SetViewPager(PublicData.voucher,false);
+                        }else if(type.equals("close")){
+                            GoodsReceiptPoSingleton.getInstance().clearList();
+                            GoodsReceiptBodySingleton.getInstance().clearList();
+                            PublicData.clearData();
+                            finish();
+                        }else if(type.equals("delete")){
+                            try {
+                                if(helper.deleteGoodsBodyItem(DocNo)) {
+                                    if (helper.deleteGoodsHeaderItem(DocNo)) {
+                                        Toast.makeText(AddDeliveryNote.this, "Deleted!", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create().show();
+    }
 
 
-        rl_showProductInfo.setVisibility(View.GONE);
-        qty.setText("");
-        et_barcode.setText("");
-        map.clear();
-        listProductAdapter.notifyDataSetChanged();
+    public void SetViewPager(String DocNo,boolean EditMode){
+        List<Fragment> fragmentList = new ArrayList<>();
+        Bundle bundle = new Bundle();
+        PublicData.voucher = DocNo;
+        bundle.putString("DocNo",DocNo);
+        bundle.putBoolean("EditMode",EditMode);
+
+        GoodsReceiptBodyFragment bodyFragment = new GoodsReceiptBodyFragment();
+        bodyFragment.setArguments(bundle);
+
+        GoodsReceiptHeaderFragment headerFragment = new GoodsReceiptHeaderFragment();
+        headerFragment.setArguments(bundle);
+
+        fragmentList.add(headerFragment);
+        fragmentList.add(bodyFragment);
+        viewPager2AdapterGoodsReceipt = new ViewPager2AdapterGoodsReceipt(getSupportFragmentManager(),getLifecycle(),fragmentList);
+        viewPager2.setUserInputEnabled(false);
+        viewPager2.setAdapter(viewPager2AdapterGoodsReceipt);
+
+        new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                viewPager2.setCurrentItem(tab.getPosition(),true);
+                if(position==0){
+                    tab.setText("Header");
+                }else if(position==1){
+                    tab.setText("Body");
+                }
+            }
+        }).attach();
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if (cameraSource != null)
-            cameraSource.release();
-
-    }
-
-
-    public void SaveAlert() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Save ?")
-                .setMessage("Do you want to save the current data ?")
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        for(int j = 0 ;j<=sparseBooleanArray.size();j++){
-                            Log.d("sparse",sparseBooleanArray.toString());
-                                if(!sparseBooleanArray.get(j)){
-                                    saveStatus =false;
-                                    Toast.makeText(AddDeliveryNote.this, "There is an error in data entry", Toast.LENGTH_SHORT).show();
-                                    break;
-                                }else{
-                                    saveStatus =true;
-                                }
-
-                                if(j+1==sparseBooleanArray.size()){
-                                    SaveDataToDB();
-                                }
-
-                        }
-
-
-
-
-                    }
-                }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).create()
-                .show();
-
-    }
-
-
-    public void SaveDataToDB() {
-        DeliveryNote d = new DeliveryNote();
-        if(saveStatus) {
-            if (helper.DeleteDeliveryNoteHeaderIdAndVoucherNO(HeaderId, iVoucherNo)) {
-                for (int i = 0; i < list.size(); i++) {
-                    d.setiVoucherNo(iVoucherNo);
-                    d.setSiNo(list.get(i).getSiNo());
-                    d.setHeaderId(list.get(i).getHeaderId());
-                    d.setProduct(list.get(i).getProduct());
-                    d.setQty(list.get(i).getPickedQty());
-                    d.setiStatus("0");
-                    helper.InsertDelivery(d);
-
-                    if (list.size() == i + 1) {
-                        Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-
-                }
-            }
-        }else {
-            Toast.makeText(this, "Make sure there is not error your entry", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-
-    public void setRecyclerViewFromDB(String HeaderID,boolean EditMode) {
-        String Name, Code, Qty, PickedQty, HeaderId, Product, SiNo ,Unit;
-        Log.d("docno", HeaderID);
-        Cursor cursor;
-        if(!EditMode) {
-             cursor = helper.GetAllPendingDN(HeaderID);
-        }else {
-             cursor = helper.GetAllDeliveryNote(HeaderID);
-        }
-        if (cursor != null) {
-            cursor.moveToFirst();
-
-            for (int i = 0; i < cursor.getCount(); i++) {
-                Qty = cursor.getString(cursor.getColumnIndex("Qty"));
-                if(EditMode) {
-                    PickedQty = cursor.getString(cursor.getColumnIndex("PickedQty"));
-                    iVoucherNo = cursor.getString(cursor.getColumnIndex("iVoucherNo"));
-                }
-                else
-                PickedQty = "0";
-                Name = cursor.getString(cursor.getColumnIndex("Name"));
-                Code = cursor.getString(cursor.getColumnIndex("Code"));
-                Unit = cursor.getString(cursor.getColumnIndex("Unit"));
-                HeaderId = cursor.getString(cursor.getColumnIndex("HeaderId"));
-                Product = cursor.getString(cursor.getColumnIndex("Product"));
-                SiNo = cursor.getString(cursor.getColumnIndex("SiNo"));
-
-                list.add(new ListProduct(iVoucherNo,Name, Code, Qty, PickedQty, HeaderId, Product, SiNo,Unit));
-               sparseBooleanArray.append(i,true);
-                listProductAdapter.notifyDataSetChanged();
-                cursor.moveToNext();
-
-            }
-        }
-
-
-    }
-
-    private void InitialiseDetectorsAndSources() {
-        barcodeDetector = new BarcodeDetector.Builder(this)
-                .setBarcodeFormats(Barcode.ALL_FORMATS)
-                .build();
-        cameraSource = new CameraSource.Builder(this, barcodeDetector)
-                .setRequestedPreviewSize(1080, 1920)
-                .setAutoFocusEnabled(true)
-                .build();
-        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-
-                if (!barcodeDetector.isOperational()) {
-                    Log.d("Detector", "Detector dependencies are not yet available.");
-                } else {
-                    try {
-                        if (cameraSource != null) {
-                            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                                return;
-                            }
-                            cameraSource.start(surfaceView.getHolder());
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                //barcodeDetector.release();
-            }
-        });
-        barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
-            @Override
-            public void release() {
-                Log.d("msg", "Barcode scanning stopped");
-            }
-
-            @Override
-            public void receiveDetections(Detector.Detections<Barcode> detections) {
-                final SparseArray<Barcode> barcode = detections.getDetectedItems();
-                if (barcode.size() > 0) {
-                    AddDeliveryNote.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            et_barcode.setText(barcode.valueAt(0).displayValue);
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-    private void ProductSearch(String keyword) {
-        productList.clear();
-        if (dialog.isShowing()) {
-            Cursor cursor ;
-            if(!EditMode){
-                cursor =  helper.SearchProductPendingSO(keyword,HeaderId);
-            }else {
-                cursor =  helper.SearchProductDeliveryNote(keyword,HeaderId);
-            }
-
-            if (cursor != null&&!keyword.equals("")) {
-                cursor.moveToFirst();
-                for (int i = 0; i < cursor.getCount(); i++) {
-                    String Name = cursor.getString(cursor.getColumnIndex("Name"));
-                    String Code = cursor.getString(cursor.getColumnIndex("Code"));
-                    String Barcode = cursor.getString(cursor.getColumnIndex("Barcode"));
-                    productList.add(new SearchProduct(Name,Code,Barcode));
-                    cursor.moveToNext();
-
-                    if (i + 1 == cursor.getCount()) {
-                        rv_search.setAdapter(adapter);
-                        rv_product.setItemViewCacheSize(list.size());
-                    }
-
-                    adapter.setOnClickListener(new SearchProductAdapter.OnClickListener() {
-                        @Override
-                        public void onItemClick(SearchProduct search_item) {
-                            et_barcode.setText(search_item.getBarcode());
-                            dialog.dismiss();
-                        }
-                    });
-                }
-
-            } else {
-                productList.clear();
-                productList.add(new SearchProduct("No Products available!", "",""));
-                rv_search.setAdapter(adapter);
-
-            }
-
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void GetProductInfoToMap(String barcode) {
-
-        Cursor cursor = helper.GetProductInfo(barcode);
-
-        if (cursor != null) {
-            rl_showProductInfo.setVisibility(View.VISIBLE);
-            cursor.moveToFirst();
-            map.put("Name",cursor.getString(cursor.getColumnIndex("Name")));
-            map.put("Code",cursor.getString(cursor.getColumnIndex("Code")));
-            map.put("Unit",cursor.getString(cursor.getColumnIndex("Unit")));
-            product_name.setText("Name : "+map.get("Name"));
-            product_code.setText(map.get("Code"));
-        }else {
-
-                rl_showProductInfo.setVisibility(View.GONE);
-
-        }
+    protected void onDestroy() {
+        super.onDestroy();
+        GoodsReceiptPoSingleton.getInstance().clearList();
+        GoodsReceiptBodySingleton.getInstance().clearList();
     }
 
 
@@ -360,245 +271,79 @@ public class AddDeliveryNote extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_good_receipt);
-        fab_controller = findViewById(R.id.fab_controller);
-        barcodeLinear = findViewById(R.id.linear_scan);
-        linear_search = findViewById(R.id.linear_search);
-        et_barcode = findViewById(R.id.et_barcode);
-        surfaceView = findViewById(R.id.surfaceView);
-        product_name= findViewById(R.id.product_name);
-        product_code = findViewById(R.id.product_code);
-        qty = findViewById(R.id.qty);
-        ImageView add_new = findViewById(R.id.add_save);
-        ImageView save = findViewById(R.id.save);
-        ImageView img_home = findViewById(R.id.home);
-        TextView title = findViewById(R.id.title);
-        title.setText("Delivery note");
-        img_home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(AddDeliveryNote.this,Home.class));
-                finishAffinity();
-            }
-        });
         helper = new DatabaseHelper(this);
 
+        viewPager2 = findViewById(R.id.viewpager);
+        img_close = findViewById(R.id.close);
+        img_delete = findViewById(R.id.delete);
+        img_forward = findViewById(R.id.forward);
+        img_backward = findViewById(R.id.backward);
+        img_save = findViewById(R.id.save);
+        img_add_new = findViewById(R.id.add_save);
 
-
-        rv_product = findViewById(R.id.rv_product);
-        rv_product.setLayoutManager(new LinearLayoutManager(this));
-        map = new HashMap<>();
-
-        helper = new DatabaseHelper(this);
-        rl_showProductInfo = findViewById(R.id.details);
-        productList = new ArrayList<>();
-        adapter = new SearchProductAdapter(AddDeliveryNote.this, productList);
-        list = new ArrayList<>();
-        listProductAdapter = new ListProductAdapter(this,list);
-        rv_product.setAdapter(listProductAdapter);
-
+        img_close.setOnClickListener(this);
+        img_delete.setOnClickListener(this);
+        img_forward.setOnClickListener(this);
+        img_backward.setOnClickListener(this);
+        img_save.setOnClickListener(this);
+        img_add_new.setOnClickListener(this);
         Intent intent = getIntent();
+
         if(intent!=null) {
-            HeaderId = intent.getStringExtra("HeaderId");
-            EditMode = intent.getBooleanExtra("EditMode", false);
-            iVoucherNo = intent.getStringExtra("iVoucherNo");
-            if(helper.IsDeliveryNotePresent(HeaderId)){
-                EditMode = true;
+            EditMode =intent.getBooleanExtra("EditMode",false);
+            if(EditMode){
+                PublicData.voucher= intent.getStringExtra("DocNo");
+                DocNo = PublicData.voucher;
+            }else {
+                PublicData.voucher = "G-" + DateFormat.format("ddMMyy-HHmmss", new Date());
+                DocNo = PublicData.voucher;
             }
+        }else {
+            PublicData.voucher = "G-" + DateFormat.format("ddMMyy-HHmmss", new Date());
+            DocNo = PublicData.voucher;
         }
 
+        tabLayout = findViewById(R.id.tabLay);
+        tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF0000"));
+        tabLayout.setTabTextColors(Color.parseColor("#e58989"), Color.parseColor("#ffffff"));
+        SetViewPager(DocNo,EditMode);
+    }
 
-if(!EditMode)
-{
-    iVoucherNo = Objects.requireNonNull(helper).GetDeliveryNoteVoucherNo();
-}
+    List<GoodsReceiptHistory> listHistory = GoodsReceiptHistorySingleton.getInstance().getList();
 
-        if (HeaderId != null && !HeaderId.equals("")) {
-            setRecyclerViewFromDB(HeaderId,EditMode);
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.close:
+                Alert("Close!","Do you want to close before saving?","close");
+                break;
+            case R.id.delete:
+                if(EditMode)
+                    Alert("Delete!","Do you want to delete?","delete");
+                break;
+            case R.id.forward:
+                if (listHistory.size() > 1) {
+                    if (current_position < listHistory.size()) {
+                        SetViewPager(listHistory.get(current_position).getDocNo(),true);
+                        current_position++;
+                    }
+                }
+                break;
+            case R.id.backward:
+                if (listHistory.size() > 1) {
+                    if (current_position > 0) {
+                        current_position--;
+                        SetViewPager(listHistory.get(current_position).getDocNo(),true);
+                    }
+                }
+                break;
+            case R.id.save:
+                Alert("Save!","Do you want to save the items?","save");
+                break;
+            case R.id.add_save:
+                Alert("New!","Do you want to add new?","new");
+                break;
         }
-
-
-      listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
-
-          @Override
-          public void onTextChangedListener(EditText et,ListProduct products, int pos, String text) {
-                if(!text.equals("")) {
-                    try {
-                        if (Integer.parseInt(products.getQty()) >= Integer.parseInt(text)) {
-                            sparseBooleanArray.append(pos, true);
-                            list.set(pos, new ListProduct(
-                                    list.get(pos).getiVoucherNo(),
-                                    list.get(pos).getName(),
-                                    list.get(pos).getCode(),
-                                    list.get(pos).getQty(),
-                                    text,
-                                    list.get(pos).getHeaderId(),
-                                    list.get(pos).getProduct(),
-                                    list.get(pos).getSiNo(),
-                                    list.get(pos).getUnit()));
-                        } else {
-                            et.setError("Entry error!");
-                            Toast.makeText(AddDeliveryNote.this, "PickedQty should not be grater then Qty", Toast.LENGTH_SHORT).show();
-                            sparseBooleanArray.append(pos, false);
-                        }
-                    }catch (NumberFormatException e){
-                        e.printStackTrace();
-                    }
-                }else {
-                    et.setError("Entry error!");
-                    sparseBooleanArray.append(pos,false);
-                }
-          }
-      });
-
-
-
-        fab_controller.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onClick(View v) {
-                Animation move_down_anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_down);
-                Animation move_up_anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_up);
-                Animation clock_wise_rotate_anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.clock_wise_rotate);
-                Animation anti_clock_wise_rotate_anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anti_clock_wise_rotate);
-                if (linear_search.getVisibility() == View.VISIBLE && barcodeLinear.getVisibility() == View.VISIBLE) {
-                    linear_search.startAnimation(move_down_anim);
-                    barcodeLinear.startAnimation(move_down_anim);
-                    linear_search.setVisibility(View.GONE);
-                    barcodeLinear.setVisibility(View.GONE);
-                    fab_controller.startAnimation(anti_clock_wise_rotate_anim);
-                    fab_controller.setImageDrawable(Objects.requireNonNull(getApplicationContext()).getDrawable(R.drawable.ic_add));
-                } else {
-                    linear_search.setVisibility(View.VISIBLE);
-                    barcodeLinear.setVisibility(View.VISIBLE);
-                    linear_search.startAnimation(move_up_anim);
-                    barcodeLinear.startAnimation(move_up_anim);
-                    fab_controller.startAnimation(clock_wise_rotate_anim);
-                    fab_controller.setImageDrawable(Objects.requireNonNull(getApplicationContext()).getDrawable(R.drawable.ic_close_30dp));
-                }
-            }
-        });
-
-        et_barcode.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                GetProductInfoToMap(s.toString());
-            }
-        });
-
-        barcodeLinear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (surfaceView.getVisibility() == View.VISIBLE) {
-                    if (cameraSource != null) {
-                        try {
-                            cameraSource.stop();
-                        } catch (NullPointerException e) {
-                            cameraSource = null;
-                        }
-
-                    }
-                    surfaceView.setVisibility(View.GONE);
-                } else {
-                    surfaceView.setVisibility(View.VISIBLE);
-                    if (!hasPermissions(AddDeliveryNote.this, PERMISSIONS)) {
-                        ActivityCompat.requestPermissions(AddDeliveryNote.this, PERMISSIONS, 100);
-                    } else {
-                        InitialiseDetectorsAndSources();
-                    }
-                }
-            }
-        });
-
-
-        add_new.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!map.isEmpty() && !qty.getText().toString().isEmpty()) {
-                    map.put("Qty", qty.getText().toString());
-                    for (int i= 0 ;i<list.size();i++) {
-                        if (list.get(i).getCode().equals(map.get("Code"))) {
-                            setRecyclerView(i);
-                        }
-                    }
-                }else {
-                    if (map.isEmpty()) {
-                        Toast.makeText(AddDeliveryNote.this, "No product", Toast.LENGTH_SHORT).show();
-                    }
-                    if (qty.getText().toString().isEmpty()) {
-                        Toast.makeText(AddDeliveryNote.this, "Enter Quantity", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
-
-
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(list.size()>0) {
-                   SaveAlert();
-                }
-                }
-        });
-
-        linear_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                View view = LayoutInflater.from(AddDeliveryNote.this).inflate(R.layout.search_layout, null);
-                et_search_input = view.findViewById(R.id.search_edit);
-                rv_search = view.findViewById(R.id.search_recycler);
-                rv_search.setLayoutManager(new LinearLayoutManager(AddDeliveryNote.this));
-                AlertDialog.Builder builder = new AlertDialog.Builder(AddDeliveryNote.this);
-                builder.setView(view);
-                dialog = builder.create();
-                dialog.show();
-
-                if (dialog.isShowing()) {
-
-                    et_search_input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                        @Override
-                        public void onFocusChange(View v, boolean hasFocus) {
-                            et_search_input.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    InputMethodManager inputMethodManager = (InputMethodManager) AddDeliveryNote.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    Objects.requireNonNull(inputMethodManager).showSoftInput(et_search_input, InputMethodManager.SHOW_IMPLICIT);
-                                }
-                            });
-                        }
-                    });
-                    et_search_input.requestFocus();
-                    et_search_input.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                        }
-
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable s) {
-                            ProductSearch(s.toString());
-                        }
-                    });
-
-                }
-
-            }
-        });
     }
 }

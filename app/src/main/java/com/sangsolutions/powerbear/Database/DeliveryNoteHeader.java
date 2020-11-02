@@ -1,7 +1,16 @@
 package com.sangsolutions.powerbear.Database;
 
 public class DeliveryNoteHeader {
-    String sDate,sSalesman,sJobNo,sContactPerson,iCustLOPNo,sDeliveryLocation,iCustomer,sNarration,sCustomerRef;
+    String sVoucherNo,sDate,sSalesman,sJobNo,sContactPerson,sSOPNo,sDeliveryLocation,iCustomer,sNarration,sCustomerRef;
+
+
+    public String getsVoucherNo() {
+        return sVoucherNo;
+    }
+
+    public void setsVoucherNo(String sVoucherNo) {
+        this.sVoucherNo = sVoucherNo;
+    }
 
     public String getsDate() {
         return sDate;
@@ -35,12 +44,12 @@ public class DeliveryNoteHeader {
         this.sContactPerson = sContactPerson;
     }
 
-    public String getiCustLOPNo() {
-        return iCustLOPNo;
+    public String getsSOPNo() {
+        return sSOPNo;
     }
 
-    public void setiCustLOPNo(String iCustLOPNo) {
-        this.iCustLOPNo = iCustLOPNo;
+    public void setsSOPNo(String sSOPNo) {
+        this.sSOPNo = sSOPNo;
     }
 
     public String getsDeliveryLocation() {

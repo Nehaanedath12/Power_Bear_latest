@@ -73,11 +73,11 @@ public class PostDeliveryNote extends JobService {
 
                 response = connection.execute();
 
-                if(response.equals("1"))
-                if(helper.DeleteDeliveryNote(map.get("SiNo"),map.get("iVoucherNo"))){
+               // if(response.equals("1"))
+               /* if(helper.DeleteDeliveryNote(map.get("SiNo"),map.get("iVoucherNo"))){
                     Log.d("status change","true");
                 successCounter++;
-                }
+                }*/
                 return null;
             }
 
@@ -138,7 +138,7 @@ public class PostDeliveryNote extends JobService {
         editor =  preferences.edit();
         editor.putString(Commons.DELIVERY_NOTE_FINISHED,"false").apply();
         this.params = params;
-        cursor = helper.GetDeliveryNote();
+        //cursor = helper.GetDeliveryNote();
         if(cursor!=null&& cursor.moveToFirst()) {
         }else {
            onStopJob(params);

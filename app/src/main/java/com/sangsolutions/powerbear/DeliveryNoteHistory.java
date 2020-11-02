@@ -72,12 +72,12 @@ public class DeliveryNoteHistory extends AppCompatActivity {
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(helper.DeleteDeliveryNoteHeaderIdAndVoucherNO(deliveryNoteHistory.getHeaderId(),deliveryNoteHistory.getiVoucherNo())) {
+                      /*  if(helper.DeleteDeliveryNoteHeaderIdAndVoucherNO(deliveryNoteHistory.getHeaderId(),deliveryNoteHistory.getiVoucherNo())) {
                             list.remove(pos);
                             adapter.notifyDataSetChanged();
                             setRecyclerView();
                             Toast.makeText(DeliveryNoteHistory.this, "Deleted!", Toast.LENGTH_SHORT).show();
-                        }
+                        }*/
                     }
                 }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
@@ -112,7 +112,6 @@ public class DeliveryNoteHistory extends AppCompatActivity {
         adapter = new DeliveryNoteHistoryAdapter(list,this);
         rv = findViewById(R.id.rv_summary);
         rv.setLayoutManager(new LinearLayoutManager(this));
-
 
 
         setRecyclerView();

@@ -100,7 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String S_SALESMAN = "sSalesman";
     private static final String S_JOB_NO = "sJobNo";
     private static final String S_CONTACT_PERSON = "sContactPerson";
-    private static final String I_CUST_LPO_NO = "iCustLPONo";
+    private static final String S_SO_NOS = "sSONos";
     private static final String S_DELIVERY_LOCATION = "sDeliveryLocation";
     private static final String I_CUSTOMER = "iCustomerRef";
     private static final String S_DATE = "sDate";
@@ -110,6 +110,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String S_ITEM_CODE = "iItemCode";
     private static final String S_DESCRIPTION = "sDescription";
     private static final String S_ATTACHMENT = "sAttachment";
+    private static final String S_SONo = "sSONo";
+    private static final String F_SO_QTY = "sSOQty";
+    private static final String S_SONO = "sSONo";
+
 
     //create table Product
     private static final String CREATE_TABLE_PRODUCT = "create table if not exists  " + TABLE_PRODUCT + " (" +
@@ -163,6 +167,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + PRODUCT + "  INTEGER DEFAULT 0," +
             "" + QTY + "  TEXT(10) DEFAULT null," +
             "" + CUSTOMER + "  TEXT(20) DEFAULT null," +
+            "" + TEMP_QTY + " TEXT(10) DEFAULT '0',"+
             "" + UNIT + " TEXT(15) DEFAULT null" +
             ")";
     //create table Pending PO
@@ -185,7 +190,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + I_SUPPLIER + " INTEGER DEFAULT 0 ," +
             "" + I_USER + " INTEGER DEFAULT 0 ,"+
             "" + S_PONO + "  TEXT(150) DEFAULT null," +
-            ""+D_PROCESSED_DATE+ " TEXT(10) DEFAULT null ,"+
+            "" + D_PROCESSED_DATE+ " TEXT(10) DEFAULT null ,"+
             "" + S_NARRATION + "  TEXT(50) DEFAULT null" +
             ")";
 
@@ -218,11 +223,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //create Delivery note header
     private static final String CREATE_TABLE_DELIVERY_NOTE_HEADER = "create table if not exists "+TABLE_DELIVERY_NOTE_HEADER+" (" +
+            "" + DOC_NO + " TEXT(20) DEFAULT null ," +
             "" + S_DATE + " TEXT(10) DEFAULT null ," +
             "" + S_SALESMAN + " TEXT(50) DEFAULT null ," +
             "" + S_JOB_NO + " TEXT(50) DEFAULT null ," +
             "" + S_CONTACT_PERSON + " TEXT(50) DEFAULT null ," +
-            "" + I_CUST_LPO_NO + " INTEGER DEFAULT 0," +
+            "" + S_SO_NOS + " TEXT DEFAULT null," +
             "" + S_DELIVERY_LOCATION + " TEXT(50) DEFAULT null ," +
             "" + I_CUSTOMER + " INTEGER DEFAULT 0," +
             "" + S_NARRATION + " TEXT(50) DEFAULT null ," +
@@ -233,12 +239,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //create Delivery note body
     private static final String CREATE_TABLE_DELIVERY_NOTE_BODY = "create table if not exists "+TABLE_DELIVERY_NOTE_BODY+" (" +
+            "" + DOC_NO + " TEXT(20) DEFAULT null ," +
+            "" + S_SONO + " TEXT(10) DEFAULT null ,"+
             "" + S_ITEM_CODE + " TEXT(20) DEFAULT null ," +
             "" + S_DESCRIPTION + " TEXT DEFAULT null ," +
             "" + I_WAREHOUSE + " INTEGER DEFAULT 0,"  +
             "" + S_ATTACHMENT + " TEXT DEFAULT null ," +
             "" + S_REMARKS + " TEXT DEFAULT null ," +
             "" + F_QTY + "  TEXT(10) DEFAULT null," +
+            "" + F_SO_QTY + " TEXT(10) DEFAULT null," +
+            "" + TEMP_QTY + " TEXT(10) DEFAULT null,"+
             "" + UNIT + "  TEXT(15) DEFAULT null" +
             ")";
 
@@ -1221,14 +1231,71 @@ public boolean DeleteStockCount(String voucherNo){
 
 
     //delivery note header
-    public void InsertDeliverNoteHeader(){
+    public boolean InsertDeliverNoteHeader(DeliveryNoteHeader h){
+    this.db = getWritableDatabase();
+    this.db = getReadableDatabase();
 
+    float status = -1;
+        ContentValues cv = new ContentValues();
+        cv.put(DOC_NO,h.getsVoucherNo());
+        cv.put(S_DATE,h.getsDate());
+        cv.put(S_SALESMAN,h.getsSalesman());
+        cv.put(S_JOB_NO,h.getsJobNo());
+        cv.put(S_CONTACT_PERSON,h.getsContactPerson());
+        cv.put(S_SO_NOS,h.getsSOPNo());
+        cv.put(S_DELIVERY_LOCATION,h.getsDeliveryLocation());
+        cv.put(I_CUSTOMER,h.getiCustomer());
+        cv.put(S_NARRATION,h.getsNarration());
+        cv.put(S_CUSTOMER_REF,h.getsCustomerRef());
+
+        Cursor cursor = db.rawQuery("select "+DOC_NO+" from "+TABLE_DELIVERY_NOTE_HEADER+" Where "+DOC_NO+" = ? ",new String[]{h.getsVoucherNo()});
+
+        if(cursor!=null&&cursor.moveToFirst()){
+            status = db.update(TABLE_DELIVERY_NOTE_HEADER,cv,DOC_NO+" = ? ",new String[]{h.getsVoucherNo()});
+        }else {
+            status = db.insert(TABLE_DELIVERY_NOTE_HEADER, null, cv);
+        }
+    return status != -1;
     }
 
 
     //delivery note body
-    public void InsertDeliverNoteBody(){
+    public boolean InsertDeliverNoteBody(DeliveryNoteBody b){
+        this.db = getWritableDatabase();
+        this.db = getReadableDatabase();
 
+        Cursor cursor = db.rawQuery("select " + DOC_NO + "," + S_PONO + "," + F_QTY + "," + I_PRODUCT + " from " + TABLE_GOODS_RECEIPT_BODY + " where " + DOC_NO + " = ? and " + S_SONO + " = ? and " + I_PRODUCT + " = ? ", new String[]{b.getsVoucherNo(), b.getsSONo(), b.getiProduct()});
+        Cursor cursor2 = db.rawQuery("select " + DOC_NO + "," + PRODUCT + "," + TEMP_QTY + "," + QTY + " from " + TABLE_PENDING_SO + " where " + DOC_NO + " = ? and " + PRODUCT + " = ? ", new String[]{b.getsSONo(), b.getiProduct()});
+
+        float status = -1;
+        int qty = 0,poQty= 0;
+        ContentValues cv = new ContentValues();
+        cv.put(DOC_NO,b.getsVoucherNo());
+        cv.put(S_ITEM_CODE,b.getsItemCode());
+        cv.put(I_PRODUCT,b.getiProduct());
+        cv.put(S_DESCRIPTION,b.getsDescription());
+        cv.put(I_WAREHOUSE,b.getiWarehouse());
+        cv.put(S_ATTACHMENT,b.getsAttachment());
+        cv.put(S_REMARKS,b.getsRemarks());
+        cv.put(F_QTY,b.getfQty());
+        cv.put(UNIT,b.getUnit());
+
+        if(cursor!=null&&cursor.moveToFirst()){
+            status = db.update(TABLE_DELIVERY_NOTE_BODY, cv, DOC_NO+" = ? and "+S_PONO+" = ? ",new String[]{b.getsVoucherNo(),b.getsSONo()});
+        }else {
+            status = db.insert(TABLE_DELIVERY_NOTE_BODY, null, cv);
+        }
+
+        ContentValues cv2 = new ContentValues();
+
+        cv2.put(TEMP_QTY,String.valueOf(qty));
+        float status2 = -1;
+        if(status != -1) {
+            status2 = db.update(TABLE_PENDING_SO, cv2, DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ?", new String[]{b.getsSONo(), b.getiProduct(), b.getUnit()});
+        }
+        cursor.close();
+        cursor2.close();
+        return status2 != -1;
     }
 
 }
