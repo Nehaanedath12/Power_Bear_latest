@@ -835,6 +835,14 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         et_damaged_qty.setActivated(false);
                         et_damaged_qty.setFocusable(false);
                     }
+                }else {
+
+                        et_minor_qty.setActivated(true);
+                        et_minor_qty.setFocusable(true);
+
+                        et_damaged_qty.setActivated(true);
+                        et_damaged_qty.setFocusable(true);
+
                 }
             }
         });
@@ -872,6 +880,13 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         et_damaged_qty.setActivated(false);
                         et_damaged_qty.setFocusable(false);
                     }
+                }else {
+                    et_regular_qty.setActivated(true);
+                    et_regular_qty.setFocusable(true);
+
+                    et_damaged_qty.setActivated(true);
+                    et_damaged_qty.setFocusable(true);
+
                 }
             }
         });
@@ -909,6 +924,12 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         et_regular_qty.setActivated(false);
                         et_regular_qty.setFocusable(false);
                     }
+                }else {
+                    et_minor_qty.setActivated(true);
+                    et_minor_qty.setFocusable(true);
+
+                    et_regular_qty.setActivated(true);
+                    et_regular_qty.setFocusable(true);
                 }
             }
         });
