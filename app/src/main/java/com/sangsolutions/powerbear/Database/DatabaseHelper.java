@@ -1243,6 +1243,7 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(S_JOB_NO,h.getsJobNo());
         cv.put(S_CONTACT_PERSON,h.getsContactPerson());
         cv.put(S_SO_NOS,h.getsSOPNo());
+        cv.put(I_USER,h.getiUser());
         cv.put(S_DELIVERY_LOCATION,h.getsDeliveryLocation());
         cv.put(I_CUSTOMER,h.getiCustomer());
         cv.put(S_NARRATION,h.getsNarration());
@@ -1264,7 +1265,7 @@ public boolean DeleteStockCount(String voucherNo){
         this.db = getWritableDatabase();
         this.db = getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("select " + DOC_NO + "," + S_PONO + "," + F_QTY + "," + I_PRODUCT + " from " + TABLE_GOODS_RECEIPT_BODY + " where " + DOC_NO + " = ? and " + S_SONO + " = ? and " + I_PRODUCT + " = ? ", new String[]{b.getsVoucherNo(), b.getsSONo(), b.getiProduct()});
+        Cursor cursor = db.rawQuery("select " + DOC_NO + "," + S_PONO + "," + F_QTY + "," + I_PRODUCT + " from " + TABLE_DELIVERY_NOTE_BODY + " where " + DOC_NO + " = ? and " + S_SONO + " = ? and " + I_PRODUCT + " = ? ", new String[]{b.getsVoucherNo(), b.getsSONo(), b.getiProduct()});
         Cursor cursor2 = db.rawQuery("select " + DOC_NO + "," + PRODUCT + "," + TEMP_QTY + "," + QTY + " from " + TABLE_PENDING_SO + " where " + DOC_NO + " = ? and " + PRODUCT + " = ? ", new String[]{b.getsSONo(), b.getiProduct()});
 
         float status = -1;
@@ -1278,6 +1279,7 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(S_ATTACHMENT,b.getsAttachment());
         cv.put(S_REMARKS,b.getsRemarks());
         cv.put(F_QTY,b.getfQty());
+        cv.put(I_USER,b.getiUser());
         cv.put(UNIT,b.getUnit());
 
         if(cursor!=null&&cursor.moveToFirst()){

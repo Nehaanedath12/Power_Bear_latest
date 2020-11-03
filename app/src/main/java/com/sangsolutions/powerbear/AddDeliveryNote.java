@@ -25,6 +25,7 @@ import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptB
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory;
 import com.sangsolutions.powerbear.Adapter.ViewPager2AdapterGoodsReceipt.ViewPager2AdapterGoodsReceipt;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.Database.DeliveryNoteBody;
 import com.sangsolutions.powerbear.Database.GoodReceiptHeader;
 import com.sangsolutions.powerbear.Fragment.GoodsReceiptBodyFragment;
 import com.sangsolutions.powerbear.Fragment.GoodsReceiptHeaderFragment;
@@ -44,30 +45,27 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
     ViewPager2AdapterGoodsReceipt viewPager2AdapterGoodsReceipt;
     ImageView img_close,img_delete,img_forward,img_backward,img_save,img_add_new;
     DatabaseHelper helper;
-
     boolean EditMode = false;
     String DocNo = "";
     int current_position = 0;
 
-
-
     private void Save(){
         String POs="",date = "",supplier="",narration="",voucher="" ,ProcessedDate ="";
-        List<String> listPO= GoodsReceiptPoSingleton.getInstance().getList();
+        List<String> listSO= GoodsReceiptPoSingleton.getInstance().getList();
         List<GoodsReceiptBody> listMain = GoodsReceiptBodySingleton.getInstance().getList();
 
         for(int i = 0 ;i<listMain.size();i++){
-            if(!listPO.contains(listMain.get(i).getsPONo())){
+            if(!listSO.contains(listMain.get(i).getsPONo())){
                 Toast.makeText(this, "SO numbers don't match! check header an body.", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
 
 
-        if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
+        if(listSO!=null&&listSO.size()>0&&listMain!=null&&listMain.size()>0) {
 
 
-            List<String> list = new ArrayList<>(listPO);
+            List<String> list = new ArrayList<>(listSO);
             POs = TextUtils.join(",", list);
 
             date = PublicData.date;
@@ -95,29 +93,21 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
             int body_success_counter = 0;
             try {
                 if (listMain.size() > 0 && PublicData.voucher != null && !PublicData.voucher.isEmpty()) {
-                    com.sangsolutions.powerbear.Database.GoodsReceiptBody gb = new com.sangsolutions.powerbear.Database.GoodsReceiptBody();
+                    DeliveryNoteBody b = new DeliveryNoteBody();
 
                     for (int i = 0; i < listMain.size(); i++) {
-                        gb.setDocNo(voucher);
-                        gb.setsPONo(listMain.get(i).getsPONo());
-                        gb.setiProduct(listMain.get(i).getiProduct());
-                        gb.setiWarehouse(listMain.get(i).getiWarehouse());
-                        gb.setBarcode(listMain.get(i).getBarcode());
-                        gb.setfPOQty(listMain.get(i).getfPOQty());
-                        gb.setfQty(listMain.get(i).getfQty());
-                        gb.setUnit(listMain.get(i).getUnit());
-                        gb.setsRemarks(listMain.get(i).getsRemarks());
-                        gb.setiUser(helper.GetUserId());
-                        gb.setfMinorDamageQty(listMain.get(i).getfMinorDamageQty());
-                        gb.setsMinorRemarks(listMain.get(i).getsMinorRemarks());
-                        gb.setsMinorAttachment(listMain.get(i).getsMinorAttachment());
-                        gb.setfDamagedQty(listMain.get(i).getfDamagedQty());
-                        gb.setsDamagedRemarks(listMain.get(i).getsDamagedRemarks());
-                        gb.setsDamagedAttachment(listMain.get(i).getsDamagedAttachment());
-                        gb.setiMinorType(listMain.get(i).getRemarksMinorType());
-                        gb.setiDamageType(listMain.get(i).getRemarksDamagedType());
+                        b.setsVoucherNo(voucher);
+                        b.setfQty(listMain.get(i).getfQty());
+                        b.setiProduct(listMain.get(i).getiProduct());
+                        b.setiWarehouse(listMain.get(i).getiWarehouse());
+                        b.setsAttachment(listMain.get(i).getsMinorAttachment());
+                        b.setsDescription(listMain.get(i).getsRemarks());
+                        b.setsItemCode(listMain.get(i).getCode());
+                        b.setiUser(helper.GetUserId());
+                        b.setsSONo(listMain.get(i).getsPONo());
+                        b.setUnit(listMain.get(i).getUnit());
 
-                        if (helper.InsertGoodsReceiptBody(gb)) {
+                        if (helper.InsertDeliverNoteBody(b)) {
                             body_success_counter++;
                         } else Log.d("message", "failed to insert");
 
@@ -132,14 +122,15 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
                                                 ,ProcessedDate
                                                 ,supplier
                                                 ,helper.GetUserId()
-                                                ,POs,narration);
+                                                ,POs
+                                                ,narration);
 
                                         if (helper.InsertGoodsReceiptHeader(gh)) {
                                             Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
                                             PublicData.clearData();
                                             GoodsReceiptBodySingleton.getInstance().clearList();
                                             GoodsReceiptPoSingleton.getInstance().clearList();
-                                            this.finish();
+                                            finish();
                                         } else {
                                             Toast.makeText(this, "Failed to save!", Toast.LENGTH_SHORT).show();
                                             helper.deleteGoodsBodyItem(voucher);
@@ -295,11 +286,11 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
                 PublicData.voucher= intent.getStringExtra("DocNo");
                 DocNo = PublicData.voucher;
             }else {
-                PublicData.voucher = "G-" + DateFormat.format("ddMMyy-HHmmss", new Date());
+                PublicData.voucher = "D-" + DateFormat.format("ddMMyy-HHmmss", new Date());
                 DocNo = PublicData.voucher;
             }
         }else {
-            PublicData.voucher = "G-" + DateFormat.format("ddMMyy-HHmmss", new Date());
+            PublicData.voucher = "D-" + DateFormat.format("ddMMyy-HHmmss", new Date());
             DocNo = PublicData.voucher;
         }
 

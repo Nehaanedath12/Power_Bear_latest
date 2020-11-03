@@ -1,8 +1,30 @@
 package com.sangsolutions.powerbear.Database;
 
 public class DeliveryNoteHeader {
-    String sVoucherNo,sDate,sSalesman,sJobNo,sContactPerson,sSOPNo,sDeliveryLocation,iCustomer,sNarration,sCustomerRef;
+    String sVoucherNo,sDate,sSalesman,iUser,sJobNo,sContactPerson,sSOPNo,sDeliveryLocation,iCustomer,sNarration,sCustomerRef;
 
+
+    public DeliveryNoteHeader(String sVoucherNo, String sDate, String sSalesman, String iUser, String sJobNo, String sContactPerson, String sSOPNo, String sDeliveryLocation, String iCustomer, String sNarration, String sCustomerRef) {
+        this.sVoucherNo = sVoucherNo;
+        this.sDate = sDate;
+        this.sSalesman = sSalesman;
+        this.iUser = iUser;
+        this.sJobNo = sJobNo;
+        this.sContactPerson = sContactPerson;
+        this.sSOPNo = sSOPNo;
+        this.sDeliveryLocation = sDeliveryLocation;
+        this.iCustomer = iCustomer;
+        this.sNarration = sNarration;
+        this.sCustomerRef = sCustomerRef;
+    }
+
+    public String getiUser() {
+        return iUser;
+    }
+
+    public void setiUser(String iUser) {
+        this.iUser = iUser;
+    }
 
     public String getsVoucherNo() {
         return sVoucherNo;

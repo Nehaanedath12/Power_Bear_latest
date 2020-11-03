@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:id="@+id/rl_1"
+    >
+    <LinearLayout
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/check"
+            android:src="@drawable/ic_check_red"
+            android:gravity="center"
+            android:layout_gravity="center_vertical" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/img_delete"
+            android:src="@drawable/ic_delete"
+            android:layout_gravity="center_vertical"
+            />
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="PONo"
+            android:id="@+id/pono"
+            android:textSize="15sp" />
+
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Code"
+            android:id="@+id/code"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Name"
+            android:id="@+id/name"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Warehouse"
+            android:id="@+id/warehouse"
+            android:textSize="15sp" />
+
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="POQty"
+            android:id="@+id/poQty"
+            android:textSize="15sp"
+            />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Qty"
+            android:id="@+id/qty"
+            android:textSize="15sp" />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Unit"
+            android:id="@+id/unit"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Remarks"
+            android:id="@+id/remarks"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Minor"
+            android:id="@+id/minorQty"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Type"
+            android:id="@+id/remarksMinorType"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Remarks"
+            android:id="@+id/minorRemarks"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Damaged"
+            android:id="@+id/damagedQty"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Type"
+            android:id="@+id/remarksDamagedType"
+            android:gravity="center"
+            />
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Remarks"
+            android:id="@+id/damagedRemarks"
+            android:gravity="center"
+            />
+        <ImageButton
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            android:src="@drawable/menu"/>
+
+    </LinearLayout>
+</RelativeLayout>
