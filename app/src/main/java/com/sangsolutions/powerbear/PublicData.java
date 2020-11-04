@@ -13,6 +13,7 @@ public class PublicData {
     public static String POs="";
     public static String voucher="";
     public static boolean Syncing = false;
+    public static String contactPerson = "";
 
     public static void clearDataIgnoreHeader(){
         warehouse = "";
@@ -29,5 +30,6 @@ public class PublicData {
         POs = "";
         supplier = "";
         voucher ="";
+        contactPerson = "";
     }
 }

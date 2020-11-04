@@ -98,13 +98,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //delivery note header
     private static final String S_SALESMAN = "sSalesman";
-    private static final String S_JOB_NO = "sJobNo";
     private static final String S_CONTACT_PERSON = "sContactPerson";
     private static final String S_SO_NOS = "sSONos";
-    private static final String S_DELIVERY_LOCATION = "sDeliveryLocation";
     private static final String I_CUSTOMER = "iCustomerRef";
     private static final String S_DATE = "sDate";
-    private static final String S_CUSTOMER_REF = "sCustomerRef";
+
 
     //delivery note body
     private static final String S_ITEM_CODE = "iItemCode";
@@ -226,13 +224,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + DOC_NO + " TEXT(20) DEFAULT null ," +
             "" + S_DATE + " TEXT(10) DEFAULT null ," +
             "" + S_SALESMAN + " TEXT(50) DEFAULT null ," +
-            "" + S_JOB_NO + " TEXT(50) DEFAULT null ," +
+            "" + D_PROCESSED_DATE + " TEXT(10) DEFAULT null ," +
             "" + S_CONTACT_PERSON + " TEXT(50) DEFAULT null ," +
             "" + S_SO_NOS + " TEXT DEFAULT null," +
-            "" + S_DELIVERY_LOCATION + " TEXT(50) DEFAULT null ," +
             "" + I_CUSTOMER + " INTEGER DEFAULT 0," +
-            "" + S_NARRATION + " TEXT(50) DEFAULT null ," +
-            "" + S_CUSTOMER_REF + " TEXT(50) DEFAULT null " +
+            "" + S_NARRATION + " TEXT(50) DEFAULT null " +
             ")";
 
 
@@ -244,7 +240,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + S_ITEM_CODE + " TEXT(20) DEFAULT null ," +
             "" + S_DESCRIPTION + " TEXT DEFAULT null ," +
             "" + I_WAREHOUSE + " INTEGER DEFAULT 0,"  +
-            "" + S_ATTACHMENT + " TEXT DEFAULT null ," +
+            "" + S_ATTACHMENT + " TEXT DEFAULT null," +
             "" + S_REMARKS + " TEXT DEFAULT null ," +
             "" + F_QTY + "  TEXT(10) DEFAULT null," +
             "" + F_SO_QTY + " TEXT(10) DEFAULT null," +
@@ -658,7 +654,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public Cursor GetDeliveryNoteList() {
+    /*public Cursor GetDeliveryNoteList() {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT sum(Qty) as Qty,HeaderId,iVoucherNo from tbl_DeliveryNote  GROUP BY "+I_VOUCHER_NO,null);
         if(cursor.moveToFirst())
@@ -666,7 +662,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else
             return null;
     }
-
+    */
     public Cursor GetAllDeliveryNote(String HeaderId) {
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT d.HeaderId,d.SiNo,p.MasterId as Product,p.Name,p.Code,p.Unit,d.iVoucherNo iVoucherNo , d.Qty PickedQty,so.Qty Qty FROM tbl_DeliveryNote d " +
@@ -1239,15 +1235,12 @@ public boolean DeleteStockCount(String voucherNo){
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO,h.getsVoucherNo());
         cv.put(S_DATE,h.getsDate());
-        cv.put(S_SALESMAN,h.getsSalesman());
-        cv.put(S_JOB_NO,h.getsJobNo());
         cv.put(S_CONTACT_PERSON,h.getsContactPerson());
         cv.put(S_SO_NOS,h.getsSOPNo());
         cv.put(I_USER,h.getiUser());
-        cv.put(S_DELIVERY_LOCATION,h.getsDeliveryLocation());
         cv.put(I_CUSTOMER,h.getiCustomer());
         cv.put(S_NARRATION,h.getsNarration());
-        cv.put(S_CUSTOMER_REF,h.getsCustomerRef());
+        cv.put(D_PROCESSED_DATE,h.getdProposedDate());
 
         Cursor cursor = db.rawQuery("select "+DOC_NO+" from "+TABLE_DELIVERY_NOTE_HEADER+" Where "+DOC_NO+" = ? ",new String[]{h.getsVoucherNo()});
 

@@ -26,9 +26,13 @@ import com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsRecei
 import com.sangsolutions.powerbear.Adapter.ViewPager2AdapterGoodsReceipt.ViewPager2AdapterGoodsReceipt;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.DeliveryNoteBody;
-import com.sangsolutions.powerbear.Database.GoodReceiptHeader;
+import com.sangsolutions.powerbear.Database.DeliveryNoteHeader;
+import com.sangsolutions.powerbear.Fragment.DeliveryNoteBodyFragment;
+import com.sangsolutions.powerbear.Fragment.DeliveryNoteHeaderFragment;
 import com.sangsolutions.powerbear.Fragment.GoodsReceiptBodyFragment;
 import com.sangsolutions.powerbear.Fragment.GoodsReceiptHeaderFragment;
+import com.sangsolutions.powerbear.Singleton.DeliveryNoteBodySingleton;
+import com.sangsolutions.powerbear.Singleton.DeliveryNoteSOSingleton;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptHistorySingleton;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
@@ -50,12 +54,12 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
     int current_position = 0;
 
     private void Save(){
-        String POs="",date = "",supplier="",narration="",voucher="" ,ProcessedDate ="";
-        List<String> listSO= GoodsReceiptPoSingleton.getInstance().getList();
-        List<GoodsReceiptBody> listMain = GoodsReceiptBodySingleton.getInstance().getList();
+        String SOs="",date = "",supplier="",narration="",voucher="" ,ProcessedDate ="",sContactPerson="";
+        List<String> listSO= DeliveryNoteSOSingleton.getInstance().getList();
+        List<DeliveryNoteBody> listMain = DeliveryNoteBodySingleton.getInstance().getList();
 
         for(int i = 0 ;i<listMain.size();i++){
-            if(!listSO.contains(listMain.get(i).getsPONo())){
+            if(!listSO.contains(listMain.get(i).getsSONo())){
                 Toast.makeText(this, "SO numbers don't match! check header an body.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -66,12 +70,14 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
 
 
             List<String> list = new ArrayList<>(listSO);
-            POs = TextUtils.join(",", list);
+            SOs = TextUtils.join(",", list);
 
             date = PublicData.date;
             supplier = PublicData.supplier;
             narration = PublicData.narration;
             voucher = PublicData.voucher;
+            sContactPerson = PublicData.contactPerson;
+
 
             ProcessedDate = String.valueOf(DateFormat.format("yyyy-MM-dd hh:mm:ss a", new Date()));
             if (EditMode) {
@@ -82,7 +88,7 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
 
                 for (int i = 0; i < listMain.size(); i++) {
                     listProduct.add(listMain.get(i).getiProduct());
-                    listPo.add(listMain.get(i).getsPONo());
+                    listPo.add(listMain.get(i).getsSONo());
                 }
                 try {
                     helper.DeleteBodyItems(listProduct, listPo, DocNo);
@@ -100,11 +106,11 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
                         b.setfQty(listMain.get(i).getfQty());
                         b.setiProduct(listMain.get(i).getiProduct());
                         b.setiWarehouse(listMain.get(i).getiWarehouse());
-                        b.setsAttachment(listMain.get(i).getsMinorAttachment());
+                        b.setsAttachment(listMain.get(i).getsAttachment());
                         b.setsDescription(listMain.get(i).getsRemarks());
-                        b.setsItemCode(listMain.get(i).getCode());
+                        b.setsItemCode(listMain.get(i).getsItemCode());
                         b.setiUser(helper.GetUserId());
-                        b.setsSONo(listMain.get(i).getsPONo());
+                        b.setsSONo(listMain.get(i).getsSONo());
                         b.setUnit(listMain.get(i).getUnit());
 
                         if (helper.InsertDeliverNoteBody(b)) {
@@ -114,22 +120,23 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
                         if (i + 1 == listMain.size()) {
                             if (body_success_counter == listMain.size()) {
                                 try {
+                                    if (!date.isEmpty() && !SOs.isEmpty() && !supplier.isEmpty()) {
 
-                                    if (!date.isEmpty() && !POs.isEmpty() && !supplier.isEmpty()) {
-
-                                        GoodReceiptHeader gh = new GoodReceiptHeader(voucher
+                                        DeliveryNoteHeader dh = new DeliveryNoteHeader(
+                                                 voucher
                                                 ,date
                                                 ,ProcessedDate
-                                                ,supplier
                                                 ,helper.GetUserId()
-                                                ,POs
+                                                ,sContactPerson
+                                                ,SOs
+                                                ,supplier
                                                 ,narration);
 
-                                        if (helper.InsertGoodsReceiptHeader(gh)) {
+                                        if (helper.InsertDeliverNoteHeader(dh)) {
                                             Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
                                             PublicData.clearData();
-                                            GoodsReceiptBodySingleton.getInstance().clearList();
-                                            GoodsReceiptPoSingleton.getInstance().clearList();
+                                            DeliveryNoteBodySingleton.getInstance().clearList();
+                                            DeliveryNoteSOSingleton.getInstance().clearList();
                                             finish();
                                         } else {
                                             Toast.makeText(this, "Failed to save!", Toast.LENGTH_SHORT).show();
@@ -225,14 +232,15 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
         bundle.putString("DocNo",DocNo);
         bundle.putBoolean("EditMode",EditMode);
 
-        GoodsReceiptBodyFragment bodyFragment = new GoodsReceiptBodyFragment();
+        DeliveryNoteBodyFragment bodyFragment = new DeliveryNoteBodyFragment();
         bodyFragment.setArguments(bundle);
 
-        GoodsReceiptHeaderFragment headerFragment = new GoodsReceiptHeaderFragment();
+        DeliveryNoteHeaderFragment headerFragment = new DeliveryNoteHeaderFragment();
         headerFragment.setArguments(bundle);
 
         fragmentList.add(headerFragment);
         fragmentList.add(bodyFragment);
+
         viewPager2AdapterGoodsReceipt = new ViewPager2AdapterGoodsReceipt(getSupportFragmentManager(),getLifecycle(),fragmentList);
         viewPager2.setUserInputEnabled(false);
         viewPager2.setAdapter(viewPager2AdapterGoodsReceipt);
@@ -283,7 +291,7 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
         if(intent!=null) {
             EditMode =intent.getBooleanExtra("EditMode",false);
             if(EditMode){
-                PublicData.voucher= intent.getStringExtra("DocNo");
+                PublicData.voucher = intent.getStringExtra("DocNo");
                 DocNo = PublicData.voucher;
             }else {
                 PublicData.voucher = "D-" + DateFormat.format("ddMMyy-HHmmss", new Date());

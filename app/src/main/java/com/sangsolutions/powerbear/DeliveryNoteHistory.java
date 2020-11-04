@@ -33,10 +33,10 @@ public class DeliveryNoteHistory extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setRecyclerView();
+        //setRecyclerView();
     }
 
-    public void setRecyclerView(){
+   /* public void setRecyclerView(){
         list.clear();
 
         Cursor cursor = helper.GetDeliveryNoteList();
@@ -62,8 +62,7 @@ public class DeliveryNoteHistory extends AppCompatActivity {
             empty_frame.setVisibility(View.VISIBLE);
             rv.setAdapter(adapter);
         }
-
-    }
+    }*/
 
     private void DeleteStockCountItemAlert(final com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory deliveryNoteHistory, final int pos) {
         AlertDialog.Builder builder= new AlertDialog.Builder(this);
@@ -106,7 +105,7 @@ public class DeliveryNoteHistory extends AppCompatActivity {
             }
         });
 
-     /*   date.setText("Delivery Note    "+new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));*/
+
         date.setText("Delivery Note");
         list = new ArrayList<>();
         adapter = new DeliveryNoteHistoryAdapter(list,this);
@@ -114,12 +113,12 @@ public class DeliveryNoteHistory extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
 
 
-        setRecyclerView();
+        //setRecyclerView();
 
         add_new.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DeliveryNoteHistory.this, SelectCustomer.class));
+                startActivity(new Intent(DeliveryNoteHistory.this, AddDeliveryNote.class));
             }
         });
 

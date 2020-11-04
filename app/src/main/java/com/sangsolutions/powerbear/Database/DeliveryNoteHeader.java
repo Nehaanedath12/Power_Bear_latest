@@ -1,29 +1,18 @@
 package com.sangsolutions.powerbear.Database;
 
 public class DeliveryNoteHeader {
-    String sVoucherNo,sDate,sSalesman,iUser,sJobNo,sContactPerson,sSOPNo,sDeliveryLocation,iCustomer,sNarration,sCustomerRef;
+    String sVoucherNo,sDate, dProposedDate,iUser,sContactPerson,sSOPNo,iCustomer,sNarration;
 
 
-    public DeliveryNoteHeader(String sVoucherNo, String sDate, String sSalesman, String iUser, String sJobNo, String sContactPerson, String sSOPNo, String sDeliveryLocation, String iCustomer, String sNarration, String sCustomerRef) {
+    public DeliveryNoteHeader(String sVoucherNo, String sDate, String dProposedDate, String iUser, String sContactPerson, String sSOPNo, String iCustomer, String sNarration) {
         this.sVoucherNo = sVoucherNo;
         this.sDate = sDate;
-        this.sSalesman = sSalesman;
+        this.dProposedDate = dProposedDate;
         this.iUser = iUser;
-        this.sJobNo = sJobNo;
         this.sContactPerson = sContactPerson;
         this.sSOPNo = sSOPNo;
-        this.sDeliveryLocation = sDeliveryLocation;
         this.iCustomer = iCustomer;
         this.sNarration = sNarration;
-        this.sCustomerRef = sCustomerRef;
-    }
-
-    public String getiUser() {
-        return iUser;
-    }
-
-    public void setiUser(String iUser) {
-        this.iUser = iUser;
     }
 
     public String getsVoucherNo() {
@@ -42,20 +31,20 @@ public class DeliveryNoteHeader {
         this.sDate = sDate;
     }
 
-    public String getsSalesman() {
-        return sSalesman;
+    public String getdProposedDate() {
+        return dProposedDate;
     }
 
-    public void setsSalesman(String sSalesman) {
-        this.sSalesman = sSalesman;
+    public void setdProposedDate(String dProposedDate) {
+        this.dProposedDate = dProposedDate;
     }
 
-    public String getsJobNo() {
-        return sJobNo;
+    public String getiUser() {
+        return iUser;
     }
 
-    public void setsJobNo(String sJobNo) {
-        this.sJobNo = sJobNo;
+    public void setiUser(String iUser) {
+        this.iUser = iUser;
     }
 
     public String getsContactPerson() {
@@ -74,14 +63,6 @@ public class DeliveryNoteHeader {
         this.sSOPNo = sSOPNo;
     }
 
-    public String getsDeliveryLocation() {
-        return sDeliveryLocation;
-    }
-
-    public void setsDeliveryLocation(String sDeliveryLocation) {
-        this.sDeliveryLocation = sDeliveryLocation;
-    }
-
     public String getiCustomer() {
         return iCustomer;
     }
@@ -96,13 +77,5 @@ public class DeliveryNoteHeader {
 
     public void setsNarration(String sNarration) {
         this.sNarration = sNarration;
-    }
-
-    public String getsCustomerRef() {
-        return sCustomerRef;
-    }
-
-    public void setsCustomerRef(String sCustomerRef) {
-        this.sCustomerRef = sCustomerRef;
     }
 }
