@@ -1,6 +1,8 @@
 package com.sangsolutions.powerbear.Singleton;
 
-import com.sangsolutions.powerbear.Database.DeliveryNoteBody;
+
+
+import com.sangsolutions.powerbear.Adapter.DeliveryNoteBodyAdapter.DeliveryNoteBody;
 
 import java.util.ArrayList;
 import java.util.List;

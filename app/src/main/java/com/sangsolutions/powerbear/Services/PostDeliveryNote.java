@@ -84,6 +84,7 @@ public class PostDeliveryNote extends JobService {
             @Override
             protected void onPostExecute(Void aVoid) {
                 Log.d("Delivery:", "data synced"+response);
+                onStopJob(params);
                 syncDeliveryNote();
             }
         };

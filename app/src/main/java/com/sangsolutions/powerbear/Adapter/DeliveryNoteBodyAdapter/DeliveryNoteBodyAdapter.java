@@ -90,16 +90,21 @@ public class DeliveryNoteBodyAdapter extends RecyclerView.Adapter<DeliveryNoteBo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.goods_receipt_body_item,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.delivery_note_body_item,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final DeliveryNoteBody body = list.get(position);
-        //holder.PONo.setText(list.get(position).getsPONo());
-
-
+        holder.SONo.setText(list.get(position).getsSONo());
+        holder.Code.setText(list.get(position).getsCode());
+        holder.Name.setText(list.get(position).getsName());
+        holder.warehouse.setText(list.get(position).getiWarehouse());
+        holder.soQty.setText(list.get(position).getfSOQty());
+        holder.qty.setText(list.get(position).getfQty());
+        holder.unit.setText(list.get(position).getUnit());
+        holder.remarks.setText(list.get(position).getsRemarks());
 
         holder.rl_1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,26 +145,20 @@ public class DeliveryNoteBodyAdapter extends RecyclerView.Adapter<DeliveryNoteBo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView PONo,Name,Code,warehouse,poQty,qty,unit,remarks,minorQty,minorRemarks,damagedQty,damagedRemarks,remarksMinorType,remarksDamagedType;
+        final TextView SONo,Name,Code,warehouse, soQty,qty,unit,remarks;
         final ImageView delete;
         final RelativeLayout rl_1;
         final ImageView img_check;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            PONo = itemView.findViewById(R.id.pono);
+            SONo = itemView.findViewById(R.id.sono);
             Name = itemView.findViewById(R.id.name);
             Code = itemView.findViewById(R.id.code);
             warehouse = itemView.findViewById(R.id.warehouse);
-            poQty = itemView.findViewById(R.id.poQty);
+            soQty = itemView.findViewById(R.id.soQty);
             qty = itemView.findViewById(R.id.qty);
             unit = itemView.findViewById(R.id.unit);
             remarks = itemView.findViewById(R.id.remarks);
-            minorQty = itemView.findViewById(R.id.minorQty);
-            minorRemarks = itemView.findViewById(R.id.minorRemarks);
-            damagedQty = itemView.findViewById(R.id.damagedQty);
-            damagedRemarks = itemView.findViewById(R.id.damagedRemarks);
-            remarksMinorType = itemView.findViewById(R.id.remarksMinorType);
-            remarksDamagedType = itemView.findViewById(R.id.remarksDamagedType);
             delete = itemView.findViewById(R.id.img_delete);
             rl_1 = itemView.findViewById(R.id.rl_1);
             img_check = itemView.findViewById(R.id.check);

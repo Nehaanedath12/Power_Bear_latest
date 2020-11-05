@@ -30,7 +30,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="PONo"
-            android:id="@+id/pono"
+            android:id="@+id/sono"
             android:textSize="15sp" />
 
 
@@ -68,7 +68,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="POQty"
-            android:id="@+id/poQty"
+            android:id="@+id/soQty"
             android:textSize="15sp"
             />
 
@@ -96,54 +96,7 @@
             android:id="@+id/remarks"
             android:gravity="center"
             />
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="Minor"
-            android:id="@+id/minorQty"
-            android:gravity="center"
-            />
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="Type"
-            android:id="@+id/remarksMinorType"
-            android:gravity="center"
-            />
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="Remarks"
-            android:id="@+id/minorRemarks"
-            android:gravity="center"
-            />
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="Damaged"
-            android:id="@+id/damagedQty"
-            android:gravity="center"
-            />
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="Type"
-            android:id="@+id/remarksDamagedType"
-            android:gravity="center"
-            />
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="Remarks"
-            android:id="@+id/damagedRemarks"
-            android:gravity="center"
-            />
+
         <ImageButton
             android:id="@+id/delete"
             android:layout_width="wrap_content"

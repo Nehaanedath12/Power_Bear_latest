@@ -113,6 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String S_SONO = "sSONo";
 
 
+
     //create table Product
     private static final String CREATE_TABLE_PRODUCT = "create table if not exists  " + TABLE_PRODUCT + " (" +
             "" + MASTER_ID + " INTEGER PRIMARY KEY ," +
@@ -225,7 +226,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + S_DATE + " TEXT(10) DEFAULT null ," +
             "" + S_SALESMAN + " TEXT(50) DEFAULT null ," +
             "" + D_PROCESSED_DATE + " TEXT(10) DEFAULT null ," +
-            "" + S_CONTACT_PERSON + " TEXT(50) DEFAULT null ," +
             "" + S_SO_NOS + " TEXT DEFAULT null," +
             "" + I_CUSTOMER + " INTEGER DEFAULT 0," +
             "" + S_NARRATION + " TEXT(50) DEFAULT null " +
@@ -237,14 +237,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_DELIVERY_NOTE_BODY = "create table if not exists "+TABLE_DELIVERY_NOTE_BODY+" (" +
             "" + DOC_NO + " TEXT(20) DEFAULT null ," +
             "" + S_SONO + " TEXT(10) DEFAULT null ,"+
-            "" + S_ITEM_CODE + " TEXT(20) DEFAULT null ," +
-            "" + S_DESCRIPTION + " TEXT DEFAULT null ," +
             "" + I_WAREHOUSE + " INTEGER DEFAULT 0,"  +
+            "" + I_PRODUCT + " INTEGER DEFAULT 0, "+
             "" + S_ATTACHMENT + " TEXT DEFAULT null," +
             "" + S_REMARKS + " TEXT DEFAULT null ," +
-            "" + F_QTY + "  TEXT(10) DEFAULT null," +
+            "" + F_QTY + "  TEXT(10) DEFAULT null ," +
             "" + F_SO_QTY + " TEXT(10) DEFAULT null," +
-            "" + TEMP_QTY + " TEXT(10) DEFAULT null,"+
+            "" + I_USER +" INTEGER DEFAULT null,"+
             "" + UNIT + "  TEXT(15) DEFAULT null" +
             ")";
 
@@ -642,6 +641,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return null;
         }
     }
+
+    public Cursor GetSOs(String HeaderId){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DocNo from tbl_PendingSO WHERE HeaderId = ? and TempQty != Qty GROUP by HeaderId ",new String[]{HeaderId});
+        if(cursor.moveToFirst()){
+            return cursor;
+        }else {
+            return null;
+        }
+    }
+
+
+
+
+    public String GetPendingSOTempQty(String sSONo,String iProduct){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select " +TEMP_QTY+" from " + TABLE_PENDING_SO + " where " + DOC_NO + " = ? and " + PRODUCT + " = ? ", new String[]{sSONo, iProduct});
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor.getString(cursor.getColumnIndex(TEMP_QTY));
+        }
+        return "0";
+    }
+
+
+    public Cursor GetCustomer(String keyword) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT Cusomer,HeaderId from tbl_PendingSO where Cusomer like '"+keyword+"%'  GROUP BY Cusomer ",null);
+        if (cursor.moveToFirst())
+            return cursor;
+        else
+            return null;
+    }
+
 
     public Cursor GetAllPendingDN(String HeaderId) {
         this.db = getReadableDatabase();
@@ -1235,7 +1267,6 @@ public boolean DeleteStockCount(String voucherNo){
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO,h.getsVoucherNo());
         cv.put(S_DATE,h.getsDate());
-        cv.put(S_CONTACT_PERSON,h.getsContactPerson());
         cv.put(S_SO_NOS,h.getsSOPNo());
         cv.put(I_USER,h.getiUser());
         cv.put(I_CUSTOMER,h.getiCustomer());
@@ -1253,6 +1284,9 @@ public boolean DeleteStockCount(String voucherNo){
     }
 
 
+
+
+
     //delivery note body
     public boolean InsertDeliverNoteBody(DeliveryNoteBody b){
         this.db = getWritableDatabase();
@@ -1265,13 +1299,13 @@ public boolean DeleteStockCount(String voucherNo){
         int qty = 0,poQty= 0;
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO,b.getsVoucherNo());
-        cv.put(S_ITEM_CODE,b.getsItemCode());
+        cv.put(S_SONO,b.getsSONo());
         cv.put(I_PRODUCT,b.getiProduct());
-        cv.put(S_DESCRIPTION,b.getsDescription());
         cv.put(I_WAREHOUSE,b.getiWarehouse());
-        cv.put(S_ATTACHMENT,b.getsAttachment());
+        cv.put(F_SO_QTY,b.getsSOQty());
         cv.put(S_REMARKS,b.getsRemarks());
         cv.put(F_QTY,b.getfQty());
+        cv.put(S_ATTACHMENT,b.getsAttachment());
         cv.put(I_USER,b.getiUser());
         cv.put(UNIT,b.getUnit());
 
@@ -1292,5 +1326,41 @@ public boolean DeleteStockCount(String voucherNo){
         cursor2.close();
         return status2 != -1;
     }
+
+
+
+    public Cursor GetDeliveryBodyData(String DocNo){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from "+TABLE_GOODS_RECEIPT_BODY+" where "+DOC_NO+" = ? ",new String[]{DocNo});
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
+    }
+
+    public Cursor GetDeliverySOProdcut(List<String> list){
+        this.db = getReadableDatabase();
+
+        String docNo = TextUtils.join(",", list
+                .stream()
+                .map(new Function<String, Object>() {
+                    @Override
+                    public Object apply(String name) {
+                        return ("'" + name + "'");
+                    }
+                })
+                .collect(Collectors.toList()));
+
+
+        Cursor cursor = db.rawQuery("SELECT so.Unit as Unit,so.Qty as Qty,so.TempQty as TempQty,p.Name as Name,p.Code as Code,so.Product as Product ,so.DocNo as DocNo FROM tbl_Product p " +
+                "INNER JOIN tbl_PendingSO so on p.MasterId = so.Product " +
+                "WHERE so.DocNo in ( "+docNo+" )",null);
+        if(cursor.moveToFirst()){
+            return cursor;
+        }else {
+            return null;
+        }
+    }
+
 
 }

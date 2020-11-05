@@ -1,8 +1,15 @@
 package com.sangsolutions.powerbear.Database;
 
 public class DeliveryNoteBody {
-    String sVoucherNo,sSONo,sItemCode,iUser,iProduct,sDescription,iWarehouse,sAttachment,sRemarks,fQty,Unit;
+    String sVoucherNo,sSONo,sSOQty,iUser,iProduct,iWarehouse,sAttachment,sRemarks,fQty,Unit;
 
+    public String getsSOQty() {
+        return sSOQty;
+    }
+
+    public void setsSOQty(String sSOQty) {
+        this.sSOQty = sSOQty;
+    }
 
     public String getiUser() {
         return iUser;
@@ -34,22 +41,6 @@ public class DeliveryNoteBody {
 
     public void setsVoucherNo(String sVoucherNo) {
         this.sVoucherNo = sVoucherNo;
-    }
-
-    public String getsItemCode() {
-        return sItemCode;
-    }
-
-    public void setsItemCode(String sItemCode) {
-        this.sItemCode = sItemCode;
-    }
-
-    public String getsDescription() {
-        return sDescription;
-    }
-
-    public void setsDescription(String sDescription) {
-        this.sDescription = sDescription;
     }
 
     public String getiWarehouse() {

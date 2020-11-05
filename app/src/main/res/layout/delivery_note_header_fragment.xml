@@ -70,7 +70,7 @@
                 android:ems="13"
                 android:layout_gravity="center_horizontal"
                 android:focusable="false"
-                android:hint="Supplier"
+                android:hint="Customer"
                 android:drawableEnd="@drawable/ic_arrow_down"
                 />
 
@@ -89,7 +89,7 @@
                     android:drawableEnd="@drawable/ic_add_black"
                     android:fontFamily="sans-serif-light"
 
-                    android:text="Select PO's" />
+                    android:text="Select SO's" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"

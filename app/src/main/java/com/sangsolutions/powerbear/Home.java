@@ -73,8 +73,8 @@ ImageView img_settings;
             if (preferences.getString(Commons.WAREHOUSE_FINISHED, "false").equals("true")
                     && preferences.getString(Commons.PENDING_PO_FINISHED, "false").equals("true")
                     && preferences.getString(Commons.PENDING_SO_FINISHED, "false").equals("true")
-                    &&  preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
-                    &&  preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
+                    && preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
+                    && preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
                     ){
             startActivity(new Intent(Home.this, StockCountHistory.class));
         }

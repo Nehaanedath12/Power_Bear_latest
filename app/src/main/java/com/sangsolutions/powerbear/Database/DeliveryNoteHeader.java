@@ -1,15 +1,14 @@
 package com.sangsolutions.powerbear.Database;
 
 public class DeliveryNoteHeader {
-    String sVoucherNo,sDate, dProposedDate,iUser,sContactPerson,sSOPNo,iCustomer,sNarration;
+    String sVoucherNo,sDate, dProposedDate,iUser,sSOPNo,iCustomer,sNarration;
 
 
-    public DeliveryNoteHeader(String sVoucherNo, String sDate, String dProposedDate, String iUser, String sContactPerson, String sSOPNo, String iCustomer, String sNarration) {
+    public DeliveryNoteHeader(String sVoucherNo, String sDate, String dProposedDate, String iUser, String sSOPNo, String iCustomer, String sNarration) {
         this.sVoucherNo = sVoucherNo;
         this.sDate = sDate;
         this.dProposedDate = dProposedDate;
         this.iUser = iUser;
-        this.sContactPerson = sContactPerson;
         this.sSOPNo = sSOPNo;
         this.iCustomer = iCustomer;
         this.sNarration = sNarration;
@@ -45,14 +44,6 @@ public class DeliveryNoteHeader {
 
     public void setiUser(String iUser) {
         this.iUser = iUser;
-    }
-
-    public String getsContactPerson() {
-        return sContactPerson;
-    }
-
-    public void setsContactPerson(String sContactPerson) {
-        this.sContactPerson = sContactPerson;
     }
 
     public String getsSOPNo() {

@@ -7,14 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sangsolutions.powerbear.Adapter.ListProduct2.ListProductAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.R;
 
@@ -159,11 +157,11 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
         final ImageView img_check;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            PONo = itemView.findViewById(R.id.pono);
+            PONo = itemView.findViewById(R.id.sono);
             Name = itemView.findViewById(R.id.name);
             Code = itemView.findViewById(R.id.code);
             warehouse = itemView.findViewById(R.id.warehouse);
-            poQty = itemView.findViewById(R.id.poQty);
+            poQty = itemView.findViewById(R.id.soQty);
             qty = itemView.findViewById(R.id.qty);
             unit = itemView.findViewById(R.id.unit);
             remarks = itemView.findViewById(R.id.remarks);

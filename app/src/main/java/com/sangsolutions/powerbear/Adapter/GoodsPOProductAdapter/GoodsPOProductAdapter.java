@@ -139,9 +139,9 @@ Context context;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            poNo = itemView.findViewById(R.id.pono);
+            poNo = itemView.findViewById(R.id.sono);
             productName = itemView.findViewById(R.id.product_name);
-            POQty = itemView.findViewById(R.id.poQty);
+            POQty = itemView.findViewById(R.id.soQty);
             Unit = itemView.findViewById(R.id.unit);
             rl_1 = itemView.findViewById(R.id.rl_1);
         }

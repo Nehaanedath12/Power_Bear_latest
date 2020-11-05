@@ -182,12 +182,13 @@ public class PostStockCount extends JobService {
         Delivery = preferences.getString(Commons.DELIVERY_NOTE_FINISHED,"false");
         Stocks = preferences.getString(Commons.STOCK_COUNT_FINISHED,"false");
 
+
         if(Goods!=null&&Delivery!=null&&Stocks!=null)
         if((Goods.equals("true")||Goods.equals("false"))
            &&(Delivery.equals("true")||Delivery.equals("false"))
            &&(Stocks.equals("true")||Stocks.equals("false"))
         ){
-            ScheduleJob scheduleJob= new ScheduleJob();
+            ScheduleJob scheduleJob = new ScheduleJob();
 
             scheduleJob.SyncUserData(this);
             scheduleJob.SyncWarehouse(this);

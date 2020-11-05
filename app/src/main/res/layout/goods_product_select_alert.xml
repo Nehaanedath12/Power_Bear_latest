@@ -23,9 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="PONo"
+        android:text="DocNo"
         android:textColor="@color/color_white"
-        android:id="@+id/pono"
+        android:id="@+id/sono"
         android:textSize="15sp" />
 
     <TextView
@@ -45,8 +45,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/color_white"
-        android:text="POQty"
-        android:id="@+id/poQty"
+        android:text="Qty"
+        android:id="@+id/soQty"
         android:textSize="15sp"
         />
     <TextView

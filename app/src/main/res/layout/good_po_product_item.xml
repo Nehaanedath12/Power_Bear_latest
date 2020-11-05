@@ -14,7 +14,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="PONo"
-        android:id="@+id/pono"
+        android:id="@+id/sono"
         android:textSize="15sp" />
 
     <TextView
@@ -33,7 +33,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="POQty"
-        android:id="@+id/poQty"
+        android:id="@+id/soQty"
         android:textSize="15sp"
         />
     <TextView

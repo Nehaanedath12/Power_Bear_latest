@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/color_white"
                 android:textSize="18sp"
-                android:text="Goods Receipt"
+                android:text="Delivery Note"
                 android:layout_gravity="center_vertical"
                 />
             <LinearLayout

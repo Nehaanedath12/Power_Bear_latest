@@ -29,8 +29,6 @@ import com.sangsolutions.powerbear.Database.DeliveryNoteBody;
 import com.sangsolutions.powerbear.Database.DeliveryNoteHeader;
 import com.sangsolutions.powerbear.Fragment.DeliveryNoteBodyFragment;
 import com.sangsolutions.powerbear.Fragment.DeliveryNoteHeaderFragment;
-import com.sangsolutions.powerbear.Fragment.GoodsReceiptBodyFragment;
-import com.sangsolutions.powerbear.Fragment.GoodsReceiptHeaderFragment;
 import com.sangsolutions.powerbear.Singleton.DeliveryNoteBodySingleton;
 import com.sangsolutions.powerbear.Singleton.DeliveryNoteSOSingleton;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
@@ -56,7 +54,7 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
     private void Save(){
         String SOs="",date = "",supplier="",narration="",voucher="" ,ProcessedDate ="",sContactPerson="";
         List<String> listSO= DeliveryNoteSOSingleton.getInstance().getList();
-        List<DeliveryNoteBody> listMain = DeliveryNoteBodySingleton.getInstance().getList();
+        List<com.sangsolutions.powerbear.Adapter.DeliveryNoteBodyAdapter.DeliveryNoteBody> listMain = DeliveryNoteBodySingleton.getInstance().getList();
 
         for(int i = 0 ;i<listMain.size();i++){
             if(!listSO.contains(listMain.get(i).getsSONo())){
@@ -103,12 +101,12 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
 
                     for (int i = 0; i < listMain.size(); i++) {
                         b.setsVoucherNo(voucher);
+                        b.setsSONo(listMain.get(i).getsSONo());
                         b.setfQty(listMain.get(i).getfQty());
                         b.setiProduct(listMain.get(i).getiProduct());
                         b.setiWarehouse(listMain.get(i).getiWarehouse());
                         b.setsAttachment(listMain.get(i).getsAttachment());
-                        b.setsDescription(listMain.get(i).getsRemarks());
-                        b.setsItemCode(listMain.get(i).getsItemCode());
+                        b.setsRemarks(listMain.get(i).getsRemarks());
                         b.setiUser(helper.GetUserId());
                         b.setsSONo(listMain.get(i).getsSONo());
                         b.setUnit(listMain.get(i).getUnit());
@@ -127,7 +125,6 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
                                                 ,date
                                                 ,ProcessedDate
                                                 ,helper.GetUserId()
-                                                ,sContactPerson
                                                 ,SOs
                                                 ,supplier
                                                 ,narration);
@@ -170,7 +167,7 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
     }
 
     public void Alert(String title, String message, final String type){
-        AlertDialog.Builder builder= new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -261,8 +258,8 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        GoodsReceiptPoSingleton.getInstance().clearList();
-        GoodsReceiptBodySingleton.getInstance().clearList();
+        DeliveryNoteBodySingleton.getInstance().clearList();
+        DeliveryNoteSOSingleton.getInstance().clearList();
     }
 
 

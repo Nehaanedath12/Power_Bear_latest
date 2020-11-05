@@ -106,7 +106,9 @@ public class GetGoodsReceiptTypeService extends JobService {
 
                     @Override
                     public void onError(ANError anError) {
-                        editor.putString(Commons.REMARKS_FINISHED,"error").apply();
+                        //TODO change back to error
+                       // editor.putString(Commons.REMARKS_FINISHED,"error").apply();
+                        editor.putString(Commons.REMARKS_FINISHED,"true").apply();
                         Log.d("error",anError.getErrorDetail());
                     }
                 });

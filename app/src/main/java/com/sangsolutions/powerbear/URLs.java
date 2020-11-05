@@ -14,7 +14,7 @@ public class URLs {
     public static final String PostGoodsReceiptNote = domain + "PostGoodsReceiptNote.php";
     public static final String GetPendingPO = domain + "GetPendingPO.php";*/
 
-
+//http://185.151.4.167 use this
 
     public static final String ip =  "http://185.151.4.210/";
     public static final String domain =  "/power/api/Data/";
