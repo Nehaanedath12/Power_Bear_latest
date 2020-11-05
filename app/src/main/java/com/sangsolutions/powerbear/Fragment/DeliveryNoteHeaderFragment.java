@@ -267,13 +267,13 @@ public class DeliveryNoteHeaderFragment extends Fragment {
     public void LoadValueForEditing(){
         try {
             soList.clear();
-            Cursor cursor = helper.GetGoodsHeaderData(DocNo);
+            Cursor cursor = helper.GetDeliveryHeaderData(DocNo);
             if(cursor!=null&&cursor.moveToFirst()){
                 //LoadDate
-                et_date.setText(Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("DocDate"))));
+                et_date.setText(Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("sDate"))));
 
                 //LoadSupplier
-                String supplier =  cursor.getString(cursor.getColumnIndex("iSupplier"));
+                String supplier =  cursor.getString(cursor.getColumnIndex("iCustomerRef"));
                 PublicData.supplier = supplier;
                 if(supplierList.size()>0)
                 {
@@ -286,7 +286,7 @@ public class DeliveryNoteHeaderFragment extends Fragment {
                 }
 
                 //Load SOs
-                String pos =  cursor.getString(cursor.getColumnIndex("sPONo"));
+                String pos =  cursor.getString(cursor.getColumnIndex("sSONos"));
                 if(!pos.isEmpty()){
                     String[] array =   pos.split("\\s*,\\s*");
                     c =new ArrayList<>(Arrays.asList(array));
@@ -319,11 +319,12 @@ public class DeliveryNoteHeaderFragment extends Fragment {
                 for (int i = 0; i < cursor.getCount(); i++) {
                     listMain.add(new DeliveryNoteBody(
                             cursor.getString(cursor.getColumnIndex("sSONo")),
-                            cursor.getString(cursor.getColumnIndex("fSOQty")),
+                            cursor.getString(cursor.getColumnIndex("sSOQty")),
                             helper.GetProductName(cursor.getString(cursor.getColumnIndex("iProduct"))),
                             helper.GetProductCode(cursor.getString(cursor.getColumnIndex("iProduct"))),
-                            helper.GetPendingSOTempQty(cursor.getString(cursor.getColumnIndex("sPONo")),cursor.getString(cursor.getColumnIndex("iProduct"))),
+                            helper.GetPendingSOTempQty(cursor.getString(cursor.getColumnIndex("sSONo")),cursor.getString(cursor.getColumnIndex("iProduct"))),
                             cursor.getString(cursor.getColumnIndex("iProduct")),
+                            helper.GetWarehouse(String.valueOf(cursor.getColumnIndex("iWarehouse"))),
                             cursor.getString(cursor.getColumnIndex("iWarehouse")),
                             cursor.getString(cursor.getColumnIndex("sAttachment")),
                             cursor.getString(cursor.getColumnIndex("sRemarks")),
@@ -378,6 +379,8 @@ public class DeliveryNoteHeaderFragment extends Fragment {
         }catch (Exception e) {
             e.printStackTrace();
         }
+
+        LoadSupplier("");
 
         if(bundle!=null)
         {

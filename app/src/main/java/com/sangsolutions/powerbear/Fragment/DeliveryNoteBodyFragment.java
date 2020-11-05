@@ -262,6 +262,7 @@ public class DeliveryNoteBodyFragment extends Fragment {
                                 "",
                                 "",
                                 "",
+                                "",
                                 listSOProducts.get(j).getUnit()
                         ));
                     }
@@ -439,7 +440,7 @@ public class DeliveryNoteBodyFragment extends Fragment {
                         if(EditMode) {
                             qty = Integer.parseInt(listMain.get(pos).getfSOQty());
                         }else {
-                            qty = Integer.parseInt(listMain.get(pos).getfSOQty()) - Integer.parseInt(listMain.get(pos).getfSOQty());
+                            qty = Integer.parseInt(listMain.get(pos).getfSOQty()) - Integer.parseInt(listMain.get(pos).getfTempQty().equals("")?"0":listMain.get(pos).getfTempQty());
                         }
                         tv_so_qty.setText("Qty : " +qty);
                     }catch (Exception e){
@@ -598,7 +599,7 @@ public class DeliveryNoteBodyFragment extends Fragment {
 
                     boolean condition;
                     if(!EditMode){
-                        condition = regular > Integer.parseInt(listMain.get(pos).getfSOQty())-Integer.parseInt(listMain.get(pos).getfTempQty());
+                        condition = regular > Integer.parseInt(listMain.get(pos).getfSOQty())-Integer.parseInt(listMain.get(pos).getfTempQty().equals("")?"0":listMain.get(pos).getfTempQty());
                         Log.d("data",""+(listMain.get(pos).getfTempQty()));
                     }else {
                         condition = Integer.parseInt(listMain.get(pos).getfSOQty()) <  regular;
@@ -647,6 +648,7 @@ public class DeliveryNoteBodyFragment extends Fragment {
                                     listMain.get(pos).getsCode(),
                                     listMain.get(pos).getfTempQty(),
                                     listMain.get(pos).getiProduct(),
+                                    helper.GetWarehouse(list.get(sp_warehouse.getSelectedItemPosition()).getMasterId()),
                                     list.get(sp_warehouse.getSelectedItemPosition()).getMasterId(),
                                     Image,
                                     et_regular_remarks.getText().toString().trim(),
@@ -794,17 +796,18 @@ public class DeliveryNoteBodyFragment extends Fragment {
 
     private void LoadBodyValues() {
         try {
-            Cursor cursor =  helper.GetGoodsBodyData(DocNo);
+            Cursor cursor =  helper.GetDeliveryBodyData(DocNo);
 
             if(cursor!=null&&cursor.moveToFirst()) {
                 for (int i = 0; i < cursor.getCount(); i++) {
                     listMain.add(new DeliveryNoteBody(
                             cursor.getString(cursor.getColumnIndex("sSONo")),
-                            cursor.getString(cursor.getColumnIndex("fSOQty")),
+                            cursor.getString(cursor.getColumnIndex("sSOQty")),
+                            helper.GetProductName(cursor.getString(cursor.getColumnIndex("iProduct"))),
                             helper.GetProductCode(cursor.getString(cursor.getColumnIndex("iProduct"))),
-                            helper.GetUserId(),
                             helper.GetPendingSOTempQty(cursor.getString(cursor.getColumnIndex("sSONo")),cursor.getString(cursor.getColumnIndex("iProduct"))),
                             cursor.getString(cursor.getColumnIndex("iProduct")),
+                            helper.GetWarehouse(cursor.getString(cursor.getColumnIndex("iWarehouse"))),
                             cursor.getString(cursor.getColumnIndex("iWarehouse")),
                             cursor.getString(cursor.getColumnIndex("sAttachment")),
                             cursor.getString(cursor.getColumnIndex("sRemarks")),

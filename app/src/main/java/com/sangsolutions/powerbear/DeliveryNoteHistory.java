@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistoryAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.Singleton.DeliveryNoteHistorySingleton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,28 +34,29 @@ public class DeliveryNoteHistory extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //setRecyclerView();
+        setRecyclerView();
     }
 
-   /* public void setRecyclerView(){
+   public void setRecyclerView(){
         list.clear();
 
-        Cursor cursor = helper.GetDeliveryNoteList();
+        Cursor cursor = helper.GetAllDeliveryNote();
         if (cursor != null) {
             cursor.moveToFirst();
             empty_frame.setVisibility(View.GONE);
             for (int i = 0; i < cursor.getCount(); i++) {
-                String Header_id,TotalQty,iVoucherNo;
+                String DocDate,TotalQty,iVoucherNo;
 
-               Header_id = cursor.getString(cursor.getColumnIndex("HeaderId"));
-               TotalQty = cursor.getString(cursor.getColumnIndex("Qty"));
-                iVoucherNo = cursor.getString(cursor.getColumnIndex("iVoucherNo"));
+               DocDate = cursor.getString(cursor.getColumnIndex("DocDate"));
+               TotalQty = cursor.getString(cursor.getColumnIndex("sumQty"));
+                iVoucherNo = cursor.getString(cursor.getColumnIndex("DocNo"));
 
-                list.add(new com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory(Header_id,TotalQty,iVoucherNo));
+                list.add(new com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory(DocDate,TotalQty,iVoucherNo));
                 cursor.moveToNext();
 
                 if (i + 1 == cursor.getCount()) {
                     rv.setAdapter(adapter);
+                    DeliveryNoteHistorySingleton.getInstance().setList(list);
                     cursor.close();
                 }
             }
@@ -62,7 +64,7 @@ public class DeliveryNoteHistory extends AppCompatActivity {
             empty_frame.setVisibility(View.VISIBLE);
             rv.setAdapter(adapter);
         }
-    }*/
+    }
 
     private void DeleteStockCountItemAlert(final com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory deliveryNoteHistory, final int pos) {
         AlertDialog.Builder builder= new AlertDialog.Builder(this);
@@ -71,12 +73,18 @@ public class DeliveryNoteHistory extends AppCompatActivity {
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                      /*  if(helper.DeleteDeliveryNoteHeaderIdAndVoucherNO(deliveryNoteHistory.getHeaderId(),deliveryNoteHistory.getiVoucherNo())) {
-                            list.remove(pos);
-                            adapter.notifyDataSetChanged();
-                            setRecyclerView();
-                            Toast.makeText(DeliveryNoteHistory.this, "Deleted!", Toast.LENGTH_SHORT).show();
-                        }*/
+                        try {
+                            if(helper.DeleteDeliveryNoteBodyItem(deliveryNoteHistory.getiVoucherNo())) {
+                                if (helper.deleteGoodsHeaderItem(deliveryNoteHistory.getiVoucherNo())) {
+                                    list.remove(pos);
+                                    adapter.notifyDataSetChanged();
+                                    setRecyclerView();
+                                    Toast.makeText(DeliveryNoteHistory.this, "Deleted!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
@@ -113,7 +121,7 @@ public class DeliveryNoteHistory extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
 
 
-        //setRecyclerView();
+        setRecyclerView();
 
         add_new.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,8 +134,7 @@ adapter.setOnClickListener(new DeliveryNoteHistoryAdapter.OnClickListener() {
     @Override
     public void onEditItemClick(com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory deliveryNoteHistory) {
         Intent intent1 = new Intent(DeliveryNoteHistory.this, AddDeliveryNote.class);
-        intent1.putExtra("HeaderId",deliveryNoteHistory.getHeaderId());
-        intent1.putExtra("iVoucherNo",deliveryNoteHistory.getiVoucherNo());
+        intent1.putExtra("DocNo",deliveryNoteHistory.getiVoucherNo());
         intent1.putExtra("EditMode", true);
         startActivity(intent1);
     }

@@ -3,21 +3,21 @@ package com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter;
 @SuppressWarnings("ALL")
 public class DeliveryNoteHistory {
 
-    String HeaderId,Qty,iVoucherNo;
+    String DocDate,Qty,iVoucherNo;
 
-    public DeliveryNoteHistory(String headerId, String qty,String iVoucherNo) {
-        this.HeaderId = headerId;
+    public DeliveryNoteHistory(String DocDate, String qty,String iVoucherNo) {
+        this.DocDate = DocDate;
         this.Qty = qty;
         this.iVoucherNo = iVoucherNo;
     }
 
 
-    public String getHeaderId() {
-        return HeaderId;
+    public String getDocDate() {
+        return DocDate;
     }
 
-    public void setHeaderId(String headerId) {
-        HeaderId = headerId;
+    public void setDocDate(String docDate) {
+        DocDate = docDate;
     }
 
     public String getQty() {

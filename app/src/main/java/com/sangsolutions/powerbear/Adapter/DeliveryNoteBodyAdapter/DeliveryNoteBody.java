@@ -1,9 +1,9 @@
 package com.sangsolutions.powerbear.Adapter.DeliveryNoteBodyAdapter;
 
 public class DeliveryNoteBody {
-    String sSONo,sSOQty,sName,sCode,fTempQty,iProduct,iWarehouse,sAttachment,sRemarks,fQty,Unit;
+    String sSONo,sSOQty,sName,sCode,fTempQty,sWarehouse,iProduct,iWarehouse,sAttachment,sRemarks,fQty,Unit;
 
-    public DeliveryNoteBody( String sSONo, String sSOQty,String sName, String sCode, String fTempQty, String iProduct, String iWarehouse, String sAttachment, String sRemarks, String fQty, String unit) {
+    public DeliveryNoteBody( String sSONo, String sSOQty,String sName, String sCode, String fTempQty, String iProduct,String sWarehouse, String iWarehouse, String sAttachment, String sRemarks, String fQty, String unit) {
         this.sSONo = sSONo;
         this.sSOQty = sSOQty;
         this.sName = sName;
@@ -11,10 +11,23 @@ public class DeliveryNoteBody {
         this.fTempQty = fTempQty;
         this.iProduct = iProduct;
         this.iWarehouse = iWarehouse;
+        this.sWarehouse = sWarehouse;
         this.sAttachment = sAttachment;
         this.sRemarks = sRemarks;
         this.fQty = fQty;
         this.Unit = unit;
+    }
+
+    public String getsSOQty() {
+        return sSOQty;
+    }
+
+    public String getsWarehouse() {
+        return sWarehouse;
+    }
+
+    public void setsWarehouse(String sWarehouse) {
+        this.sWarehouse = sWarehouse;
     }
 
     public String getsName() {

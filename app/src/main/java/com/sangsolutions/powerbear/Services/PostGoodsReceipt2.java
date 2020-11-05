@@ -135,7 +135,7 @@ public class PostGoodsReceipt2 extends JobService {
 
                 }else {
                     Log.d("PostGoods",successCounter+":"+list.size());
-                    if(successCounter==list.size()) {
+                    if(successCounter+1==list.size()) {
                         editor.putString(Commons.GOODS_RECEIPT_FINISHED,"true").apply();
                     }else if(successCounter<list.size()){
                         editor.putString(Commons.GOODS_RECEIPT_FINISHED,"error").apply();
@@ -184,7 +184,6 @@ public class PostGoodsReceipt2 extends JobService {
                     @Override
                     public void onError(ANError anError) {
                         Log.d("error",anError.getErrorDetail());
-                        Log.d("data"," "+"http://" + new Tools().getIP(PostGoodsReceipt2.this) + URLs.PostGR);
                         UploadGoodsReceipt();
                         ReceiptCount++;
                     }

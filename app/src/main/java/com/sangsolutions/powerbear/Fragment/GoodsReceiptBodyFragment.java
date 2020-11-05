@@ -761,8 +761,8 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                                         et_damaged_qty.getText().toString().trim(),
                                         et_damaged_remarks.getText().toString().trim(),
                                         damagedImage,
-                                        listRemarks.get(sp_minor_type.getSelectedItemPosition()).getiId(),
-                                        listRemarks.get(sp_damage_type.getSelectedItemPosition()).getiId()
+                                        listRemarks.get(sp_minor_type.getSelectedItemPosition()==-1?0:sp_minor_type.getSelectedItemPosition()).getiId(),
+                                        listRemarks.get(sp_damage_type.getSelectedItemPosition()==-1?0:sp_damage_type.getSelectedItemPosition()).getiId()
                                 ));
                                 GoodsReceiptBodySingleton.getInstance().setList(listMain);
                                 goodsReceiptBodyAdapter.notifyDataSetChanged();

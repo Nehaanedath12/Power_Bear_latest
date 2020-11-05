@@ -39,7 +39,7 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final DeliveryNoteHistory deliveryNoteHistory = list.get(position);
 
-        holder.HeaderId.setText("Id :"+list.get(position).getHeaderId());
+        holder.HeaderId.setText("DocNo :"+list.get(position).getiVoucherNo());
         holder.Qty.setText("Total Qty :"+list.get(position).getQty());
 
    holder.edit.setOnClickListener(new View.OnClickListener() {

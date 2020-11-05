@@ -224,9 +224,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_DELIVERY_NOTE_HEADER = "create table if not exists "+TABLE_DELIVERY_NOTE_HEADER+" (" +
             "" + DOC_NO + " TEXT(20) DEFAULT null ," +
             "" + S_DATE + " TEXT(10) DEFAULT null ," +
-            "" + S_SALESMAN + " TEXT(50) DEFAULT null ," +
             "" + D_PROCESSED_DATE + " TEXT(10) DEFAULT null ," +
             "" + S_SO_NOS + " TEXT DEFAULT null," +
+            "" + I_USER +" INTEGER DEFAULT null,"+
             "" + I_CUSTOMER + " INTEGER DEFAULT 0," +
             "" + S_NARRATION + " TEXT(50) DEFAULT null " +
             ")";
@@ -1292,7 +1292,7 @@ public boolean DeleteStockCount(String voucherNo){
         this.db = getWritableDatabase();
         this.db = getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("select " + DOC_NO + "," + S_PONO + "," + F_QTY + "," + I_PRODUCT + " from " + TABLE_DELIVERY_NOTE_BODY + " where " + DOC_NO + " = ? and " + S_SONO + " = ? and " + I_PRODUCT + " = ? ", new String[]{b.getsVoucherNo(), b.getsSONo(), b.getiProduct()});
+        Cursor cursor = db.rawQuery("select " + DOC_NO + "," + S_SONO + "," + F_QTY + "," + I_PRODUCT + " from " + TABLE_DELIVERY_NOTE_BODY + " where " + DOC_NO + " = ? and " + S_SONO + " = ? and " + I_PRODUCT + " = ? ", new String[]{b.getsVoucherNo(), b.getsSONo(), b.getiProduct()});
         Cursor cursor2 = db.rawQuery("select " + DOC_NO + "," + PRODUCT + "," + TEMP_QTY + "," + QTY + " from " + TABLE_PENDING_SO + " where " + DOC_NO + " = ? and " + PRODUCT + " = ? ", new String[]{b.getsSONo(), b.getiProduct()});
 
         float status = -1;
@@ -1310,7 +1310,7 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(UNIT,b.getUnit());
 
         if(cursor!=null&&cursor.moveToFirst()){
-            status = db.update(TABLE_DELIVERY_NOTE_BODY, cv, DOC_NO+" = ? and "+S_PONO+" = ? ",new String[]{b.getsVoucherNo(),b.getsSONo()});
+            status = db.update(TABLE_DELIVERY_NOTE_BODY, cv, DOC_NO+" = ? and "+S_SONO+" = ? ",new String[]{b.getsVoucherNo(),b.getsSONo()});
         }else {
             status = db.insert(TABLE_DELIVERY_NOTE_BODY, null, cv);
         }
@@ -1320,7 +1320,7 @@ public boolean DeleteStockCount(String voucherNo){
         cv2.put(TEMP_QTY,String.valueOf(qty));
         float status2 = -1;
         if(status != -1) {
-            status2 = db.update(TABLE_PENDING_SO, cv2, DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ?", new String[]{b.getsSONo(), b.getiProduct(), b.getUnit()});
+            status2 = db.update(TABLE_PENDING_SO, cv2, DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ? ", new String[]{b.getsSONo(), b.getiProduct(), b.getUnit()});
         }
         cursor.close();
         cursor2.close();
@@ -1331,7 +1331,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetDeliveryBodyData(String DocNo){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("Select * from "+TABLE_GOODS_RECEIPT_BODY+" where "+DOC_NO+" = ? ",new String[]{DocNo});
+        Cursor cursor = db.rawQuery("Select * from "+TABLE_DELIVERY_NOTE_BODY+" where "+DOC_NO+" = ? ",new String[]{DocNo});
         if(cursor!=null&&cursor.moveToFirst()){
             return cursor;
         }
@@ -1362,5 +1362,84 @@ public boolean DeleteStockCount(String voucherNo){
         }
     }
 
+    public boolean DeleteDeliveryNoteBodyItem(String DocNo){
+        float status = -1;
+        try {
+            this.db = getWritableDatabase();
+            Cursor cursor = db.rawQuery("select * from " + TABLE_DELIVERY_NOTE_BODY + " where " + DOC_NO + " = ?", new String[]{DocNo});
+            if (cursor != null && cursor.moveToFirst()) {
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    String sPONO = cursor.getString(cursor.getColumnIndex(S_SONO));
+                    String iProduct = cursor.getString(cursor.getColumnIndex(I_PRODUCT));
+                    String unit = cursor.getString(cursor.getColumnIndex(UNIT));
 
+                    int qty = cursor.getString(cursor.getColumnIndex(F_QTY)).isEmpty()?0:Integer.parseInt(cursor.getString(cursor.getColumnIndex(F_QTY)));
+
+
+                    int totalQty =  (qty);
+
+
+                    Cursor cursor2 = db.rawQuery("select " + DOC_NO + "," + PRODUCT + "," + TEMP_QTY + "," + QTY + " from " + TABLE_PENDING_SO + " where " + DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ?", new String[]{sPONO, iProduct, unit});
+
+
+                    if (cursor2 != null && cursor2.moveToFirst()) {
+                        ContentValues cv2 = new ContentValues();
+
+                        int tempQty = Integer.parseInt(cursor2.getString(cursor2.getColumnIndex(TEMP_QTY)));
+                        int restQty =   tempQty - totalQty;
+                        if (restQty<0) {
+                            cv2.put(TEMP_QTY, "0");
+                        }else {
+                            cv2.put(TEMP_QTY, String.valueOf(restQty));
+                        }
+
+                        db.update(TABLE_PENDING_SO, cv2, DOC_NO + " = ? and " + PRODUCT + " = ? and " + UNIT + " = ?", new String[]{sPONO, iProduct, unit});
+                        cursor2.close();
+                    }
+
+
+                    cursor.moveToNext();
+                    if (i + 1 == cursor.getCount()) {
+                        status = db.delete(TABLE_DELIVERY_NOTE_BODY, DOC_NO + " = ? ", new String[]{DocNo});
+                        cursor.close();
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return status != -1;
+    }
+    public boolean DeleteDeliveryNoteHeaderItem(String DocNo){
+        this.db = getWritableDatabase();
+        float status = db.delete(TABLE_DELIVERY_NOTE_HEADER,DOC_NO+" = ? ",new String[]{DocNo});
+        return status != -1;
+    }
+
+
+    public Cursor GetAllDeliveryNote(){
+        this.db = getReadableDatabase();
+        Cursor cursor;
+        if(GetUserId().equals("1")){
+            cursor = db.rawQuery("SELECT h.DocNo as DocNo ,h.sDate as DocDate, sum(b.fQty) as sumQty from tbl_DeliveryNoteHeader h " +
+                    "INNER join tbl_DeliveryNoteBody b on h.DocNo =b.DocNo " +
+                    " GROUP by h.DocNo",null);
+        }else {
+            cursor = db.rawQuery("SELECT h.DocNo as DocNo ,h.sDate as DocDate, sum(b.fQty) as sumQty from tbl_DeliveryNoteHeader h " +
+                    "INNER join tbl_DeliveryNoteBody b on h.DocNo =b.DocNo where h.iUser = ? " +
+                    " GROUP by h.DocNo", new String[]{GetUserId()});
+        }
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }else
+            return null;
+    }
+    public Cursor GetDeliveryHeaderData(String DocNo){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from "+TABLE_DELIVERY_NOTE_HEADER+" where "+DOC_NO+" = ? ",new String[]{DocNo});
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
+    }
 }

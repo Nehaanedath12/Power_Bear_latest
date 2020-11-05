@@ -100,7 +100,7 @@ public class DeliveryNoteBodyAdapter extends RecyclerView.Adapter<DeliveryNoteBo
         holder.SONo.setText(list.get(position).getsSONo());
         holder.Code.setText(list.get(position).getsCode());
         holder.Name.setText(list.get(position).getsName());
-        holder.warehouse.setText(list.get(position).getiWarehouse());
+        holder.warehouse.setText(list.get(position).getsWarehouse());
         holder.soQty.setText(list.get(position).getfSOQty());
         holder.qty.setText(list.get(position).getfQty());
         holder.unit.setText(list.get(position).getUnit());
