@@ -267,7 +267,7 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_good_receipt);
+        setContentView(R.layout.activity_delivery_note);
         helper = new DatabaseHelper(this);
 
         viewPager2 = findViewById(R.id.viewpager);

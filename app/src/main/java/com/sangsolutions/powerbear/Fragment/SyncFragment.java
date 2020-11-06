@@ -103,6 +103,7 @@ public class SyncFragment extends Fragment {
                             && Objects.equals(preferences.getString(Commons.PENDING_PO_FINISHED, "false"), "true")
                             && Objects.equals(preferences.getString(Commons.PENDING_SO_FINISHED, "false"), "true")
                             && Objects.equals(preferences.getString(Commons.REMARKS_FINISHED, "false"), "true")
+                            && Objects.equals(preferences.getString(Commons.PRODUCT_FINISHED, "false"), "true")
                             && (Objects.equals(preferences.getString(Commons.STOCK_COUNT_FINISHED, "false"), "true") || Objects.equals(preferences.getString(Commons.STOCK_COUNT_FINISHED, "false"), "false"))
                             && (Objects.equals(preferences.getString(Commons.GOODS_RECEIPT_FINISHED, "false"), "true") || Objects.equals(preferences.getString(Commons.GOODS_RECEIPT_FINISHED, "false"), "false"))
                             && (Objects.equals(preferences.getString(Commons.DELIVERY_NOTE_FINISHED, "false"), "true") || Objects.equals(preferences.getString(Commons.DELIVERY_NOTE_FINISHED, "false"), "false"))
@@ -120,6 +121,7 @@ public class SyncFragment extends Fragment {
 
                     if (Objects.equals(preferences.getString(Commons.GOODS_RECEIPT_FINISHED, "false"), "error")) {
                         if (!goodsShown) {
+                            txt.setText("GRN Sync failed!");
                             tv_status.setText("GRN Sync failed!");
                         }
                         handler.removeCallbacksAndMessages(null);
@@ -130,6 +132,7 @@ public class SyncFragment extends Fragment {
 
                     if (Objects.equals(preferences.getString(Commons.DELIVERY_NOTE_FINISHED, "false"), "error")) {
                         if (!DeliveryShown) {
+                            txt.setText("Delivery No Sync failed!");
                             tv_status.setText("Delivery No Sync failed!");
                         }
                         handler.removeCallbacksAndMessages(null);
@@ -140,6 +143,7 @@ public class SyncFragment extends Fragment {
                     }
                     if (Objects.equals(preferences.getString(Commons.STOCK_COUNT_FINISHED, "false"), "error")) {
                         if (!StockShown) {
+                            txt.setText("Delivery No Sync failed!");
                             tv_status.setText("Delivery No Sync failed!");
                         }
                         handler.removeCallbacksAndMessages(null);

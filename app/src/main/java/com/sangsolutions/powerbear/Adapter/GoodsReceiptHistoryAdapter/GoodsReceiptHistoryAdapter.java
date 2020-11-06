@@ -133,7 +133,10 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
         holder.card_main.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                onClickListener.onItemLongClick(position);
+                if(onClickListener==null) return false;
+                else {
+                    onClickListener.onItemLongClick(position);
+                }
                 return true;
             }
         });

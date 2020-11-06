@@ -821,9 +821,9 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
                 boolean condition;
                 if(!EditMode){
-                    condition = (regular+minor+damaged) <= Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
                 }else {
-                    condition = Integer.parseInt(listMain.get(pos).getfPOQty()) >=  (regular+minor+damaged);
+                    condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <=  (regular+minor+damaged);
                 }
                 if(condition){
                     if(et_minor_remarks.getText().toString().isEmpty()){
@@ -867,9 +867,9 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
                 boolean condition;
                 if(!EditMode){
-                    condition = (regular+minor+damaged) <= Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
                 }else {
-                    condition = Integer.parseInt(listMain.get(pos).getfPOQty()) >=  (regular+minor+damaged);
+                    condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <=  (regular+minor+damaged);
                 }
                 if(condition){
                     if(et_regular_remarks.getText().toString().isEmpty()){
@@ -913,9 +913,9 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
                 boolean condition;
                 if(!EditMode){
-                    condition = (regular+minor+damaged) <= Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
                 }else {
-                    condition = Integer.parseInt(listMain.get(pos).getfPOQty()) >=  (regular+minor+damaged);
+                    condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <=  (regular+minor+damaged);
                 }
                 if(condition){
                     if(et_minor_remarks.getText().toString().isEmpty()){

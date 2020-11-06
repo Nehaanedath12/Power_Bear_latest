@@ -49,11 +49,16 @@ public void syncData(){
                     && Objects.equals(preferences.getString(Commons.REMARKS_FINISHED, "false"), "true")) {
 
             } else {
-
+                scheduleJob.SyncProductData(this);
+                scheduleJob.SyncWarehouse(this);
+                scheduleJob.SyncGoodsReceiptType(this);
                 scheduleJob.SyncUserData(this);
 
             }
         }else {
+            scheduleJob.SyncProductData(this);
+            scheduleJob.SyncWarehouse(this);
+            scheduleJob.SyncGoodsReceiptType(this);
             scheduleJob.SyncUserData(this);
         }
 
@@ -66,6 +71,9 @@ public void syncData(){
     protected void onResume() {
         super.onResume();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            new ScheduleJob().SyncProductData(this);
+            new ScheduleJob().SyncWarehouse(this);
+            new ScheduleJob().SyncGoodsReceiptType(this);
             new ScheduleJob().SyncUserData(this);
         }
     }

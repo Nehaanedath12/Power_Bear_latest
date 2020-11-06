@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 import com.google.android.material.appbar.AppBarLayout;
 import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountListAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
@@ -105,6 +106,7 @@ public class StockCountHistory extends AppCompatActivity {
         adapter.clearSelections();
         appbar.setVisibility(View.GONE);
         selection_active = false;
+
     }
 
     private void toggleSelection(int position) {
@@ -125,7 +127,6 @@ public class StockCountHistory extends AppCompatActivity {
 
     public void setRecyclerView(){
         list.clear();
-
         Cursor cursor = helper.GetStockCountList();
         if (cursor != null) {
             cursor.moveToFirst();
@@ -163,7 +164,6 @@ public class StockCountHistory extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if(helper.DeleteStockCount(stockCountList.getVNo())) {
                             closeSelection();
-                            list.remove(pos);
                             setRecyclerView();
                             StockCountSingleton.getInstance().setList(list);
                             Toast.makeText(StockCountHistory.this, "Deleted!", Toast.LENGTH_SHORT).show();
@@ -204,8 +204,7 @@ public class StockCountHistory extends AppCompatActivity {
         adapter = new StockCountListAdapter(list,this);
         rv = findViewById(R.id.rv_summary);
         rv.setLayoutManager(new LinearLayoutManager(this));
-
-
+        rv.setItemAnimator(null);
 
 
 
