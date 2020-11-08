@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+<androidx.appcompat.widget.Toolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?actionBarSize"
+    android:background="@color/colorAccent">
+    <ImageView
+        android:id="@+id/backward"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_backward"/>
+    <ImageView
+        android:id="@+id/forward"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_forward"/>
+</androidx.appcompat.widget.Toolbar>
+    <ImageView
+        android:layout_below="@+id/toolbar"
+        android:id="@+id/image_view_clicked"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+       />
+
+</RelativeLayout>
