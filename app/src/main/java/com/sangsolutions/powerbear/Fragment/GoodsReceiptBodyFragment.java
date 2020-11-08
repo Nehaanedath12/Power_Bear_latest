@@ -7,8 +7,11 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -24,6 +27,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +54,6 @@ import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
-import com.sangsolutions.powerbear.Singleton.StockCountProductSingleton;
 import com.sangsolutions.powerbear.Tools;
 
 
@@ -65,6 +68,7 @@ import io.fotoapparat.result.PhotoResult;
 import io.fotoapparat.view.CameraView;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class GoodsReceiptBodyFragment extends Fragment {
 
@@ -105,6 +109,8 @@ public class GoodsReceiptBodyFragment extends Fragment {
     RecyclerView rv_minor,rv_damaged;
     boolean EditMode = false;
     String DocNo = "";
+
+    LinearLayout minor_damaged_linear,damaged_linear;
 
     int current_position = 0;
 
@@ -589,6 +595,9 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
             rv_minor = view.findViewById(R.id.rv_minor);
             rv_damaged = view.findViewById(R.id.rv_damaged);
 
+            damaged_linear=view.findViewById(R.id.damaged_linear);
+            minor_damaged_linear=view.findViewById(R.id.minor_damage_linear);
+
             rv_minor.setLayoutManager(new LinearLayoutManager(requireActivity(),RecyclerView.HORIZONTAL,false));
             rv_minor.setAdapter(minorDamagedPhotoAdapter);
 
@@ -706,6 +715,24 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                 @Override
                 public void onClick(View view) {
 
+                    if(et_regular_qty.getText().toString().equals("")){
+                        et_regular_remarks.setText("");
+
+                    }
+                    if(et_damaged_qty.getText().toString().equals("")){
+                        et_damaged_remarks.setText("");
+                        if(listDamagedImage.size()>0) {
+                            listDamagedImage.clear();
+                        }
+                    }
+                    if(et_minor_qty.getText().toString().equals("")){
+                        et_minor_remarks.setText("");
+                        if(listMinorImage.size()>0) {
+                            listMinorImage.clear();
+                        }
+
+                    }
+
                    try {
                      int regular = et_regular_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_regular_qty.getText().toString());
                      int minor = et_minor_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_minor_qty.getText().toString());
@@ -788,8 +815,10 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     ImageDeleteAlert("minor", position);
                 }
 
+
                 @Override
-                public void OnImageClickListener(ImageView view, List<String> photo, int potions) {
+                public void OnImageClickListener(ImageView view, List<String> photo, int position) {
+                   imageView(photo,position);
                     }
 
             });
@@ -800,7 +829,24 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
             public void OnDeleteListener(String photo, int position) {
                 ImageDeleteAlert("damaged", position);
             }
+
+            @Override
+            public void onImageClickListener(List<String> photo, int position) {
+                imageView(photo,position);
+            }
         });
+
+        if(!et_regular_qty.getText().toString().equals("")){
+            et_regular_remarks.setVisibility(View.VISIBLE);
+        }
+        if(!et_minor_qty.getText().toString().equals("")){
+            et_minor_remarks.setVisibility(View.VISIBLE);
+            minor_damaged_linear.setVisibility(View.VISIBLE);
+        }
+        if(!et_damaged_qty.getText().toString().equals("")){
+            et_damaged_remarks.setVisibility(View.VISIBLE);
+            damaged_linear.setVisibility(View.VISIBLE);
+        }
 
         et_regular_qty.addTextChangedListener(new TextWatcher() {
             @Override
@@ -815,6 +861,9 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
             @Override
             public void afterTextChanged(Editable s) {
+                if(s!=null){
+                    et_regular_remarks.setVisibility(View.VISIBLE);
+                }
                 int regular = et_regular_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_regular_qty.getText().toString());
                 int minor = et_minor_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_minor_qty.getText().toString());
                 int damaged = et_damaged_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_damaged_qty.getText().toString());
@@ -861,6 +910,10 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
             @Override
             public void afterTextChanged(Editable s) {
+                if(s!=null){
+                    et_minor_remarks.setVisibility(View.VISIBLE);
+                    minor_damaged_linear.setVisibility(View.VISIBLE);
+                }
                 int regular = et_regular_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_regular_qty.getText().toString());
                 int minor = et_minor_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_minor_qty.getText().toString());
                 int damaged = et_damaged_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_damaged_qty.getText().toString());
@@ -907,6 +960,10 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
             @Override
             public void afterTextChanged(Editable s) {
+                if(s!=null){
+                    et_damaged_remarks.setVisibility(View.VISIBLE);
+                    damaged_linear.setVisibility(View.VISIBLE);
+                }
                 int regular = et_regular_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_regular_qty.getText().toString());
                 int minor = et_minor_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_minor_qty.getText().toString());
                 int damaged = et_damaged_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_damaged_qty.getText().toString());
@@ -940,7 +997,53 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
         });
 
     }
-   //////////////////////////////////////////
+
+    private void imageView(List<String> photo, int position) {
+        View view1=LayoutInflater.from(requireActivity()).inflate(R.layout.imageview_goods_receipt,null,false);
+        ImageView image_clicked=view1.findViewById(R.id.image_view_clicked);
+        ImageView backward=view1.findViewById(R.id.backward);
+        ImageView forward=view1.findViewById(R.id.forward);
+        current_position=position;
+        AlertDialog.Builder builder1=new AlertDialog.Builder(requireActivity(),android.R.style.Theme_Light_NoTitleBar_Fullscreen)
+                .setView(view1);
+        AlertDialog dialog=builder1.create();
+        dialog.show();
+        Bitmap bm = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(photo.get(position)), new Tools().GetPixels(100,requireActivity()), new Tools().GetPixels(150,requireActivity()));
+        image_clicked.setImageBitmap(bm);
+        PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(image_clicked);
+        photoViewAttacher.canZoom();
+        forward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(photo.size()>0) {
+                    if (current_position < photo.size()) {
+                        Bitmap bm = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(photo.get(current_position)), new Tools().GetPixels(100,requireActivity()), new Tools().GetPixels(150,requireActivity()));
+                        image_clicked.setImageBitmap(bm);
+                        PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(image_clicked);
+                        photoViewAttacher.canZoom();
+                        current_position++;
+                    }
+                }
+            }
+        });
+        backward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(photo.size()>0){
+                    if(current_position>0){
+                        current_position--;
+                        Bitmap bm = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(photo.get(current_position)), new Tools().GetPixels(100,requireActivity()), new Tools().GetPixels(150,requireActivity()));
+                        image_clicked.setImageBitmap(bm);
+                        PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(image_clicked);
+                        photoViewAttacher.canZoom();
+                    }
+                }
+            }
+        });
+
+
+    }
+    //////////////////////////////////////////
 
     public void DeleteItem(int pos) {
         try {

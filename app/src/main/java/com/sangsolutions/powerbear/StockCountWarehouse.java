@@ -44,7 +44,11 @@ public class StockCountWarehouse extends AppCompatActivity {
     SimpleDateFormat df;
     Date c;
     int current_position=0;
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        StockCountProductSingleton.getInstance().clearList();
+    }
     private void Save(){
         String s_date,s_narration,s_warehouse;
 

@@ -67,7 +67,7 @@ public class MinorDamagedPhotoAdapter extends RecyclerView.Adapter<MinorDamagedP
 
     public interface OnClickListener {
         void OnDeleteListener(String photo, int potions);
-        void OnImageClickListener(ImageView view,List<String> photo, int potions);
+        void OnImageClickListener(ImageView view,List<String> photo, int position);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -101,6 +101,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
     public void closeSelection(){
         adapter.clearSelections();
         appbar.setVisibility(View.GONE);
+        selection_active=false;
     }
 
     private void toggleSelection(int position) {
@@ -217,10 +218,12 @@ public class GoodsReceiptHistory extends AppCompatActivity {
 adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
     @Override
     public void onEditItemClick(com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory) {
-        Intent intent1 = new Intent(GoodsReceiptHistory.this,GoodsReceipt.class);
-        intent1.putExtra("DocNo",goodsReceiptHistory.getDocNo());
-        intent1.putExtra("EditMode", true);
-        startActivity(intent1);
+        if(!selection_active) {
+            Intent intent1 = new Intent(GoodsReceiptHistory.this, GoodsReceipt.class);
+            intent1.putExtra("DocNo", goodsReceiptHistory.getDocNo());
+            intent1.putExtra("EditMode", true);
+            startActivity(intent1);
+        }
     }
 
     @Override

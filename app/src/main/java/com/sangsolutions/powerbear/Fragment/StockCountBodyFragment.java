@@ -176,12 +176,7 @@ public class StockCountBodyFragment extends Fragment {
     }
 
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        StockCountProductSingleton.getInstance().clearList();
-        StockCountSingleton.getInstance().clearList();
-    }
+
 
     private void initFab(View view) {
         move_down_anim = AnimationUtils.loadAnimation(requireActivity(), R.anim.move_down);

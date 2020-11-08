@@ -197,6 +197,7 @@
             android:textColor="@color/color_black"
             />
         <EditText
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:id="@+id/regular_remarks"
@@ -256,6 +257,7 @@
             />
         </LinearLayout>
         <EditText
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:id="@+id/minor_remarks"
@@ -263,6 +265,8 @@
             android:padding="10dp"
             />
         <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/minor_damage_linear"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:orientation="horizontal"
@@ -336,6 +340,7 @@
                 />
         </LinearLayout>
         <EditText
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:id="@+id/damaged_remarks"
@@ -344,7 +349,10 @@
             android:textColor="@color/color_black"
             />
 
-    <LinearLayout android:layout_height="150dp"
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/damaged_linear"
+        android:layout_height="150dp"
         android:layout_width="match_parent"
         >
         <ImageView

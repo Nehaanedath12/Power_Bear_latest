@@ -49,6 +49,13 @@ public class DamagedPhotoAdapter extends RecyclerView.Adapter<DamagedPhotoAdapte
                 listener.OnDeleteListener(list.get(position), position);
             }
         });
+        holder.photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onImageClickListener(list, position);
+
+            }
+        });
 
 
     }
@@ -60,6 +67,8 @@ public class DamagedPhotoAdapter extends RecyclerView.Adapter<DamagedPhotoAdapte
 
     public interface OnClickListener {
         void OnDeleteListener(String photo, int potions);
+
+        void onImageClickListener(List<String> s, int position);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
