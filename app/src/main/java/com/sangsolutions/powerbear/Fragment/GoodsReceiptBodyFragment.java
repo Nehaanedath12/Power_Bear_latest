@@ -466,93 +466,121 @@ public class GoodsReceiptBodyFragment extends Fragment {
 
 @SuppressLint("SetTextI18n")
 public void LoadDataToMainAlert(int pos, List<Warehouse> list){
+
         if(mainAlertDialog!=null&&mainAlertDialog.isShowing()) {
-            if (listMain.get(pos) != null) {
-                try {
-                    tv_doc_no.setText("Doc No : " + listMain.get(pos).getsPONo());
-                    tv_product.setText("Name : " + listMain.get(pos).getName());
-                    tv_code.setText("Code : " + listMain.get(pos).getCode());
-                    tv_unit.setText("Unit : " + listMain.get(pos).getUnit());
-                    if(listMain.get(pos).getTempQty().equals("0")) {
-                        tv_po_qty.setText("Qty : " + listMain.get(pos).getfPOQty());
-                    }else {try {
-                        int qty=0;
-                        if(EditMode) {
-                            qty = Integer.parseInt(listMain.get(pos).getfPOQty());
-                        }else {
-                             qty = Integer.parseInt(listMain.get(pos).getfPOQty()) - Integer.parseInt(listMain.get(pos).getTempQty());
+            Log.d("damaged_qty",listMain.get(pos).getfDamagedQty());
+            try {
+                if (listMain.get(pos) != null) {
+                    try {
+                        tv_doc_no.setText("Doc No : " + listMain.get(pos).getsPONo());
+                        tv_product.setText("Name : " + listMain.get(pos).getName());
+                        tv_code.setText("Code : " + listMain.get(pos).getCode());
+                        tv_unit.setText("Unit : " + listMain.get(pos).getUnit());
+                        if (listMain.get(pos).getTempQty().equals("0")) {
+                            tv_po_qty.setText("Qty : " + listMain.get(pos).getfPOQty());
+                        } else {
+                            try {
+                                int qty = 0;
+                                if (EditMode) {
+                                    qty = Integer.parseInt(listMain.get(pos).getfPOQty());
+                                } else {
+                                    qty = Integer.parseInt(listMain.get(pos).getfPOQty()) - Integer.parseInt(listMain.get(pos).getTempQty());
+                                }
+                                tv_po_qty.setText("Qty : " + qty);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                        tv_po_qty.setText("Qty : " +qty);
-                    }catch (Exception e){
+
+
+                        if (!listMain.get(pos).getfQty().isEmpty()) {
+                            et_regular_remarks.setVisibility(View.VISIBLE);
+                        } else {
+                            et_regular_remarks.setVisibility(View.GONE);
+                        }
+                        if (!listMain.get(pos).getfMinorDamageQty().isEmpty()) {
+                            et_minor_remarks.setVisibility(View.VISIBLE);
+                            minor_damaged_linear.setVisibility(View.VISIBLE);
+                        } else {
+                            et_minor_remarks.setVisibility(View.GONE);
+                            minor_damaged_linear.setVisibility(View.GONE);
+                        }
+                        if (!listMain.get(pos).getfDamagedQty().isEmpty()) {
+                            et_damaged_remarks.setVisibility(View.VISIBLE);
+                            damaged_linear.setVisibility(View.VISIBLE);
+                        } else {
+                            et_damaged_remarks.setVisibility(View.GONE);
+                            damaged_linear.setVisibility(View.GONE);
+                        }
+
+
+                        et_regular_qty.setText(listMain.get(pos).getfQty());
+                        et_minor_qty.setText(listMain.get(pos).getfMinorDamageQty());
+                        et_damaged_qty.setText(listMain.get(pos).getfDamagedQty());
+
+                        et_regular_remarks.setText(listMain.get(pos).getsRemarks());
+                        et_minor_remarks.setText(listMain.get(pos).getsMinorRemarks());
+                        et_damaged_remarks.setText(listMain.get(pos).getsDamagedRemarks());
+
+                        listMinorImage.clear();
+                        if (!listMain.get(pos).getsMinorAttachment().equals("")) {
+                            listMinorImage.addAll(Arrays.asList(listMain.get(pos).getsMinorAttachment().split(",")));
+                        } else {
+                            listMinorImage.clear();
+                        }
+                        minorDamagedPhotoAdapter.notifyDataSetChanged();
+
+                        listDamagedImage.clear();
+                        if (!listMain.get(pos).getsDamagedAttachment().equals("")) {
+                            listDamagedImage.addAll(Arrays.asList(listMain.get(pos).getsDamagedAttachment().split(",")));
+                        } else {
+                            listDamagedImage.clear();
+                        }
+                        damagedPhotoAdapter.notifyDataSetChanged();
+
+
+                        if (list != null)
+                            if (!listMain.get(pos).getiWarehouse().isEmpty()) {
+                                for (int i = 0; i < list.size(); i++) {
+                                    if (list.get(i).getMasterId().equals(listMain.get(pos).getiWarehouse())) {
+                                        sp_warehouse.setSelection(i);
+                                    }
+                                }
+                            } else {
+                                sp_warehouse.setSelection(0);
+                            }
+
+
+                        if (listRemarks != null)
+                            if (!listMain.get(pos).getRemarksMinorType().isEmpty()) {
+                                for (int i = 0; i < listRemarks.size(); i++) {
+                                    if (!listMain.get(pos).getRemarksMinorType().equals("0"))
+                                        if (listRemarks.get(i).getiId().equals(listMain.get(pos).getRemarksMinorType())) {
+                                            sp_minor_type.setSelection(i);
+                                        }
+                                }
+                            } else {
+                                sp_minor_type.setSelection(0);
+                            }
+                        if (listRemarks != null)
+                            if (!listMain.get(pos).getRemarksDamagedType().isEmpty()) {
+                                for (int i = 0; i < listRemarks.size(); i++) {
+                                    if (!listMain.get(pos).getRemarksDamagedType().equals("0"))
+                                        if (listRemarks.get(i).getiId().equals(listMain.get(pos).getRemarksDamagedType())) {
+                                            sp_damage_type.setSelection(i);
+                                        }
+                                }
+                            } else {
+                                sp_damage_type.setSelection(0);
+                            }
+
+
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    }
-
-                    et_regular_qty.setText(listMain.get(pos).getfQty());
-                    et_minor_qty.setText(listMain.get(pos).getfMinorDamageQty());
-                    et_damaged_qty.setText(listMain.get(pos).getfDamagedQty());
-
-
-                    et_regular_remarks.setText(listMain.get(pos).getsRemarks());
-                    et_minor_remarks.setText(listMain.get(pos).getsMinorRemarks());
-                    et_damaged_remarks.setText(listMain.get(pos).getsDamagedRemarks());
-
-                        listMinorImage.clear();
-                    if (!listMain.get(pos).getsMinorAttachment().equals("")) {
-                        listMinorImage.addAll(Arrays.asList(listMain.get(pos).getsMinorAttachment().split(",")));
-                    }else {
-                        listMinorImage.clear();
-                    }
-                    minorDamagedPhotoAdapter.notifyDataSetChanged();
-
-                        listDamagedImage.clear();
-                    if (!listMain.get(pos).getsDamagedAttachment().equals("")) {
-                        listDamagedImage.addAll(Arrays.asList(listMain.get(pos).getsDamagedAttachment().split(",")));
-                    }else {
-                        listDamagedImage.clear();
-                    }
-                    damagedPhotoAdapter.notifyDataSetChanged();
-
-
-                    if(list!=null)
-                    if (!listMain.get(pos).getiWarehouse().isEmpty()) {
-                        for (int i = 0; i < list.size(); i++) {
-                            if (list.get(i).getMasterId().equals(listMain.get(pos).getiWarehouse())) {
-                                sp_warehouse.setSelection(i);
-                            }
-                        }
-                    }else {
-                        sp_warehouse.setSelection(0);
-                    }
-
-
-                    if(listRemarks!=null)
-                        if (!listMain.get(pos).getRemarksMinorType().isEmpty()) {
-                            for (int i = 0; i < listRemarks.size(); i++) {
-                                if(!listMain.get(pos).getRemarksMinorType().equals("0"))
-                                if (listRemarks.get(i).getiId().equals(listMain.get(pos).getRemarksMinorType())) {
-                                    sp_minor_type.setSelection(i);
-                                }
-                            }
-                        }else {
-                            sp_minor_type.setSelection(0);
-                        }
-                    if(listRemarks!=null)
-                        if (!listMain.get(pos).getRemarksDamagedType().isEmpty()) {
-                            for (int i = 0; i < listRemarks.size(); i++) {
-                                if(!listMain.get(pos).getRemarksDamagedType().equals("0"))
-                                if (listRemarks.get(i).getiId().equals(listMain.get(pos).getRemarksDamagedType())) {
-                                    sp_damage_type.setSelection(i);
-                                }
-                            }
-                        }else {
-                            sp_damage_type.setSelection(0);
-                        }
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+            }catch (IndexOutOfBoundsException e){
+                e.printStackTrace();
             }
         }
 }
@@ -666,13 +694,15 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
               LoadDataToMainAlert(pos,list);
 
 
+
             img_forward.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listMain.size() > 1) {
-                        if (current_position < listMain.size()) {
-                            LoadDataToMainAlert(current_position,list);
+                        if (current_position+1 < listMain.size()) {
                             current_position++;
+                            LoadDataToMainAlert(current_position,list);
+
                         }
                     }
                 }
@@ -742,10 +772,12 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
                        boolean condition;
                        if(!EditMode){
-                           condition = (regular+minor+damaged) > Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                           condition = (regular+minor+damaged) > Integer.parseInt(listMain.get(current_position).getfPOQty())-Integer.parseInt(listMain.get(current_position).getTempQty());
                            Log.d("data",""+(regular+minor+damaged));
                        }else {
-                           condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <  (regular+minor+damaged);
+                           Toast.makeText(requireActivity(), String.valueOf(current_position), Toast.LENGTH_SHORT).show();
+
+                           condition = Integer.parseInt(listMain.get(current_position).getfPOQty()) <  (regular+minor+damaged);
                        }
                         if((regular+minor+damaged)!=0) {
                             if (condition) {
@@ -998,12 +1030,12 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
     }
 
-    private void imageView(List<String> photo, int position) {
+    private void imageView(List<String> photo,final int position) {
         View view1=LayoutInflater.from(requireActivity()).inflate(R.layout.imageview_goods_receipt,null,false);
         ImageView image_clicked=view1.findViewById(R.id.image_view_clicked);
         ImageView backward=view1.findViewById(R.id.backward);
         ImageView forward=view1.findViewById(R.id.forward);
-        current_position=position;
+        final int[] image_current_position = {position};
         AlertDialog.Builder builder1=new AlertDialog.Builder(requireActivity(),android.R.style.Theme_Light_NoTitleBar_Fullscreen)
                 .setView(view1);
         AlertDialog dialog=builder1.create();
@@ -1016,12 +1048,13 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
             @Override
             public void onClick(View v) {
                 if(photo.size()>0) {
-                    if (current_position < photo.size()) {
-                        Bitmap bm = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(photo.get(current_position)), new Tools().GetPixels(100,requireActivity()), new Tools().GetPixels(150,requireActivity()));
+                    if (image_current_position[0] < photo.size()) {
+                        Bitmap bm = BitmapFactory.decodeFile(photo.get(image_current_position[0]));
                         image_clicked.setImageBitmap(bm);
                         PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(image_clicked);
                         photoViewAttacher.canZoom();
-                        current_position++;
+                        image_current_position[0]++;
+
                     }
                 }
             }
@@ -1030,9 +1063,9 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
             @Override
             public void onClick(View v) {
                 if(photo.size()>0){
-                    if(current_position>0){
-                        current_position--;
-                        Bitmap bm = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(photo.get(current_position)), new Tools().GetPixels(100,requireActivity()), new Tools().GetPixels(150,requireActivity()));
+                    if(image_current_position[0]>0){
+                        image_current_position[0]--;
+                        Bitmap bm = BitmapFactory.decodeFile(photo.get(image_current_position[0]));
                         image_clicked.setImageBitmap(bm);
                         PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(image_clicked);
                         photoViewAttacher.canZoom();
