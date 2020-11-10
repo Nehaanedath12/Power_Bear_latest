@@ -132,8 +132,8 @@ public class SyncFragment extends Fragment {
 
                     if (Objects.equals(preferences.getString(Commons.DELIVERY_NOTE_FINISHED, "false"), "error")) {
                         if (!DeliveryShown) {
-                            txt.setText("Delivery No Sync failed!");
-                            tv_status.setText("Delivery No Sync failed!");
+                            txt.setText("Delivery Note Sync failed!");
+                            tv_status.setText("Delivery Note Sync failed!");
                         }
                         handler.removeCallbacksAndMessages(null);
                         animationDrawable.stop();
@@ -143,8 +143,8 @@ public class SyncFragment extends Fragment {
                     }
                     if (Objects.equals(preferences.getString(Commons.STOCK_COUNT_FINISHED, "false"), "error")) {
                         if (!StockShown) {
-                            txt.setText("Delivery No Sync failed!");
-                            tv_status.setText("Delivery No Sync failed!");
+                            txt.setText("Stock count Sync failed!");
+                            tv_status.setText("Stock count Sync failed!");
                         }
                         handler.removeCallbacksAndMessages(null);
                         animationDrawable.stop();

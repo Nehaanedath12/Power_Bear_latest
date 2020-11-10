@@ -40,6 +40,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.chrisbanes.photoview.PhotoViewAttacher;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sangsolutions.powerbear.Adapter.DamagedPhotoAdapter.DamagedPhotoAdapter;
 import com.sangsolutions.powerbear.Adapter.GoodsPOProductAdapter.GoodsPOProduct;
@@ -68,7 +69,7 @@ import io.fotoapparat.result.PhotoResult;
 import io.fotoapparat.view.CameraView;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-import uk.co.senab.photoview.PhotoViewAttacher;
+
 
 public class GoodsReceiptBodyFragment extends Fragment {
 
@@ -479,12 +480,28 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         } else {
                             try {
                                 int qty = 0;
-                                if (EditMode) {
-                                    qty = Integer.parseInt(listMain.get(pos).getfPOQty());
-                                } else {
-                                    qty = Integer.parseInt(listMain.get(pos).getfPOQty()) - Integer.parseInt(listMain.get(pos).getTempQty());
-                                }
-                                tv_po_qty.setText("Qty : " + qty);
+                                    if(EditMode) {
+                                        int regular = et_regular_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_regular_qty.getText().toString());
+                                        int minor = et_minor_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_minor_qty.getText().toString());
+                                        int damaged = et_damaged_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_damaged_qty.getText().toString());
+
+                                       int sum = Integer.parseInt(listMain.get(pos).getfPOQty()) - Integer.parseInt(listMain.get(pos).getTempQty());
+
+                                       if(sum==0) {
+
+                                           qty = Integer.parseInt(listMain.get(pos).getfPOQty()) - (regular+minor+damaged);
+
+                                           if(qty==0){
+                                               qty = (regular+minor+damaged);
+                                           }
+
+                                       }else {
+                                           qty = Integer.parseInt(listMain.get(pos).getTempQty())+sum;
+                                       }
+                                    }else {
+                                        qty = Integer.parseInt(listMain.get(pos).getfPOQty()) - Integer.parseInt(listMain.get(pos).getTempQty());
+                                    }
+                                    tv_po_qty.setText("Qty : " + qty);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -1081,7 +1098,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                 scaledBitmap.getHeight(), matrix, true);
         image_clicked.setImageBitmap(rotatedBitmap);
         PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(image_clicked);
-        photoViewAttacher.canZoom();
+        photoViewAttacher.setZoomable(true);
     }
     //////////////////////////////////////////
 
@@ -1205,8 +1222,6 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
 
     //Load values for editing operation
-
-
     private void LoadBodyValues() {
         try {
            Cursor cursor =  helper.GetGoodsBodyData(DocNo);

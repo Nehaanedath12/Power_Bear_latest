@@ -44,16 +44,16 @@ public class PostGoodsReceipt2 extends JobService {
     Cursor cursor;
     String sDeviceId="";
     List<GoodReceiptHeader> list;
-    int ReceiptCount = 0,successCounter=0;
+    int ReceiptCount = 0,successCounter=1;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
 
     private void UploadGoodsReceipt() {
 
         JSONObject mainJsonObject = new JSONObject();
-
+        Log.d("count", String.valueOf(ReceiptCount));
             try {
-                if (ReceiptCount < list.size()) {
+                if (ReceiptCount <= list.size()) {
                     mainJsonObject.put("sVoucherNo", list.get(ReceiptCount).getDocNo());
                     mainJsonObject.put("iDocDate", list.get(ReceiptCount).getDocDate());
                     mainJsonObject.put("iSupplier", Integer.parseInt(list.get(ReceiptCount).getiSupplier()));
@@ -165,7 +165,7 @@ public class PostGoodsReceipt2 extends JobService {
                 .getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("data",response+" "+"http://" + new Tools().getIP(PostGoodsReceipt2.this) + URLs.PostGR);
+                        Log.d("data",response);
                         if(response.contains("Created")){
                              try {
                                 if (helper.deleteGoodsBodyItem(mainJsonObject.getString("sVoucherNo"))) {
@@ -177,15 +177,17 @@ public class PostGoodsReceipt2 extends JobService {
                                 e.printStackTrace();
                             }
                         }
-                        UploadGoodsReceipt();
                         ReceiptCount++;
+                        UploadGoodsReceipt();
+
                     }
 
                     @Override
                     public void onError(ANError anError) {
                         Log.d("error",anError.getErrorDetail());
-                        UploadGoodsReceipt();
                         ReceiptCount++;
+                        UploadGoodsReceipt();
+
                     }
                 });
 

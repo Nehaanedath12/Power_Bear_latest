@@ -32,7 +32,7 @@ public class PostStockCount extends JobService {
 
     DatabaseHelper helper;
     List<String> list;
-    int upload_list_portion = 0,successCounter=0;
+    int upload_list_portion = 0,successCounter=1;
     Cursor cursor;
     String UserId="";
     SharedPreferences preferences;
@@ -40,20 +40,22 @@ public class PostStockCount extends JobService {
     JobParameters params;
     private void vouchersToBeUploaded() {
         try {
-            if (upload_list_portion < list.size()) {
+            if (upload_list_portion <= list.size()) {
                 Log.d("list", String.valueOf(upload_list_portion));
-                cursor = helper.GetAllStockCountFromVoucher(list.get(upload_list_portion));
-                if (cursor != null) {
-                    upload_list_portion++;
-                    GetDataToUpload(cursor);
+                if(list.size()>upload_list_portion) {
+                    cursor = helper.GetAllStockCountFromVoucher(list.get(upload_list_portion));
+                    if (cursor != null) {
+                        upload_list_portion++;
+                        GetDataToUpload(cursor);
+                    }
                 }
 
             }else {
-                if(successCounter+1==list.size()) {
+                if(successCounter==list.size()) {
                     editor.putString(Commons.STOCK_COUNT_FINISHED,"true").apply();
-                }else if(successCounter+1<list.size()){
+                }else if(successCounter<list.size()){
                     editor.putString(Commons.STOCK_COUNT_FINISHED,"error").apply();
-                    Toast.makeText(this, "Stock Count Sync exited with an error!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Stock Count Sync exited with an error!"+successCounter, Toast.LENGTH_SHORT).show();
                 }
                 onStopJob(params);
             }
@@ -76,8 +78,8 @@ public class PostStockCount extends JobService {
                         Log.d("Upload", response);
                         try {
                             if (Integer.parseInt(response) > 0) {
-                                successCounter++;
                                 helper.DeleteStockCount(jsonObject.getString("iVoucherNo"));
+                                successCounter++;
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -86,7 +88,6 @@ public class PostStockCount extends JobService {
 
                     @Override
                     public void onError(ANError anError) {
-
                         Log.d("error", anError.toString());
                     }
                 });

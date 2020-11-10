@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -1296,7 +1297,14 @@ public boolean DeleteStockCount(String voucherNo){
         Cursor cursor2 = db.rawQuery("select " + DOC_NO + "," + PRODUCT + "," + TEMP_QTY + "," + QTY + " from " + TABLE_PENDING_SO + " where " + DOC_NO + " = ? and " + PRODUCT + " = ? ", new String[]{b.getsSONo(), b.getiProduct()});
 
         float status = -1;
-        int qty = 0,poQty= 0;
+        int qty = 0,soQty= 0;
+
+
+        if(cursor2!=null&&cursor2.moveToFirst()){
+            qty = cursor2.getInt(cursor2.getColumnIndex(TEMP_QTY))+Integer.parseInt(b.getfQty().isEmpty()?"0":b.getfQty());
+            soQty = cursor2.getInt(cursor2.getColumnIndex(QTY));
+        }
+
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO,b.getsVoucherNo());
         cv.put(S_SONO,b.getsSONo());

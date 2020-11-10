@@ -256,7 +256,7 @@ public class DeliveryNoteBodyFragment extends Fragment {
                                 listSOProducts.get(j).getPOQty(),
                                 listSOProducts.get(j).getName(),
                                 listSOProducts.get(j).getCode(),
-                                "",
+                                helper.GetPendingSOTempQty(listSOProducts.get(j).getDocNo(),listSOProducts.get(j).getProduct()),
                                 listSOProducts.get(j).getProduct(),
                                 "",
                                 "",
@@ -435,12 +435,23 @@ public class DeliveryNoteBodyFragment extends Fragment {
                     tv_unit.setText("Unit : " + listMain.get(pos).getUnit());
                     if(listMain.get(pos).getfTempQty().equals("0")) {
                         tv_so_qty.setText("Qty : " + listMain.get(pos).getfSOQty());
-                    }else {try {
+                    }else {
+                        try {
                         int qty=0;
                         if(EditMode) {
-                            qty = Integer.parseInt(listMain.get(pos).getfSOQty());
+                          int sum = Integer.parseInt(listMain.get(pos).getfSOQty()) - Integer.parseInt(listMain.get(pos).getfTempQty().equals("") ? "0" : listMain.get(pos).getfTempQty());
+
+                            if(sum==0){
+                                qty  =   Integer.parseInt(listMain.get(pos).getfSOQty()) - Integer.parseInt(listMain.get(pos).getfQty().equals("")?"0":listMain.get(pos).getfQty());
+
+                                if(qty==0){
+                                    qty = Integer.parseInt(listMain.get(pos).getfQty().equals("")?"0":listMain.get(pos).getfQty());
+                                }
+                            }else {
+                                qty  =   Integer.parseInt(listMain.get(pos).getfTempQty()) + sum;
+                            }
                         }else {
-                            qty = Integer.parseInt(listMain.get(pos).getfSOQty()) - Integer.parseInt(listMain.get(pos).getfTempQty().equals("")?"0":listMain.get(pos).getfTempQty());
+                            qty = Integer.parseInt(listMain.get(pos).getfSOQty()) - Integer.parseInt(listMain.get(pos).getfTempQty().equals("") ? "0" : listMain.get(pos).getfTempQty());
                         }
                         tv_so_qty.setText("Qty : " +qty);
                     }catch (Exception e){
