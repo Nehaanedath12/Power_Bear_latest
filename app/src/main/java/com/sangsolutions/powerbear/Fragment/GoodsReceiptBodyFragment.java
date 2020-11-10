@@ -10,8 +10,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
-import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -466,9 +466,7 @@ public class GoodsReceiptBodyFragment extends Fragment {
 
 @SuppressLint("SetTextI18n")
 public void LoadDataToMainAlert(int pos, List<Warehouse> list){
-
         if(mainAlertDialog!=null&&mainAlertDialog.isShowing()) {
-            Log.d("damaged_qty",listMain.get(pos).getfDamagedQty());
             try {
                 if (listMain.get(pos) != null) {
                     try {
@@ -691,16 +689,16 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                 e.printStackTrace();
             }
 
-              LoadDataToMainAlert(pos,list);
-
+            LoadDataToMainAlert(pos,list);
 
 
             img_forward.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listMain.size() > 1) {
-                        if (current_position+1 < listMain.size()) {
+                        if (current_position < listMain.size()) {
                             current_position++;
+                            Log.d("positionforwaed",current_position+"");
                             LoadDataToMainAlert(current_position,list);
 
                         }
@@ -773,10 +771,9 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                        boolean condition;
                        if(!EditMode){
                            condition = (regular+minor+damaged) > Integer.parseInt(listMain.get(current_position).getfPOQty())-Integer.parseInt(listMain.get(current_position).getTempQty());
-                           Log.d("data",""+(regular+minor+damaged));
+                           Log.d("data_",""+(regular+minor+damaged));
                        }else {
-                           Toast.makeText(requireActivity(), String.valueOf(current_position), Toast.LENGTH_SHORT).show();
-
+                           Log.d("position",String.valueOf(current_position));
                            condition = Integer.parseInt(listMain.get(current_position).getfPOQty()) <  (regular+minor+damaged);
                        }
                         if((regular+minor+damaged)!=0) {
@@ -801,18 +798,18 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                                 damagedImage = TextUtils.join(",", listDamagedImage);
 
 
-                                listMain.set(pos, new GoodsReceiptBody(
-                                        listMain.get(pos).getsPONo(),
-                                        listMain.get(pos).getName(),
-                                        listMain.get(pos).getCode(),
-                                        listMain.get(pos).getiProduct(),
+                                listMain.set(current_position, new GoodsReceiptBody(
+                                        listMain.get(current_position).getsPONo(),
+                                        listMain.get(current_position).getName(),
+                                        listMain.get(current_position).getCode(),
+                                        listMain.get(current_position).getiProduct(),
                                         list.get(sp_warehouse.getSelectedItemPosition()).getName(),
                                         list.get(sp_warehouse.getSelectedItemPosition()).getMasterId(),
-                                        helper.GetBarcodeFromIProduct(listMain.get(pos).getiProduct()),
-                                        listMain.get(pos).getfPOQty(),
+                                        helper.GetBarcodeFromIProduct(listMain.get(current_position).getiProduct()),
+                                        listMain.get(current_position).getfPOQty(),
                                         et_regular_qty.getText().toString().trim(),
-                                        listMain.get(pos).getTempQty(),
-                                        listMain.get(pos).getUnit(),
+                                        listMain.get(current_position).getTempQty(),
+                                        listMain.get(current_position).getUnit(),
                                         et_regular_remarks.getText().toString().trim(),
                                         et_minor_qty.getText().toString().trim(),
                                         et_minor_remarks.getText().toString().trim(),
@@ -902,9 +899,12 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
                 boolean condition;
                 if(!EditMode){
-                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(current_position).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
                 }else {
-                    condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <=  (regular+minor+damaged);
+                    condition = Integer.parseInt(listMain.get(current_position).getfPOQty()) <=  (regular+minor+damaged);
+                    Log.d("conditionn",regular+" "+minor+" "+damaged);
+
+                    Log.d("conditionnpo",current_position+"");
                 }
                 if(condition){
                     if(et_minor_remarks.getText().toString().isEmpty()){
@@ -1040,19 +1040,17 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                 .setView(view1);
         AlertDialog dialog=builder1.create();
         dialog.show();
-        Bitmap bm = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(photo.get(position)), new Tools().GetPixels(100,requireActivity()), new Tools().GetPixels(150,requireActivity()));
-        image_clicked.setImageBitmap(bm);
-        PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(image_clicked);
-        photoViewAttacher.canZoom();
+        Bitmap bm = BitmapFactory.decodeFile(photo.get(position));
+
+        rotation_image(bm,image_clicked);
+
         forward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(photo.size()>0) {
                     if (image_current_position[0] < photo.size()) {
                         Bitmap bm = BitmapFactory.decodeFile(photo.get(image_current_position[0]));
-                        image_clicked.setImageBitmap(bm);
-                        PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(image_clicked);
-                        photoViewAttacher.canZoom();
+                        rotation_image(bm, image_clicked);
                         image_current_position[0]++;
 
                     }
@@ -1066,15 +1064,24 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     if(image_current_position[0]>0){
                         image_current_position[0]--;
                         Bitmap bm = BitmapFactory.decodeFile(photo.get(image_current_position[0]));
-                        image_clicked.setImageBitmap(bm);
-                        PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(image_clicked);
-                        photoViewAttacher.canZoom();
+                        rotation_image(bm,image_clicked);
                     }
                 }
             }
         });
 
 
+    }
+
+    private void rotation_image(Bitmap bm, ImageView image_clicked) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bm, 500, 500, true);
+        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(),
+                scaledBitmap.getHeight(), matrix, true);
+        image_clicked.setImageBitmap(rotatedBitmap);
+        PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(image_clicked);
+        photoViewAttacher.canZoom();
     }
     //////////////////////////////////////////
 
@@ -1302,7 +1309,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
            @Override
            public void onItemClick(GoodsReceiptBody goodsReceiptBody, int pos) {
                if (!selection_active_main) {
-                   current_position = pos;
+                   current_position=pos;
                    GoodsBodyMainAlert(listMain,pos);
                } else {
                    enableMainActionMode(pos);
