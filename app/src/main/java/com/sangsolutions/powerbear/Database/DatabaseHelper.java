@@ -1025,7 +1025,7 @@ public boolean DeleteStockCount(String voucherNo){
         return status != -1;
     }
 
-    public boolean deleteGoodsHeaderItem(String DocNo){
+    public boolean DeleteGoodsHeaderItem(String DocNo){
         this.db = getWritableDatabase();
         float status = db.delete(TABLE_GOODS_RECEIPT_HEADER,DOC_NO+" = ? ",new String[]{DocNo});
         return status != -1;
@@ -1339,7 +1339,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetDeliveryBodyData(String DocNo){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("Select * from "+TABLE_DELIVERY_NOTE_BODY+" where "+DOC_NO+" = ? ",new String[]{DocNo});
+        Cursor cursor = db.rawQuery("select * from "+TABLE_DELIVERY_NOTE_BODY+" where "+DOC_NO+" = ? ",new String[]{DocNo});
         if(cursor!=null&&cursor.moveToFirst()){
             return cursor;
         }
@@ -1450,4 +1450,23 @@ public boolean DeleteStockCount(String voucherNo){
         }
         return null;
     }
+
+
+    public Cursor GetAllDeliveryHeader(){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from "+TABLE_DELIVERY_NOTE_HEADER,null);
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
+    }
+    public boolean DeleteDeliveryHeaderItem(String DocNo){
+        this.db = getWritableDatabase();
+        float status = db.delete(TABLE_DELIVERY_NOTE_HEADER,DOC_NO+" = ? ",new String[]{DocNo});
+        return status != -1;
+    }
+
+
+
+
 }

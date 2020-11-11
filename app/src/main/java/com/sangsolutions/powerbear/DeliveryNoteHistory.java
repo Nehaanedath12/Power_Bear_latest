@@ -75,7 +75,7 @@ public class DeliveryNoteHistory extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         try {
                             if(helper.DeleteDeliveryNoteBodyItem(deliveryNoteHistory.getiVoucherNo())) {
-                                if (helper.deleteGoodsHeaderItem(deliveryNoteHistory.getiVoucherNo())) {
+                                if (helper.DeleteDeliveryHeaderItem(deliveryNoteHistory.getiVoucherNo())) {
                                     list.remove(pos);
                                     adapter.notifyDataSetChanged();
                                     setRecyclerView();

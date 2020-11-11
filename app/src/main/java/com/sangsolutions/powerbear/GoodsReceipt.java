@@ -202,7 +202,7 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
                     }else if(type.equals("delete")){
                         try {
                         if(helper.deleteGoodsBodyItem(DocNo)) {
-                            if (helper.deleteGoodsHeaderItem(DocNo)) {
+                            if (helper.DeleteGoodsHeaderItem(DocNo)) {
                                 Toast.makeText(GoodsReceipt.this, "Deleted!", Toast.LENGTH_SHORT).show();
                                 finish();
                             }

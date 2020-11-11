@@ -22,8 +22,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory;
-import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
-import com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory;
 import com.sangsolutions.powerbear.Adapter.ViewPager2AdapterGoodsReceipt.ViewPager2AdapterGoodsReceipt;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.DeliveryNoteBody;
@@ -33,9 +31,6 @@ import com.sangsolutions.powerbear.Fragment.DeliveryNoteHeaderFragment;
 import com.sangsolutions.powerbear.Singleton.DeliveryNoteBodySingleton;
 import com.sangsolutions.powerbear.Singleton.DeliveryNoteHistorySingleton;
 import com.sangsolutions.powerbear.Singleton.DeliveryNoteSOSingleton;
-import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
-import com.sangsolutions.powerbear.Singleton.GoodsReceiptHistorySingleton;
-import com.sangsolutions.powerbear.Singleton.GoodsReceiptPoSingleton;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -202,7 +197,7 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
                         }else if(type.equals("delete")){
                             try {
                                 if(helper.DeleteDeliveryNoteBodyItem(DocNo)) {
-                                    if (helper.deleteGoodsHeaderItem(DocNo)) {
+                                    if (helper.DeleteGoodsHeaderItem(DocNo)) {
                                         Toast.makeText(AddDeliveryNote.this, "Deleted!", Toast.LENGTH_SHORT).show();
                                         finish();
                                     }

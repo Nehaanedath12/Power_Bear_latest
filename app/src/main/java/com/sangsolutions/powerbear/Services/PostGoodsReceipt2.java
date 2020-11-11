@@ -53,7 +53,8 @@ public class PostGoodsReceipt2 extends JobService {
         JSONObject mainJsonObject = new JSONObject();
         Log.d("count", String.valueOf(ReceiptCount));
             try {
-                if (ReceiptCount <= list.size()) {
+                if (ReceiptCount < list.size()) {
+                    Log.d("index",ReceiptCount+" "+list.size());
                     mainJsonObject.put("sVoucherNo", list.get(ReceiptCount).getDocNo());
                     mainJsonObject.put("iDocDate", list.get(ReceiptCount).getDocDate());
                     mainJsonObject.put("iSupplier", Integer.parseInt(list.get(ReceiptCount).getiSupplier()));
@@ -169,7 +170,7 @@ public class PostGoodsReceipt2 extends JobService {
                         if(response.contains("Created")){
                              try {
                                 if (helper.deleteGoodsBodyItem(mainJsonObject.getString("sVoucherNo"))) {
-                                    helper.deleteGoodsHeaderItem(mainJsonObject.getString("sVoucherNo"));
+                                    helper.DeleteGoodsHeaderItem(mainJsonObject.getString("sVoucherNo"));
                                     Log.d("goods", "deleted!");
                                     successCounter++;
                                 }
@@ -283,7 +284,7 @@ public class PostGoodsReceipt2 extends JobService {
     public boolean onStopJob(JobParameters jobParameters)
     {  jobFinished(jobParameters,false);
         if(!Objects.equals(preferences.getString(Commons.GOODS_RECEIPT_FINISHED, "false"), "error"))
-        new ScheduleJob().SyncDeliveryNote(getApplicationContext());
+        new ScheduleJob().SyncDeliveryNote2(this);
         return true;
     }
 }

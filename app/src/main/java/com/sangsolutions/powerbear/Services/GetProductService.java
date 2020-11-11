@@ -52,7 +52,7 @@ public class GetProductService extends JobService {
                     @Override
                     public void onError(ANError anError) {
                         editor.putString(Commons.PENDING_SO_FINISHED,"error").apply();
-                        Log.d("error",anError.getErrorBody());
+                        Log.d("error",anError.getErrorDetail());
                     }
                 });
     }

@@ -775,12 +775,14 @@ public class DeliveryNoteBodyFragment extends Fragment {
         Click.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Click.setClickable(false);
                 final PhotoResult photoResult = fotoapparat.takePicture();
 
                     try {
                         photoResult.toBitmap().whenAvailable(new Function1<BitmapPhoto, Unit>() {
                             @Override
                             public Unit invoke(BitmapPhoto bitmapPhoto) {
+                                Click.setClickable(true);
                                 listImage.add(Tools.savePhoto(requireActivity(), photoResult));
                                 CameraAlertDialog.dismiss();
                                 Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
@@ -789,6 +791,7 @@ public class DeliveryNoteBodyFragment extends Fragment {
                             }
                         });
                     }catch (Exception e){
+                        Click.setClickable(true);
                         e.printStackTrace();
                     }
 

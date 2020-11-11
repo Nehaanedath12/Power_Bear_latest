@@ -51,7 +51,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
             for(int j = 0 ;j<list.size();j++) {
                 if(listSelectedItem.get(i)==j)
                     if (helper.deleteGoodsBodyItem(list.get(j).getDocNo())) {
-                        helper.deleteGoodsHeaderItem(list.get(j).getDocNo());
+                        helper.DeleteGoodsHeaderItem(list.get(j).getDocNo());
                         Log.d("StockCount", "deleted!");
                     }
             }
@@ -157,7 +157,7 @@ public class GoodsReceiptHistory extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                  if(helper.deleteGoodsBodyItem(goodsReceiptHistory.getDocNo())) {
-                     if (helper.deleteGoodsHeaderItem(goodsReceiptHistory.getDocNo())) {
+                     if (helper.DeleteGoodsHeaderItem(goodsReceiptHistory.getDocNo())) {
                          list.remove(pos);
                          adapter.notifyDataSetChanged();
                          setRecyclerView();

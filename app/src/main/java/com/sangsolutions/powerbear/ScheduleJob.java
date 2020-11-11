@@ -15,6 +15,7 @@ import com.sangsolutions.powerbear.Services.GetProductService;
 import com.sangsolutions.powerbear.Services.GetUserService;
 import com.sangsolutions.powerbear.Services.GetWareHouse;
 import com.sangsolutions.powerbear.Services.PostDeliveryNote;
+import com.sangsolutions.powerbear.Services.PostDeliveryNote2;
 import com.sangsolutions.powerbear.Services.PostGoodsReceipt;
 import com.sangsolutions.powerbear.Services.PostGoodsReceipt2;
 import com.sangsolutions.powerbear.Services.PostStockCount;
@@ -83,17 +84,7 @@ public class ScheduleJob {
         js.schedule(job);
     }
 
-    public void SyncDeliveryNote(Context context) {
-        JobScheduler js =
-                (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        JobInfo job = new JobInfo.Builder(
-                5,
-                new ComponentName(context, PostDeliveryNote.class))
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .build();
-        assert js != null;
-        js.schedule(job);
-    }
+
 
     public void SyncGoodsReceipt(Context context) {
         JobScheduler js =
@@ -124,6 +115,18 @@ public class ScheduleJob {
         JobInfo job = new JobInfo.Builder(
                 8,
                 new ComponentName(context, GetGoodsReceiptTypeService.class))
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .build();
+        assert js != null;
+        js.schedule(job);
+    }
+
+    public void SyncDeliveryNote2(Context context) {
+        JobScheduler js =
+                (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        JobInfo job = new JobInfo.Builder(
+                9,
+                new ComponentName(context, PostDeliveryNote2.class))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build();
         assert js != null;

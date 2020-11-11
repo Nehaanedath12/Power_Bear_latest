@@ -108,12 +108,12 @@ public class PostGoodsReceipt extends JobService {
             }
             if(cursor.getCount()==ReceiptCount+1){
                 jobFinished(params,false);
-                new ScheduleJob().SyncDeliveryNote(getApplicationContext());
+                new ScheduleJob().SyncDeliveryNote2(getApplicationContext());
                 Toast.makeText(this, "Goods receipt uploaded!", Toast.LENGTH_SHORT).show();
             }
         }else {
             jobFinished(params,false);
-            new ScheduleJob().SyncDeliveryNote(getApplicationContext());
+            new ScheduleJob().SyncDeliveryNote2(getApplicationContext());
         }
 
     }

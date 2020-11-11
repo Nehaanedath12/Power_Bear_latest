@@ -1179,6 +1179,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
         Click.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Click.setClickable(false);
                 final PhotoResult photoResult = fotoapparat.takePicture();
 
                 if (type.equals("minor")) {
@@ -1186,6 +1187,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         photoResult.toBitmap().whenAvailable(new Function1<BitmapPhoto, Unit>() {
                             @Override
                             public Unit invoke(BitmapPhoto bitmapPhoto) {
+                                Click.setClickable(true);
                                 listMinorImage.add(Tools.savePhoto(requireActivity(), photoResult));
                                 CameraAlertDialog.dismiss();
                                 Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
@@ -1194,6 +1196,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                             }
                         });
                     }catch (Exception e){
+                        Click.setClickable(true);
                         e.printStackTrace();
                     }
                 }else if(type.equals("damaged")){
@@ -1201,6 +1204,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     photoResult.toBitmap().whenAvailable(new Function1<BitmapPhoto, Unit>() {
                         @Override
                         public Unit invoke(BitmapPhoto bitmapPhoto) {
+                            Click.setClickable(true);
                             listDamagedImage.add(Tools.savePhoto(requireActivity(), photoResult));
                             CameraAlertDialog.dismiss();
                             Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
@@ -1209,6 +1213,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         }
                     });
                 }catch (Exception e){
+                        Click.setClickable(true);
                         e.printStackTrace();
                     }
                 }
