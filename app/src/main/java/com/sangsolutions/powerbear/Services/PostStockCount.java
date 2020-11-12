@@ -32,7 +32,7 @@ public class PostStockCount extends JobService {
 
     DatabaseHelper helper;
     List<String> list;
-    int upload_list_portion = 0,successCounter=1;
+    int upload_list_portion = 0,successCounter=0;
     Cursor cursor;
     String UserId="";
     SharedPreferences preferences;
@@ -40,17 +40,17 @@ public class PostStockCount extends JobService {
     JobParameters params;
     private void vouchersToBeUploaded() {
         try {
-            if (upload_list_portion <= list.size()) {
+            if (upload_list_portion < list.size()) {
                 Log.d("list", String.valueOf(upload_list_portion));
-                if(list.size()>upload_list_portion) {
+
                     cursor = helper.GetAllStockCountFromVoucher(list.get(upload_list_portion));
                     if (cursor != null) {
-                        upload_list_portion++;
                         GetDataToUpload(cursor);
                     }
-                }
+
 
             }else {
+                Log.d("stockCount",successCounter+":"+list.size());
                 if(successCounter==list.size()) {
                     editor.putString(Commons.STOCK_COUNT_FINISHED,"true").apply();
                 }else if(successCounter<list.size()){
@@ -84,14 +84,18 @@ public class PostStockCount extends JobService {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        upload_list_portion++;
+                        vouchersToBeUploaded();
                     }
 
                     @Override
                     public void onError(ANError anError) {
                         Log.d("error", anError.toString());
+                        upload_list_portion++;
+                        vouchersToBeUploaded();
                     }
                 });
-        vouchersToBeUploaded();
+
 }
 
 
@@ -153,12 +157,11 @@ public class PostStockCount extends JobService {
         this.params = params;
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
         editor = preferences.edit();
-        editor.putString(Commons.STOCK_COUNT_FINISHED,"false").apply();
-        Cursor cursor = helper.GetAllStockCountVoucher();
+        editor.putString(Commons.STOCK_COUNT_FINISHED,"init").apply();
 
+        Cursor cursor = helper.GetAllStockCountVoucher();
         UserId = helper.GetUserId();
         if(cursor!=null&&cursor.moveToFirst()) {
-
            for(int i=0;i<cursor.getCount();i++){
                list.add(cursor.getString(cursor.getColumnIndex("iVoucherNo")));
                 cursor.moveToNext();
@@ -168,6 +171,7 @@ public class PostStockCount extends JobService {
                }
            }
         }else {
+            editor.putString(Commons.STOCK_COUNT_FINISHED,"false").apply();
            onStopJob(params);
         }
         return true;
@@ -183,6 +187,8 @@ public class PostStockCount extends JobService {
         Delivery = preferences.getString(Commons.DELIVERY_NOTE_FINISHED,"false");
         Stocks = preferences.getString(Commons.STOCK_COUNT_FINISHED,"false");
 
+
+        Log.d("GDS",Goods+" "+Delivery+" "+Stocks);
 
         if(Goods!=null&&Delivery!=null&&Stocks!=null)
         if((Goods.equals("true")||Goods.equals("false"))

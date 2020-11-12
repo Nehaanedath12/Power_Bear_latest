@@ -40,7 +40,7 @@ public class PostDeliveryNote2 extends JobService {
     Cursor cursor;
     String sDeviceId="";
     List<DeliveryNoteHeader> list;
-    int DeliveryCount = 0,successCounter=1;
+    int DeliveryCount = 0,successCounter=0;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
 
@@ -193,13 +193,14 @@ public class PostDeliveryNote2 extends JobService {
         helper = new DatabaseHelper(this);
         preferences = getSharedPreferences(Commons.PREFERENCE_SYNC,MODE_PRIVATE);
         editor = preferences.edit();
-        editor.putString(Commons.DELIVERY_NOTE_FINISHED,"false").apply();
+        editor.putString(Commons.DELIVERY_NOTE_FINISHED,"init").apply();
         this.params = params;
         list = new ArrayList<>();
         cursor = helper.GetAllDeliveryHeader();
         if(cursor!=null&&cursor.moveToFirst()) {
             InitializeHeader(cursor);
         }else {
+            editor.putString(Commons.DELIVERY_NOTE_FINISHED,"false").apply();
             onStopJob(params);
         }
         map = new HashMap<>();

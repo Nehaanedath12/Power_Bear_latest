@@ -44,7 +44,7 @@ public class PostGoodsReceipt2 extends JobService {
     Cursor cursor;
     String sDeviceId="";
     List<GoodReceiptHeader> list;
-    int ReceiptCount = 0,successCounter=1;
+    int ReceiptCount = 0,successCounter=0;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
 
@@ -247,6 +247,7 @@ public class PostGoodsReceipt2 extends JobService {
                 cursor.moveToNext();
 
                 if (cursor.getCount() == i + 1) {
+                    cursor.close();
                     UploadGoodsReceipt();
                 }
             }
@@ -264,13 +265,14 @@ public class PostGoodsReceipt2 extends JobService {
         helper = new DatabaseHelper(this);
         preferences = getSharedPreferences(Commons.PREFERENCE_SYNC,MODE_PRIVATE);
         editor = preferences.edit();
-        editor.putString(Commons.GOODS_RECEIPT_FINISHED,"false").apply();
+        editor.putString(Commons.GOODS_RECEIPT_FINISHED,"init").apply();
         this.params = params;
         list = new ArrayList<>();
          cursor = helper.GetAllGoodsHeader();
         if(cursor!=null&&cursor.moveToFirst()) {
             InitializeHeader(cursor);
         }else {
+            editor.putString(Commons.GOODS_RECEIPT_FINISHED,"false").apply();
             onStopJob(params);
         }
         map = new HashMap<>();
