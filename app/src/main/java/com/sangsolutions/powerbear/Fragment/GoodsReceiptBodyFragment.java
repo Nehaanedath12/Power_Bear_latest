@@ -475,12 +475,15 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         tv_product.setText("Name : " + listMain.get(pos).getName());
                         tv_code.setText("Code : " + listMain.get(pos).getCode());
                         tv_unit.setText("Unit : " + listMain.get(pos).getUnit());
+                        Log.d("TempQty",listMain.get(pos).getTempQty());
                         if (listMain.get(pos).getTempQty().equals("0")) {
                             tv_po_qty.setText("Qty : " + listMain.get(pos).getfPOQty());
+
                         } else {
                             try {
                                 int qty = 0;
                                     if(EditMode) {
+                                        Toast.makeText(getActivity(), "Hello", Toast.LENGTH_SHORT).show();
                                         int regular = et_regular_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_regular_qty.getText().toString());
                                         int minor = et_minor_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_minor_qty.getText().toString());
                                         int damaged = et_damaged_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_damaged_qty.getText().toString());
@@ -713,11 +716,10 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                 @Override
                 public void onClick(View v) {
                     if (listMain.size() > 1) {
-                        if (current_position < listMain.size()) {
+                        if (current_position+1 < listMain.size()) {
                             current_position++;
-                            Log.d("positionforwaed",current_position+"");
+                            Log.d("positionforward",current_position+"");
                             LoadDataToMainAlert(current_position,list);
-
                         }
                     }
                 }
@@ -727,8 +729,9 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                 @Override
                 public void onClick(View v) {
                     if (listMain.size() > 1) {
-                        if (current_position > 0) {
+                        if (current_position > 0 &&current_position<listMain.size()) {
                             current_position--;
+                            Log.d("positionbackward",current_position+"");
                             LoadDataToMainAlert(current_position,list);
                         }
                     }
@@ -788,9 +791,7 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                        boolean condition;
                        if(!EditMode){
                            condition = (regular+minor+damaged) > Integer.parseInt(listMain.get(current_position).getfPOQty())-Integer.parseInt(listMain.get(current_position).getTempQty());
-                           Log.d("data_",""+(regular+minor+damaged));
                        }else {
-                           Log.d("position",String.valueOf(current_position));
                            condition = Integer.parseInt(listMain.get(current_position).getfPOQty()) <  (regular+minor+damaged);
                        }
                         if((regular+minor+damaged)!=0) {
@@ -916,22 +917,22 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
                 boolean condition;
                 if(!EditMode){
-                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(current_position).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(current_position).getfPOQty())-Integer.parseInt(listMain.get(current_position).getTempQty());
                 }else {
                     condition = Integer.parseInt(listMain.get(current_position).getfPOQty()) <=  (regular+minor+damaged);
-                    Log.d("conditionn",regular+" "+minor+" "+damaged);
 
-                    Log.d("conditionnpo",current_position+"");
                 }
                 if(condition){
                     if(et_minor_remarks.getText().toString().isEmpty()){
                         et_minor_qty.setActivated(false);
                         et_minor_qty.setFocusable(false);
+
                     }
 
                     if(et_damaged_qty.getText().toString().isEmpty()){
                         et_damaged_qty.setActivated(false);
                         et_damaged_qty.setFocusable(false);
+
                     }
 
                 }else {
@@ -969,9 +970,9 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
                 boolean condition;
                 if(!EditMode){
-                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(current_position).getfPOQty())-Integer.parseInt(listMain.get(current_position).getTempQty());
                 }else {
-                    condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <=  (regular+minor+damaged);
+                    condition = Integer.parseInt(listMain.get(current_position).getfPOQty()) <=  (regular+minor+damaged);
                 }
                 if(condition){
                     if(et_regular_remarks.getText().toString().isEmpty()){
@@ -1019,14 +1020,15 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
                 boolean condition;
                 if(!EditMode){
-                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(pos).getfPOQty())-Integer.parseInt(listMain.get(pos).getTempQty());
+                    condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(current_position).getfPOQty())-Integer.parseInt(listMain.get(current_position).getTempQty());
                 }else {
-                    condition = Integer.parseInt(listMain.get(pos).getfPOQty()) <=  (regular+minor+damaged);
+                    condition = Integer.parseInt(listMain.get(current_position).getfPOQty()) <=  (regular+minor+damaged);
                 }
                 if(condition){
                     if(et_minor_remarks.getText().toString().isEmpty()){
                         et_minor_qty.setActivated(false);
                         et_minor_qty.setFocusable(false);
+
                     }
 
                     if(et_regular_remarks.getText().toString().isEmpty()){
