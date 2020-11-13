@@ -562,9 +562,9 @@ public class DeliveryNoteBodyFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (listMain.size() > 1) {
-                    if (current_position < listMain.size()) {
-                        LoadDataToMainAlert(current_position,list);
+                    if (current_position+1 < listMain.size()) {
                         current_position++;
+                        LoadDataToMainAlert(current_position,list);
                     }
                 }
             }
@@ -574,7 +574,7 @@ public class DeliveryNoteBodyFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (listMain.size() > 1) {
-                    if (current_position > 0) {
+                    if (current_position > 0 &&current_position<listMain.size()) {
                         current_position--;
                         LoadDataToMainAlert(current_position,list);
                     }

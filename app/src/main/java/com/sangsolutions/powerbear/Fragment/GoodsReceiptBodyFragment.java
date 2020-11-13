@@ -476,30 +476,38 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                         tv_code.setText("Code : " + listMain.get(pos).getCode());
                         tv_unit.setText("Unit : " + listMain.get(pos).getUnit());
                         Log.d("TempQty",listMain.get(pos).getTempQty());
+
+                        et_regular_qty.setText(listMain.get(pos).getfQty());
+                        et_minor_qty.setText(listMain.get(pos).getfMinorDamageQty());
+                        et_damaged_qty.setText(listMain.get(pos).getfDamagedQty());
+
+
                         if (listMain.get(pos).getTempQty().equals("0")) {
                             tv_po_qty.setText("Qty : " + listMain.get(pos).getfPOQty());
-
                         } else {
                             try {
                                 int qty = 0;
                                     if(EditMode) {
-                                        Toast.makeText(getActivity(), "Hello", Toast.LENGTH_SHORT).show();
+
+
                                         int regular = et_regular_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_regular_qty.getText().toString());
                                         int minor = et_minor_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_minor_qty.getText().toString());
                                         int damaged = et_damaged_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_damaged_qty.getText().toString());
 
+
+
                                        int sum = Integer.parseInt(listMain.get(pos).getfPOQty()) - Integer.parseInt(listMain.get(pos).getTempQty());
 
-                                       if(sum==0) {
-
+                                       if(sum == 0) {
                                            qty = Integer.parseInt(listMain.get(pos).getfPOQty()) - (regular+minor+damaged);
 
-                                           if(qty==0){
+                                           if(qty == 0){
                                                qty = (regular+minor+damaged);
+
                                            }
 
                                        }else {
-                                           qty = Integer.parseInt(listMain.get(pos).getTempQty())+sum;
+                                           qty = Integer.parseInt(listMain.get(pos).getTempQty()) + sum;
                                        }
                                     }else {
                                         qty = Integer.parseInt(listMain.get(pos).getfPOQty()) - Integer.parseInt(listMain.get(pos).getTempQty());
@@ -531,14 +539,10 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                             damaged_linear.setVisibility(View.GONE);
                         }
 
-
-                        et_regular_qty.setText(listMain.get(pos).getfQty());
-                        et_minor_qty.setText(listMain.get(pos).getfMinorDamageQty());
-                        et_damaged_qty.setText(listMain.get(pos).getfDamagedQty());
-
                         et_regular_remarks.setText(listMain.get(pos).getsRemarks());
                         et_minor_remarks.setText(listMain.get(pos).getsMinorRemarks());
                         et_damaged_remarks.setText(listMain.get(pos).getsDamagedRemarks());
+
 
                         listMinorImage.clear();
                         if (!listMain.get(pos).getsMinorAttachment().equals("")) {
@@ -718,7 +722,6 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     if (listMain.size() > 1) {
                         if (current_position+1 < listMain.size()) {
                             current_position++;
-                            Log.d("positionforward",current_position+"");
                             LoadDataToMainAlert(current_position,list);
                         }
                     }
@@ -731,7 +734,6 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     if (listMain.size() > 1) {
                         if (current_position > 0 &&current_position<listMain.size()) {
                             current_position--;
-                            Log.d("positionbackward",current_position+"");
                             LoadDataToMainAlert(current_position,list);
                         }
                     }
@@ -923,27 +925,39 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
 
                 }
                 if(condition){
-                    if(et_minor_remarks.getText().toString().isEmpty()){
+                    if(et_minor_qty.getText().toString().equals("")){
                         et_minor_qty.setActivated(false);
                         et_minor_qty.setFocusable(false);
 
+                    }else {
+                        et_minor_qty.setActivated(true);
+                        et_minor_qty.setFocusableInTouchMode(true);
                     }
 
-                    if(et_damaged_qty.getText().toString().isEmpty()){
+                    if(et_damaged_qty.getText().toString().equals("")){
                         et_damaged_qty.setActivated(false);
                         et_damaged_qty.setFocusable(false);
 
+                    }else {
+                        et_damaged_qty.setActivated(true);
+                        et_damaged_qty.setFocusableInTouchMode(true);
                     }
 
                 }else {
+                    et_minor_qty.setActivated(true);
+                    et_minor_qty.setFocusableInTouchMode(true);
 
-                        et_minor_qty.setActivated(true);
-                        et_minor_qty.setFocusableInTouchMode(true);
+                    et_damaged_qty.setActivated(true);
+                    et_damaged_qty.setFocusableInTouchMode(true);
 
-                        et_damaged_qty.setActivated(true);
-                        et_damaged_qty.setFocusableInTouchMode(true);
 
                 }
+
+
+
+
+
+
             }
         });
 
@@ -968,31 +982,35 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                 int minor = et_minor_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_minor_qty.getText().toString());
                 int damaged = et_damaged_qty.getText().toString().isEmpty()?0:Integer.parseInt(et_damaged_qty.getText().toString());
 
+
                 boolean condition;
                 if(!EditMode){
                     condition = (regular+minor+damaged) >= Integer.parseInt(listMain.get(current_position).getfPOQty())-Integer.parseInt(listMain.get(current_position).getTempQty());
                 }else {
                     condition = Integer.parseInt(listMain.get(current_position).getfPOQty()) <=  (regular+minor+damaged);
                 }
-                if(condition){
-                    if(et_regular_remarks.getText().toString().isEmpty()){
+                if(condition) {
+                    if (et_regular_qty.getText().toString().equals("")) {
                         et_regular_qty.setActivated(false);
                         et_regular_qty.setFocusable(false);
+                    } else {
+                        et_regular_qty.setActivated(true);
+                        et_regular_qty.setFocusableInTouchMode(true);
                     }
 
-                    if(et_damaged_qty.getText().toString().isEmpty()){
+                    if (et_damaged_qty.getText().toString().equals("")) {
                         et_damaged_qty.setActivated(false);
                         et_damaged_qty.setFocusable(false);
+                    } else {
+                        et_damaged_qty.setActivated(true);
+                        et_damaged_qty.setFocusableInTouchMode(true);
                     }
-
                 }else {
-
                     et_regular_qty.setActivated(true);
                     et_regular_qty.setFocusableInTouchMode(true);
 
                     et_damaged_qty.setActivated(true);
                     et_damaged_qty.setFocusableInTouchMode(true);
-
                 }
             }
         });
@@ -1025,26 +1043,32 @@ public void LoadDataToMainAlert(int pos, List<Warehouse> list){
                     condition = Integer.parseInt(listMain.get(current_position).getfPOQty()) <=  (regular+minor+damaged);
                 }
                 if(condition){
-                    if(et_minor_remarks.getText().toString().isEmpty()){
+                    if(et_minor_qty.getText().toString().equals("")){
                         et_minor_qty.setActivated(false);
                         et_minor_qty.setFocusable(false);
 
+                    }else {
+                        et_minor_qty.setActivated(true);
+                        et_minor_qty.setFocusableInTouchMode(true);
                     }
 
-                    if(et_regular_remarks.getText().toString().isEmpty()){
+                    if(et_regular_qty.getText().toString().equals("")){
                         et_regular_qty.setActivated(false);
                         et_regular_qty.setFocusable(false);
+                    }else {
+                        et_regular_qty.setActivated(true);
+                        et_regular_qty.setFocusableInTouchMode(true);
                     }
-
                 }else {
-
-                    et_minor_qty.setActivated(true);
-                    et_minor_qty.setFocusableInTouchMode(true);
+                    et_regular_qty.setActivated(false);
+                    et_regular_qty.setFocusable(false);
 
                     et_regular_qty.setActivated(true);
                     et_regular_qty.setFocusableInTouchMode(true);
                 }
-            }
+
+                }
+
         });
 
     }
