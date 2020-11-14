@@ -1,0 +1,259 @@
+package com.sangsolutions.powerbear;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory;
+import com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistoryAdapter;
+import com.sangsolutions.powerbear.Database.DatabaseHelper;
+import com.sangsolutions.powerbear.Singleton.GoodsReceiptHistorySingleton;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class GoodsReceiptWithoutPOHistory extends AppCompatActivity {
+    ImageView add_new;
+    RecyclerView rv;
+    FrameLayout empty_frame;
+    TextView date,title_selection;
+    GoodsReceiptHistoryAdapter adapter;
+    DatabaseHelper helper;
+    ImageView img_home;
+    ImageView close,delete;
+    AppBarLayout appbar;
+    Toolbar toolbar;
+    List<GoodsReceiptHistory> list;
+    boolean selection_active=false;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setRecyclerView();
+    }
+
+    public void DeleteItems(){
+        List<Integer> listSelectedItem = adapter.getSelectedItems();
+        for(int i = 0 ; i<listSelectedItem.size();i++) {
+            for(int j = 0 ;j<list.size();j++) {
+                if(listSelectedItem.get(i)==j)
+                    if (helper.DeleteGoodsWithoutPOBodyItem(list.get(j).getDocNo())) {
+                        helper.DeleteGoodsWithoutPOHeaderItem(list.get(j).getDocNo());
+                        Log.d("Goods without po", "deleted!");
+                    }
+            }
+            if(i+1 == listSelectedItem.size()){
+                setRecyclerView();
+                closeSelection();
+            }
+        }
+
+    }
+
+
+    public void deleteAlert(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete!")
+                .setMessage("Do you want to delete "+adapter.getSelectedItemCount()+" items?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        DeleteItems();
+                    }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).create()
+                .show();
+    }
+
+
+    private void initToolbar() {
+        appbar = findViewById(R.id.appbar);
+        close = findViewById(R.id.close);
+        delete = findViewById(R.id.delete);
+        toolbar = findViewById(R.id.toolbar);
+        title_selection = findViewById(R.id.title_selection);
+        setSupportActionBar(toolbar);
+        close.setVisibility(View.INVISIBLE);
+        delete.setVisibility(View.INVISIBLE);
+        appbar.setVisibility(View.GONE);
+    }
+
+
+    public void closeSelection(){
+        adapter.clearSelections();
+        appbar.setVisibility(View.GONE);
+        selection_active=false;
+    }
+
+    private void toggleSelection(int position) {
+        appbar.setVisibility(View.VISIBLE);
+        adapter.toggleSelection(position);
+        int count = adapter.getSelectedItemCount();
+        if(count==0){
+            closeSelection();
+        }
+        title_selection.setText("Selected "+count+" item's");
+        close.setVisibility(View.VISIBLE);
+        delete.setVisibility(View.VISIBLE);
+    }
+
+    private void enableActionMode(int position) {
+        toggleSelection(position);
+    }
+
+    public void setRecyclerView(){
+        list.clear();
+
+        Cursor cursor = helper.GetAllGoodsReceiptWithoutPO();
+        if (cursor != null) {
+            cursor.moveToFirst();
+            empty_frame.setVisibility(View.GONE);
+            for (int i = 0; i < cursor.getCount(); i++) {
+                String DocNo,TotalQty,DocDate;
+
+                DocNo = cursor.getString(cursor.getColumnIndex("DocNo"));
+                TotalQty = cursor.getString(cursor.getColumnIndex("sumQty"));
+                DocDate = cursor.getString(cursor.getColumnIndex("DocDate"));
+                list.add(new GoodsReceiptHistory(DocNo,TotalQty,DocDate));
+                cursor.moveToNext();
+
+                if (i + 1 == cursor.getCount()) {
+                    rv.setAdapter(adapter);
+                    GoodsReceiptHistorySingleton.getInstance().setList(list);
+                    cursor.close();
+                }
+            }
+        }else {
+            empty_frame.setVisibility(View.VISIBLE);
+            rv.setAdapter(adapter);
+        }
+
+    }
+
+    private void DeleteGoodsReceiptItemAlert(final GoodsReceiptHistory goodsReceiptHistory, final int pos) {
+        AlertDialog.Builder builder= new AlertDialog.Builder(this);
+        builder.setTitle("Delete!")
+                .setMessage("Do you want to delete this this entry?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(helper.DeleteGoodsWithoutPOBodyItem(goodsReceiptHistory.getDocNo())) {
+                            if (helper.DeleteGoodsWithoutPOHeaderItem(goodsReceiptHistory.getDocNo())) {
+                                list.remove(pos);
+                                adapter.notifyDataSetChanged();
+                                setRecyclerView();
+                                Toast.makeText(GoodsReceiptWithoutPOHistory.this, "Deleted!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).create().show();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_goods_receipt_without_p_o_history);
+        add_new = findViewById(R.id.add_save);
+        date = findViewById(R.id.title);
+        empty_frame = findViewById(R.id.empty_frame);
+        img_home = findViewById(R.id.home);
+        helper = new DatabaseHelper(this);
+
+        initToolbar();
+
+        img_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(GoodsReceiptWithoutPOHistory.this, Home.class));
+                finishAffinity();
+            }
+        });
+
+        // date.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
+        date.setText("GRN Without PO");
+        list = new ArrayList<>();
+        adapter = new GoodsReceiptHistoryAdapter(list, this);
+        rv = findViewById(R.id.rv_summary);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+
+
+        //setRecyclerView();
+
+        add_new.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(GoodsReceiptWithoutPOHistory.this, GoodsWithoutPO.class));
+            }
+        });
+
+
+        adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
+            @Override
+            public void onEditItemClick(com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory) {
+                if (!selection_active) {
+                    Intent intent1 = new Intent(GoodsReceiptWithoutPOHistory.this, GoodsWithoutPO.class);
+                    intent1.putExtra("DocNo", goodsReceiptHistory.getDocNo());
+                    intent1.putExtra("EditMode", true);
+                    startActivity(intent1);
+                }
+            }
+
+            @Override
+            public void onDeleteItemClick(GoodsReceiptHistory goodsReceiptHistory, int pos) {
+                DeleteGoodsReceiptItemAlert(goodsReceiptHistory, pos);
+            }
+
+            @Override
+            public void onItemClick(GoodsReceiptHistory goodsReceiptHistory, int pos) {
+                if (selection_active) {
+                    enableActionMode(pos);
+                }
+            }
+
+            @Override
+            public void onItemLongClick(int pos) {
+                enableActionMode(pos);
+                selection_active = true;
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAlert();
+            }
+        });
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeSelection();
+            }
+        });
+    }
+    }

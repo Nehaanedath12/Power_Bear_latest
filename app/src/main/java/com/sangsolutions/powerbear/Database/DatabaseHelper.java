@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -25,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     final Context context;
 
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
     private static final String DATABASE_NAME = "PowerBear.db";
     private static final String TABLE_PRODUCT = "tbl_Product";
     private static final String TABLE_PENDING_SO = "tbl_PendingSO";
@@ -39,6 +38,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_GOOD_RECEIPT_TYPE = "tbl_GoodsReceiptType";
     private static final String TABLE_DELIVERY_NOTE_HEADER = "tbl_DeliveryNoteHeader";
     private static final String TABLE_DELIVERY_NOTE_BODY = "tbl_DeliveryNoteBody";
+    private static final String TABLE_GOODS_WITHOUT_PO_HEADER = "tbl_GoodsWithoutPOHeader";
+    private static final String TABLE_GOODS_WITHOUT_PO_BODY = "tbl_GoodsWithoutPOBody";
 
     //Product
     private static final String MASTER_ID = "MasterId";
@@ -112,6 +113,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String S_SONo = "sSONo";
     private static final String F_SO_QTY = "sSOQty";
     private static final String S_SONO = "sSONo";
+
+    //GRN without po header
+    private static final String S_REF_NO = "sRefNo";
+
+
+    //GRN without po body
+
 
 
 
@@ -248,6 +256,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + UNIT + "  TEXT(15) DEFAULT null" +
             ")";
 
+    //create goods without PO header
+    private static final String CREATE_TABLE_GOODS_WITHOUT_PO_HEADER = "create table if not exists "+ TABLE_GOODS_WITHOUT_PO_HEADER +" (" +
+            "" + DOC_NO + " TEXT(30) DEFAULT null ," +
+            "" + DOC_DATE + " TEXT(10) DEFAULT null ," +
+            "" + I_SUPPLIER + " INTEGER DEFAULT 0 ," +
+            "" + S_REF_NO + "  TEXT(10) DEFAULT null ," +
+            "" + I_USER + " INTEGER DEFAULT 0 ,"+
+            "" + D_PROCESSED_DATE+ " TEXT(10) DEFAULT null ,"+
+            "" + S_NARRATION + "  TEXT(50) DEFAULT null" +
+            ")";
+
+
+    //create goods without PO body
+    private static final String CREATE_TABLE_GOODS_WITHOUT_PO_BODY = "create table if not exists "+ TABLE_GOODS_WITHOUT_PO_BODY +" (" +
+            "" + DOC_NO + " TEXT(20) DEFAULT null ," +
+            "" + I_PRODUCT + " INTEGER DEFAULT 0, "+
+            "" + I_WAREHOUSE + " INTEGER DEFAULT 0,"  +
+            "" + I_USER + " INTEGER DEFAULT 0 ,"+
+            "" + BARCODE + " TEXT(30) DEFAULT null ," +
+            "" + F_QTY + "  TEXT(10) DEFAULT null," +
+            "" + UNIT + "  TEXT(15) DEFAULT null," +
+            "" + S_REMARKS + "  TEXT(50) DEFAULT null," +
+            "" + F_MINOR_DAMAGE_QTY + "  TEXT(10) DEFAULT null," +
+            "" + S_MINOR_REMARKS+ "  TEXT(50) DEFAULT null," +
+            "" + S_MINOR_ATTACHMENT + "  TEXT DEFAULT null," +
+            "" + F_DAMAGED_QTY + "  TEXT(10) DEFAULT null," +
+            "" + S_DAMAGED_REMARKS + "  TEXT(50) DEFAULT null," +
+            "" + S_DAMAGED_ATTACHMENT+ "  TEXT DEFAULT null," +
+            "" + I_MINOR_TYPE + "  INTEGER DEFAULT 0," +
+            "" + I_DAMAGED_TYPE+ " INTEGER DEFAULT 0" +
+            ")";
 
     private SQLiteDatabase db;
 
@@ -276,6 +315,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_GOODS_RECEIPT_TYPE);
         db.execSQL(CREATE_TABLE_DELIVERY_NOTE_HEADER);
         db.execSQL(CREATE_TABLE_DELIVERY_NOTE_BODY);
+        db.execSQL(CREATE_TABLE_GOODS_WITHOUT_PO_HEADER);
+        db.execSQL(CREATE_TABLE_GOODS_WITHOUT_PO_BODY);
     }
 
     @Override
@@ -1467,6 +1508,100 @@ public boolean DeleteStockCount(String voucherNo){
     }
 
 
+    public Cursor GetAllGoodsReceiptWithoutPO(){
+        this.db = getReadableDatabase();
+        Cursor cursor;
+        if(GetUserId().equals("1")){
+            cursor = db.rawQuery("SELECT h.DocNo as DocNo ,h.DocDate as DocDate, sum(b.fQty+b.fMinorDamageQty+fDamagedQty) as sumQty from tbl_GoodsWithoutPOHeader h " +
+                    "INNER join tbl_GoodsWithoutPOBody b on h.DocNo =b.DocNo " +
+                    " GROUP by h.DocNo",null);
+        }else {
+            cursor = db.rawQuery("SELECT h.DocNo as DocNo ,h.DocDate as DocDate, sum(b.fQty+b.fMinorDamageQty+fDamagedQty) as sumQty from tbl_GoodsWithoutPOHeader h " +
+                    "INNER join tbl_GoodsWithoutPOBody b on h.DocNo =b.DocNo where h.iUser = ? " +
+                    " GROUP by h.DocNo", new String[]{GetUserId()});
+        }
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }else
+            return null;
+    }
+
+    public boolean DeleteGoodsWithoutPOHeaderItem(String DocNo){
+        this.db = getWritableDatabase();
+        float status = db.delete(TABLE_GOODS_WITHOUT_PO_HEADER,DOC_NO+" = ? ",new String[]{DocNo});
+        return status != -1;
+    }
+
+    public boolean DeleteGoodsWithoutPOBodyItem(String DocNo){
+        this.db = getWritableDatabase();
+        float status = db.delete(TABLE_GOODS_WITHOUT_PO_BODY,DOC_NO+" = ? ",new String[]{DocNo});
+        return status != -1;
+    }
 
 
+    public boolean InsertGoodsWithoutPOBody(GoodsReceiptBody gb,boolean EditMode){
+        this.db = getWritableDatabase();
+        this.db = getReadableDatabase();
+        float status = -1;
+
+
+
+            ContentValues cv = new ContentValues();
+            cv.put(DOC_NO, gb.getDocNo());
+            cv.put(S_PONO, gb.getsPONo());
+            cv.put(I_PRODUCT, gb.getiProduct());
+            cv.put(I_WAREHOUSE, gb.getiWarehouse());
+            cv.put(BARCODE, gb.getBarcode());
+            cv.put(F_PO_QTY, gb.getfPOQty());
+            cv.put(F_QTY, gb.getfQty());
+            cv.put(I_USER, gb.getiUser());
+            cv.put(UNIT, gb.getUnit());
+            cv.put(S_REMARKS, gb.getsRemarks());
+            cv.put(F_MINOR_DAMAGE_QTY, gb.getfMinorDamageQty());
+            cv.put(S_MINOR_REMARKS, gb.getsMinorRemarks());
+            cv.put(S_MINOR_ATTACHMENT, gb.getsMinorAttachment());
+            cv.put(F_DAMAGED_QTY, gb.getfDamagedQty());
+            cv.put(S_DAMAGED_REMARKS, gb.getsDamagedRemarks());
+            cv.put(S_DAMAGED_ATTACHMENT, gb.getsDamagedAttachment());
+            cv.put(I_MINOR_TYPE, gb.getiMinorType());
+            cv.put(I_DAMAGED_TYPE, gb.getiDamageType());
+
+        if(EditMode){
+            Cursor cursor = db.rawQuery("select * from "+TABLE_GOODS_WITHOUT_PO_BODY+" where "+DOC_NO+" = ? and "+I_PRODUCT+" = ? ",new String[]{gb.getDocNo(),gb.getiProduct()});
+            if(cursor!=null&&cursor.moveToFirst()) {
+                status = db.update(TABLE_GOODS_WITHOUT_PO_BODY, cv, DOC_NO + " = ? and " + I_PRODUCT + " = ? ", new String[]{gb.getDocNo(), gb.getiProduct()});
+            }else {
+                status = db.insert(TABLE_GOODS_WITHOUT_PO_BODY, null, cv);
+            }
+        }else {
+            status = db.insert(TABLE_GOODS_WITHOUT_PO_BODY, null, cv);
+        }
+
+
+
+        return status != -1;
+    }
+
+
+    //  goods receipt without PO header
+    public boolean InsertGoodsWithoutPOHeader(GoodReceiptHeader gh,boolean EditMode){
+        this.db = getWritableDatabase();
+
+        float status;
+        ContentValues cv = new ContentValues();
+        cv.put(DOC_NO, gh.getDocNo());
+        cv.put(DOC_DATE, gh.getDocDate());
+        cv.put(I_USER,gh.getiUser());
+        cv.put(D_PROCESSED_DATE,gh.getdProcessedDate());
+        cv.put(I_SUPPLIER, gh.getiSupplier());
+        cv.put(S_REF_NO,gh.getsPONo());
+        cv.put(S_NARRATION,gh.getsNarration());
+
+        if(EditMode){
+            status = db.update(TABLE_GOODS_WITHOUT_PO_HEADER,cv,DOC_NO+" = ? ",new String[]{gh.getDocNo()});
+        }else {
+            status = db.insert(TABLE_GOODS_WITHOUT_PO_HEADER, null, cv);
+        }
+        return status != -1;
+    }
 }

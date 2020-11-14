@@ -89,6 +89,8 @@ public class GoodsReceiptHeaderFragment extends Fragment {
     private void enableActionMode(int position) {
         toggleSelection(position);
     }
+
+
     public void POSelectionDialog(){
         View view = LayoutInflater.from(requireActivity()).inflate(R.layout.select_po_layout,null,false);
         ImageView img_close = view.findViewById(R.id.close);

@@ -29,7 +29,7 @@ import java.util.Date;
 
 @SuppressWarnings("ALL")
 public class Home extends AppCompatActivity {
-Button sync_btn,delivery_btn,stock_count_btn,goods_btn,report_btn;
+Button sync_btn,delivery_btn,stock_count_btn,goods_btn,report_btn,grn_without_po;
 DatabaseHelper helper;
 ImageView img_logout;
 TextView tv_username,tv_date;
@@ -62,6 +62,7 @@ ImageView img_settings;
         img_logout = findViewById(R.id.logout);
         tv_username = findViewById(R.id.username);
         tv_date = findViewById(R.id.date);
+        grn_without_po = findViewById(R.id.goods_without_po);
         img_settings = findViewById(R.id.settings);
         helper = new DatabaseHelper(this);
 
@@ -183,6 +184,23 @@ ImageView img_settings;
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(Home.this,SetIPActivity.class));
+            }
+        });
+
+        grn_without_po.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (preferences.getString(Commons.WAREHOUSE_FINISHED, "false").equals("true")
+                        && preferences.getString(Commons.PENDING_PO_FINISHED, "false").equals("true")
+                        && preferences.getString(Commons.PENDING_SO_FINISHED, "false").equals("true")
+                        &&  preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
+                        &&  preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
+                ){
+                    Intent intent = new Intent(Home.this,GoodsReceiptWithoutPOHistory.class);
+                    startActivity(intent);
+                }else {
+                    Toast.makeText(Home.this, "Sync data before you do anything..", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

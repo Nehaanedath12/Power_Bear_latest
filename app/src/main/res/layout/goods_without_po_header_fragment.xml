@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/color_white">
+    <TextView
+        android:id="@+id/warehouse_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:background="@color/colorAccent"
+        android:text=""
+        android:textSize="24sp"
+        android:textColor="@color/color_white"
+        android:textStyle="bold"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/warehouse_name"
+            android:background="@color/color_white"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:elevation="6dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:focusable="false"
+                android:textSize="16sp"
+                android:id="@+id/doc_no"
+                android:textColor="@color/color_black"
+                android:layout_gravity="center_horizontal"
+                android:hint="Doc No: " />
+
+
+
+
+            <EditText
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_gravity="center_horizontal"
+                android:ems="13"
+                android:focusable="false"
+                android:hint="Date"
+                android:drawableEnd="@drawable/ic_date" />
+
+
+            <EditText
+                android:id="@+id/supplier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:ems="13"
+                android:layout_gravity="center_horizontal"
+                android:focusable="false"
+                android:hint="Supplier"
+                android:drawableEnd="@drawable/ic_arrow_down"
+                />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_gravity="center_horizontal"
+                android:ems="13"
+                android:hint="Ref No."
+                android:id="@+id/refno"
+                android:maxLength="50"
+
+                />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_gravity="center_horizontal"
+                android:ems="13"
+                android:hint="Narration"
+                android:id="@+id/narration"
+                android:maxLength="50"
+                android:layout_marginBottom="40dp"
+                />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

@@ -6,20 +6,22 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_icon"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
         tools:targetApi="q">
-        <activity android:name=".SetIPActivity"/>
+        <activity android:name=".GoodsWithoutPO"></activity>
+        <activity android:name=".GoodsReceiptWithoutPOHistory" />
+        <activity android:name=".SetIPActivity" />
         <activity
             android:name=".ReportOPAndSO"
             android:configChanges="keyboardHidden|orientation|screenSize" />
@@ -41,7 +43,7 @@
         <activity
             android:name=".GoodsReceipt"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".PendingPO"
             android:configChanges="keyboardHidden|orientation|screenSize" />
@@ -105,7 +107,6 @@
         <service
             android:name=".Services.GetGoodsReceiptTypeService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <service
             android:name=".Services.PostDeliveryNote2"
             android:permission="android.permission.BIND_JOB_SERVICE" />
