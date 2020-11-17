@@ -31,14 +31,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="PONo"
-                    android:textColor="@color/color_white"
-                    android:textSize="15sp" />
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
                     android:text="Code"
                     android:id="@+id/code"
                     android:textColor="@color/color_white"
@@ -62,16 +54,6 @@
                     android:textColor="@color/color_white"
                     android:textSize="15sp" />
 
-
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="POQty"
-                    android:textColor="@color/color_white"
-                    android:textSize="15sp"
-                    />
 
                 <TextView
                     android:layout_width="80dp"

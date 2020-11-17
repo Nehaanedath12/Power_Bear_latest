@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -561,6 +562,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public String GetNameFromBarcode(String barcode) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+NAME+" from "+TABLE_PRODUCT+" where "+BARCODE+" = ? ",new String[]{barcode});
+        if (cursor.moveToFirst()) {
+            return cursor.getString(cursor.getColumnIndex(NAME));
+        }else {
+            return  "";
+        }
+    }
+
+    public String GetCodeFromBarcode(String barcode) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+CODE+" from "+TABLE_PRODUCT+" where "+BARCODE+" = ? ",new String[]{barcode});
+        if (cursor.moveToFirst()) {
+            return cursor.getString(cursor.getColumnIndex(CODE));
+        }else {
+            return  "";
+        }
+    }
+
+    public String GetMasterIdFromBarcode(String barcode) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select "+MASTER_ID+" from "+TABLE_PRODUCT+" where "+BARCODE+" = ? ",new String[]{barcode});
+        if (cursor.moveToFirst()) {
+            return cursor.getString(cursor.getColumnIndex(MASTER_ID));
+        }else {
+            return  "";
+        }
+    }
 
     public Cursor SearchProduct(String keyword) {
      this.db = getReadableDatabase();
@@ -1548,11 +1578,9 @@ public boolean DeleteStockCount(String voucherNo){
 
             ContentValues cv = new ContentValues();
             cv.put(DOC_NO, gb.getDocNo());
-            cv.put(S_PONO, gb.getsPONo());
             cv.put(I_PRODUCT, gb.getiProduct());
             cv.put(I_WAREHOUSE, gb.getiWarehouse());
             cv.put(BARCODE, gb.getBarcode());
-            cv.put(F_PO_QTY, gb.getfPOQty());
             cv.put(F_QTY, gb.getfQty());
             cv.put(I_USER, gb.getiUser());
             cv.put(UNIT, gb.getUnit());
@@ -1587,7 +1615,7 @@ public boolean DeleteStockCount(String voucherNo){
     public boolean InsertGoodsWithoutPOHeader(GoodReceiptHeader gh,boolean EditMode){
         this.db = getWritableDatabase();
 
-        float status;
+        float status=-1;
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO, gh.getDocNo());
         cv.put(DOC_DATE, gh.getDocDate());
@@ -1603,5 +1631,31 @@ public boolean DeleteStockCount(String voucherNo){
             status = db.insert(TABLE_GOODS_WITHOUT_PO_HEADER, null, cv);
         }
         return status != -1;
+    }
+
+    public Cursor GetGoodsWithoutPOBodyData(String DocNo){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from "+TABLE_GOODS_WITHOUT_PO_BODY+" where "+DOC_NO+" = ? ",new String[]{DocNo});
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
+    }
+
+    public Cursor GetGoodsWithoutPOHeaderData(String DocNo){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from "+TABLE_GOODS_WITHOUT_PO_HEADER+" where "+DOC_NO+" = ? ",new String[]{DocNo});
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
+    }
+    public Cursor GetAllGoodsWithoutPOHeader(){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from "+TABLE_GOODS_WITHOUT_PO_HEADER,null);
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
     }
 }

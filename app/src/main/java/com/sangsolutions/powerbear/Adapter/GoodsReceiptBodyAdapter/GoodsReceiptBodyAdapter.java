@@ -97,11 +97,22 @@ public class GoodsReceiptBodyAdapter extends RecyclerView.Adapter<GoodsReceiptBo
     @Override
     public void onBindViewHolder(@NonNull GoodsReceiptBodyAdapter.ViewHolder holder, final int position) {
         final GoodsReceiptBody body = list.get(position);
+        if(!list.get(position).getsPONo().equals("")){
+            holder.PONo.setVisibility(View.VISIBLE);
         holder.PONo.setText(list.get(position).getsPONo());
+        }else {
+            holder.PONo.setVisibility(View.GONE);
+        }
         holder.Name.setText(list.get(position).getName());
         holder.Code.setText(list.get(position).getCode());
         holder.warehouse.setText(list.get(position).getsWarehouse());
-        holder.poQty.setText(list.get(position).getfPOQty());
+        if(!list.get(position).getfPOQty().equals("")){
+            holder.poQty.setVisibility(View.VISIBLE);
+            holder.poQty.setText(list.get(position).getfPOQty());
+        }else {
+            holder.poQty.setVisibility(View.GONE);
+        }
+
         holder.qty.setText(list.get(position).getfQty());
         holder.unit.setText(list.get(position).getUnit());
         holder.remarks.setText(list.get(position).getsRemarks());

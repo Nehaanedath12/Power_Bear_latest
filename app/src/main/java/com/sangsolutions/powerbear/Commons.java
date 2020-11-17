@@ -11,4 +11,5 @@ public class Commons {
     public static String REMARKS_FINISHED = "RemarksFinished";
     public static String SYNC_DATE ="syncDate";
     public static String PRODUCT_FINISHED ="ProductFinished";
+    public static String GOODS_WITHOUT_PO_FINISHED = "GoodsWithoutPOFinished";
 }

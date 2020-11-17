@@ -36,5 +36,6 @@ public class URLs {
     public static final String GetRemarksType = domain + "GetRemarksType";
     public static final String PostGR = domain + "PostGR";
     public static final String PostDelivery = domain + "PostDelivery";
+    public static final String PostGRWoPo = domain + "PostGRWoPo";
 
 }

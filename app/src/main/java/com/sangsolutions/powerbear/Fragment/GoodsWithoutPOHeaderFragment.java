@@ -23,12 +23,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
 import com.sangsolutions.powerbear.Adapter.SupplierSearchAdapter.SupplierSearch;
 import com.sangsolutions.powerbear.Adapter.SupplierSearchAdapter.SupplierSearchAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 
+import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
 import com.sangsolutions.powerbear.Tools;
 
 import java.util.ArrayList;
@@ -54,6 +56,86 @@ public class GoodsWithoutPOHeaderFragment extends Fragment {
     RecyclerView rv_search;
 
     private boolean selection_active = false ;
+
+
+    public void LoadValueForEditing(){
+        try {
+
+            Cursor cursor = helper.GetGoodsWithoutPOHeaderData(DocNo);
+            if(cursor!=null&&cursor.moveToFirst()){
+                //LoadDate
+                et_date.setText(Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("DocDate"))));
+
+                //LoadSupplier
+                String supplier =  cursor.getString(cursor.getColumnIndex("iSupplier"));
+                PublicData.supplier = supplier;
+                if(supplierList.size()>0)
+                {
+                    for(int i = 0;i<supplierList.size();i++){
+                        if(supplier.equals(supplierList.get(i).getsSupplierId())){
+                            et_supplier.setText(supplierList.get(i).getsSupplierName());
+                        }
+                    }
+                }
+
+                String narration = cursor.getString(cursor.getColumnIndex("sNarration"));
+                et_narration.setText(narration);
+
+                String refNO = cursor.getString(cursor.getColumnIndex("sRefNo"));
+                et_ref_no.setText(refNO);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    private void LoadBodyValues() {
+        List<GoodsReceiptBody> listMain = new ArrayList<>();
+        try {
+            Cursor cursor =  helper.GetGoodsWithoutPOBodyData(DocNo);
+
+            if(cursor!=null&&cursor.moveToFirst()) {
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    listMain.add(new GoodsReceiptBody(
+                            "",
+                            helper.GetProductName(cursor.getString(cursor.getColumnIndex("iProduct"))),
+                            helper.GetProductCode(cursor.getString(cursor.getColumnIndex("iProduct"))),
+                            cursor.getString(cursor.getColumnIndex("iProduct")),
+                            helper.GetWarehouse(cursor.getString(cursor.getColumnIndex("iWarehouse"))),
+                            cursor.getString(cursor.getColumnIndex("iWarehouse")),
+                            cursor.getString(cursor.getColumnIndex("Barcode")),
+                            "",
+                            cursor.getString(cursor.getColumnIndex("fQty")),
+                            "",
+                            cursor.getString(cursor.getColumnIndex("Unit")),
+                            cursor.getString(cursor.getColumnIndex("sRemarks")),
+                            cursor.getString(cursor.getColumnIndex("fMinorDamageQty")),
+                            cursor.getString(cursor.getColumnIndex("sMinorRemarks")),
+                            cursor.getString(cursor.getColumnIndex("sMinorAttachment")),
+                            cursor.getString(cursor.getColumnIndex("fDamagedQty")),
+                            cursor.getString(cursor.getColumnIndex("sDamagedRemarks")),
+                            cursor.getString(cursor.getColumnIndex("sDamagedAttachment")),
+                            cursor.getString(cursor.getColumnIndex("iMinorId")),
+                            cursor.getString(cursor.getColumnIndex("iDamagedId"))
+
+                    ));
+                    cursor.moveToNext();
+                    if(i+1==cursor.getCount()){
+                        GoodsReceiptBodySingleton.getInstance().setList(listMain);
+                    }
+                }
+
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     public void LoadSupplier(String keyword){
         supplierList.clear();
@@ -139,39 +221,6 @@ public class GoodsWithoutPOHeaderFragment extends Fragment {
         }
     }
 
-    public void LoadValueForEditing(){
-        try {
-            Cursor cursor = helper.GetGoodsHeaderData(DocNo);
-            if(cursor!=null&&cursor.moveToFirst()){
-                //LoadDate
-                et_date.setText(Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("DocDate"))));
-
-                //LoadSupplier
-                String supplier =  cursor.getString(cursor.getColumnIndex("iSupplier"));
-                PublicData.supplier = supplier;
-                if(supplierList.size()>0)
-                {
-                    for(int i = 0;i<supplierList.size();i++){
-                        if(supplier.equals(supplierList.get(i).getsSupplierId())){
-                            et_supplier.setText(supplierList.get(i).getsSupplierName());
-
-                        }
-                    }
-                }
-
-
-
-
-                String narration = cursor.getString(cursor.getColumnIndex("sNarration"));
-                et_narration.setText(narration);
-
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-
-    }
 
 
     @Nullable
@@ -207,6 +256,7 @@ public class GoodsWithoutPOHeaderFragment extends Fragment {
                     public void run() {
                         try {
                             LoadValueForEditing();
+                            LoadBodyValues();
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -290,6 +340,22 @@ public class GoodsWithoutPOHeaderFragment extends Fragment {
             }
         });
 
+        et_ref_no.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                PublicData.POs = s.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         return view;
     }

@@ -45,7 +45,14 @@
                         android:src="@drawable/ic_save"
                         android:layout_gravity="center_vertical"
                         />
-
+                    <ImageView
+                        android:id="@+id/ic_barcode"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/qr_code"
+                        android:layout_gravity="center_vertical"
+                        />
 
                     <ImageView
                         android:id="@+id/search"

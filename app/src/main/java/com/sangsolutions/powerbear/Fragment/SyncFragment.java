@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.sangsolutions.powerbear.Commons;
+import com.sangsolutions.powerbear.GoodsWithoutPO;
 import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.StockCount;
@@ -37,7 +38,7 @@ public class SyncFragment extends Fragment {
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
     TextView tv_status;TextView txt;
-    boolean Blink = true, goodsShown=false, DeliveryShown =false, StockShown =false;
+    boolean Blink = true, goodsShown=false, DeliveryShown =false, StockShown =false , GoodsWithoutPO = false;
     private void blinkTextView(View view) {
         final Handler handler = new Handler();
         new Thread(() -> {
@@ -107,7 +108,7 @@ public class SyncFragment extends Fragment {
                             && (Objects.equals(preferences.getString(Commons.STOCK_COUNT_FINISHED, "false"), "true") || Objects.equals(preferences.getString(Commons.STOCK_COUNT_FINISHED, "false"), "false"))
                             && (Objects.equals(preferences.getString(Commons.GOODS_RECEIPT_FINISHED, "false"), "true") || Objects.equals(preferences.getString(Commons.GOODS_RECEIPT_FINISHED, "false"), "false"))
                             && (Objects.equals(preferences.getString(Commons.DELIVERY_NOTE_FINISHED, "false"), "true") || Objects.equals(preferences.getString(Commons.DELIVERY_NOTE_FINISHED, "false"), "false"))
-
+                            && (Objects.equals(preferences.getString(Commons.GOODS_WITHOUT_PO_FINISHED, "false"), "true") || Objects.equals(preferences.getString(Commons.GOODS_WITHOUT_PO_FINISHED, "false"), "false"))
                     ) {
                         handler.removeCallbacksAndMessages(null);
                         animationDrawable.stop();
@@ -151,6 +152,18 @@ public class SyncFragment extends Fragment {
                         CloseFragment();
                         StockShown = true;
                     }
+
+                    if (Objects.equals(preferences.getString(Commons.GOODS_WITHOUT_PO_FINISHED, "false"), "error")) {
+                        if (!StockShown) {
+                            txt.setText("GRN Without PO Sync failed!");
+                            tv_status.setText("GRN Without PO Sync failed!");
+                        }
+                        handler.removeCallbacksAndMessages(null);
+                        animationDrawable.stop();
+                        CloseFragment();
+                        GoodsWithoutPO = true;
+                    }
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }

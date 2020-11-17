@@ -182,18 +182,19 @@ public class PostStockCount extends JobService {
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
         jobFinished(jobParameters,false);
-        String Goods="",Delivery="",Stocks="";
+        String Goods="",Delivery="",Stocks="",GoodsWithoutPO="";
         Goods = preferences.getString(Commons.GOODS_RECEIPT_FINISHED,"false");
         Delivery = preferences.getString(Commons.DELIVERY_NOTE_FINISHED,"false");
         Stocks = preferences.getString(Commons.STOCK_COUNT_FINISHED,"false");
+        GoodsWithoutPO = preferences.getString(Commons.GOODS_WITHOUT_PO_FINISHED,"false");
 
-
-        Log.d("GDS",Goods+" "+Delivery+" "+Stocks);
+        Log.d("GDS",Goods+" "+Delivery+" "+Stocks+" "+GoodsWithoutPO);
 
         if(Goods!=null&&Delivery!=null&&Stocks!=null)
         if((Goods.equals("true")||Goods.equals("false"))
            &&(Delivery.equals("true")||Delivery.equals("false"))
            &&(Stocks.equals("true")||Stocks.equals("false"))
+           &&(GoodsWithoutPO.equals("true")||Stocks.equals("false"))
         ){
             ScheduleJob scheduleJob = new ScheduleJob();
 

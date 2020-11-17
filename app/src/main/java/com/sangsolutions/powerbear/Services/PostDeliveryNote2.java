@@ -213,7 +213,7 @@ public class PostDeliveryNote2 extends JobService {
     public boolean onStopJob(JobParameters params) {
         jobFinished(params,false);
         if(!Objects.equals(preferences.getString(Commons.DELIVERY_NOTE_FINISHED, "false"), "error"))
-            new ScheduleJob().SyncStockCount(this);
+            new ScheduleJob().SyncGoodsWithoutPO(this);
         return true;
     }
 }

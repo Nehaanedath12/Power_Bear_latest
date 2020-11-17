@@ -45,7 +45,7 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
     boolean EditMode = false;
     String DocNo = "";
     int current_position = 0;
-
+    List<GoodsReceiptHistory> listHistory;
     private void Save(){
         String refno="",date = "",supplier="",narration="",voucher="" ,ProcessedDate ="";
         List<GoodsReceiptBody> listMain = GoodsReceiptBodySingleton.getInstance().getList();
@@ -61,6 +61,10 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
             voucher = PublicData.voucher;
             refno = PublicData.POs;// this case refno in po
 
+            if(date.equals("")||supplier.equals("")||voucher.equals("")){
+                Toast.makeText(this, "Values missing in the header part!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             ProcessedDate = String.valueOf(DateFormat.format("yyyy-MM-dd hh:mm:ss a", new Date()));
             int body_success_counter = 0;
@@ -70,7 +74,6 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
 
                     for (int i = 0; i < listMain.size(); i++) {
                         gb.setDocNo(voucher);
-                        gb.setsPONo(listMain.get(i).getsPONo());
                         gb.setiProduct(listMain.get(i).getiProduct());
                         gb.setiWarehouse(listMain.get(i).getiWarehouse());
                         gb.setBarcode(listMain.get(i).getBarcode());
@@ -271,9 +274,15 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
         tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF0000"));
         tabLayout.setTabTextColors(Color.parseColor("#e58989"), Color.parseColor("#ffffff"));
         SetViewPager(DocNo,EditMode);
+
+        listHistory = GoodsReceiptHistorySingleton.getInstance().getList();
+        current_position = listHistory.indexOf(DocNo);
+
     }
 
-    List<GoodsReceiptHistory> listHistory = GoodsReceiptHistorySingleton.getInstance().getList();
+
+
+
 
 
     @SuppressLint("NonConstantResourceId")
@@ -289,15 +298,15 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.forward:
                 if (listHistory.size() > 1) {
-                    if (current_position < listHistory.size()) {
-                        SetViewPager(listHistory.get(current_position).getDocNo(),true);
+                    if (current_position+1 < listHistory.size()) {
                         current_position++;
+                        SetViewPager(listHistory.get(current_position).getDocNo(),true);
                     }
                 }
                 break;
             case R.id.backward:
                 if (listHistory.size() > 1) {
-                    if (current_position > 0) {
+                    if (current_position > 0 &&  current_position<listHistory.size()) {
                         current_position--;
                         SetViewPager(listHistory.get(current_position).getDocNo(),true);
                     }
