@@ -21,6 +21,6 @@
         android:src="@drawable/ic_close_30dp"
         android:layout_alignParentEnd="true"
         android:background="@drawable/btn_2"
-        android:id="@+id/close"
+        android:id="@+id/goodsReceipt"
         />
 </RelativeLayout>

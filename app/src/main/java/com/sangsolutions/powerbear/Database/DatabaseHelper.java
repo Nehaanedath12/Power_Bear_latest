@@ -542,6 +542,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Cursor GetProductByKeyword(String s) {
+
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("select " + BARCODE + "," + CODE +  "," + NAME + ","+UNIT+","+ MASTER_ID +" from " + TABLE_PRODUCT +
+                " where "+CODE+" like '"+s+"%' or "+NAME+" like '"+s+"%' limit 100", null);
+
+        if (cursor.moveToFirst()) {
+            return cursor;
+        } else {
+            return null;
+        }
+
+    }
+
+
+
     public String GetProductCode(String iProduct){
         this.db = getReadableDatabase();
         Cursor cursor = db.rawQuery("select "+CODE+" from "+TABLE_PRODUCT+" where "+MASTER_ID+" = ? ",new String[]{iProduct});

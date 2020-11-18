@@ -2,6 +2,7 @@ package com.sangsolutions.powerbear.Services;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -194,7 +196,7 @@ public class PostStockCount extends JobService {
         if((Goods.equals("true")||Goods.equals("false"))
            &&(Delivery.equals("true")||Delivery.equals("false"))
            &&(Stocks.equals("true")||Stocks.equals("false"))
-           &&(GoodsWithoutPO.equals("true")||Stocks.equals("false"))
+           &&(GoodsWithoutPO.equals("true")||GoodsWithoutPO.equals("false"))
         ){
             ScheduleJob scheduleJob = new ScheduleJob();
 
@@ -210,6 +212,9 @@ public class PostStockCount extends JobService {
             editor.putString(Commons.PRODUCT_FINISHED, "false").apply();
             editor.putString(Commons.REMARKS_FINISHED,"false").apply();
             editor.putString(Commons.SYNC_DATE, "").apply();
+
+            //Intent serviceIntent = new Intent(this, MaintenanceService.class);
+           // ContextCompat.startForegroundService(this, serviceIntent);
         }
         return true;
     }

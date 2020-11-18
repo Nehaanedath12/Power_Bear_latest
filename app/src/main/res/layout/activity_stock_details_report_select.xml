@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StockDetailsReportSelectActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:actionBarSize"
+        android:background="@color/theme_color_red">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="StockDetails"
+                android:textSize="20dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/color_white"/>
+            <ImageView
+                android:id="@+id/home"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_home"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"/>
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <EditText
+        android:layout_below="@+id/toolBar"
+        android:id="@+id/product_E"
+        android:hint="Select Product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="40dp"
+        android:focusable="false"
+        android:drawableEnd="@drawable/ic_arrow_down" />
+    <EditText
+        android:layout_below="@+id/product_E"
+        android:id="@+id/warehouse_E"
+        android:hint="Select Warehouse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="40dp"
+        android:focusable="false"
+        android:drawableEnd="@drawable/ic_arrow_down" />
+    <EditText
+        android:layout_below="@+id/warehouse_E"
+        android:id="@+id/date"
+        android:hint="Select Date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="40dp"
+        android:focusable="false"
+        android:drawableEnd="@drawable/ic_date" />
+
+    <LinearLayout
+        android:id="@+id/radio_linear"
+        android:layout_below="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="40dp">
+        <RadioGroup
+            android:id="@+id/radioGrp"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <RadioButton
+                android:id="@+id/overallRadio"
+                android:onClick="onRadioButtonClicked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Overall" />
+            <RadioButton
+                android:layout_marginStart="20dp"
+                android:onClick="onRadioButtonClicked"
+                android:id="@+id/warehouseRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Warehouse Wise"
+                />
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <Button
+        android:layout_below="@+id/radio_linear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="search"
+        android:ems="7"
+        android:id="@+id/search_b"
+        android:drawableEnd="@drawable/ic_search"
+        android:background="@color/color_dark_blue"
+        android:textColor="@color/color_white"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        />
+
+
+</RelativeLayout>

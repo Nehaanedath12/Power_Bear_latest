@@ -438,7 +438,7 @@ private RecyclerView rv_products;
 
     public void BarcodeAlert(){
         View view = LayoutInflater.from(requireActivity()).inflate(R.layout.barcode_layout,null,false);
-        ImageView img_close = view.findViewById(R.id.close);
+        ImageView img_close = view.findViewById(R.id.goodsReceipt);
         surfaceView = view.findViewById(R.id.surfaceView);
         frame_scan = view.findViewById(R.id.frame_scan);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -1177,7 +1177,7 @@ private RecyclerView rv_products;
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.camera_layout,null,false);
         CameraView cameraView = view.findViewById(R.id.camera);
-        ImageView close = view.findViewById(R.id.close);
+        ImageView close = view.findViewById(R.id.goodsReceipt);
         ImageView Click = view.findViewById(R.id.click);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());

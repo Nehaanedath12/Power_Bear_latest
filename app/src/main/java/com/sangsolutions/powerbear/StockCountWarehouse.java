@@ -212,7 +212,7 @@ public class StockCountWarehouse extends AppCompatActivity {
         ImageView img_forward = findViewById(R.id.forward);
         ImageView img_backward = findViewById(R.id.backward);
         ImageView img_delete = findViewById(R.id.delete);
-        ImageView img_close = findViewById(R.id.close);
+        ImageView img_close = findViewById(R.id.goodsReceipt);
         ImageView img_new = findViewById(R.id.add_save);
         toolbar = findViewById(R.id.toolbar);
         helper = new DatabaseHelper(this);

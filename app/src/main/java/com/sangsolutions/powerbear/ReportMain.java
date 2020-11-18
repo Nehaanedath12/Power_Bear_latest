@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 public class ReportMain extends AppCompatActivity implements View.OnClickListener {
-CardView card_pendingPO,card_pendingSO,card_deliveryNote,card_goodsReceipt,card_stockCount;
+CardView card_pendingPO,card_pendingSO,card_deliveryNote,card_goodsReceipt,card_stockCount,card_StockDetails;
     ImageView img_home;
     TextView title;
 
@@ -27,15 +27,18 @@ CardView card_pendingPO,card_pendingSO,card_deliveryNote,card_goodsReceipt,card_
         card_pendingPO = findViewById(R.id.pending_po);
         card_pendingSO = findViewById(R.id.pending_so);
         card_deliveryNote = findViewById(R.id.delivery_note);
-        card_goodsReceipt = findViewById(R.id.close);
+        card_goodsReceipt = findViewById(R.id.goodsReceipt);
         card_stockCount = findViewById(R.id.stock_count);
+        card_StockDetails = findViewById(R.id.StockDetails);
 
         card_pendingPO.setOnClickListener(this);
         card_pendingSO.setOnClickListener(this);
         card_deliveryNote.setOnClickListener(this);
         card_goodsReceipt.setOnClickListener(this);
         card_stockCount.setOnClickListener(this);
+        card_StockDetails.setOnClickListener(this);
         img_home.setOnClickListener(this);
+
 
     }
 
@@ -57,7 +60,7 @@ CardView card_pendingPO,card_pendingSO,card_deliveryNote,card_goodsReceipt,card_
                 intent3.putExtra("report_type","delivery_note");
                 startActivity(intent3);
                 break;
-            case R.id.close:
+            case R.id.goodsReceipt:
                 Intent intent4 = new Intent(ReportMain.this, SelectCustomerOrProduct.class);
                 intent4.putExtra("report_type","goods_receipt");
                 startActivity(intent4);
@@ -71,6 +74,11 @@ CardView card_pendingPO,card_pendingSO,card_deliveryNote,card_goodsReceipt,card_
             case R.id.home:
                 startActivity(new Intent(ReportMain.this,Home.class));
                 finishAffinity();
+                break;
+            case R.id.StockDetails:
+                Intent intent6 = new Intent(ReportMain.this, StockDetailsReportSelectActivity.class);
+                startActivity(intent6);
+                finish();
                 break;
         }
     }

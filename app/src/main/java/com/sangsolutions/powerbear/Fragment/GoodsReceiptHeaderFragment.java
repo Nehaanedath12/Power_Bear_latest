@@ -22,7 +22,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,7 +92,7 @@ public class GoodsReceiptHeaderFragment extends Fragment {
 
     public void POSelectionDialog(){
         View view = LayoutInflater.from(requireActivity()).inflate(R.layout.select_po_layout,null,false);
-        ImageView img_close = view.findViewById(R.id.close);
+        ImageView img_close = view.findViewById(R.id.goodsReceipt);
         Button btn_apply = view.findViewById(R.id.apply);
         RecyclerView rv_po_select = view.findViewById(R.id.rv_po_select);
         rv_po_select.setLayoutManager(new GridLayoutManager(requireActivity(),3));

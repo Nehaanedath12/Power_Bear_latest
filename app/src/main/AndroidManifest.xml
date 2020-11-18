@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -19,9 +20,17 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="q">
-        <activity android:name=".GoodsWithoutPO"></activity>
-        <activity android:name=".GoodsReceiptWithoutPOHistory" />
-        <activity android:name=".SetIPActivity" />
+        <activity android:name=".StockDetailsReport"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            />
+        <activity android:name=".StockDetailsReportSelectActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".GoodsWithoutPO"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".GoodsReceiptWithoutPOHistory"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".SetIPActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity
             android:name=".ReportOPAndSO"
             android:configChanges="keyboardHidden|orientation|screenSize" />
@@ -110,10 +119,12 @@
         <service
             android:name=".Services.PostDeliveryNote2"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <service android:name=".Services.PostGoodsWithoutPO"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
-
+        <service
+            android:name=".Services.PostGoodsWithoutPO"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".Services.MaintenanceService"
+            android:enabled="true" />
     </application>
 
 </manifest>

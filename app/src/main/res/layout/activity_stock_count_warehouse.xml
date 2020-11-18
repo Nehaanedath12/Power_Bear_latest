@@ -76,7 +76,7 @@
                 android:layout_height="24dp"
                 android:src="@drawable/ic_close_30dp"
                 android:layout_margin="5dp"
-                android:id="@+id/close"
+                android:id="@+id/goodsReceipt"
                 />
         </LinearLayout>
     </FrameLayout>

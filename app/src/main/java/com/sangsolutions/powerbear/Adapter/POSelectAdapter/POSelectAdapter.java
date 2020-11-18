@@ -133,7 +133,7 @@ public class POSelectAdapter extends RecyclerView.Adapter<POSelectAdapter.ViewHo
             super(itemView);
             title = itemView.findViewById(R.id.title);
             ll_1 = itemView.findViewById(R.id.date);
-            close = itemView.findViewById(R.id.close);
+            close = itemView.findViewById(R.id.goodsReceipt);
         }
     }
 }

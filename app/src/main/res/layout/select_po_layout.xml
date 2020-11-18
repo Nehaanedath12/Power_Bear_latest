@@ -33,6 +33,6 @@
         android:background="@drawable/round_red"
         android:layout_alignParentEnd="true"
         android:layout_margin="10dp"
-        android:id="@+id/close"
+        android:id="@+id/goodsReceipt"
         />
 </RelativeLayout>

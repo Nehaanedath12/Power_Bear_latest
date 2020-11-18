@@ -104,6 +104,6 @@
         android:src="@mipmap/ic_close"
         android:layout_alignParentEnd="true"
         android:layout_margin="5dp"
-        android:id="@+id/close"
+        android:id="@+id/goodsReceipt"
         />
 </RelativeLayout>

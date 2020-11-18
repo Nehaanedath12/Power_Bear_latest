@@ -242,7 +242,7 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
         helper = new DatabaseHelper(this);
 
         viewPager2 = findViewById(R.id.viewpager);
-        img_close = findViewById(R.id.close);
+        img_close = findViewById(R.id.goodsReceipt);
         img_delete = findViewById(R.id.delete);
         img_forward = findViewById(R.id.forward);
         img_backward = findViewById(R.id.backward);
@@ -289,7 +289,7 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.close:
+            case R.id.goodsReceipt:
                 Alert("Close!","Do you want to close before saving?","close");
                 break;
             case R.id.delete:

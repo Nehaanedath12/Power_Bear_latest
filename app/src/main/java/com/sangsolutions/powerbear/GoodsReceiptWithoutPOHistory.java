@@ -88,7 +88,7 @@ public class GoodsReceiptWithoutPOHistory extends AppCompatActivity {
 
     private void initToolbar() {
         appbar = findViewById(R.id.appbar);
-        close = findViewById(R.id.close);
+        close = findViewById(R.id.goodsReceipt);
         delete = findViewById(R.id.delete);
         toolbar = findViewById(R.id.toolbar);
         title_selection = findViewById(R.id.title_selection);

@@ -31,7 +31,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sangsolutions.powerbear.Adapter.DeliveryNoteBodyAdapter.DeliveryNoteBody;
-import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
 import com.sangsolutions.powerbear.Adapter.POListAdaptet.POListAdapter;
 import com.sangsolutions.powerbear.Adapter.POSelectAdapter.POSelectAdapter;
 import com.sangsolutions.powerbear.Adapter.SupplierSearchAdapter.SupplierSearch;
@@ -41,7 +40,6 @@ import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.Singleton.DeliveryNoteBodySingleton;
 import com.sangsolutions.powerbear.Singleton.DeliveryNoteSOSingleton;
-import com.sangsolutions.powerbear.Singleton.GoodsReceiptBodySingleton;
 import com.sangsolutions.powerbear.Tools;
 
 import java.util.ArrayList;
@@ -91,7 +89,7 @@ public class DeliveryNoteHeaderFragment extends Fragment {
     }
     public void POSelectionDialog(){
         View view = LayoutInflater.from(requireActivity()).inflate(R.layout.select_po_layout,null,false);
-        ImageView img_close = view.findViewById(R.id.close);
+        ImageView img_close = view.findViewById(R.id.goodsReceipt);
         Button btn_apply = view.findViewById(R.id.apply);
         RecyclerView rv_so_select = view.findViewById(R.id.rv_po_select);
         rv_so_select.setLayoutManager(new GridLayoutManager(requireActivity(),3));

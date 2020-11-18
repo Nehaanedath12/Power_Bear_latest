@@ -103,7 +103,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/close"
+            android:id="@+id/goodsReceipt"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_below="@id/stock_count"
@@ -141,7 +141,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="15dp"
-            android:layout_toEndOf="@+id/close"
+            android:layout_toEndOf="@+id/goodsReceipt"
             app:cardElevation="3dp">
 
             <LinearLayout
@@ -169,7 +169,7 @@
             android:id="@+id/pending_po"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_below="@id/close"
+            android:layout_below="@id/goodsReceipt"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="15dp"
             app:cardElevation="3dp">
@@ -194,6 +194,40 @@
                     android:text="Pending PO"
                     android:textColor="?android:attr/textColorPrimary" />
             </LinearLayout>
+
         </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/StockDetails"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_below="@id/pending_so"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            android:layout_toEndOf="@+id/pending_po"
+            app:cardElevation="3dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:src="@drawable/ic_stock_count" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Stock Details"
+                    android:textColor="?android:attr/textColorPrimary" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
     </RelativeLayout>
 </RelativeLayout>

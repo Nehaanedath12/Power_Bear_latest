@@ -350,7 +350,7 @@ public class DeliveryNoteBodyFragment extends Fragment {
         Button btn_apply = view.findViewById(R.id.apply);
         FloatingActionButton fab_select = view.findViewById(R.id.select);
         RecyclerView rv_product_select = view.findViewById(R.id.rv_product_selection);
-        ImageView ic_close = view.findViewById(R.id.close);
+        ImageView ic_close = view.findViewById(R.id.goodsReceipt);
 
         rv_product_select.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv_product_select.setAdapter(deliverySOProductAdapter);
@@ -746,7 +746,7 @@ public class DeliveryNoteBodyFragment extends Fragment {
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.camera_layout,null,false);
         CameraView cameraView = view.findViewById(R.id.camera);
-        ImageView close = view.findViewById(R.id.close);
+        ImageView close = view.findViewById(R.id.goodsReceipt);
         ImageView Click = view.findViewById(R.id.click);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());

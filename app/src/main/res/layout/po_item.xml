@@ -13,7 +13,7 @@
         android:background="@drawable/round_red"
         android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
-        android:id="@+id/close"
+        android:id="@+id/goodsReceipt"
         />
 <TextView
     android:layout_width="wrap_content"
