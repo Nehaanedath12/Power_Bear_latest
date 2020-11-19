@@ -77,8 +77,12 @@ ImageView img_settings;
                     && preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
                     && preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
                     ){
-            startActivity(new Intent(Home.this, StockCountHistory.class));
-        }
+                if(!PublicData.Syncing) {
+                    startActivity(new Intent(Home.this, StockCountHistory.class));
+                }else {
+                    Toast.makeText(Home.this, "Wait for the data finish syncing!", Toast.LENGTH_SHORT).show();
+                }
+                }
             else {
                 Toast.makeText(Home.this, "Sync data before you do anything..", Toast.LENGTH_SHORT).show();
             }
@@ -126,7 +130,6 @@ ImageView img_settings;
                     if(item.getItemId()==R.id.logout){
                     if(helper.DeleteCurrentUser()){
 
-
                         startActivity(new Intent(Home.this,MainActivity.class));
                         finish();
                     }
@@ -147,9 +150,12 @@ ImageView img_settings;
                     &&  preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
                     &&  preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
             ){
-
+                if(!PublicData.Syncing) {
                     Intent intent = new Intent(Home.this, GoodsReceiptHistory.class);
                     startActivity(intent);
+                }else {
+                    Toast.makeText(Home.this, "Wait for the data finish syncing!", Toast.LENGTH_SHORT).show();
+                }
                 }else {
                 Toast.makeText(Home.this, "Sync data before you do anything..", Toast.LENGTH_SHORT).show();
             }
@@ -165,8 +171,12 @@ ImageView img_settings;
                         &&  preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
                         &&  preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
                 ){
-                Intent intent = new Intent(Home.this,DeliveryNoteHistory.class);
-                startActivity(intent);
+                    if(!PublicData.Syncing) {
+                        Intent intent = new Intent(Home.this, DeliveryNoteHistory.class);
+                        startActivity(intent);
+                    }else {
+                        Toast.makeText(Home.this, "Wait for the data finish syncing!", Toast.LENGTH_SHORT).show();
+                    }
             }else {
                 Toast.makeText(Home.this, "Sync data before you do anything..", Toast.LENGTH_SHORT).show();
             }
@@ -196,8 +206,12 @@ ImageView img_settings;
                         &&  preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
                         &&  preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
                 ){
-                    Intent intent = new Intent(Home.this,GoodsReceiptWithoutPOHistory.class);
-                    startActivity(intent);
+                    if(!PublicData.Syncing) {
+                        Intent intent = new Intent(Home.this, GoodsReceiptWithoutPOHistory.class);
+                        startActivity(intent);
+                    }else {
+                        Toast.makeText(Home.this, "Wait for the data finish syncing!", Toast.LENGTH_SHORT).show();
+                    }
                 }else {
                     Toast.makeText(Home.this, "Sync data before you do anything..", Toast.LENGTH_SHORT).show();
                 }

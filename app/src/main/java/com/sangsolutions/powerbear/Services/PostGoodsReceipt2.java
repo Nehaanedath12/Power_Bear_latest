@@ -20,6 +20,7 @@ import com.androidnetworking.interfaces.StringRequestListener;
 import com.sangsolutions.powerbear.Commons;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Database.GoodReceiptHeader;
+import com.sangsolutions.powerbear.PublicData;
 import com.sangsolutions.powerbear.ScheduleJob;
 import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
@@ -285,6 +286,7 @@ public class PostGoodsReceipt2 extends JobService {
     @Override
     public boolean onStopJob(JobParameters jobParameters)
     {  jobFinished(jobParameters,false);
+        PublicData.Syncing = true;
         if(!Objects.equals(preferences.getString(Commons.GOODS_RECEIPT_FINISHED, "false"), "error"))
         new ScheduleJob().SyncDeliveryNote2(this);
         return true;
