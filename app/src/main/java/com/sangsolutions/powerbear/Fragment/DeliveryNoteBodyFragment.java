@@ -610,10 +610,10 @@ public class DeliveryNoteBodyFragment extends Fragment {
 
                     boolean condition;
                     if(!EditMode){
-                        condition = regular > Integer.parseInt(listMain.get(pos).getfSOQty())-Integer.parseInt(listMain.get(pos).getfTempQty().equals("")?"0":listMain.get(pos).getfTempQty());
-                        Log.d("data",""+(listMain.get(pos).getfTempQty()));
+                        condition = regular > Integer.parseInt(listMain.get(current_position).getfSOQty())-Integer.parseInt(listMain.get(current_position).getfTempQty().equals("")?"0":listMain.get(current_position).getfTempQty());
+                        Log.d("data",""+(listMain.get(current_position).getfTempQty()));
                     }else {
-                        condition = Integer.parseInt(listMain.get(pos).getfSOQty()) <  regular;
+                        condition = Integer.parseInt(listMain.get(current_position).getfSOQty()) <  regular;
                     }
                     if((regular)!=0) {
                         if (condition) {

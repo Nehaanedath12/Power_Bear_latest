@@ -92,7 +92,7 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
     try {
         if (listMain.size() > 0 && PublicData.voucher != null && !PublicData.voucher.isEmpty()) {
             com.sangsolutions.powerbear.Database.GoodsReceiptBody gb = new com.sangsolutions.powerbear.Database.GoodsReceiptBody();
-
+            helper.deleteGoodsBodyItem(voucher);
             for (int i = 0; i < listMain.size(); i++) {
                 gb.setDocNo(voucher);
                 gb.setsPONo(listMain.get(i).getsPONo());
@@ -193,6 +193,7 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
                         GoodsReceiptPoSingleton.getInstance().clearList();
                         GoodsReceiptBodySingleton.getInstance().clearList();
                         PublicData.voucher = "G-" + DateFormat.format("ddMMyy-HHmmss", new Date());
+                        EditMode = false;
                         SetViewPager(PublicData.voucher,false);
                     }else if(type.equals("close")){
                         GoodsReceiptPoSingleton.getInstance().clearList();

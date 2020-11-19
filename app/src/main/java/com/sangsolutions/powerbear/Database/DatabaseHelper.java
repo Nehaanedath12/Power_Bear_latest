@@ -1044,11 +1044,9 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(I_MINOR_TYPE, gb.getiMinorType());
         cv.put(I_DAMAGED_TYPE, gb.getiDamageType());
 
-        if(cursor!=null&&cursor.moveToFirst()){
-            status = db.update(TABLE_GOODS_RECEIPT_BODY, cv, DOC_NO+" = ? and "+S_PONO+" = ? ",new String[]{gb.getDocNo(),gb.getsPONo()});
-        }else {
+
             status = db.insert(TABLE_GOODS_RECEIPT_BODY, null, cv);
-        }
+
 
         ContentValues cv2 = new ContentValues();
 
@@ -1404,11 +1402,9 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(I_USER,b.getiUser());
         cv.put(UNIT,b.getUnit());
 
-        if(cursor!=null&&cursor.moveToFirst()){
-            status = db.update(TABLE_DELIVERY_NOTE_BODY, cv, DOC_NO+" = ? and "+S_SONO+" = ? ",new String[]{b.getsVoucherNo(),b.getsSONo()});
-        }else {
+
             status = db.insert(TABLE_DELIVERY_NOTE_BODY, null, cv);
-        }
+
 
         ContentValues cv2 = new ContentValues();
 
@@ -1421,6 +1417,7 @@ public boolean DeleteStockCount(String voucherNo){
         cursor2.close();
         return status2 != -1;
     }
+
 
 
 
@@ -1610,16 +1607,16 @@ public boolean DeleteStockCount(String voucherNo){
             cv.put(I_MINOR_TYPE, gb.getiMinorType());
             cv.put(I_DAMAGED_TYPE, gb.getiDamageType());
 
-        if(EditMode){
+      /*  if(EditMode){
             Cursor cursor = db.rawQuery("select * from "+TABLE_GOODS_WITHOUT_PO_BODY+" where "+DOC_NO+" = ? and "+I_PRODUCT+" = ? ",new String[]{gb.getDocNo(),gb.getiProduct()});
             if(cursor!=null&&cursor.moveToFirst()) {
                 status = db.update(TABLE_GOODS_WITHOUT_PO_BODY, cv, DOC_NO + " = ? and " + I_PRODUCT + " = ? ", new String[]{gb.getDocNo(), gb.getiProduct()});
             }else {
                 status = db.insert(TABLE_GOODS_WITHOUT_PO_BODY, null, cv);
             }
-        }else {
+        }else {*/
             status = db.insert(TABLE_GOODS_WITHOUT_PO_BODY, null, cv);
-        }
+        //}
 
 
 

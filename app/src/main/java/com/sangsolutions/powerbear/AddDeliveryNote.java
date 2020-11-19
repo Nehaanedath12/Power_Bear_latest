@@ -94,7 +94,7 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
             try {
                 if (listMain.size() > 0 && PublicData.voucher != null && !PublicData.voucher.isEmpty()) {
                     DeliveryNoteBody b = new DeliveryNoteBody();
-
+                    helper.DeleteDeliveryNoteBodyItem(voucher);
                     for (int i = 0; i < listMain.size(); i++) {
                         b.setsVoucherNo(voucher);
                         b.setsSONo(listMain.get(i).getsSONo());
@@ -188,6 +188,7 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
                             DeliveryNoteBodySingleton.getInstance().clearList();
                             DeliveryNoteSOSingleton.getInstance().clearList();
                             PublicData.voucher = "D-" + DateFormat.format("ddMMyy-HHmmss", new Date());
+                            EditMode = false;
                             SetViewPager(PublicData.voucher,false);
                         }else if(type.equals("close")){
                             DeliveryNoteBodySingleton.getInstance().clearList();

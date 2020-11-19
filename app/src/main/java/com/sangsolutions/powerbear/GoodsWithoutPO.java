@@ -61,6 +61,11 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
             voucher = PublicData.voucher;
             refno = PublicData.POs;// this case refno in po
 
+            if(refno.equals("")){
+                Toast.makeText(this, "Enter Reference No!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if(date.equals("")||supplier.equals("")||voucher.equals("")){
                 Toast.makeText(this, "Values missing in the header part!", Toast.LENGTH_SHORT).show();
                 return;
@@ -71,7 +76,7 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
             try {
                 if (listMain.size() > 0 && PublicData.voucher != null && !PublicData.voucher.isEmpty()) {
                     com.sangsolutions.powerbear.Database.GoodsReceiptBody gb = new com.sangsolutions.powerbear.Database.GoodsReceiptBody();
-
+                    helper.DeleteGoodsWithoutPOBodyItem(voucher);
                     for (int i = 0; i < listMain.size(); i++) {
                         gb.setDocNo(voucher);
                         gb.setiProduct(listMain.get(i).getiProduct());
@@ -169,6 +174,7 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
                             GoodsReceiptBodySingleton.getInstance().clearList();
                             PublicData.voucher = "G1-" + DateFormat.format("ddMMyy-HHmmss", new Date());
                             SetViewPager(PublicData.voucher,false);
+                            EditMode = false;
                         }else if(type.equals("close")){
                             GoodsReceiptBodySingleton.getInstance().clearList();
                             PublicData.clearData();
