@@ -45,7 +45,7 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
    holder.edit.setOnClickListener(new View.OnClickListener() {
        @Override
        public void onClick(View view) {
-           onClickListener.onEditItemClick(deliveryNoteHistory);
+           onClickListener.onEditItemClick(deliveryNoteHistory,position);
        }
    });
 
@@ -63,7 +63,7 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
     }
 
     public interface OnClickListener {
-        void onEditItemClick(DeliveryNoteHistory deliveryNoteHistory);
+        void onEditItemClick(DeliveryNoteHistory deliveryNoteHistory, int position);
         void onDeleteItemClick(DeliveryNoteHistory deliveryNoteHistory, int pos);
     }
 

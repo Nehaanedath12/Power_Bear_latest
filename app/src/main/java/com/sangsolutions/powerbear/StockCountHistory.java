@@ -234,6 +234,7 @@ public class StockCountHistory extends AppCompatActivity {
                   intent1.putExtra("warehouse", stockCountList.getWarehouseId());
                   intent1.putExtra("voucherNo", stockCountList.getVNo());
                   intent1.putExtra("EditMode", "edit");
+                  intent1.putExtra("Position",pos);
                   startActivity(intent1);
               }else {
                   enableActionMode(pos);

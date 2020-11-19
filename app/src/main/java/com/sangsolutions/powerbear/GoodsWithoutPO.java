@@ -267,6 +267,7 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
             EditMode =intent.getBooleanExtra("EditMode",false);
             if(EditMode){
                 PublicData.voucher= intent.getStringExtra("DocNo");
+                current_position=intent.getIntExtra("Position",0);
             }else {
                 PublicData.voucher = "G1-" + DateFormat.format("ddMMyy-HHmmss", new Date());
             }
@@ -282,7 +283,7 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
         SetViewPager(DocNo,EditMode);
 
         listHistory = GoodsReceiptHistorySingleton.getInstance().getList();
-        current_position = listHistory.indexOf(DocNo);
+//        current_position = listHistory.indexOf(DocNo);
 
     }
 

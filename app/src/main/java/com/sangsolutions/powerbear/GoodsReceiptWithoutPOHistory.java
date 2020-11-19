@@ -214,11 +214,12 @@ public class GoodsReceiptWithoutPOHistory extends AppCompatActivity {
 
         adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
             @Override
-            public void onEditItemClick(com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory) {
+            public void onEditItemClick(GoodsReceiptHistory goodsReceiptHistory, int position) {
                 if (!selection_active) {
                     Intent intent1 = new Intent(GoodsReceiptWithoutPOHistory.this, GoodsWithoutPO.class);
                     intent1.putExtra("DocNo", goodsReceiptHistory.getDocNo());
                     intent1.putExtra("EditMode", true);
+                    intent1.putExtra("Position",position);
                     startActivity(intent1);
                 }
             }

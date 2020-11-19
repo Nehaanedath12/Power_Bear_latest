@@ -287,6 +287,7 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
             if(EditMode){
                 PublicData.voucher = intent.getStringExtra("DocNo");
                 DocNo = PublicData.voucher;
+                current_position=intent.getIntExtra("Position",0);
             }else {
                 PublicData.voucher = "D-" + DateFormat.format("ddMMyy-HHmmss", new Date());
                 DocNo = PublicData.voucher;

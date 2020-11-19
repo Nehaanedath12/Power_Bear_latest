@@ -13,9 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountList;
-import com.sangsolutions.powerbear.Adapter.StockCountListAdapter.StockCountListAdapter;
-import com.sangsolutions.powerbear.GoodsReceipt;
 import com.sangsolutions.powerbear.R;
 
 import java.util.ArrayList;
@@ -113,7 +110,7 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickListener.onEditItemClick(goodsReceiptHistory);
+                onClickListener.onEditItemClick(goodsReceiptHistory,position);
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
@@ -151,7 +148,7 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
     }
 
     public interface OnClickListener {
-        void onEditItemClick(GoodsReceiptHistory goodsReceiptHistory);
+        void onEditItemClick(GoodsReceiptHistory goodsReceiptHistory, int position);
         void onDeleteItemClick(GoodsReceiptHistory goodsReceiptHistory, int pos);
         void onItemClick(GoodsReceiptHistory goodsReceiptHistory, int pos);
         void onItemLongClick(int pos);

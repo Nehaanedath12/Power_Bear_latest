@@ -227,6 +227,7 @@ public class StockCountWarehouse extends AppCompatActivity {
             if(EditMode.equals("edit")){
                 warehouse = intent.getStringExtra("warehouse");
                 voucherNo = intent.getStringExtra("voucherNo");
+                current_position=intent.getIntExtra("Position",0);
             }else {
                 warehouse = "";
                 voucherNo = "";
