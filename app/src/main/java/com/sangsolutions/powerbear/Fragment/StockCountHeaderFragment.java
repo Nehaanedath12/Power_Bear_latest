@@ -34,10 +34,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class StockCountHeaderFragment extends Fragment {
-EditText date, narration;
+EditText date, narration, stock_date;
     TextView VoucherNo;
     DatabaseHelper helper;
-String warehouse_id = "",voucherNo="",Date ="" , Narration ="";
+String warehouse_id = "",voucherNo="",Date ="",dStockCountDate="", Narration ="";
 Date c;
 Spinner sp_warehouse;
 List<Warehouse> list;
@@ -75,9 +75,11 @@ private void setData(String voucherNo){
                 warehouse_id = cursor.getString(cursor.getColumnIndex("iWarehouse"));
                 voucherNo = cursor.getString(cursor.getColumnIndex("iVoucherNo"));
                 Date  = Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("dDate")));
+                dStockCountDate = Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("dStockCountDate")));
         Narration = cursor.getString(cursor.getColumnIndex("sNarration"));
         date.setText(Date);
-
+        stock_date.setText(dStockCountDate);
+       PublicData.stock_date = Tools.dateFormat(dStockCountDate);
        PublicData.date = Tools.dateFormat(Date);
         PublicData.narration = Narration;
         PublicData.warehouse = warehouse_id;
@@ -113,6 +115,7 @@ if(list.size()!=0){
     narration = view.findViewById(R.id.narration);
         VoucherNo = view.findViewById(R.id.voucher_no);
         sp_warehouse = view.findViewById(R.id.warehouse);
+        stock_date = view.findViewById(R.id.stock_date);
         helper = new DatabaseHelper(getActivity());
 
         //setting default warehouse
@@ -144,7 +147,9 @@ if(list.size()!=0){
         } else if (EditMode.equals("new")) {
             VoucherNo.setText("Voucher No :"+helper.GetNewVoucherNo());
             date.setText(df.format(c));
+            stock_date.setText(df.format(c));
             PublicData.date = Tools.dateFormat(df.format(c));
+            PublicData.stock_date = Tools.dateFormat(df.format(c));
         }
 
 
@@ -196,6 +201,31 @@ if(list.size()!=0){
             }
         });
 
+
+    stock_date.setOnClickListener(v -> {
+        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+
+                String StringDate = Tools.checkDigit(dayOfMonth)+
+                        "-" +
+                        Tools.checkDigit(month + 1) +
+                        "-"+
+                        year;
+                stock_date.setText(StringDate);
+                PublicData.stock_date=Tools.dateFormat(StringDate);
+            }
+        };
+        Calendar now = Calendar.getInstance();
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH);
+        int day = now.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(Objects.requireNonNull(getActivity()), onDateSetListener, year, month, day);
+        datePickerDialog.setTitle("Select Date");
+        if(EditMode.equals("edit")||EditMode.equals("new"))
+            datePickerDialog.show();
+    });
 
     narration.addTextChangedListener(new TextWatcher() {
         @Override

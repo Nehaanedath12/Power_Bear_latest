@@ -58,6 +58,18 @@
             android:hint="Date"
             android:drawableEnd="@drawable/ic_date" />
 
+        <EditText
+            android:id="@+id/stock_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal"
+            android:ems="12"
+            android:focusable="false"
+            android:hint="Stock Count Date"
+            android:drawableEnd="@drawable/ic_date" />
+
         <LinearLayout
             android:layout_width="250dp"
             android:layout_height="wrap_content"

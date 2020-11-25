@@ -14,6 +14,7 @@ public class PublicData {
     public static String voucher="";
     public static boolean Syncing = false;
     public static String contactPerson = "";
+    public static String stock_date;
 
     public static void clearDataIgnoreHeader(){
         warehouse = "";
@@ -31,5 +32,6 @@ public class PublicData {
         supplier = "";
         voucher ="";
         contactPerson = "";
+        stock_date = "";
     }
 }

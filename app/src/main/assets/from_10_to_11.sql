@@ -1,0 +1,1 @@
+ALTER TABLE tbl_StockCount ADD dStockCountDate TEXT(10) DEFAULT null

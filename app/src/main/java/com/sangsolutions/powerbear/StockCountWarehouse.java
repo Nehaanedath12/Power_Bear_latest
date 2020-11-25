@@ -50,9 +50,11 @@ public class StockCountWarehouse extends AppCompatActivity {
         StockCountProductSingleton.getInstance().clearList();
     }
     private void Save(){
-        String s_date,s_narration,s_warehouse;
+        String s_date,s_narration,s_warehouse,s_stock_date;
 
         s_date= PublicData.date;
+
+        s_stock_date = PublicData.stock_date;
 
         s_narration=PublicData.narration;
 
@@ -62,12 +64,14 @@ public class StockCountWarehouse extends AppCompatActivity {
 
         if(!s_date.isEmpty()&&!list.isEmpty())
         {
-            String str_date,s_voucher_no,str_narration;
+            String str_date,s_voucher_no,str_narration,str_stock_date;
             if(EditMode.equals("new")){
                 str_date = s_date;
+                str_stock_date = s_stock_date;
                 s_voucher_no = helper.GetNewVoucherNo();
             }else {
                 str_date = s_date;
+                str_stock_date = s_stock_date;
                 s_voucher_no = voucherNo;
             }
             str_narration = s_narration;
@@ -78,6 +82,7 @@ public class StockCountWarehouse extends AppCompatActivity {
             for(int i = 0 ; i < list.size(); i ++){
                 s.setiVoucherNo(s_voucher_no);
                 s.setdDate(str_date);
+                s.setdStockCountDate(str_stock_date);
                 if(!s_warehouse.isEmpty()) {
                     s.setiWarehouse(s_warehouse);
                 }else {

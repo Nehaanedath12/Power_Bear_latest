@@ -25,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     final Context context;
 
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
     private static final String DATABASE_NAME = "PowerBear.db";
     private static final String TABLE_PRODUCT = "tbl_Product";
     private static final String TABLE_PENDING_SO = "tbl_PendingSO";
@@ -80,6 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static  final String S_REMARKS = "sRemarks";
     private static  final String D_PROCESSED_DATE ="dProcessedDate";
     private static final String S_NARRATION = "sNarration";
+    private static final String D_STOCK_COUNT_DATE ="dStockCountDate";
 
     //goods receipt header
     private static final String I_SUPPLIER = "iSupplier";
@@ -155,6 +156,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_STOCK_COUNT = "create table if not exists " + TABLE_STOCK_COUNT + " (" +
             "" + I_VOUCHER_NO + "  INTEGER DEFAULT 0," +
             "" + D_DATE + "  TEXT(10) DEFAULT null," +
+            "" + D_STOCK_COUNT_DATE + "  TEXT(10) DEFAULT null," +
             "" + I_USER + " INTEGER DEFAULT 0,"+
             "" + I_WAREHOUSE + "  INTEGER DEFAULT 0," +
             "" + I_PRODUCT + "  INTEGER DEFAULT 0," +
@@ -845,6 +847,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     cv.put(I_PRODUCT,s.getiProduct());
     cv.put(F_QTY,s.getfQty());
     cv.put(S_UNIT,s.getsUnit());
+    cv.put(D_STOCK_COUNT_DATE,s.getdStockCountDate());
     cv.put(I_USER,s.getiUser());
     cv.put(S_NARRATION,s.getsNarration());
     cv.put(S_REMARKS,s.getsRemarks());
@@ -940,7 +943,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetHeaderData(String voucherNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT "+D_DATE+","+I_WAREHOUSE+","+I_VOUCHER_NO+","+S_NARRATION+" FROM "+TABLE_STOCK_COUNT+" where "+I_VOUCHER_NO+" = ? ", new String[]{voucherNo});
+        Cursor cursor = db.rawQuery("SELECT "+D_DATE+","+I_WAREHOUSE+","+I_VOUCHER_NO+","+S_NARRATION+","+D_STOCK_COUNT_DATE+" FROM "+TABLE_STOCK_COUNT+" where "+I_VOUCHER_NO+" = ? ", new String[]{voucherNo});
         if (cursor.moveToFirst()) {
             return cursor;
         } else {
