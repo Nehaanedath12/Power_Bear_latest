@@ -26,7 +26,7 @@ CardView card_pendingPO,card_pendingSO,card_deliveryNote,card_goodsReceipt,card_
 
         card_pendingPO = findViewById(R.id.pending_po);
         card_pendingSO = findViewById(R.id.pending_so);
-        card_deliveryNote = findViewById(R.id.delivery_note);
+        card_deliveryNote = findViewById(R.id.report);
         card_goodsReceipt = findViewById(R.id.goodsReceipt);
         card_stockCount = findViewById(R.id.stock_count);
         card_StockDetails = findViewById(R.id.StockDetails);
@@ -55,7 +55,7 @@ CardView card_pendingPO,card_pendingSO,card_deliveryNote,card_goodsReceipt,card_
                 intent2.putExtra("report_type","pending_so");
                 startActivity(intent2);
                 break;
-            case R.id.delivery_note:
+            case R.id.report:
                 Intent intent3 = new Intent(ReportMain.this, SelectCustomerOrProduct.class);
                 intent3.putExtra("report_type","delivery_note");
                 startActivity(intent3);

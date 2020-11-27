@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -25,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     final Context context;
 
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "PowerBear.db";
     private static final String TABLE_PRODUCT = "tbl_Product";
     private static final String TABLE_PENDING_SO = "tbl_PendingSO";
@@ -70,7 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static  final String USER_ID = "uId";
 
     //stock count
-    private static  final String I_VOUCHER_NO = "iVoucherNo";
+    private static  final String S_VOUCHER_NO = "sVoucherNo";
     private static  final String D_DATE = "dDate";
     private static  final String I_WAREHOUSE = "iWarehouse";
     private static  final String I_PRODUCT = "iProduct";
@@ -154,7 +153,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //create table StockCount
     private static final String CREATE_TABLE_STOCK_COUNT = "create table if not exists " + TABLE_STOCK_COUNT + " (" +
-            "" + I_VOUCHER_NO + "  INTEGER DEFAULT 0," +
+            "" + S_VOUCHER_NO + " TEXT(30) DEFAULT null ," +
             "" + D_DATE + "  TEXT(10) DEFAULT null," +
             "" + D_STOCK_COUNT_DATE + "  TEXT(10) DEFAULT null," +
             "" + I_USER + " INTEGER DEFAULT 0,"+
@@ -785,20 +784,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return null;
     }
     */
-    public Cursor GetAllDeliveryNote(String HeaderId) {
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT d.HeaderId,d.SiNo,p.MasterId as Product,p.Name,p.Code,p.Unit,d.iVoucherNo iVoucherNo , d.Qty PickedQty,so.Qty Qty FROM tbl_DeliveryNote d " +
-                "INNER JOIN tbl_PendingSO so on d.HeaderId = so.HeaderId and d.sino=so.sino " +
-                "INNER JOIN tbl_Product p on d.product=p.masterid " +
-                " " +
-                "WHERE d.HeaderId = ? " +
-                "", new String[]{HeaderId});
-        if(cursor.moveToFirst()){
-            return cursor;
-        }else {
-            return null;
-        }
-    }
+
 
     //Warehouse
     public boolean InsertWarehouse(Warehouse w){
@@ -841,7 +827,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         float status;
 
     ContentValues cv = new ContentValues();
-    cv.put(I_VOUCHER_NO,s.getiVoucherNo());
+    cv.put(S_VOUCHER_NO,s.getiVoucherNo());
     cv.put(D_DATE,s.getdDate());
     cv.put(I_WAREHOUSE,s.getiWarehouse());
     cv.put(I_PRODUCT,s.getiProduct());
@@ -861,7 +847,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 public boolean DeleteStockCount(String voucherNo){
         this.db = getWritableDatabase();
-        db.delete(TABLE_STOCK_COUNT,I_VOUCHER_NO+" = ? ",new String[]{voucherNo});
+        db.delete(TABLE_STOCK_COUNT, S_VOUCHER_NO +" = ? ",new String[]{voucherNo});
         return true;
 }
 
@@ -869,10 +855,10 @@ public boolean DeleteStockCount(String voucherNo){
 
     public String GetNewVoucherNo(){
     this.db = getReadableDatabase();
-    Cursor cursor = db.rawQuery("select "+I_VOUCHER_NO+" from "+TABLE_STOCK_COUNT +" ORDER BY "+I_VOUCHER_NO ,null);
+    Cursor cursor = db.rawQuery("select "+ S_VOUCHER_NO +" from "+TABLE_STOCK_COUNT +" ORDER BY "+ S_VOUCHER_NO,null);
     if(cursor.moveToFirst()){
         cursor.moveToLast();
-        return String.valueOf(Integer.parseInt(cursor.getString(cursor.getColumnIndex(I_VOUCHER_NO)))+1);
+        return String.valueOf(Integer.parseInt(cursor.getString(cursor.getColumnIndex(S_VOUCHER_NO)))+1);
     }
     return "1";
 }
@@ -882,9 +868,9 @@ public boolean DeleteStockCount(String voucherNo){
         this.db = getReadableDatabase();
         Cursor cursor;
         if(GetUserId().equals("1")) {
-             cursor = db.rawQuery("SELECT iVoucherNo,iWarehouse,dDate,sum(fQty) as SumQty FROM tbl_StockCount  GROUP BY iVoucherNo",null);
+             cursor = db.rawQuery("SELECT sVoucherNo,iWarehouse,dDate,sum(fQty) as SumQty FROM tbl_StockCount  GROUP BY sVoucherNo",null);
         }else {
-            cursor = db.rawQuery("SELECT iVoucherNo,iWarehouse,dDate,sum(fQty) as SumQty FROM tbl_StockCount where iUser = ? GROUP BY iVoucherNo", new String[]{GetUserId()});
+            cursor = db.rawQuery("SELECT sVoucherNo,iWarehouse,dDate,sum(fQty) as SumQty FROM tbl_StockCount where iUser = ? GROUP BY sVoucherNo", new String[]{GetUserId()});
         }
         if(cursor.moveToFirst())
             return cursor;
@@ -894,7 +880,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetAllStockCount() {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM tbl_StockCount where "+I_STATUS+" = ?  GROUP BY iVoucherNo ",new String[]{"0"});
+        Cursor cursor = db.rawQuery("SELECT * FROM tbl_StockCount where "+I_STATUS+" = ?  GROUP BY sVoucherNo ",new String[]{"0"});
         if(cursor.moveToFirst())
             return cursor;
         else
@@ -904,7 +890,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetAllStockCountFromVoucher(String voucherNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_STOCK_COUNT+" where "+I_STATUS+" = 0  and iVoucherNo = ? ",new String[]{voucherNo});
+        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_STOCK_COUNT+" where "+I_STATUS+" = 0  and sVoucherNo = ? ",new String[]{voucherNo});
         if(cursor.moveToFirst())
             return cursor;
         else
@@ -913,7 +899,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetAllStockCountVoucher() {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT iVoucherNo FROM tbl_StockCount where iStatus = 0 GROUP BY iVoucherNo ",null);
+        Cursor cursor = db.rawQuery("SELECT sVoucherNo FROM tbl_StockCount where iStatus = 0 GROUP BY sVoucherNo ",null);
         if(cursor.moveToFirst())
             return cursor;
         else
@@ -923,7 +909,7 @@ public boolean DeleteStockCount(String voucherNo){
     public boolean DeleteStockCount(String vno, String product){
         this.db = getWritableDatabase();
         float status;
-        status = db.delete(TABLE_STOCK_COUNT,I_VOUCHER_NO+" =  ? and "+I_PRODUCT+" = ?",new String[]{vno,product});
+        status = db.delete(TABLE_STOCK_COUNT, S_VOUCHER_NO +" =  ? and "+I_PRODUCT+" = ?",new String[]{vno,product});
         return status != -1;
 
     }
@@ -943,7 +929,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetHeaderData(String voucherNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT "+D_DATE+","+I_WAREHOUSE+","+I_VOUCHER_NO+","+S_NARRATION+","+D_STOCK_COUNT_DATE+" FROM "+TABLE_STOCK_COUNT+" where "+I_VOUCHER_NO+" = ? ", new String[]{voucherNo});
+        Cursor cursor = db.rawQuery("SELECT "+D_DATE+","+I_WAREHOUSE+","+ S_VOUCHER_NO +","+S_NARRATION+","+D_STOCK_COUNT_DATE+" FROM "+TABLE_STOCK_COUNT+" where "+ S_VOUCHER_NO +" = ? ", new String[]{voucherNo});
         if (cursor.moveToFirst()) {
             return cursor;
         } else {
@@ -954,7 +940,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetBodyData(String voucherNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_STOCK_COUNT+" where "+I_VOUCHER_NO+" = ? ", new String[]{voucherNo});
+        Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_STOCK_COUNT+" where "+ S_VOUCHER_NO +" = ? ", new String[]{voucherNo});
         if (cursor.moveToFirst()) {
             return cursor;
         } else {
@@ -993,7 +979,7 @@ public boolean DeleteStockCount(String voucherNo){
         Cursor cursor = db.rawQuery("select "+DOC_NO+" from "+TABLE_GOODS_RECEIPT_HEADER +" ORDER BY "+DOC_NO ,null);
         if(cursor.moveToFirst()){
             cursor.moveToLast();
-            return String.valueOf(Integer.parseInt(cursor.getString(cursor.getColumnIndex(I_VOUCHER_NO)))+1);
+            return String.valueOf(Integer.parseInt(cursor.getString(cursor.getColumnIndex(S_VOUCHER_NO)))+1);
         }
         return "1";
     }

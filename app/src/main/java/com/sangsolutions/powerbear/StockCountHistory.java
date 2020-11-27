@@ -136,7 +136,7 @@ public class StockCountHistory extends AppCompatActivity {
 
                 Warehouse = helper.GetWarehouse(cursor.getString(cursor.getColumnIndex("iWarehouse")));
                 Date = cursor.getString(cursor.getColumnIndex("dDate"));
-                VoucherNo = cursor.getString(cursor.getColumnIndex("iVoucherNo"));
+                VoucherNo = cursor.getString(cursor.getColumnIndex("sVoucherNo"));
                 TotalQty = cursor.getString(cursor.getColumnIndex("SumQty"));
                 warehouseId = cursor.getString(cursor.getColumnIndex("iWarehouse"));
 

@@ -45,30 +45,44 @@
 
 
 
-
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            >
         <EditText
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="30dp"
             android:layout_gravity="center_horizontal"
             android:ems="12"
             android:focusable="false"
             android:hint="Date"
             android:drawableEnd="@drawable/ic_date" />
-
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            >
         <EditText
             android:id="@+id/stock_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="30dp"
             android:layout_gravity="center_horizontal"
             android:ems="12"
             android:focusable="false"
             android:hint="Stock Count Date"
             android:drawableEnd="@drawable/ic_date" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="250dp"

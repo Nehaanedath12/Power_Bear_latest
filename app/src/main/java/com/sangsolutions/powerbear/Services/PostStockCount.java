@@ -107,7 +107,7 @@ public class PostStockCount extends JobService {
         JSONObject mainJsonObject = new JSONObject();
         if(cursor!=null) {
             try {
-                mainJsonObject.put("iVoucherNo", cursor.getString(cursor.getColumnIndex("iVoucherNo")));
+                mainJsonObject.put("iVoucherNo", cursor.getString(cursor.getColumnIndex("sVoucherNo")));
                 mainJsonObject.put("iDocDate", cursor.getString(cursor.getColumnIndex("dProcessedDate")));
                 mainJsonObject.put("iWarehouse", cursor.getString(cursor.getColumnIndex("iWarehouse")));
                 mainJsonObject.put("iUser", cursor.getString(cursor.getColumnIndex("iUser")));
@@ -118,8 +118,6 @@ public class PostStockCount extends JobService {
                     mainJsonObject.put("sNarration", cursor.getString(cursor.getColumnIndex("sNarration")));
                 }
                 mainJsonObject.put("sDeviceId", Tools.getDeviceId(this));
-
-
 
                 JSONArray jsonArray = new JSONArray();
                 for(int i = 0 ; i<cursor.getCount();i++){
@@ -165,7 +163,7 @@ public class PostStockCount extends JobService {
         UserId = helper.GetUserId();
         if(cursor!=null&&cursor.moveToFirst()) {
            for(int i=0;i<cursor.getCount();i++){
-               list.add(cursor.getString(cursor.getColumnIndex("iVoucherNo")));
+               list.add(cursor.getString(cursor.getColumnIndex("sVoucherNo")));
                 cursor.moveToNext();
                if(i+1==cursor.getCount()){
                    vouchersToBeUploaded();

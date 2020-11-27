@@ -44,9 +44,7 @@ List<Warehouse> list;
 WarehouseAdapter adapter;
 String EditMode = "";
 
-    @SuppressLint("SimpleDateFormat") SimpleDateFormat df;
-
-
+@SuppressLint("SimpleDateFormat") SimpleDateFormat df;
 public void LoadWarehouse(){
         Cursor cursor = helper.GetWarehouse();
         list.clear();
@@ -73,7 +71,7 @@ private void setData(String voucherNo){
 
     if(cursor!=null && cursor.moveToFirst()){
                 warehouse_id = cursor.getString(cursor.getColumnIndex("iWarehouse"));
-                voucherNo = cursor.getString(cursor.getColumnIndex("iVoucherNo"));
+                voucherNo = cursor.getString(cursor.getColumnIndex("sVoucherNo"));
                 Date  = Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("dDate")));
                 dStockCountDate = Tools.dateFormat2(cursor.getString(cursor.getColumnIndex("dStockCountDate")));
         Narration = cursor.getString(cursor.getColumnIndex("sNarration"));
@@ -111,15 +109,13 @@ if(list.size()!=0){
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.header_frgment, container, false);
-    date =   view.findViewById(R.id.date);
-    narration = view.findViewById(R.id.narration);
+        date =   view.findViewById(R.id.date);
+        narration = view.findViewById(R.id.narration);
         VoucherNo = view.findViewById(R.id.voucher_no);
         sp_warehouse = view.findViewById(R.id.warehouse);
         stock_date = view.findViewById(R.id.stock_date);
         helper = new DatabaseHelper(getActivity());
 
-        //setting default warehouse
-        PublicData.warehouse = "1";
 
 
     c = Calendar.getInstance().getTime();
@@ -131,12 +127,12 @@ if(list.size()!=0){
     if(getArguments() != null) {
 
         EditMode = getArguments().getString("EditMode");
-
+        voucherNo = getArguments().getString("voucherNo");
 
         assert EditMode != null;
+
         if (EditMode.equals("edit")) {
             warehouse_id = getArguments().getString("warehouse");
-            voucherNo = getArguments().getString("voucherNo");
             if (!helper.GetWarehouseById(warehouse_id).equals("")) {
                 SetWarehouseSpinner(warehouse_id);
             } else {
@@ -145,7 +141,7 @@ if(list.size()!=0){
             setData(voucherNo);
 
         } else if (EditMode.equals("new")) {
-            VoucherNo.setText("Voucher No :"+helper.GetNewVoucherNo());
+            VoucherNo.setText("Voucher No :"+voucherNo);
             date.setText(df.format(c));
             stock_date.setText(df.format(c));
             PublicData.date = Tools.dateFormat(df.format(c));

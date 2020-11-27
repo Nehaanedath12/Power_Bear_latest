@@ -1,3 +1,0 @@
-ALTER TABLE tbl_GoodsReceiptBody ADD iUser INTEGER DEFAULT 0;
-ALTER TABLE tbl_GoodsReceiptHeader ADD iUser INTEGER DEFAULT 0;
-ALTER TABLE tbl_StockCount ADD iUser INTEGER DEFAULT 0;

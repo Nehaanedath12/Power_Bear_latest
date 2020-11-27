@@ -9,8 +9,8 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +29,7 @@ import java.util.Date;
 
 @SuppressWarnings("ALL")
 public class Home extends AppCompatActivity {
-Button sync_btn,delivery_btn,stock_count_btn,goods_btn,report_btn,grn_without_po;
+LinearLayout sync_ll, delivery_ll, stock_count_ll, goods_ll, report_ll, grn_without_po_ll;
 DatabaseHelper helper;
 ImageView img_logout;
 TextView tv_username,tv_date;
@@ -54,21 +54,21 @@ ImageView img_settings;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
-        sync_btn= findViewById(R.id.sync);
-        delivery_btn= findViewById(R.id.delivery);
-        stock_count_btn = findViewById(R.id.stock_count);
-        goods_btn = findViewById(R.id.goods);
-        report_btn = findViewById(R.id.delivery_note);
+        sync_ll = findViewById(R.id.sync);
+        delivery_ll = findViewById(R.id.delivery);
+        stock_count_ll = findViewById(R.id.stock_count);
+        goods_ll = findViewById(R.id.goods);
+        report_ll = findViewById(R.id.report);
         img_logout = findViewById(R.id.logout);
         tv_username = findViewById(R.id.username);
         tv_date = findViewById(R.id.date);
-        grn_without_po = findViewById(R.id.goods_without_po);
+        grn_without_po_ll = findViewById(R.id.goods_without_po);
         img_settings = findViewById(R.id.settings);
         helper = new DatabaseHelper(this);
 
         tv_username.setText(helper.GetLoginUser());
 
-    stock_count_btn.setOnClickListener(new View.OnClickListener() {
+    stock_count_ll.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (preferences.getString(Commons.WAREHOUSE_FINISHED, "false").equals("true")
@@ -89,7 +89,7 @@ ImageView img_settings;
         }
     });
 
-        sync_btn.setOnClickListener(new View.OnClickListener() {
+        sync_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -141,7 +141,7 @@ ImageView img_settings;
         }
     });
 
-    goods_btn.setOnClickListener(new View.OnClickListener() {
+    goods_ll.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (preferences.getString(Commons.WAREHOUSE_FINISHED, "false").equals("true")
@@ -162,7 +162,7 @@ ImageView img_settings;
         }
     });
 
-        delivery_btn.setOnClickListener(new View.OnClickListener() {
+        delivery_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (preferences.getString(Commons.WAREHOUSE_FINISHED, "false").equals("true")
@@ -183,7 +183,7 @@ ImageView img_settings;
             }
         });
 
-        report_btn.setOnClickListener(new View.OnClickListener() {
+        report_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
         startActivity(new Intent(Home.this,ReportMain.class));
@@ -197,7 +197,7 @@ ImageView img_settings;
             }
         });
 
-        grn_without_po.setOnClickListener(new View.OnClickListener() {
+        grn_without_po_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (preferences.getString(Commons.WAREHOUSE_FINISHED, "false").equals("true")

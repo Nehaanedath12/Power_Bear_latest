@@ -68,7 +68,7 @@ public class StockCountWarehouse extends AppCompatActivity {
             if(EditMode.equals("new")){
                 str_date = s_date;
                 str_stock_date = s_stock_date;
-                s_voucher_no = helper.GetNewVoucherNo();
+                s_voucher_no = PublicData.voucher;
             }else {
                 str_date = s_date;
                 str_stock_date = s_stock_date;
@@ -223,6 +223,7 @@ public class StockCountWarehouse extends AppCompatActivity {
         helper = new DatabaseHelper(this);
         c = Calendar.getInstance().getTime();
         df = new SimpleDateFormat("dd-MM-yyyy");
+
         Intent intent =  getIntent();
         if(intent!=null) {
 
@@ -234,8 +235,9 @@ public class StockCountWarehouse extends AppCompatActivity {
                 voucherNo = intent.getStringExtra("voucherNo");
                 current_position=intent.getIntExtra("Position",0);
             }else {
+                PublicData.voucher = "S-" + DateFormat.format("ddMMyy-HHmmss", new Date());
                 warehouse = "";
-                voucherNo = "";
+                voucherNo = "S-" + DateFormat.format("ddMMyy-HHmmss", new Date());
                 img_delete.setVisibility(View.GONE);
             }
 
@@ -296,9 +298,7 @@ public class StockCountWarehouse extends AppCompatActivity {
                             voucherNo = list.get(current_position).getVNo();
                             PublicData.clearData();
                             setUpViewPager(viewPager);
-
                         }
-
                     }
                 }
             }
