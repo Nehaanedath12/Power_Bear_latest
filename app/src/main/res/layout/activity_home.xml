@@ -28,7 +28,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/home_text"
                     android:textColor="@color/color_white"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:text="Home"
                     android:layout_centerVertical="true"/>
                 <TextView
@@ -290,7 +290,7 @@
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textSize="12dp"
+    android:textSize="12sp"
     android:text="Sangsolutions (P) Ltd All Rights Reserved."
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"

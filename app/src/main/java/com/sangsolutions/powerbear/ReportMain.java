@@ -1,5 +1,6 @@
 package com.sangsolutions.powerbear;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -42,6 +43,7 @@ CardView card_pendingPO,card_pendingSO,card_deliveryNote,card_goodsReceipt,card_
 
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         switch (view.getId()){
