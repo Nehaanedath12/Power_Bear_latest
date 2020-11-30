@@ -1,7 +1,16 @@
 package com.sangsolutions.powerbear.Database;
 
 public class User {
-    String sId,sLoginName,sPassword;
+    String sId,sLoginName,sPassword,sMenuIDs;
+
+
+    public String getsMenuIDs() {
+        return sMenuIDs;
+    }
+
+    public void setsMenuIDs(String sMenuIDs) {
+        this.sMenuIDs = sMenuIDs;
+    }
 
     public String getsId() {
         return sId;

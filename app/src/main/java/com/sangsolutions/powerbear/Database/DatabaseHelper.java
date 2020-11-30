@@ -119,7 +119,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String S_REF_NO = "sRefNo";
 
 
-    //GRN without po body
+    //User
+    private static final String S_MENU_IDS = "sMenuIDs";
 
 
 
@@ -135,14 +136,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_CURRENT_LOGIN = "create table if not exists  " + TABLE_CURRENT_LOGIN + " (" +
             "" + I_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "" + USER_ID + " INTEGER DEFAULT null)";
+            "" + USER_ID + " INTEGER DEFAULT null," +
+            "" + S_MENU_IDS + " TEXT DEFAULT null" +
+            ")";
 
 
     //create table User
     private static final String CREATE_TABLE_USER = "create table if not exists  " + TABLE_USER + " (" +
             "" + I_ID + " INTEGER DEFAULT 0, " +
             "" + S_LOGIN_NAME + " TEXT DEFAULT null," +
-            "" + S_PASSWORD + " TEXT DEFAULT null" + ");";
+            "" + S_PASSWORD + " TEXT DEFAULT null," +
+            "" + S_MENU_IDS + " TEXT DEFAULT null" +
+            ");";
 
 
     //create table warehouse
@@ -393,6 +398,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(I_ID,u.getsId());
         cv.put(S_LOGIN_NAME, u.getsLoginName());
         cv.put(S_PASSWORD, u.getsPassword());
+        cv.put(S_MENU_IDS,u.getsMenuIDs());
         float status = db.insert(TABLE_USER, null, cv);
         return status != -1;
     }
@@ -415,15 +421,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return "";
     }
 
+    public String GetLoginMenuIDs(){
+        this.db = getReadableDatabase();
+        Cursor cursor =  db.rawQuery("SELECT u.sMenuIDs menu from user u " +
+                "INNER join current_login c " +
+                "on u.iId = c.uId",null);
+        if(cursor!=null){
+            cursor.moveToFirst();
+            return cursor.getString(cursor.getColumnIndex("menu"));
+        }
+        return "";
+    }
+
     public boolean InsertCurrentLoginUser(User u) {
         this.db = getReadableDatabase();
         this.db = getWritableDatabase();
 
-        Cursor cursor = db.rawQuery("select " + I_ID + " from " + TABLE_USER + " where " + S_LOGIN_NAME + "='" + u.getsLoginName() + "' and " + S_PASSWORD + "='" + u.getsPassword() + "'", null);
+        Cursor cursor = db.rawQuery("select " + I_ID +","+S_MENU_IDS+" from " + TABLE_USER + " where " + S_LOGIN_NAME + "='" + u.getsLoginName() + "' and " + S_PASSWORD + "='" + u.getsPassword() + "'", null);
         ContentValues cv = new ContentValues();
         if (cursor.moveToFirst()) {
 
-            cv.put(USER_ID, cursor.getInt(0));
+            cv.put(USER_ID, cursor.getInt(cursor.getColumnIndex(I_ID)));
+            cv.put(S_MENU_IDS,cursor.getString(cursor.getColumnIndex(S_MENU_IDS)));
         }
         float status = db.insert(TABLE_CURRENT_LOGIN, null, cv);
 

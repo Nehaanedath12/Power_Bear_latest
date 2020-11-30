@@ -24,8 +24,10 @@ import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Fragment.SyncFragment;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("ALL")
 public class Home extends AppCompatActivity {
@@ -67,6 +69,33 @@ ImageView img_settings;
         helper = new DatabaseHelper(this);
 
         tv_username.setText(helper.GetLoginUser());
+
+        String LoginUserMenu = helper.GetLoginMenuIDs();
+
+        if(!LoginUserMenu.equals("")){
+            List<String> listMenu = Arrays.asList(LoginUserMenu.split(","));
+
+        if(!listMenu.contains("1")){
+            delivery_ll.setVisibility(View.GONE);
+        }
+        if(!listMenu.contains("2")){
+            stock_count_ll.setVisibility(View.GONE);
+        }
+        if(!listMenu.contains("3")){
+            goods_ll.setVisibility(View.GONE);
+        }
+        if(!listMenu.contains("4")){
+            grn_without_po_ll.setVisibility(View.GONE);
+        }
+        }else {
+            delivery_ll.setVisibility(View.GONE);
+            stock_count_ll.setVisibility(View.GONE);
+            goods_ll.setVisibility(View.GONE);
+            grn_without_po_ll.setVisibility(View.GONE);
+        }
+
+
+
 
     stock_count_ll.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -203,8 +232,8 @@ ImageView img_settings;
                 if (preferences.getString(Commons.WAREHOUSE_FINISHED, "false").equals("true")
                         && preferences.getString(Commons.PENDING_PO_FINISHED, "false").equals("true")
                         && preferences.getString(Commons.PENDING_SO_FINISHED, "false").equals("true")
-                        &&  preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
-                        &&  preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
+                        && preferences.getString(Commons.REMARKS_FINISHED, "false").equals("true")
+                        && preferences.getString(Commons.PRODUCT_FINISHED, "false").equals("true")
                 ){
                     if(!PublicData.Syncing) {
                         Intent intent = new Intent(Home.this, GoodsReceiptWithoutPOHistory.class);
