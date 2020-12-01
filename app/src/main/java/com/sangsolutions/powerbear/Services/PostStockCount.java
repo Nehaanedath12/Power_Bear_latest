@@ -69,6 +69,7 @@ public class PostStockCount extends JobService {
     }
 
     public void uploadJsonStockCount(final JSONObject jsonObject) {
+        Log.d("date",jsonObject.toString());
         AndroidNetworking.post("http://" + new Tools().getIP(PostStockCount.this) + URLs.PostProductStock)
                 .addJSONObjectBody(jsonObject)
                 .setPriority(Priority.MEDIUM)
@@ -118,7 +119,7 @@ public class PostStockCount extends JobService {
                     mainJsonObject.put("sNarration", cursor.getString(cursor.getColumnIndex("sNarration")));
                 }
                 mainJsonObject.put("sDeviceId", Tools.getDeviceId(this));
-
+                mainJsonObject.put("iStockDate", cursor.getString(cursor.getColumnIndex("dStockCountDate")));
                 JSONArray jsonArray = new JSONArray();
                 for(int i = 0 ; i<cursor.getCount();i++){
                     JSONObject jsonObject = new JSONObject();
