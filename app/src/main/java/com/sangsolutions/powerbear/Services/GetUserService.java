@@ -51,7 +51,7 @@ public class GetUserService extends JobService {
                             u.setsId(jsonObject.getString("iId"));
                             u.setsLoginName(jsonObject.getString("sLoginName"));
                             u.setsPassword(jsonObject.getString("sPassword"));
-                            u.setsMenuIDs("");
+                            u.setsMenuIDs(jsonObject.getString("sMenus"));
                             boolean status = helper.InsertUsers(u);
                             if (status) {
 
