@@ -38,5 +38,6 @@ public class URLs {
     public static final String PostDelivery = domain + "PostDelivery";
     public static final String PostGRWoPo = domain + "PostGRWoPo";
     public static final String GetStockDetails = domain + "GetStockDetails";
+    public static final String GetProductDetails = domain + "GetProductDetails";
 
 }

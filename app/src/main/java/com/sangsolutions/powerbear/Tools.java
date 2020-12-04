@@ -168,5 +168,8 @@ SharedPreferences.Editor editor;
             return false;
         }
     }
+    public static String subString(String filepath){
+        return filepath.substring(33);
+    }
 
 }

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/empty_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/empty_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/empty_icon_128px" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/empty_icon"
+                android:text="Empty!"
+                android:gravity="center_horizontal"
+                android:textSize="25dp" />
+        </RelativeLayout>
+    </FrameLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_details"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        app:cardCornerRadius="10dp"
+        android:layout_marginBottom="20dp">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/product_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Product Name"/>
+
+                <Button
+                    android:layout_below="@id/product_text"
+                    android:id="@+id/product_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/brand_text"
+                    android:layout_below="@id/product_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Brand"/>
+
+                <Button
+                    android:layout_below="@id/brand_text"
+                    android:id="@+id/brand"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+
+                <TextView
+                    android:id="@+id/color_text"
+                    android:layout_below="@+id/brand"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Color"/>
+
+                <Button
+                    android:layout_below="@id/color_text"
+                    android:id="@+id/color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/material_text"
+                    android:layout_below="@id/color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Material" />
+
+                <Button
+                    android:layout_below="@id/material_text"
+                    android:id="@+id/material"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/code_text"
+                    android:layout_below="@id/material"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Code"/>
+
+                <Button
+                    android:layout_below="@id/code_text"
+                    android:id="@+id/code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/product_type_text"
+                    android:layout_below="@+id/code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Product Type"/>
+
+                <Button
+                    android:layout_below="@id/product_type_text"
+                    android:id="@+id/product_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/desc_text"
+                    android:layout_below="@id/product_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Additional Description"/>
+
+                <Button
+                    android:layout_below="@id/desc_text"
+                    android:id="@+id/desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/manufacture_text"
+                    android:layout_below="@+id/desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Manufacturer"/>
+
+                <Button
+                    android:layout_below="@id/manufacture_text"
+                    android:id="@+id/manufacture"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center_vertical"/>
+
+            </RelativeLayout>
+        </ScrollView>
+    </androidx.cardview.widget.CardView>
+    <ImageView
+        android:id="@+id/main_progress"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
+</RelativeLayout>

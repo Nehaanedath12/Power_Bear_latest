@@ -83,6 +83,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ProductDetails"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".ProductDetail_reportSelectActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
 
         <uses-library
             android:name="org.apache.http.legacy"

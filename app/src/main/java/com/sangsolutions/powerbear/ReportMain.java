@@ -66,6 +66,9 @@ public class ReportMain extends AppCompatActivity implements View.OnClickListene
         if(listMenu.contains("10")){
             list.add(new ReportMainMenu(R.drawable.ic_stock_count,"Stock Details"));
         }
+        if(listMenu.contains("11")){
+            list.add(new ReportMainMenu(R.drawable.ic_stock_count,"Product Details"));
+        }
 
         if(list.size()>0){
             gridView.setAdapter(reportMainMenuAdapter);
@@ -106,6 +109,12 @@ public class ReportMain extends AppCompatActivity implements View.OnClickListene
                 startActivity(intent6);
                 finish();
                 break;
+         case "Product Details":
+                Intent intent7 = new Intent(ReportMain.this, ProductDetail_reportSelectActivity.class);
+                startActivity(intent7);
+                finish();
+             break;
+
             }
         }
     });
