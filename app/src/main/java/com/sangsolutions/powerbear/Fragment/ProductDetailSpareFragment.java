@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -38,11 +39,13 @@ public class ProductDetailSpareFragment extends Fragment {
     RecyclerView recyclerView;
     ImageView mProgressBar;
     private AnimationDrawable animationDrawable;
+    FrameLayout empty_frame;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=LayoutInflater.from(getContext()).inflate(R.layout.product_detail_spare_fragment,container,false);
         mProgressBar=view.findViewById(R.id.main_progress);
+        empty_frame=view.findViewById(R.id.empty_frame);
         mProgressBar.setBackgroundResource(R.drawable.loading);
         animationDrawable = (AnimationDrawable) mProgressBar.getBackground();
 
@@ -98,6 +101,9 @@ public class ProductDetailSpareFragment extends Fragment {
                     spareClassList.add(spareClass);
 
                 }
+            }
+            else {
+                empty_frame.setVisibility(View.VISIBLE);
             }
         } catch (JSONException e) {
             e.printStackTrace();

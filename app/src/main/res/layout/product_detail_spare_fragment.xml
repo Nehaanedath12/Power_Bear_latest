@@ -43,6 +43,33 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
+    <FrameLayout
+        android:id="@+id/empty_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/empty_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/empty_icon_128px" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/empty_icon"
+                android:text="Empty!"
+                android:gravity="center_horizontal"
+                android:textSize="25dp" />
+        </RelativeLayout>
+    </FrameLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_below="@+id/linear"
         android:layout_marginTop="10dp"

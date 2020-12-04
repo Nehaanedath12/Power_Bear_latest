@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
     <FrameLayout
         android:id="@+id/empty_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
-        >
+        android:visibility="invisible">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center">
 
@@ -24,85 +23,197 @@
                 android:src="@drawable/empty_icon_128px" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/empty_icon"
-                android:text="Images and files are empty!"
+                android:text="Empty!"
+                android:gravity="center_horizontal"
                 android:textSize="25dp" />
         </RelativeLayout>
     </FrameLayout>
-    <ScrollView
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_details"
+        android:layout_centerInParent="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RelativeLayout
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        app:cardCornerRadius="10dp"
+        android:layout_marginBottom="20dp">
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_image"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginLeft="5dp"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                app:cardCornerRadius="5dp">
-                <LinearLayout
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/product_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/image_text"
-                        android:layout_width="wrap_content"
-                        android:text="IMAGES"
-                        android:layout_marginLeft="20dp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="10dp"
-                        android:textColor="@color/color_black"
-                        android:layout_height="wrap_content"/>
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Product Name"/>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_marginTop="10dp"
-                        android:id="@+id/image_RV"
-                        android:layout_gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_doc"
-                android:layout_below="@+id/card_image"
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginBottom="20dp"
-                app:cardCornerRadius="5dp">
-                <LinearLayout
+                <Button
+                    android:layout_below="@id/product_text"
+                    android:id="@+id/product_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/file_text"
-                        android:layout_width="wrap_content"
-                        android:text="FILES"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="10dp"
-                        android:textStyle="bold"
-                        android:textColor="@color/color_black"
-                        android:layout_height="wrap_content"/>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_marginTop="10dp"
-                        android:id="@+id/word_RV"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </RelativeLayout>
-    </ScrollView>
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/brand_text"
+                    android:layout_below="@id/product_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Brand"/>
+
+                <Button
+                    android:layout_below="@id/brand_text"
+                    android:id="@+id/brand"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+
+                <TextView
+                    android:id="@+id/color_text"
+                    android:layout_below="@+id/brand"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Color"/>
+
+                <Button
+                    android:layout_below="@id/color_text"
+                    android:id="@+id/color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/material_text"
+                    android:layout_below="@id/color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Material" />
+
+                <Button
+                    android:layout_below="@id/material_text"
+                    android:id="@+id/material"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/code_text"
+                    android:layout_below="@id/material"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Code"/>
+
+                <Button
+                    android:layout_below="@id/code_text"
+                    android:id="@+id/code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/product_type_text"
+                    android:layout_below="@+id/code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Product Type"/>
+
+                <Button
+                    android:layout_below="@id/product_type_text"
+                    android:id="@+id/product_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/desc_text"
+                    android:layout_below="@id/product_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Additional Description"/>
+
+                <Button
+                    android:layout_below="@id/desc_text"
+                    android:id="@+id/desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/manufacture_text"
+                    android:layout_below="@+id/desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp"
+                    android:textStyle="bold"
+                    android:text="Manufacturer"/>
+
+                <Button
+                    android:layout_below="@id/manufacture_text"
+                    android:id="@+id/manufacture"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAllCaps="false"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center_vertical"/>
+
+            </RelativeLayout>
+        </ScrollView>
+    </androidx.cardview.widget.CardView>
     <ImageView
         android:id="@+id/main_progress"
         android:layout_width="80dp"

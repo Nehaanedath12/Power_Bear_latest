@@ -44,7 +44,7 @@ public class ProductDetailsMainFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view=LayoutInflater.from(getContext()).inflate(R.layout.product_detail_other_fragment,container,false);
+        view=LayoutInflater.from(getContext()).inflate(R.layout.product_detail_main_fragment,container,false);
         productName=view.findViewById(R.id.product_name);
         brand=view.findViewById(R.id.brand);
         color=view.findViewById(R.id.color);
@@ -61,8 +61,7 @@ public class ProductDetailsMainFragment extends Fragment {
         animationDrawable = (AnimationDrawable) mProgressBar.getBackground();
         iProduct = getArguments().getString("iProduct");
 
-        Log.d("iProduct",iProduct+" other");
-
+        card_details.setVisibility(View.GONE);
         mProgressBar.setVisibility(VISIBLE);
         animationDrawable.start();
 
@@ -73,9 +72,6 @@ public class ProductDetailsMainFragment extends Fragment {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-
-                        mProgressBar.setVisibility(VISIBLE);
-                        animationDrawable.start();
                         Log.d("response",response.toString());
                         asyncTask(response);
                     }
@@ -84,8 +80,8 @@ public class ProductDetailsMainFragment extends Fragment {
                     public void onError(ANError anError) {
                         Log.d("response",anError.getErrorBody());
                         emptyIcon.setVisibility(VISIBLE);
+                        mProgressBar.setVisibility(View.INVISIBLE);
                         animationDrawable.stop();
-                        mProgressBar.setVisibility(INVISIBLE);
 
                     }
                 });
@@ -94,8 +90,9 @@ public class ProductDetailsMainFragment extends Fragment {
     }
 
     private void asyncTask(JSONObject response) {
-        animationDrawable.stop();
+
         mProgressBar.setVisibility(View.INVISIBLE);
+        animationDrawable.stop();
         card_details.setVisibility(VISIBLE);
         emptyIcon.setVisibility(INVISIBLE);
         try {
@@ -129,6 +126,8 @@ public class ProductDetailsMainFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
             emptyIcon.setVisibility(VISIBLE);
+            mProgressBar.setVisibility(View.INVISIBLE);
+            animationDrawable.stop();
         }
 }
 }

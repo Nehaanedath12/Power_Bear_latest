@@ -73,7 +73,7 @@ public class ProductDetailAttachmentsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=LayoutInflater.from(getContext()).inflate(R.layout.product_detail_main_fragment,container,false);
+        View view=LayoutInflater.from(getContext()).inflate(R.layout.product_detail_attachments_fragment,container,false);
         RV_image=view.findViewById(R.id.image_RV);
         RV_doc=view.findViewById(R.id.word_RV);
         mProgressBar =view.findViewById(R.id.main_progress);
