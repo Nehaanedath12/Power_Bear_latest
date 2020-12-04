@@ -59,29 +59,37 @@
                 android:textSize="25dp" />
         </RelativeLayout>
     </FrameLayout>
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/ll_pending_so_po"
         android:visibility="visible"
-        android:layout_below="@id/toolbar"
         android:background="@color/colorAccent"
         >
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".5"
             android:text="Doc Date"
             android:id="@+id/DocDate"
             android:gravity="center"
             android:textColor="@color/color_white"
             />
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".5"
             android:text="Voucher No"
             android:id="@+id/Voucher_no"
             android:gravity="center"
@@ -90,9 +98,9 @@
 
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".7"
             android:text="Customer"
             android:id="@+id/Customer"
             android:gravity="center"
@@ -100,16 +108,16 @@
             />
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".7"
             android:gravity="center"
             android:id="@+id/ProductCode"
             android:text="Code"
             android:textColor="@color/color_white"
             />
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -119,9 +127,9 @@
             />
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".3"
             android:gravity="center"
             android:id="@+id/unit"
             android:textColor="@color/color_white"
@@ -129,9 +137,9 @@
             />
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".3"
             android:gravity="center"
             android:id="@+id/Qty"
             android:text="Qty"
@@ -144,6 +152,8 @@
         android:layout_below="@id/ll_pending_so_po"
         android:layout_height="match_parent"
         android:id="@+id/recycler" />
+        </LinearLayout>
+    </HorizontalScrollView>
     <ImageView
         android:id="@+id/main_progress"
         android:layout_width="80dp"

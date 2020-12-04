@@ -61,19 +61,29 @@
         </RelativeLayout>
 
     </FrameLayout>
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar2"
+        android:layout_centerInParent="true"
+        >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/ll_goods_delivery"
         android:visibility="gone"
-        android:layout_below="@id/toolbar2"
         android:background="@color/colorAccent"
         >
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".7"
             android:gravity="center"
             android:id="@+id/voucher_no"
             android:textColor="@color/color_white"
@@ -81,18 +91,18 @@
             />
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".7"
             android:id="@+id/customers"
             android:text="Customer"
             android:textColor="@color/color_white"
             android:gravity="center"
             />
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".7"
             android:id="@+id/code"
             android:text="Code"
             android:textColor="@color/color_white"
@@ -100,7 +110,7 @@
             />
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="product"
             android:layout_weight="1"
@@ -110,9 +120,9 @@
             />
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".3"
             android:gravity="center"
             android:id="@+id/qty"
             android:textColor="@color/color_white"
@@ -129,19 +139,19 @@
         android:background="@color/colorAccent"
         >
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".5"
             android:text="Doc Date"
             android:textColor="@color/color_white"
             android:gravity="center"
             />
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="Voucher No"
-            android:layout_weight="1"
+            android:layout_weight=".5"
             android:textColor="@color/color_white"
             android:gravity="center"
             />
@@ -149,23 +159,23 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".7"
             android:text="Warehouse"
             android:textColor="@color/color_white"
             android:gravity="center"
             />
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".7"
             android:gravity="center"
             android:textColor="@color/color_white"
             android:text="Product Code"
             />
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -176,21 +186,21 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".5"
             android:gravity="center"
             android:textColor="@color/color_white"
             android:text="Unit"
             />
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".5"
             android:gravity="center"
             android:textColor="@color/color_white"
             android:text="Qty"
             />
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -202,9 +212,9 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:id="@+id/recycler"
-      android:layout_below="@id/ll_stock_count"
      />
-
+    </LinearLayout>
+    </HorizontalScrollView>
     <ImageView
         android:id="@+id/main_progress"
         android:layout_width="80dp"

@@ -10,7 +10,7 @@
     android:orientation="horizontal"
     >
     <TextView
-        android:layout_width="80dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:text="Voucher no"
         android:layout_weight="1"
@@ -18,7 +18,7 @@
         android:gravity="center"
         />
     <TextView
-        android:layout_width="80dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:id="@+id/code"
@@ -26,7 +26,7 @@
         android:gravity="center"
         />
     <TextView
-        android:layout_width="80dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:text="product"
         android:layout_weight="1"
@@ -34,7 +34,7 @@
         android:gravity="center"
         />
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/customer"
@@ -42,7 +42,7 @@
             android:gravity="center"
             />
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
