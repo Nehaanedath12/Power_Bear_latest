@@ -1,9 +1,11 @@
 package com.sangsolutions.powerbear.Adapter.ProductDetailsSpareAdpater;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -38,6 +40,12 @@ public class SpareAdapter extends RecyclerView.Adapter<SpareAdapter.ViewHolder>{
         holder.position.setText(list.get(position).iPosition);
         holder.images.setText(list.get(position).Imagescount);
         holder.files.setText(list.get(position).Filescount);
+        if (position % 2 == 0) {
+            holder.parent.setBackgroundColor(Color.rgb(234, 234, 234));
+        } else {
+
+            holder.parent.setBackgroundColor(Color.rgb(255, 255, 255));
+        }
         }
 
     @Override
@@ -47,6 +55,7 @@ public class SpareAdapter extends RecyclerView.Adapter<SpareAdapter.ViewHolder>{
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
     TextView name,code,position,images,files;
+        LinearLayout parent;
     public ViewHolder(@NonNull View itemView) {
         super(itemView);
         name=itemView.findViewById(R.id.name);
@@ -54,7 +63,7 @@ public class SpareAdapter extends RecyclerView.Adapter<SpareAdapter.ViewHolder>{
         position=itemView.findViewById(R.id.position);
         images=itemView.findViewById(R.id.images);
         files=itemView.findViewById(R.id.files);
-
+        parent=itemView.findViewById(R.id.parent);
     }
 }
 }

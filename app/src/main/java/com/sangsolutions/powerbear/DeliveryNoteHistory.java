@@ -218,11 +218,12 @@ public class DeliveryNoteHistory extends AppCompatActivity {
 adapter.setOnClickListener(new DeliveryNoteHistoryAdapter.OnClickListener() {
     @Override
     public void onEditItemClick(com.sangsolutions.powerbear.Adapter.DliveryNoteHistoryAdapter.DeliveryNoteHistory deliveryNoteHistory, int position) {
+        if(!selection_active){
         Intent intent1 = new Intent(DeliveryNoteHistory.this, AddDeliveryNote.class);
         intent1.putExtra("DocNo",deliveryNoteHistory.getiVoucherNo());
         intent1.putExtra("EditMode", true);
         intent1.putExtra("Position",position);
-        startActivity(intent1);
+        startActivity(intent1);}
     }
 
     @Override

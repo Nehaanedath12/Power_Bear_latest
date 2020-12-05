@@ -652,19 +652,19 @@ public class DeliveryNoteBodyFragment extends Fragment {
                                     listRemarks.get(sp_damage_type.getSelectedItemPosition()).getiId()
                             ));*/
 
-                            listMain.set(pos,new DeliveryNoteBody(
-                                    listMain.get(pos).getsSONo(),
-                                    listMain.get(pos).getfSOQty(),
-                                    listMain.get(pos).getsName(),
-                                    listMain.get(pos).getsCode(),
-                                    listMain.get(pos).getfTempQty(),
-                                    listMain.get(pos).getiProduct(),
+                            listMain.set(current_position,new DeliveryNoteBody(
+                                    listMain.get(current_position).getsSONo(),
+                                    listMain.get(current_position).getfSOQty(),
+                                    listMain.get(current_position).getsName(),
+                                    listMain.get(current_position).getsCode(),
+                                    listMain.get(current_position).getfTempQty(),
+                                    listMain.get(current_position).getiProduct(),
                                     helper.GetWarehouse(list.get(sp_warehouse.getSelectedItemPosition()).getMasterId()),
                                     list.get(sp_warehouse.getSelectedItemPosition()).getMasterId(),
                                     Image,
                                     et_regular_remarks.getText().toString().trim(),
                                     et_regular_qty.getText().toString().trim(),
-                                    listMain.get(pos).getUnit()));
+                                    listMain.get(current_position).getUnit()));
 
                             DeliveryNoteBodySingleton.getInstance().setList(listMain);
                             deliveryNoteBodyAdapter.notifyDataSetChanged();

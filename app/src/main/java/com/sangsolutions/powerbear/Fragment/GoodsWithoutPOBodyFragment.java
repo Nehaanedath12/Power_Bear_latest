@@ -598,25 +598,37 @@ private RecyclerView rv_products;
                     et_regular_qty.setText(listMain.get(pos).getfQty());
                     et_minor_qty.setText(listMain.get(pos).getfMinorDamageQty());
                     et_damaged_qty.setText(listMain.get(pos).getfDamagedQty());
+                    if(listRemarks.get(pos).getiId().equals(listMain.get(pos).getRemarksMinorType())){
+                        sp_minor_type.setSelection(pos);
+                    }
+                    if(listRemarks.get(pos).getiId().equals(listMain.get(pos).getRemarksDamagedType())){
+                        sp_damage_type.setSelection(pos);
+                    }
+
 
                     if (!listMain.get(pos).getfQty().isEmpty()) {
                         et_regular_remarks.setVisibility(View.VISIBLE);
                     } else {
                         et_regular_remarks.setVisibility(View.GONE);
                     }
+
                     if (!listMain.get(pos).getfMinorDamageQty().isEmpty()) {
                         et_minor_remarks.setVisibility(View.VISIBLE);
                         minor_damaged_linear.setVisibility(View.VISIBLE);
+                        sp_minor_type.setEnabled(true);
                     } else {
                         et_minor_remarks.setVisibility(View.GONE);
                         minor_damaged_linear.setVisibility(View.GONE);
+                        sp_minor_type.setEnabled(false);
                     }
                     if (!listMain.get(pos).getfDamagedQty().isEmpty()) {
                         et_damaged_remarks.setVisibility(View.VISIBLE);
                         damaged_linear.setVisibility(View.VISIBLE);
+                        sp_damage_type.setEnabled(true);
                     } else {
                         et_damaged_remarks.setVisibility(View.GONE);
                         damaged_linear.setVisibility(View.GONE);
+                        sp_damage_type.setEnabled(false);
                     }
 
                     et_regular_remarks.setText(listMain.get(pos).getsRemarks());
@@ -733,6 +745,8 @@ private RecyclerView rv_products;
 
         ImageView img_search = view.findViewById(R.id.search);
 
+        sp_minor_type.setEnabled(false);
+        sp_damage_type.setEnabled(false);
         //set remarks type
         try {
             listRemarks.clear();
@@ -1005,10 +1019,12 @@ private RecyclerView rv_products;
         if(!et_minor_qty.getText().toString().equals("")){
             et_minor_remarks.setVisibility(View.VISIBLE);
             minor_damaged_linear.setVisibility(View.VISIBLE);
+            sp_minor_type.setEnabled(true);
         }
         if(!et_damaged_qty.getText().toString().equals("")){
             et_damaged_remarks.setVisibility(View.VISIBLE);
             damaged_linear.setVisibility(View.VISIBLE);
+            sp_damage_type.setEnabled(true);
         }
 
         et_regular_qty.addTextChangedListener(new TextWatcher() {
@@ -1045,6 +1061,12 @@ private RecyclerView rv_products;
                 if (s != null) {
                     et_minor_remarks.setVisibility(View.VISIBLE);
                     minor_damaged_linear.setVisibility(View.VISIBLE);
+                    sp_minor_type.setEnabled(true);
+                    if(s.toString().equals("")){
+                        sp_minor_type.setSelection(0);
+                        sp_minor_type.setEnabled(false);
+                    }
+
                 }
             }
         });
@@ -1064,6 +1086,11 @@ private RecyclerView rv_products;
                 if(s!=null){
                     et_damaged_remarks.setVisibility(View.VISIBLE);
                     damaged_linear.setVisibility(View.VISIBLE);
+                    sp_damage_type.setEnabled(true);
+                    if(s.toString().equals("")){
+                        sp_damage_type.setSelection(0);
+                        sp_damage_type.setEnabled(false);
+                    }
                 }
             }
         });

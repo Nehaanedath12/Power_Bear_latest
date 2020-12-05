@@ -50,7 +50,7 @@ public class ProductDetailAttachmentsFragment extends Fragment {
     List<DocumentClass>docClassList;
     DocumentClassAdapter docAdapter;
 
-    View view;
+    View view,viewMain;
     ImageView image_show,cancel;
     AlertDialog.Builder builder;
     AlertDialog dialog;
@@ -73,18 +73,18 @@ public class ProductDetailAttachmentsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=LayoutInflater.from(getContext()).inflate(R.layout.product_detail_attachments_fragment,container,false);
-        RV_image=view.findViewById(R.id.image_RV);
-        RV_doc=view.findViewById(R.id.word_RV);
-        mProgressBar =view.findViewById(R.id.main_progress);
-        image_text=view.findViewById(R.id.card_image);
-        file_text=view.findViewById(R.id.card_doc);
+        viewMain=LayoutInflater.from(getContext()).inflate(R.layout.product_detail_attachments_fragment,container,false);
+        RV_image=viewMain.findViewById(R.id.image_RV);
+        RV_doc=viewMain.findViewById(R.id.word_RV);
+        mProgressBar =viewMain.findViewById(R.id.main_progress);
+        image_text=viewMain.findViewById(R.id.card_image);
+        file_text=viewMain.findViewById(R.id.card_doc);
 
         image_text.setVisibility(View.GONE);
         file_text.setVisibility(View.GONE);
 
 
-        emptyIcon=view.findViewById(R.id.empty_frame);
+        emptyIcon=viewMain.findViewById(R.id.empty_frame);
 
         assert getArguments() != null;
         iProduct = getArguments().getString("iProduct");
@@ -110,7 +110,7 @@ public class ProductDetailAttachmentsFragment extends Fragment {
         loadImage();
         loadDocument();
 //        }
-        return view;
+        return viewMain;
     }
 
 
@@ -186,7 +186,7 @@ public class ProductDetailAttachmentsFragment extends Fragment {
                 dialog.dismiss();
             }
         });
-
+        frame_layout.setVisibility(View.INVISIBLE);
         Glide.with(view).load(imageClassList.get(position).getImageURL()).into(image_show);
         current_position=position;
 

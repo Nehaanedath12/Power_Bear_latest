@@ -85,7 +85,7 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
                     listPo.add(listMain.get(i).getsSONo());
                 }
                 try {
-                    helper.DeleteBodyItems(listProduct, listPo, DocNo);
+                    helper.DeleteBodyItems(listProduct, listPo, voucher);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -318,9 +318,15 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.forward:
                 if (listHistory.size() > 1) {
-                    if (current_position < listHistory.size()) {
-                        SetViewPager(listHistory.get(current_position).getiVoucherNo(),true);
-                        current_position++;
+                    if (current_position+1 < listHistory.size()) {
+                        try {
+                            if (listHistory.get(current_position) != null) {
+                                current_position++;
+                                SetViewPager(listHistory.get(current_position).getiVoucherNo(), true);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 }
                 break;

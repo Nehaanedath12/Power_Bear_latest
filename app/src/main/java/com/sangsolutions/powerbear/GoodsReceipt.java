@@ -83,7 +83,7 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
             listPo.add(listMain.get(i).getsPONo());
         }
         try {
-            helper.DeleteBodyItems(listProduct, listPo, DocNo);
+            helper.DeleteBodyItems(listProduct, listPo, voucher);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -290,7 +290,7 @@ public void SetViewPager(String DocNo,boolean EditMode){
             if(EditMode){
                 PublicData.voucher= intent.getStringExtra("DocNo");
                 DocNo = PublicData.voucher;
-                current_position=intent.getIntExtra("Position",0);
+                current_position=intent.getIntExtra("Position",5);
             }else {
                 PublicData.voucher = "G-" + DateFormat.format("ddMMyy-HHmmss", new Date());
                 DocNo = PublicData.voucher;
@@ -321,9 +321,11 @@ switch (v.getId()){
         break;
     case R.id.forward:
         if (listHistory.size() > 1) {
-            if (current_position < listHistory.size()) {
-                SetViewPager(listHistory.get(current_position).getDocNo(),true);
+            if (current_position+1 < listHistory.size()) {
                 current_position++;
+                if(listHistory.get(current_position)!=null) {
+                    SetViewPager(listHistory.get(current_position).getDocNo(), true);
+                }
             }
         }
         break;
