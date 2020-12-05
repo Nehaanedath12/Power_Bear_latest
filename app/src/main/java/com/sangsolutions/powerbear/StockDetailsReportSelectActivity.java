@@ -138,6 +138,7 @@ public class StockDetailsReportSelectActivity extends AppCompatActivity {
         iType="0";
         StringDate = formatter.format(new Date());
         productE.setText("");warehouseE.setText("");dateE.setText(StringDate);
+        radioGroup.check(R.id.overallRadio);
     }
 
     private void warehouseAlert() {
