@@ -3,6 +3,7 @@ package com.sangsolutions.powerbear;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -79,6 +80,20 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
                 List<String> listPo = new ArrayList<>();
                 listProduct.clear();
                 listPo.clear();
+
+               Cursor cursor = helper.GetSOs(supplier);
+                if(cursor!=null&&cursor.moveToFirst()){
+                    for(int i=0;i<cursor.getCount();i++) {
+                        for(int j=0;j<listSO.size();j++) {
+                        if(!listSO.get(j).contains(cursor.getString(cursor.getColumnIndex("DocNo")))) {
+                            Toast.makeText(this, "Please check the Doc No.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        }
+
+                        cursor.moveToNext();
+                    }
+                }
 
                 for (int i = 0; i < listMain.size(); i++) {
                     listProduct.add(listMain.get(i).getiProduct());
