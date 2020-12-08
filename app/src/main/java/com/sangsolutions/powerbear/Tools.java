@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -16,7 +18,9 @@ import android.util.Patterns;
 import android.util.TypedValue;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -164,12 +168,35 @@ SharedPreferences.Editor editor;
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
             return activeNetwork != null &&
                     activeNetwork.isConnectedOrConnecting();
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
-    public static String subString(String filepath){
+
+    public static String subString(String filepath) {
         return filepath.substring(33);
+    }
+
+    public static File CompressImage(File file, Context context) {
+
+        Bitmap b = BitmapFactory.decodeFile(file.getAbsolutePath());
+        //Convert bitmap to byte array
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        b.compress(Bitmap.CompressFormat.JPEG, 50, bos);
+        byte[] bitmapdata = bos.toByteArray();
+
+        //write the bytes in file
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(file);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return file;
     }
 
 }

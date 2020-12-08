@@ -95,7 +95,7 @@ public class PostDeliveryNote2 extends JobService {
                     for (int i = 0; i < filePathList.size(); i++) {
                         File file1 = new File(filePathList.get(i));
                         if (file1.exists()) {
-                            file.add(file1);
+                            file.add(Tools.CompressImage(file1, this));
                         }
                     }
 
