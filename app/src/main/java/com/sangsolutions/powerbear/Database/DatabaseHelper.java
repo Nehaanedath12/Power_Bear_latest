@@ -945,10 +945,20 @@ public boolean DeleteStockCount(String voucherNo){
 
     }
 
+    public Cursor GetHeaderDataAll() {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + D_DATE + "," + I_WAREHOUSE + "," + S_VOUCHER_NO + "," + S_NARRATION + "," + D_STOCK_COUNT_DATE + " FROM " + TABLE_STOCK_COUNT, null);
+        if (cursor.moveToFirst()) {
+            return cursor;
+        } else {
+            return null;
+        }
+
+    }
 
     public Cursor GetHeaderData(String voucherNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT "+D_DATE+","+I_WAREHOUSE+","+ S_VOUCHER_NO +","+S_NARRATION+","+D_STOCK_COUNT_DATE+" FROM "+TABLE_STOCK_COUNT+" where "+ S_VOUCHER_NO +" = ? ", new String[]{voucherNo});
+        Cursor cursor = db.rawQuery("SELECT " + D_DATE + "," + I_WAREHOUSE + "," + S_VOUCHER_NO + "," + S_NARRATION + "," + D_STOCK_COUNT_DATE + " FROM " + TABLE_STOCK_COUNT + " where " + S_VOUCHER_NO + " = ? ", new String[]{voucherNo});
         if (cursor.moveToFirst()) {
             return cursor;
         } else {
@@ -1218,22 +1228,30 @@ public boolean DeleteStockCount(String voucherNo){
         return null;
     }
 
-    public Cursor GetGoodsBodyData(String DocNo){
+    public Cursor GetGoodsBodyData(String DocNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("Select * from "+TABLE_GOODS_RECEIPT_BODY+" where "+DOC_NO+" = ? ",new String[]{DocNo});
-        if(cursor!=null&&cursor.moveToFirst()){
+        Cursor cursor = db.rawQuery("Select * from " + TABLE_GOODS_RECEIPT_BODY + " where " + DOC_NO + " = ? ", new String[]{DocNo});
+        if (cursor != null && cursor.moveToFirst()) {
             return cursor;
         }
         return null;
     }
 
-
-    public Cursor GetPOs(String HeaderId){
+    public Cursor GetGoodsBodyData() {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DocNo from tbl_PendingPO WHERE HeaderId = ? and TempQty != Qty GROUP by HeaderId ",new String[]{HeaderId});
-        if(cursor.moveToFirst()){
+        Cursor cursor = db.rawQuery("Select * from " + TABLE_GOODS_RECEIPT_BODY, null);
+        if (cursor != null && cursor.moveToFirst()) {
             return cursor;
-        }else {
+        }
+        return null;
+    }
+
+    public Cursor GetPOs(String HeaderId) {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DocNo from tbl_PendingPO WHERE HeaderId = ? and TempQty != Qty GROUP by HeaderId ", new String[]{HeaderId});
+        if (cursor.moveToFirst()) {
+            return cursor;
+        } else {
             return null;
         }
     }
@@ -1534,20 +1552,30 @@ public boolean DeleteStockCount(String voucherNo){
         }else
             return null;
     }
-    public Cursor GetDeliveryHeaderData(String DocNo){
+
+    public Cursor GetDeliveryHeaderData(String DocNo) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("Select * from "+TABLE_DELIVERY_NOTE_HEADER+" where "+DOC_NO+" = ? ",new String[]{DocNo});
-        if(cursor!=null&&cursor.moveToFirst()){
+        Cursor cursor = db.rawQuery("Select * from " + TABLE_DELIVERY_NOTE_HEADER + " where " + DOC_NO + " = ? ", new String[]{DocNo});
+        if (cursor != null && cursor.moveToFirst()) {
+            return cursor;
+        }
+        return null;
+    }
+
+    public Cursor GetDeliveryBodyData() {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from " + TABLE_DELIVERY_NOTE_BODY, null);
+        if (cursor != null && cursor.moveToFirst()) {
             return cursor;
         }
         return null;
     }
 
 
-    public Cursor GetAllDeliveryHeader(){
+    public Cursor GetAllDeliveryHeader() {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("Select * from "+TABLE_DELIVERY_NOTE_HEADER,null);
-        if(cursor!=null&&cursor.moveToFirst()){
+        Cursor cursor = db.rawQuery("Select * from " + TABLE_DELIVERY_NOTE_HEADER, null);
+        if (cursor != null && cursor.moveToFirst()) {
             return cursor;
         }
         return null;
@@ -1671,12 +1699,23 @@ public boolean DeleteStockCount(String voucherNo){
         }
         return null;
     }
-    public Cursor GetAllGoodsWithoutPOHeader(){
+
+    public Cursor GetAllGoodsWithoutPOHeader() {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("Select * from "+TABLE_GOODS_WITHOUT_PO_HEADER,null);
-        if(cursor!=null&&cursor.moveToFirst()){
+        Cursor cursor = db.rawQuery("Select * from " + TABLE_GOODS_WITHOUT_PO_HEADER, null);
+        if (cursor != null && cursor.moveToFirst()) {
             return cursor;
         }
         return null;
     }
+
+    public Cursor GetAllGoodsWithoutPOBody() {
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from " + TABLE_GOODS_WITHOUT_PO_BODY, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            return cursor;
+        }
+        return null;
+    }
+
 }

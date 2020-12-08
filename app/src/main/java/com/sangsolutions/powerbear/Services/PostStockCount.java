@@ -209,11 +209,11 @@ public class PostStockCount extends JobService {
             editor.putString(Commons.PENDING_PO_FINISHED, "false").apply();
             editor.putString(Commons.PENDING_SO_FINISHED, "false").apply();
             editor.putString(Commons.PRODUCT_FINISHED, "false").apply();
-            editor.putString(Commons.REMARKS_FINISHED,"false").apply();
+            editor.putString(Commons.REMARKS_FINISHED, "false").apply();
             editor.putString(Commons.SYNC_DATE, "").apply();
 
-            //Intent serviceIntent = new Intent(this, MaintenanceService.class);
-           // ContextCompat.startForegroundService(this, serviceIntent);
+            Intent serviceIntent = new Intent(this, MaintenanceService.class);
+            ContextCompat.startForegroundService(this, serviceIntent);
         }
         return true;
     }
