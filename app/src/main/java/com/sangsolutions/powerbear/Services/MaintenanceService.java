@@ -26,31 +26,50 @@ import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.R;
 
 import java.io.File;
+import java.util.Objects;
 
 public class MaintenanceService extends Service {
     public static final String CHANNEL_ID = "MaintenanceForegroundService";
-    int progress = 0, maxProgress = 0;
+    int progress = 0, maxProgress = 1000;
     DatabaseHelper helper;
-
+    NotificationCompat.Builder builder;
+    NotificationManager manager;
     @Override
     public void onCreate() {
         super.onCreate();
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        helper = new DatabaseHelper(this);
-        createNotificationChannel();
+    public void DeleteFiles(){
+    try {
+            Cursor cursor = helper.GetAllGoodsWithoutPOBody();
+            Cursor cursor1 = helper.GetGoodsBodyData();
+            Cursor cursor2 = helper.GetDeliveryBodyData();
+            if ((cursor==null&&cursor1==null&&cursor2==null)||!(Objects.requireNonNull(cursor).moveToFirst()||cursor1.moveToFirst()||cursor2.moveToFirst())){
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ID);
+                if(hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                    File folder = new File(this.getExternalFilesDir(null) + File.separator +"temp");
 
-         builder.setContentTitle("Maintenance!");
-         builder.setContentText("Maintenance Service is running..");
-         builder.setSmallIcon(R.drawable.logo);
-         builder.setProgress(maxProgress/1000,progress,true);
+                    if(folder.exists()) {
+                        if (folder.isDirectory())
+                            maxProgress = Objects.requireNonNull(folder.listFiles()).length;
+                            for (File child : Objects.requireNonNull(folder.listFiles())){
+                                if (child.delete()) {
+                                    Log.d("deleted", child.getName());
+                                }
 
+                            }
+                        stopForeground(true);
+                    }
+                }
+            }else {
+                stopForeground(true);
+            }
 
-        /*new CountDownTimer(maxProgress, 1000) {
+        }catch (Exception e){
+            stopForeground(true);
+            e.printStackTrace();
+        }
+       /* new CountDownTimer(maxProgress, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 progress = (int) millisUntilFinished/1000;
@@ -60,42 +79,32 @@ public class MaintenanceService extends Service {
                stopForeground(true);
             }
         }.start();*/
+    }
 
-       /* try {
-            Cursor cursor = helper.GetAllGoodsWithoutPOBody();
-            Cursor cursor1 = helper.GetGoodsBodyData();
-            Cursor cursor2 = helper.GetDeliveryBodyData();
-            if ((cursor==null&&cursor1==null&&cursor2==null)||!(cursor.moveToFirst()||cursor1.moveToFirst()||cursor2.moveToFirst())){
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        helper = new DatabaseHelper(this);
+        createNotificationChannel();
 
-                if(hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                    File folder = new File(this.getExternalFilesDir(null) + File.separator +"temp");
+         builder = new NotificationCompat.Builder(this,CHANNEL_ID);
 
-                    if(folder.exists()) {
+         builder.setContentTitle("Maintenance!");
+         builder.setContentText("Maintenance Service is running..");
+         builder.setSmallIcon(R.drawable.logo);
+         builder.setProgress(maxProgress/1000,progress,true);
+         Notification notification = builder.build();
+         startForeground(1, notification);
+           new CountDownTimer(maxProgress, 1000) {
 
-                        if (folder.isDirectory())
-                            for (File child : folder.listFiles()){
-                                if (child.delete()) {
-                                    Log.d("deleted", child.getName());
-                                }
-
-                    }
-                        stopForeground(true);
-                        stopSelf();
-                    }
-                }
-                }else {
-                stopForeground(true);
-                Toast.makeText(this, "Not empty", Toast.LENGTH_SHORT).show();
-                stopSelf();
+            public void onTick(long millisUntilFinished) {
+                progress = (int) millisUntilFinished/1000;
             }
 
-        }catch (Exception e){
-            stopForeground(true);
-            stopSelf();
-            e.printStackTrace();
-        }*/
-        Notification notification = builder.build();
-        startForeground(1, notification);
+            public void onFinish() {
+                DeleteFiles();
+            }
+        }.start();
+
         return START_NOT_STICKY;
     }
 
@@ -123,7 +132,7 @@ public class MaintenanceService extends Service {
                     "Maintenance Service",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
-            NotificationManager manager = getSystemService(NotificationManager.class);
+             manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);
         }
     }
