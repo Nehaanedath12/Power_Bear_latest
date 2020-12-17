@@ -12,7 +12,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 2
-        versionName "1.0.173-beta"
+        versionName "1.0.175-beta"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName","PowerBear-"+versionName)
@@ -44,7 +44,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
     implementation 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
-    implementation 'com.google.android.gms:play-services-vision:20.1.2'
+    implementation 'com.google.android.gms:play-services-vision:20.1.3'
     implementation 'io.fotoapparat:fotoapparat:2.7.0'
     implementation('org.apache.httpcomponents:httpmime:4.5.6') {
         exclude module: "httpclient"
