@@ -104,7 +104,6 @@ public void syncData(){
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this,SetIPActivity.class));
-
             }
         });
 
@@ -135,10 +134,10 @@ public void syncData(){
                             Toast.makeText(MainActivity.this, "An unexpected error occurred!", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(MainActivity.this, "Login information don't mach the recoded ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Login information don't mach the recoded!", Toast.LENGTH_SHORT).show();
                     }
                 }else {
-                    Toast.makeText(MainActivity.this, "Check the IP and try again!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Check the connection and try again!", Toast.LENGTH_SHORT).show();
                 }
             }
 
