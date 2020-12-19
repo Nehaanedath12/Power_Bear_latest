@@ -104,6 +104,7 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
                 gb.setUnit(listMain.get(i).getUnit());
                 gb.setsRemarks(listMain.get(i).getsRemarks());
                 gb.setiUser(helper.GetUserId());
+                gb.setiCustomer(supplier);//supplier is the customer
                 gb.setfMinorDamageQty(listMain.get(i).getfMinorDamageQty());
                 gb.setsMinorRemarks(listMain.get(i).getsMinorRemarks());
                 gb.setsMinorAttachment(listMain.get(i).getsMinorAttachment());

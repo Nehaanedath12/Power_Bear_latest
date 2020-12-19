@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     final Context context;
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "PowerBear.db";
     private static final String TABLE_PRODUCT = "tbl_Product";
     private static final String TABLE_PENDING_SO = "tbl_PendingSO";
@@ -213,6 +213,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_GOODS_RECEIPT_BODY = "create table if not exists "+TABLE_GOODS_RECEIPT_BODY+" (" +
             "" + DOC_NO + " TEXT(20) DEFAULT null ," +
             "" + S_PONO + " TEXT(10) DEFAULT null ," +
+            "" + SI_NO + " INTEGER DEFAULT 0,"+
             "" + I_PRODUCT + " INTEGER DEFAULT 0, "+
             "" + I_WAREHOUSE + " INTEGER DEFAULT 0,"  +
             "" + I_USER + " INTEGER DEFAULT 0 ,"+
@@ -253,6 +254,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_DELIVERY_NOTE_BODY = "create table if not exists "+TABLE_DELIVERY_NOTE_BODY+" (" +
             "" + DOC_NO + " TEXT(20) DEFAULT null ," +
             "" + S_SONO + " TEXT(10) DEFAULT null ,"+
+            "" + SI_NO + " INTEGER DEFAULT 0,"+
             "" + I_WAREHOUSE + " INTEGER DEFAULT 0,"  +
             "" + I_PRODUCT + " INTEGER DEFAULT 0, "+
             "" + S_ATTACHMENT + " TEXT DEFAULT null," +
@@ -761,6 +763,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public String GetSOSiNo(String iCustomerId,String iProduct,String sDocNo){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT SiNo from tbl_PendingSO WHERE HeaderId = ? and Product = ?  and DocNo = ? ",new String[]{iCustomerId,iProduct,sDocNo});
+         if(cursor!=null&&cursor.moveToFirst()){
+             return  cursor.getString(cursor.getColumnIndex(SI_NO));
+        }else {
+             return  "";
+        }
+    }
+
 
 
     public String GetPendingSOTempQty(String sSONo,String iProduct){
@@ -775,7 +787,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor GetCustomer(String keyword) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT Cusomer,HeaderId from tbl_PendingSO where Cusomer like '"+keyword+"%'  GROUP BY Cusomer ",null);
+        Cursor cursor = db.rawQuery("SELECT Cusomer,HeaderId from tbl_PendingSO where Cusomer like '"+keyword+"%'  GROUP BY HeaderId ",null);
         if (cursor.moveToFirst())
             return cursor;
         else
@@ -1045,6 +1057,7 @@ public boolean DeleteStockCount(String voucherNo){
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO,gb.getDocNo());
         cv.put(S_PONO, gb.getsPONo());
+        cv.put(SI_NO,GetPOSiNo(gb.getiCustomer(),gb.getiProduct(),gb.getsPONo()));
         cv.put(I_PRODUCT,gb.getiProduct());
         cv.put(I_WAREHOUSE, gb.getiWarehouse());
         cv.put(BARCODE, gb.getBarcode());
@@ -1076,6 +1089,17 @@ public boolean DeleteStockCount(String voucherNo){
         cursor.close();
         cursor2.close();
         return status2 != -1;
+    }
+
+
+    public String GetPOSiNo(String iCustomerId,String iProduct,String sDocNo){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT SiNo from tbl_PendingPO WHERE HeaderId = ? and Product = ?  and DocNo = ? ",new String[]{iCustomerId,iProduct,sDocNo});
+        if(cursor!=null&&cursor.moveToFirst()){
+            return  cursor.getString(cursor.getColumnIndex(SI_NO));
+        }else {
+            return  "";
+        }
     }
 
     public boolean deleteGoodsBodyItem(String DocNo){
@@ -1319,7 +1343,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetSupplier(String keyword) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT Cusomer,HeaderId from tbl_PendingPO where Cusomer like '"+keyword+"%'  GROUP BY Cusomer ",null);
+        Cursor cursor = db.rawQuery("SELECT Cusomer,HeaderId from tbl_PendingPO where Cusomer like '"+keyword+"%'  GROUP BY HeaderId ",null);
         if (cursor.moveToFirst())
             return cursor;
         else
@@ -1419,6 +1443,7 @@ public boolean DeleteStockCount(String voucherNo){
         ContentValues cv = new ContentValues();
         cv.put(DOC_NO,b.getsVoucherNo());
         cv.put(S_SONO,b.getsSONo());
+        cv.put(SI_NO,GetSOSiNo(b.getiCustomer(),b.getiProduct(),b.getsSONo()));
         cv.put(I_PRODUCT,b.getiProduct());
         cv.put(I_WAREHOUSE,b.getiWarehouse());
         cv.put(F_SO_QTY,b.getsSOQty());

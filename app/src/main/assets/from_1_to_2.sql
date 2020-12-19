@@ -1,0 +1,2 @@
+ALTER TABLE tbl_DeliveryNoteBody ADD SiNo INTEGER DEFAULT 0;
+ALTER TABLE tbl_GoodsReceiptBody ADD SiNo INTEGER DEFAULT 0;

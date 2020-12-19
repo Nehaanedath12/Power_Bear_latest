@@ -119,6 +119,7 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
                         b.setsAttachment(listMain.get(i).getsAttachment());
                         b.setsRemarks(listMain.get(i).getsRemarks());
                         b.setiUser(helper.GetUserId());
+                        b.setiCustomer(supplier);
                         b.setsSOQty(listMain.get(i).getfSOQty());
                         b.setUnit(listMain.get(i).getUnit());
 
