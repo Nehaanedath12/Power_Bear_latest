@@ -129,7 +129,9 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".Services.MaintenanceService"
-            android:enabled="true" />
+            android:enabled="true"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

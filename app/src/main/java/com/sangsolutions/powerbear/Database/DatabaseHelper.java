@@ -54,6 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String HEADER_ID = "HeaderId";
     private static final String SI_NO = "SiNo";
     private static final String CUSTOMER = "Cusomer";//spelling is not right
+    private static final String I_CUSTOMER_ID = "iCustomer";
     private static final String PRODUCT = "Product";
     private static final String QTY = "Qty";
     private static final String TEMP_QTY = "TempQty";
@@ -181,6 +182,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + SI_NO + "  INTEGER DEFAULT 0," +
             "" + PRODUCT + "  INTEGER DEFAULT 0," +
             "" + QTY + "  TEXT(10) DEFAULT null," +
+            "" + I_CUSTOMER_ID+" INTEGER DEFAULT 0,"+
             "" + CUSTOMER + "  TEXT(20) DEFAULT null," +
             "" + TEMP_QTY + " TEXT(10) DEFAULT '0',"+
             "" + UNIT + " TEXT(15) DEFAULT null" +
@@ -194,6 +196,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "" + PRODUCT + "  INTEGER DEFAULT 0," +
             "" + QTY + "  TEXT(10) DEFAULT null," +
             "" + TEMP_QTY + " TEXT(10) DEFAULT '0',"+
+            "" + I_CUSTOMER_ID+" INTEGER DEFAULT 0,"+
             "" + CUSTOMER + "  TEXT(20) DEFAULT null," +
             "" + UNIT + " TEXT(15) DEFAULT null" +
             ")";
@@ -654,51 +657,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-   public Cursor SearchProductPendingPO(String keyword,String HeaderId) {
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select Name,Code,Barcode from tbl_Product p " +
-                "INNER JOIN tbl_PendingPO po " +
-                "on po.Product = p.MasterId " +
-                "where instr(upper(Code),upper(?)) and po.HeaderId = ? limit 10",new String[]{keyword,HeaderId});
-
-        if (cursor.moveToFirst()) {
-            return cursor;
-        } else {
-            return null;
-        }
-
-    }
-
-    public Cursor SearchProductPendingSO(String keyword,String HeaderId) {
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select Name,Code,Barcode from tbl_Product p " +
-                "INNER JOIN tbl_PendingSO so " +
-                "on so.Product = p.MasterId " +
-                "where instr(upper(Code),upper(?)) and so.HeaderId = ? limit 10",new String[]{keyword,HeaderId});
-
-        if (cursor.moveToFirst()) {
-            return cursor;
-        } else {
-            return null;
-        }
-
-    }
 
 
-    public Cursor SearchProductDeliveryNote(String keyword,String HeaderId) {
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("select Name,Code,Barcode from tbl_Product p " +
-                "INNER JOIN tbl_DeliveryNote d " +
-                "on d.Product = p.MasterId " +
-                "where instr(upper(Code),upper( ? )) and d.HeaderId = ? limit 10",new String[]{keyword,HeaderId});
 
-        if (cursor.moveToFirst()) {
-            return cursor;
-        } else {
-            return null;
-        }
 
-    }
 
 
     public String GetProductBarcode(String barcode) {
@@ -735,6 +697,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cv.put(SI_NO, p.getSiNo());
             cv.put(PRODUCT,p.getProduct());
             cv.put(CUSTOMER,p.getCustomer());
+            cv.put(I_CUSTOMER_ID,p.getiCustomer());
             cv.put(QTY,p.getQty());
             cv.put(UNIT,p.getUnit());
             status = db.insert(TABLE_PENDING_SO, null, cv);
@@ -744,7 +707,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor GetDocNo(){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT "+DOC_NO+","+CUSTOMER+","+DOC_DATE+","+HEADER_ID+" FROM "+TABLE_PENDING_SO,null);
+        Cursor cursor = db.rawQuery("SELECT DISTINCT "+DOC_NO+","+CUSTOMER+","+DOC_DATE+","+I_CUSTOMER_ID+" FROM "+TABLE_PENDING_SO,null);
         if(cursor.moveToFirst()){
             return cursor;
         }else {
@@ -752,9 +715,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor GetSOs(String HeaderId){
+    public Cursor GetSOs(String iCustomer){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DocNo from tbl_PendingSO WHERE HeaderId = ? and TempQty != Qty GROUP by HeaderId ",new String[]{HeaderId});
+        Cursor cursor = db.rawQuery("SELECT DocNo from tbl_PendingSO WHERE iCustomer = ? and TempQty != Qty GROUP by DocNo ",new String[]{iCustomer});
         if(cursor.moveToFirst()){
             return cursor;
         }else {
@@ -765,7 +728,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String GetSOSiNo(String iCustomerId,String iProduct,String sDocNo){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT SiNo from tbl_PendingSO WHERE HeaderId = ? and Product = ?  and DocNo = ? ",new String[]{iCustomerId,iProduct,sDocNo});
+        Cursor cursor = db.rawQuery("SELECT SiNo from tbl_PendingSO WHERE iCustomer = ? and Product = ?  and DocNo = ? ",new String[]{iCustomerId,iProduct,sDocNo});
          if(cursor!=null&&cursor.moveToFirst()){
              return  cursor.getString(cursor.getColumnIndex(SI_NO));
         }else {
@@ -787,7 +750,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor GetCustomer(String keyword) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT Cusomer,HeaderId from tbl_PendingSO where Cusomer like '"+keyword+"%'  GROUP BY HeaderId ",null);
+        Cursor cursor = db.rawQuery("SELECT Cusomer,iCustomer from tbl_PendingSO where Cusomer like '"+keyword+"%'  GROUP BY iCustomer ",null);
         if (cursor.moveToFirst())
             return cursor;
         else
@@ -795,26 +758,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public Cursor GetAllPendingDN(String HeaderId) {
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * from tbl_PendingSO LEFT JOIN tbl_Product WHERE tbl_PendingSO.Product = tbl_Product.MasterId and HeaderId = ? ", new String[]{HeaderId});
-        if(cursor.moveToFirst()){
-            return cursor;
-        }else {
-            return null;
-        }
-    }
 
 
-    /*public Cursor GetDeliveryNoteList() {
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT sum(Qty) as Qty,HeaderId,iVoucherNo from tbl_DeliveryNote  GROUP BY "+I_VOUCHER_NO,null);
-        if(cursor.moveToFirst())
-            return cursor;
-        else
-            return null;
-    }
-    */
+
 
 
     //Warehouse
@@ -1094,7 +1040,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public String GetPOSiNo(String iCustomerId,String iProduct,String sDocNo){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT SiNo from tbl_PendingPO WHERE HeaderId = ? and Product = ?  and DocNo = ? ",new String[]{iCustomerId,iProduct,sDocNo});
+        Cursor cursor = db.rawQuery("SELECT SiNo from tbl_PendingPO WHERE iCustomer = ? and Product = ?  and DocNo = ? ",new String[]{iCustomerId,iProduct,sDocNo});
         if(cursor!=null&&cursor.moveToFirst()){
             return  cursor.getString(cursor.getColumnIndex(SI_NO));
         }else {
@@ -1270,9 +1216,9 @@ public boolean DeleteStockCount(String voucherNo){
         return null;
     }
 
-    public Cursor GetPOs(String HeaderId) {
+    public Cursor GetPOs(String iCustomer) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DocNo from tbl_PendingPO WHERE HeaderId = ? and TempQty != Qty GROUP by HeaderId ", new String[]{HeaderId});
+        Cursor cursor = db.rawQuery("SELECT DocNo from tbl_PendingPO WHERE iCustomer = ? and TempQty != Qty GROUP by DocNo ", new String[]{iCustomer});
         if (cursor.moveToFirst()) {
             return cursor;
         } else {
@@ -1294,6 +1240,7 @@ public boolean DeleteStockCount(String voucherNo){
         cv.put(SI_NO, p.getSiNo());
         cv.put(PRODUCT,p.getProduct());
         cv.put(CUSTOMER,p.getCustomer());
+        cv.put(I_CUSTOMER_ID,p.getiCustomer());
         cv.put(QTY,p.getQty());
         cv.put(UNIT,p.getUnit());
         status = db.insert(TABLE_PENDING_PO, null, cv);
@@ -1327,23 +1274,12 @@ public boolean DeleteStockCount(String voucherNo){
             return null;
         }
     }
-    public Cursor GetAllPendingPO(String DocNo) {
-        this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * from tbl_PendingPO " +
-                "LEFT JOIN tbl_Product " +
-                "WHERE " +
-                "tbl_PendingPO.Product = tbl_Product.MasterId and HeaderId = ? ", new String[]{DocNo});
-        if(cursor.moveToFirst()){
-            return cursor;
-        }else {
-            return null;
-        }
-    }
+
 
 
     public Cursor GetSupplier(String keyword) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT Cusomer,HeaderId from tbl_PendingPO where Cusomer like '"+keyword+"%'  GROUP BY HeaderId ",null);
+        Cursor cursor = db.rawQuery("SELECT Cusomer,iCustomer,DocNo from tbl_PendingPO where Cusomer like '"+keyword+"%'  GROUP BY DocNo ",null);
         if (cursor.moveToFirst())
             return cursor;
         else

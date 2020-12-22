@@ -76,7 +76,7 @@ public class PostDeliveryNote2 extends JobService {
                         jsonObject.put("sUnit", cursor2.getString(cursor2.getColumnIndex("Unit")));
                         jsonObject.put("sRemarks", cursor2.getString(cursor2.getColumnIndex("sRemarks")));
                         jsonObject.put("sAttatchMent", Tools.getFileList(cursor2.getString(cursor2.getColumnIndex("sAttachment"))));
-
+                        jsonObject.put("iLinkId",cursor2.getString(cursor2.getColumnIndex("SiNo")));
                         jsonArray.put(jsonObject);
 
 
@@ -123,7 +123,7 @@ public class PostDeliveryNote2 extends JobService {
 
 
     private void UploadData(final JSONObject mainJsonObject, List<File> files) {
-
+        Log.d("Delivery",mainJsonObject.toString());
         AndroidNetworking.upload("http://" + new Tools().getIP(PostDeliveryNote2.this) + URLs.PostDelivery)
                 .addMultipartParameter("json_content", mainJsonObject.toString())
                 .setContentType("multipart/form-data")

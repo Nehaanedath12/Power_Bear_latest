@@ -46,7 +46,7 @@ Handler handler;
                 list.add(new DONo(cursor.getString(cursor.getColumnIndex("DocNo")),
                         Tools.ConvertDate(cursor.getString(cursor.getColumnIndex("DocDate"))),
                         cursor.getString(cursor.getColumnIndex("Cusomer")),
-                        cursor.getString(cursor.getColumnIndex("HeaderId"))));
+                        cursor.getString(cursor.getColumnIndex("iCustomer"))));
                 cursor.moveToNext();
                 if(cursor.getCount()==i+1){
                     doc_no_lv.setAdapter(adapter);

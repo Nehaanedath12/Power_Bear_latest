@@ -78,6 +78,7 @@ public class PostGoodsReceipt2 extends JobService {
                             jsonObject.put("iWarehouse", cursor2.getInt(cursor2.getColumnIndex("iWarehouse")));
                             jsonObject.put("nQty", cursor2.getInt(cursor2.getColumnIndex("fQty")));
                             jsonObject.put("sUnit", cursor2.getString(cursor2.getColumnIndex("Unit")));
+                            jsonObject.put("iLinkId",cursor2.getString(cursor2.getColumnIndex("SiNo")));
                             jsonObject.put("sRemarks", cursor2.getString(cursor2.getColumnIndex("sRemarks")));
                             jsonObject.put("nMQty", cursor2.getInt(cursor2.getColumnIndex("fMinorDamageQty")));
                             jsonObject.put("sMAttatchMent", Tools.getFileList(cursor2.getString(cursor2.getColumnIndex("sMinorAttachment"))));
@@ -155,7 +156,7 @@ public class PostGoodsReceipt2 extends JobService {
 
 
     private void UploadData(final JSONObject mainJsonObject, List<File> files) {
-
+        Log.d("Goods",mainJsonObject.toString());
        AndroidNetworking.upload("http://" + new Tools().getIP(PostGoodsReceipt2.this) + URLs.PostGR)
              .addMultipartParameter("json_content",mainJsonObject.toString())
                 .setContentType("multipart/form-data")

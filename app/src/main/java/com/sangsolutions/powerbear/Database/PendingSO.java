@@ -2,8 +2,16 @@ package com.sangsolutions.powerbear.Database;
 
 public class PendingSO {
 
-    private String DocNo,DocDate,HeaderId,SiNo,Customer,Product,Qty,unit;
+    private String DocNo,DocDate,HeaderId,SiNo,iCustomer,Customer,Product,Qty,unit;
 
+
+    public String getiCustomer() {
+        return iCustomer;
+    }
+
+    public void setiCustomer(String iCustomer) {
+        this.iCustomer = iCustomer;
+    }
 
     public String getDocNo() {
         return DocNo;

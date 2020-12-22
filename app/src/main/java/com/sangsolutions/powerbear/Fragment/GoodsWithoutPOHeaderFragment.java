@@ -145,7 +145,7 @@ public class GoodsWithoutPOHeaderFragment extends Fragment {
                 for (int i = 0; i < cursor.getCount(); i++) {
                     supplierList.add(new SupplierSearch(
                             cursor.getString(cursor.getColumnIndex("Cusomer")),
-                            cursor.getString(cursor.getColumnIndex("HeaderId"))
+                            cursor.getString(cursor.getColumnIndex("iCustomer"))
                     ));
                     cursor.moveToNext();
                     if (i + 1 == cursor.getCount()) {

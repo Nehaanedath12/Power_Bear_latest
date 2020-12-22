@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.CountDownTimer;
-import android.os.FileUtils;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -20,8 +19,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
-
-import com.google.gson.internal.$Gson$Preconditions;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.R;
 
@@ -30,7 +27,7 @@ import java.util.Objects;
 
 public class MaintenanceService extends Service {
     public static final String CHANNEL_ID = "MaintenanceForegroundService";
-    int progress = 0, maxProgress = 1000;
+    int progress = 0, maxProgress = 0;
     DatabaseHelper helper;
     NotificationCompat.Builder builder;
     NotificationManager manager;
@@ -51,13 +48,14 @@ public class MaintenanceService extends Service {
 
                     if(folder.exists()) {
                         if (folder.isDirectory())
-                            maxProgress = Objects.requireNonNull(folder.listFiles()).length;
                             for (File child : Objects.requireNonNull(folder.listFiles())){
                                 if (child.delete()) {
                                     Log.d("deleted", child.getName());
                                 }
 
                             }
+                        stopForeground(true);
+                    }else {
                         stopForeground(true);
                     }
                 }
@@ -69,6 +67,7 @@ public class MaintenanceService extends Service {
             stopForeground(true);
             e.printStackTrace();
         }
+        stopSelf();
        /* new CountDownTimer(maxProgress, 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -81,6 +80,8 @@ public class MaintenanceService extends Service {
         }.start();*/
     }
 
+
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         helper = new DatabaseHelper(this);
@@ -91,19 +92,11 @@ public class MaintenanceService extends Service {
          builder.setContentTitle("Maintenance!");
          builder.setContentText("Maintenance Service is running..");
          builder.setSmallIcon(R.drawable.logo);
-         builder.setProgress(maxProgress/1000,progress,true);
+         builder.setProgress(maxProgress,progress,true);
          Notification notification = builder.build();
-         startForeground(1, notification);
-           new CountDownTimer(maxProgress, 1000) {
+         startForeground(1,notification);
+         DeleteFiles();
 
-            public void onTick(long millisUntilFinished) {
-                progress = (int) millisUntilFinished/1000;
-            }
-
-            public void onFinish() {
-                DeleteFiles();
-            }
-        }.start();
 
         return START_NOT_STICKY;
     }

@@ -41,7 +41,7 @@ public class PendingPO extends AppCompatActivity {
        if(cursor!=null){
            for (int i = 0; i < cursor.getCount(); i++) {
                //noinspection SpellCheckingInspection
-               list.add(new PO(cursor.getString(cursor.getColumnIndex("HeaderId")),
+               list.add(new PO(cursor.getString(cursor.getColumnIndex("iCustomer")),
                        Tools.ConvertDate(cursor.getString(cursor.getColumnIndex("DocDate"))),cursor.getString(cursor.getColumnIndex("Cusomer"))));
                cursor.moveToNext();
                if(cursor.getCount()==i+1){
@@ -108,7 +108,7 @@ public class PendingPO extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(PendingPO.this, GoodsReceipt.class);
-                intent.putExtra("HeaderId",parent.getItemAtPosition(position).toString());
+                intent.putExtra("iCustomer",parent.getItemAtPosition(position).toString());
                 intent.putExtra("EditMode",false);
                 startActivity(intent);
 

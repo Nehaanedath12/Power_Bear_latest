@@ -59,7 +59,8 @@ public class GetPendingSoService extends JobService {
                             p.setDocDate(jsonObject.getString("DocDate"));
                             p.setHeaderId(jsonObject.getString("HeaderId"));
                             p.setSiNo(jsonObject.getString("SINo"));
-                            p.setCustomer(jsonObject.getString("Cusomer"));
+                            p.setCustomer(jsonObject.getString("Customer"));
+                            p.setiCustomer(jsonObject.getString("iCustomer"));
                             p.setProduct(jsonObject.getString("Product"));
                             p.setQty(jsonObject.getString("Qty"));
                             p.setUnit(jsonObject.getString("unit"));
