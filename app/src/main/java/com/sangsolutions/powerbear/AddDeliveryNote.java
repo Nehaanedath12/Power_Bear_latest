@@ -273,6 +273,7 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
         super.onDestroy();
         DeliveryNoteBodySingleton.getInstance().clearList();
         DeliveryNoteSOSingleton.getInstance().clearList();
+        PublicData.clearData();
     }
 
 

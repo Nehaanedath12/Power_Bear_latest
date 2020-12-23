@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     final Context context;
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "PowerBear.db";
     private static final String TABLE_PRODUCT = "tbl_Product";
     private static final String TABLE_PENDING_SO = "tbl_PendingSO";
@@ -750,7 +750,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor GetCustomer(String keyword) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT Cusomer,iCustomer from tbl_PendingSO where Cusomer like '"+keyword+"%'  GROUP BY iCustomer ",null);
+        Cursor cursor = db.rawQuery("SELECT DISTINCT iCustomer,Cusomer from tbl_PendingSO where Cusomer like '"+keyword+"%'",null);
         if (cursor.moveToFirst())
             return cursor;
         else
@@ -1279,7 +1279,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetSupplier(String keyword) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT Cusomer,iCustomer,DocNo from tbl_PendingPO where Cusomer like '"+keyword+"%'  GROUP BY DocNo ",null);
+        Cursor cursor = db.rawQuery("SELECT DISTINCT Cusomer,iCustomer from tbl_PendingPO where Cusomer like '"+keyword+"%'",null);
         if (cursor.moveToFirst())
             return cursor;
         else

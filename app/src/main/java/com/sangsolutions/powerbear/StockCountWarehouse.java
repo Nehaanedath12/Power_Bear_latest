@@ -48,6 +48,7 @@ public class StockCountWarehouse extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         StockCountProductSingleton.getInstance().clearList();
+        PublicData.clearData();
     }
     private void Save(){
         String s_date,s_narration,s_warehouse,s_stock_date;

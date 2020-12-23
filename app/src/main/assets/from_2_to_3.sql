@@ -1,0 +1,2 @@
+ALTER TABLE tbl_PendingSO ADD iCustomer INTEGER DEFAULT 0;
+ALTER TABLE tbl_PendingPO ADD iCustomer INTEGER DEFAULT 0;

@@ -262,6 +262,7 @@ public void SetViewPager(String DocNo,boolean EditMode){
         super.onDestroy();
         GoodsReceiptPoSingleton.getInstance().clearList();
         GoodsReceiptBodySingleton.getInstance().clearList();
+        PublicData.clearData();
     }
 
     @Override

@@ -237,6 +237,7 @@ public class GoodsWithoutPO extends AppCompatActivity implements View.OnClickLis
     protected void onDestroy() {
         super.onDestroy();
         GoodsReceiptBodySingleton.getInstance().clearList();
+        PublicData.clearData();
     }
 
 

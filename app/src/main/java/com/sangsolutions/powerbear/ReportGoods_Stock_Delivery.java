@@ -67,7 +67,7 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
                                 mProgressBar.setVisibility(View.INVISIBLE);
                                 try {
                                     empty_frame.setVisibility(View.INVISIBLE);
-                                    JSONArray jsonArray = new JSONArray(response.getString("MRN_Details"));
+                                    JSONArray jsonArray = new JSONArray(response.getString("Data"));
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         String ProductName = jsonObject.getString("ProductName");
@@ -192,10 +192,9 @@ public class ReportGoods_Stock_Delivery extends AppCompatActivity {
                                     }
                                 } catch (JSONException e) {
                                     empty_frame.setVisibility(View.VISIBLE);
-
                                     e.printStackTrace();
                                 }
-                                Log.d("data",from+to);
+
                             }
 
                             @Override
