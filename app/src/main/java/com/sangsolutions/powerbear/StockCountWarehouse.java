@@ -153,6 +153,8 @@ public class StockCountWarehouse extends AppCompatActivity {
                         voucherNo = "";
                         EditMode = "new";
                         PublicData.clearData();
+                        PublicData.voucher = "S-" + DateFormat.format("ddMMyy-HHmmss", new Date());
+                        voucherNo = PublicData.voucher;
                         StockCountProductSingleton.getInstance().clearList();
                         setUpViewPager(viewPager);
                     }

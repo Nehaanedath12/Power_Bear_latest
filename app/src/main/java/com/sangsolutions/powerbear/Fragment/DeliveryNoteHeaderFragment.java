@@ -115,7 +115,7 @@ public class DeliveryNoteHeaderFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(soSelectAdapter.getSelectedItemCount()>0){
-                    setPORecycler(soSelectAdapter.getSelectedItems());
+                    setSORecycler(soSelectAdapter.getSelectedItems());
                     alertDialog.dismiss();
                 }else {
                     Toast.makeText(getActivity(), "Select a document before applying it!", Toast.LENGTH_SHORT).show();
@@ -137,7 +137,7 @@ public class DeliveryNoteHeaderFragment extends Fragment {
     }
 
 
-    public void setPORecycler(List<Integer> list){
+    public void setSORecycler(List<Integer> list){
         soList.clear();
         deliverySoList.clear();
         for(int i=0;i<list.size();i++){
@@ -249,6 +249,7 @@ public class DeliveryNoteHeaderFragment extends Fragment {
             customerAdapter.setOnClickListener(new SupplierSearchAdapter.OnClickListener() {
                 @Override
                 public void onItemClick(SupplierSearch search_item) {
+
                     if(!search_item.getsSupplierId().equals("0"))
                         if(supplierSearchAlert.isShowing()) {
                             soSelectList.clear();

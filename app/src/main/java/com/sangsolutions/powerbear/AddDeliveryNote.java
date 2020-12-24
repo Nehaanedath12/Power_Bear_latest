@@ -80,20 +80,19 @@ public class AddDeliveryNote extends AppCompatActivity implements View.OnClickLi
                 List<String> listPo = new ArrayList<>();
                 listProduct.clear();
                 listPo.clear();
-
-               Cursor cursor = helper.GetSOs(supplier);
-                if(cursor!=null&&cursor.moveToFirst()){
-                    for(int i=0;i<cursor.getCount();i++) {
-                        for(int j=0;j<listSO.size();j++) {
-                        if(!listSO.get(j).contains(cursor.getString(cursor.getColumnIndex("DocNo")))) {
-                            Toast.makeText(this, "Please check the Doc No.", Toast.LENGTH_SHORT).show();
-                            return;
+                    try {
+                        for (int i = 0; i < listSO.size(); i++) {
+                            if (!helper.GetSOsForSave(listSO.get(i),supplier)) {
+                                Toast.makeText(this, "Please check the Doc No.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                         }
-                        }
-
-                        cursor.moveToNext();
+                    }catch (Exception e){
+                        Toast.makeText(this, "Error while saving!", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                        return;
                     }
-                }
+
 
                 for (int i = 0; i < listMain.size(); i++) {
                     listProduct.add(listMain.get(i).getiProduct());

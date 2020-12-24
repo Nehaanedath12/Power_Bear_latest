@@ -717,7 +717,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor GetSOs(String iCustomer){
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DocNo from tbl_PendingSO WHERE iCustomer = ? and TempQty != Qty GROUP by DocNo ",new String[]{iCustomer});
+        Cursor cursor = db.rawQuery("SELECT DISTINCT DocNo from tbl_PendingSO WHERE iCustomer = ? and TempQty != Qty",new String[]{iCustomer});
         if(cursor.moveToFirst()){
             return cursor;
         }else {
@@ -725,6 +725,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean GetSOsForSave(String DocNo,String iCustomer){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT  count(DocNo) as DocCount from tbl_PendingSO WHERE DocNo = ? and iCustomer = ?",new String[]{DocNo,iCustomer});
+        cursor.moveToFirst();
+        return cursor.getInt(cursor.getColumnIndex("DocCount"))>0;
+    }
 
     public String GetSOSiNo(String iCustomerId,String iProduct,String sDocNo){
         this.db = getReadableDatabase();
@@ -1218,7 +1224,7 @@ public boolean DeleteStockCount(String voucherNo){
 
     public Cursor GetPOs(String iCustomer) {
         this.db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DocNo from tbl_PendingPO WHERE iCustomer = ? and TempQty != Qty GROUP by DocNo ", new String[]{iCustomer});
+        Cursor cursor = db.rawQuery("SELECT DISTINCT DocNo from tbl_PendingPO WHERE iCustomer = ? and TempQty != Qty", new String[]{iCustomer});
         if (cursor.moveToFirst()) {
             return cursor;
         } else {
@@ -1226,6 +1232,12 @@ public boolean DeleteStockCount(String voucherNo){
         }
     }
 
+    public boolean GetPOsForSave(String DocNo,String iCustomer){
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT  count(DocNo) as DocCount from tbl_PendingPO WHERE DocNo = ? and iCustomer = ?",new String[]{DocNo,iCustomer});
+        cursor.moveToFirst();
+        return cursor.getInt(cursor.getColumnIndex("DocCount"))>0;
+    }
 
     // Insert Pending PO
     public boolean InsertPendingPO(PendingSO p){

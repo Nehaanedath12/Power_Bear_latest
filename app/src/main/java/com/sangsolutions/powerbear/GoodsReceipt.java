@@ -82,6 +82,20 @@ if(listPO!=null&&listPO.size()>0&&listMain!=null&&listMain.size()>0) {
             listProduct.add(listMain.get(i).getiProduct());
             listPo.add(listMain.get(i).getsPONo());
         }
+
+        try {
+            for (int i = 0; i < listPo.size(); i++) {
+                if (!helper.GetPOsForSave(listPo.get(i),supplier)) {
+                    Toast.makeText(this, "Please check the Doc No.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        }catch (Exception e){
+            Toast.makeText(this, "Error while saving!", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+            return;
+        }
+
         try {
             helper.DeleteBodyItems(listProduct, listPo, voucher);
         } catch (Exception e) {
