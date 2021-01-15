@@ -84,7 +84,7 @@ import kotlin.jvm.functions.Function1;
 public class GoodsWithoutPOBodyFragment extends Fragment {
 
 private FloatingActionButton add_fab, fab_delete, fab_close_all;
-private RecyclerView rv_products;
+private RecyclerView rv_products,rv_product_search;
 
     // to load main recyclerView
     private  GoodsReceiptBodyAdapter goodsReceiptBodyAdapter;
@@ -121,7 +121,8 @@ private RecyclerView rv_products;
     ImageView img_minor,img_damaged,img_barcode,img_close,img_forward,img_backward,img_save;
     EditText et_barcode;
     Spinner sp_unit,sp_warehouse;
-    private TextView product_name, product_code;
+    private TextView product_code;
+    private EditText product_name;
     private EditText et_search_input;
     private EditText et_regular_remarks,et_regular_qty,et_minor_remarks,et_minor_qty,et_damaged_remarks,et_damaged_qty;
     private Spinner sp_minor_type,sp_damage_type;
@@ -157,12 +158,9 @@ private RecyclerView rv_products;
 
 
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                fab_delete.setVisibility(View.GONE);
-                fab_close_all.setVisibility(View.GONE);
-            }
+        handler.postDelayed(() -> {
+            fab_delete.setVisibility(View.GONE);
+            fab_close_all.setVisibility(View.GONE);
         }, 300);
         selection_active_main = false;
     }
@@ -176,17 +174,14 @@ private RecyclerView rv_products;
         if (count == 1 && fab_delete.getVisibility() != View.VISIBLE) {
 
             final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    add_fab.startAnimation(move_down_anim);
-                    add_fab.setVisibility(View.GONE);
+            handler.postDelayed(() -> {
+                add_fab.startAnimation(move_down_anim);
+                add_fab.setVisibility(View.GONE);
 
-                    fab_delete.startAnimation(move_up_anim);
-                    fab_close_all.startAnimation(move_up_anim);
-                    fab_delete.setVisibility(View.VISIBLE);
-                    fab_close_all.setVisibility(View.VISIBLE);
-                }
+                fab_delete.startAnimation(move_up_anim);
+                fab_close_all.startAnimation(move_up_anim);
+                fab_delete.setVisibility(View.VISIBLE);
+                fab_close_all.setVisibility(View.VISIBLE);
             }, 300);
         }
     }
@@ -226,19 +221,11 @@ private RecyclerView rv_products;
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle("Delete!")
                 .setMessage("Do you want to delete " + goodsReceiptBodyAdapter.getSelectedItemCount() + " items?")
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        DeleteItems();
-                    }
+                .setPositiveButton("YES", (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                    DeleteItems();
                 })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                }).create()
+                .setNegativeButton("NO", (dialogInterface, i) -> dialogInterface.dismiss()).create()
                 .show();
     }
 
@@ -259,28 +246,22 @@ private RecyclerView rv_products;
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setMessage(message)
                 .setTitle(title)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(type.equals("close")){
-                            if (mainAlertDialog.isShowing()){
-                                mainAlertDialog.dismiss();
-                                current_position = 0;
-                                InnerEditMode = false;
-                                listDamagedImage.clear();
-                               listMinorImage.clear();
-                            }
-                        }else if(type.equals("delete_item")){
-                           DeleteItem(pos);
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    if(type.equals("close")){
+                        if (mainAlertDialog.isShowing()){
+                            mainAlertDialog.dismiss();
+                            current_position = 0;
+                            InnerEditMode = false;
+                            listDamagedImage.clear();
+                            listMinorImage.clear();
+                            SearchProductList.clear();
+                            adapter.notifyDataSetChanged();
                         }
+                    }else if(type.equals("delete_item")){
+                       DeleteItem(pos);
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .create().show();
     }
     //////////////////////////////////////////
@@ -455,12 +436,9 @@ private RecyclerView rv_products;
             InitialiseDetectorsAndSources();
         }
 
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(barcodeAlertDialog.isShowing()){
-                    barcodeAlertDialog.dismiss();
-                }
+        img_close.setOnClickListener(v -> {
+            if(barcodeAlertDialog.isShowing()){
+                barcodeAlertDialog.dismiss();
             }
         });
 
@@ -479,15 +457,27 @@ private RecyclerView rv_products;
             map.put("Unit",cursor.getString(cursor.getColumnIndex("Unit")));
 
             map.put("iProduct",cursor.getString(cursor.getColumnIndex("MasterId")));
-            product_name.setText("Product : "+map.get("Name"));
+            product_name.setText(map.get("Name"));
             product_code.setText("Code : "+map.get("Code"));
             SetUnit(helper.GetProductUnit(barcode),position);
+
+            SearchProductList.clear();
+            adapter.notifyDataSetChanged();
+
+            et_regular_qty.requestFocus();
+            new Handler().postDelayed(() -> {
+                InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(et_regular_qty,InputMethodManager.SHOW_FORCED);
+            },100);
+
         }else {
             map.put("Name","");
             map.put("Code","");
             map.put("Unit","");
             map.put("iProduct","");
-            product_name.setText("Product : ");
+            product_name.setText("");
+            SearchProductList.clear();
+            adapter.notifyDataSetChanged();
             product_code.setText("Code : ");
 
         }
@@ -521,28 +511,22 @@ private RecyclerView rv_products;
 
         rotation_image(bm,image_clicked);
 
-        forward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(photo.size()>0) {
-                    if (image_current_position[0] < photo.size()) {
-                        Bitmap bm = BitmapFactory.decodeFile(photo.get(image_current_position[0]));
-                        rotation_image(bm, image_clicked);
-                        image_current_position[0]++;
+        forward.setOnClickListener(v -> {
+            if(photo.size()>0) {
+                if (image_current_position[0] < photo.size()) {
+                    Bitmap bm1 = BitmapFactory.decodeFile(photo.get(image_current_position[0]));
+                    rotation_image(bm1, image_clicked);
+                    image_current_position[0]++;
 
-                    }
                 }
             }
         });
-        backward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(photo.size()>0){
-                    if(image_current_position[0]>0){
-                        image_current_position[0]--;
-                        Bitmap bm = BitmapFactory.decodeFile(photo.get(image_current_position[0]));
-                        rotation_image(bm,image_clicked);
-                    }
+        backward.setOnClickListener(v -> {
+            if(photo.size()>0){
+                if(image_current_position[0]>0){
+                    image_current_position[0]--;
+                    Bitmap bm12 = BitmapFactory.decodeFile(photo.get(image_current_position[0]));
+                    rotation_image(bm12,image_clicked);
                 }
             }
         });
@@ -555,32 +539,24 @@ private RecyclerView rv_products;
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle("Delete Image!")
                 .setMessage("Do you want to delete this image?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(type.equals("minor")){
-                            try {
-                                listMinorImage.remove(pos);
-                                minorDamagedPhotoAdapter.notifyDataSetChanged();
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        }else if(type.equals("damaged")){
-                            try {
-                                listDamagedImage.remove(pos);
-                                damagedPhotoAdapter.notifyDataSetChanged();
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    if(type.equals("minor")){
+                        try {
+                            listMinorImage.remove(pos);
+                            minorDamagedPhotoAdapter.notifyDataSetChanged();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }else if(type.equals("damaged")){
+                        try {
+                            listDamagedImage.remove(pos);
+                            damagedPhotoAdapter.notifyDataSetChanged();
+                        }catch (Exception e){
+                            e.printStackTrace();
                         }
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .create().show();
 
     }
@@ -710,7 +686,7 @@ private RecyclerView rv_products;
         et_barcode = view.findViewById(R.id.barcode);
         sp_unit = view.findViewById(R.id.unit);
         sp_warehouse = view.findViewById(R.id.warehouse);
-        product_name = view.findViewById(R.id.product);
+        product_name = view.findViewById(R.id.et_product);
         product_code = view.findViewById(R.id.code);
 
         et_regular_remarks = view.findViewById(R.id.regular_remarks);
@@ -731,6 +707,8 @@ private RecyclerView rv_products;
         damaged_linear=view.findViewById(R.id.damaged_linear);
         minor_damaged_linear=view.findViewById(R.id.minor_damage_linear);
 
+        rv_product_search = view.findViewById(R.id.rv_product_edit);
+        rv_product_search.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         rv_minor.setLayoutManager(new LinearLayoutManager(requireActivity(),RecyclerView.HORIZONTAL,false));
         rv_minor.setAdapter(minorDamagedPhotoAdapter);
@@ -802,127 +780,116 @@ private RecyclerView rv_products;
             e.printStackTrace();
         }
 
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GeneralAlert("Do you want to close?","Close!","close",0);
+        img_close.setOnClickListener(v -> GeneralAlert("Do you want to close?","Close!","close",0));
+
+        img_barcode.setOnClickListener(v -> {
+            if (!hasPermissions(getActivity(), PERMISSIONS)) {
+                ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS, 100);
+            } else {
+            BarcodeAlert();
             }
         });
 
-        img_barcode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!hasPermissions(getActivity(), PERMISSIONS)) {
-                    ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS, 100);
-                } else {
-                BarcodeAlert();
+        img_save.setOnClickListener(v -> {
+            if(et_regular_qty.getText().toString().equals("")){
+                et_regular_remarks.setText("");
+
+            }
+            if(et_damaged_qty.getText().toString().equals("")){
+                et_damaged_remarks.setText("");
+                if(listDamagedImage.size()>0) {
+                    listDamagedImage.clear();
                 }
             }
-        });
-
-        img_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(et_regular_qty.getText().toString().equals("")){
-                    et_regular_remarks.setText("");
-
+            if(et_minor_qty.getText().toString().equals("")){
+                et_minor_remarks.setText("");
+                if(listMinorImage.size()>0) {
+                    listMinorImage.clear();
                 }
-                if(et_damaged_qty.getText().toString().equals("")){
-                    et_damaged_remarks.setText("");
-                    if(listDamagedImage.size()>0) {
-                        listDamagedImage.clear();
-                    }
-                }
-                if(et_minor_qty.getText().toString().equals("")){
-                    et_minor_remarks.setText("");
-                    if(listMinorImage.size()>0) {
-                        listMinorImage.clear();
-                    }
-                }
+            }
 
-                try {
-                    int regular = et_regular_qty.getText().toString().isEmpty() ? 0 : Integer.parseInt(et_regular_qty.getText().toString());
-                    int minor = et_minor_qty.getText().toString().isEmpty() ? 0 : Integer.parseInt(et_minor_qty.getText().toString());
-                    int damaged = et_damaged_qty.getText().toString().isEmpty() ? 0 : Integer.parseInt(et_damaged_qty.getText().toString());
+            try {
+                int regular = et_regular_qty.getText().toString().isEmpty() ? 0 : Integer.parseInt(et_regular_qty.getText().toString());
+                int minor = et_minor_qty.getText().toString().isEmpty() ? 0 : Integer.parseInt(et_minor_qty.getText().toString());
+                int damaged = et_damaged_qty.getText().toString().isEmpty() ? 0 : Integer.parseInt(et_damaged_qty.getText().toString());
 
-                    if((regular+minor+damaged)<=0){
-                        Toast.makeText(getActivity(), "Enter Quantity to save!", Toast.LENGTH_SHORT).show();
-                    }else if(et_barcode.getText().toString().equals("")||helper.GetNameFromBarcode(et_barcode.getText().toString()).equals("")){
-                        et_barcode.setError("Enter valid barcode!");
+                if((regular+minor+damaged)<=0){
+                    Toast.makeText(getActivity(), "Enter Quantity to save!", Toast.LENGTH_SHORT).show();
+                }else if(et_barcode.getText().toString().equals("")||helper.GetNameFromBarcode(et_barcode.getText().toString()).equals("")){
+                    et_barcode.setError("Enter valid barcode!");
+                }else {
+                    String minorImage, damagedImage,barcode;
+
+                    minorImage = TextUtils.join(",", listMinorImage);
+
+                    damagedImage = TextUtils.join(",", listDamagedImage);
+
+                    barcode = et_barcode.getText().toString();
+
+                    if(!InnerEditMode){
+                        listMain.add(new GoodsReceiptBody(
+                                "",
+                                helper.GetNameFromBarcode(barcode),
+                                helper.GetCodeFromBarcode(barcode),
+                                helper.GetMasterIdFromBarcode(barcode),
+                                list.get(sp_warehouse.getSelectedItemPosition()==-1?0:sp_warehouse.getSelectedItemPosition()).getName(),
+                                list.get(sp_warehouse.getSelectedItemPosition()==-1?0:sp_warehouse.getSelectedItemPosition()).getMasterId(),
+                                barcode,
+                                "",
+                                et_regular_qty.getText().toString().trim(),
+                                "",
+                                sp_unit.getSelectedItem().toString(),
+                                et_regular_remarks.getText().toString().trim(),
+                                et_minor_qty.getText().toString().trim(),
+                                et_minor_remarks.getText().toString().trim(),
+                                minorImage,
+                                et_damaged_qty.getText().toString().trim(),
+                                et_damaged_remarks.getText().toString().trim(),
+                                damagedImage,
+                                listRemarks.get(sp_minor_type.getSelectedItemPosition()==-1?0:sp_minor_type.getSelectedItemPosition()).getiId(),
+                                listRemarks.get(sp_damage_type.getSelectedItemPosition()==-1?0:sp_damage_type.getSelectedItemPosition()).getiId()
+                        ));
                     }else {
-                        String minorImage, damagedImage,barcode;
-
-                        minorImage = TextUtils.join(",", listMinorImage);
-
-                        damagedImage = TextUtils.join(",", listDamagedImage);
-
-                        barcode = et_barcode.getText().toString();
-
-                        if(!InnerEditMode){
-                            listMain.add(new GoodsReceiptBody(
-                                    "",
-                                    helper.GetNameFromBarcode(barcode),
-                                    helper.GetCodeFromBarcode(barcode),
-                                    helper.GetMasterIdFromBarcode(barcode),
-                                    list.get(sp_warehouse.getSelectedItemPosition()==-1?0:sp_warehouse.getSelectedItemPosition()).getName(),
-                                    list.get(sp_warehouse.getSelectedItemPosition()==-1?0:sp_warehouse.getSelectedItemPosition()).getMasterId(),
-                                    barcode,
-                                    "",
-                                    et_regular_qty.getText().toString().trim(),
-                                    "",
-                                    sp_unit.getSelectedItem().toString(),
-                                    et_regular_remarks.getText().toString().trim(),
-                                    et_minor_qty.getText().toString().trim(),
-                                    et_minor_remarks.getText().toString().trim(),
-                                    minorImage,
-                                    et_damaged_qty.getText().toString().trim(),
-                                    et_damaged_remarks.getText().toString().trim(),
-                                    damagedImage,
-                                    listRemarks.get(sp_minor_type.getSelectedItemPosition()==-1?0:sp_minor_type.getSelectedItemPosition()).getiId(),
-                                    listRemarks.get(sp_damage_type.getSelectedItemPosition()==-1?0:sp_damage_type.getSelectedItemPosition()).getiId()
-                            ));
-                        }else {
-                           listMain.set(current_position,new GoodsReceiptBody(
-                                   "",
-                                   helper.GetNameFromBarcode(barcode),
-                                   helper.GetCodeFromBarcode(barcode),
-                                   helper.GetMasterIdFromBarcode(barcode),
-                                   list.get(sp_warehouse.getSelectedItemPosition()==-1?0:sp_warehouse.getSelectedItemPosition()).getName(),
-                                   list.get(sp_warehouse.getSelectedItemPosition()==-1?0:sp_warehouse.getSelectedItemPosition()).getMasterId(),
-                                   barcode,
-                                   "",
-                                   et_regular_qty.getText().toString().trim(),
-                                   "",
-                                   sp_unit.getSelectedItem().toString(),
-                                   et_regular_remarks.getText().toString().trim(),
-                                   et_minor_qty.getText().toString().trim(),
-                                   et_minor_remarks.getText().toString().trim(),
-                                   minorImage,
-                                   et_damaged_qty.getText().toString().trim(),
-                                   et_damaged_remarks.getText().toString().trim(),
-                                   damagedImage,
-                                   listRemarks.get(sp_minor_type.getSelectedItemPosition()==-1?0:sp_minor_type.getSelectedItemPosition()).getiId(),
-                                   listRemarks.get(sp_damage_type.getSelectedItemPosition()==-1?0:sp_damage_type.getSelectedItemPosition()).getiId()
-                           ));
-                        }
-
-                        GoodsReceiptBodySingleton.getInstance().setList(listMain);
-                        goodsReceiptBodyAdapter.notifyDataSetChanged();
-                        PublicData.clearDataIgnoreHeader();
-                        Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
-                        current_position = 0;
-                        InnerEditMode = false;
-                        listDamagedImage.clear();
-                        listMinorImage.clear();
-                        mainAlertDialog.dismiss();
+                       listMain.set(current_position,new GoodsReceiptBody(
+                               "",
+                               helper.GetNameFromBarcode(barcode),
+                               helper.GetCodeFromBarcode(barcode),
+                               helper.GetMasterIdFromBarcode(barcode),
+                               list.get(sp_warehouse.getSelectedItemPosition()==-1?0:sp_warehouse.getSelectedItemPosition()).getName(),
+                               list.get(sp_warehouse.getSelectedItemPosition()==-1?0:sp_warehouse.getSelectedItemPosition()).getMasterId(),
+                               barcode,
+                               "",
+                               et_regular_qty.getText().toString().trim(),
+                               "",
+                               sp_unit.getSelectedItem().toString(),
+                               et_regular_remarks.getText().toString().trim(),
+                               et_minor_qty.getText().toString().trim(),
+                               et_minor_remarks.getText().toString().trim(),
+                               minorImage,
+                               et_damaged_qty.getText().toString().trim(),
+                               et_damaged_remarks.getText().toString().trim(),
+                               damagedImage,
+                               listRemarks.get(sp_minor_type.getSelectedItemPosition()==-1?0:sp_minor_type.getSelectedItemPosition()).getiId(),
+                               listRemarks.get(sp_damage_type.getSelectedItemPosition()==-1?0:sp_damage_type.getSelectedItemPosition()).getiId()
+                       ));
                     }
 
-                }catch (Exception e){
-                    e.printStackTrace();
+                    GoodsReceiptBodySingleton.getInstance().setList(listMain);
+                    goodsReceiptBodyAdapter.notifyDataSetChanged();
+                    PublicData.clearDataIgnoreHeader();
+                    Toast.makeText(getActivity(), "Done!", Toast.LENGTH_SHORT).show();
+                    current_position = 0;
+                    InnerEditMode = false;
+                    listDamagedImage.clear();
+                    listMinorImage.clear();
+                    mainAlertDialog.dismiss();
                 }
 
-                }
-        });
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            });
 
         et_barcode.addTextChangedListener(new TextWatcher() {
             @Override
@@ -941,12 +908,7 @@ private RecyclerView rv_products;
             }
         });
 
-        img_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchAlert();
-            }
-        });
+        img_search.setOnClickListener(v -> searchAlert());
 
         minorDamagedPhotoAdapter.setOnClickListener(new MinorDamagedPhotoAdapter.OnClickListener() {
             @Override
@@ -963,40 +925,24 @@ private RecyclerView rv_products;
         });
 
 
-        img_minor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CameraAlert("minor");
-            }
-        });
+        img_minor.setOnClickListener(v -> CameraAlert("minor"));
 
-        img_damaged.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CameraAlert("damaged");
-            }
-        });
+        img_damaged.setOnClickListener(v -> CameraAlert("damaged"));
 
-        img_forward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listMain.size() > 1) {
-                    if (current_position+1 < listMain.size()) {
-                        current_position++;
-                        LoadDataToMainAlert(current_position,list);
-                    }
+        img_forward.setOnClickListener(v -> {
+            if (listMain.size() > 1) {
+                if (current_position+1 < listMain.size()) {
+                    current_position++;
+                    LoadDataToMainAlert(current_position,list);
                 }
             }
         });
 
-        img_backward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listMain.size() > 1) {
-                    if (current_position > 0 &&current_position<listMain.size()) {
-                        current_position--;
-                        LoadDataToMainAlert(current_position,list);
-                    }
+        img_backward.setOnClickListener(v -> {
+            if (listMain.size() > 1) {
+                if (current_position > 0 &&current_position<listMain.size()) {
+                    current_position--;
+                    LoadDataToMainAlert(current_position,list);
                 }
             }
         });
@@ -1098,13 +1044,61 @@ private RecyclerView rv_products;
         if(InnerEditMode){
             LoadDataToMainAlert(pos,list);
         }
+
+        product_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            ProductSearch(s.toString(),"autoComplete");
+            }
+        });
     }
 
-    private void ProductSearch(String keyword) {
+    private void ProductSearch(String keyword,String type) {
         SearchProductList.clear();
+        Cursor cursor = helper.SearchProduct(keyword);
+        if(type.equals("autoComplete")){
+            if (cursor != null && !keyword.equals("")) {
+                cursor.moveToFirst();
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    String Name = cursor.getString(cursor.getColumnIndex("Name"));
+                    String Code = cursor.getString(cursor.getColumnIndex("Code"));
+                    String Barcode = cursor.getString(cursor.getColumnIndex("Barcode"));
+                    SearchProductList.add(new SearchProduct(Name, Code, Barcode));
+                    cursor.moveToNext();
+
+                    if (i + 1 == cursor.getCount()) {
+                        rv_product_search.setAdapter(adapter);
+                    }
+
+                    adapter.setOnClickListener(search_item -> {
+                        et_barcode.setText(search_item.getBarcode());
+                        product_name.setText(search_item.getName());
+                        SetUnit(helper.GetProductUnit(search_item.getBarcode()), -1);
+                        SearchProductList.clear();
+                        adapter.notifyDataSetChanged();
+                    });
+                }
+
+            } else {
+                SearchProductList.clear();
+                SearchProductList.add(new SearchProduct("No Products available!", "", ""));
+                rv_product_search.setAdapter(adapter);
+
+            }
+        }else {
         if (dialog.isShowing()) {
-            Cursor cursor = helper.SearchProduct(keyword);
-            if (cursor != null&&!keyword.equals("")) {
+
+            if (cursor != null && !keyword.equals("")) {
                 cursor.moveToFirst();
                 for (int i = 0; i < cursor.getCount(); i++) {
                     String Name = cursor.getString(cursor.getColumnIndex("Name"));
@@ -1117,13 +1111,10 @@ private RecyclerView rv_products;
                         rv_search.setAdapter(adapter);
                     }
 
-                    adapter.setOnClickListener(new SearchProductAdapter.OnClickListener() {
-                        @Override
-                        public void onItemClick(SearchProduct search_item) {
-                            et_barcode.setText(search_item.getBarcode());
-                            SetUnit(helper.GetProductUnit(search_item.getBarcode()),-1);
-                            dialog.dismiss();
-                        }
+                    adapter.setOnClickListener(search_item -> {
+                        et_barcode.setText(search_item.getBarcode());
+                        SetUnit(helper.GetProductUnit(search_item.getBarcode()), -1);
+                        dialog.dismiss();
                     });
                 }
 
@@ -1133,7 +1124,7 @@ private RecyclerView rv_products;
                 rv_search.setAdapter(adapter);
 
             }
-
+        }
         }
     }
 
@@ -1150,18 +1141,13 @@ private RecyclerView rv_products;
 
         if (dialog.isShowing()) {
 
-            et_search_input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            et_search_input.setOnFocusChangeListener((v, hasFocus) -> et_search_input.post(new Runnable() {
                 @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    et_search_input.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            InputMethodManager inputMethodManager = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
-                            Objects.requireNonNull(inputMethodManager).showSoftInput(et_search_input, InputMethodManager.SHOW_IMPLICIT);
-                        }
-                    });
+                public void run() {
+                    InputMethodManager inputMethodManager = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
+                    Objects.requireNonNull(inputMethodManager).showSoftInput(et_search_input, InputMethodManager.SHOW_IMPLICIT);
                 }
-            });
+            }));
             et_search_input.requestFocus();
             et_search_input.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -1176,7 +1162,7 @@ private RecyclerView rv_products;
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    ProductSearch(s.toString());
+                    ProductSearch(s.toString(),"type");
                 }
             });
 
@@ -1223,53 +1209,47 @@ private RecyclerView rv_products;
         }else {
             fotoapparat.start();
         }
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fotoapparat.stop();
-                CameraAlertDialog.dismiss();
-            }
+        close.setOnClickListener(view1 -> {
+            fotoapparat.stop();
+            CameraAlertDialog.dismiss();
         });
-        Click.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Click.setClickable(false);
-                final PhotoResult photoResult = fotoapparat.takePicture();
+        Click.setOnClickListener(view12 -> {
+            Click.setClickable(false);
+            final PhotoResult photoResult = fotoapparat.takePicture();
 
-                if (type.equals("minor")) {
-                    try {
-                        photoResult.toBitmap().whenAvailable(new Function1<BitmapPhoto, Unit>() {
-                            @Override
-                            public Unit invoke(BitmapPhoto bitmapPhoto) {
-                                Click.setClickable(true);
-                                listMinorImage.add(Tools.savePhoto(requireActivity(), photoResult));
-                                CameraAlertDialog.dismiss();
-                                Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
-                                minorDamagedPhotoAdapter.notifyDataSetChanged();
-                                return Unit.INSTANCE;
-                            }
-                        });
-                    }catch (Exception e){
-                        Click.setClickable(true);
-                        e.printStackTrace();
-                    }
-                }else if(type.equals("damaged")){
-                    try {
-                        photoResult.toBitmap().whenAvailable(new Function1<BitmapPhoto, Unit>() {
-                            @Override
-                            public Unit invoke(BitmapPhoto bitmapPhoto) {
-                                Click.setClickable(true);
-                                listDamagedImage.add(Tools.savePhoto(requireActivity(), photoResult));
-                                CameraAlertDialog.dismiss();
-                                Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
-                                damagedPhotoAdapter.notifyDataSetChanged();
-                                return Unit.INSTANCE;
-                            }
-                        });
-                    }catch (Exception e){
-                        Click.setClickable(true);
-                        e.printStackTrace();
-                    }
+            if (type.equals("minor")) {
+                try {
+                    photoResult.toBitmap().whenAvailable(new Function1<BitmapPhoto, Unit>() {
+                        @Override
+                        public Unit invoke(BitmapPhoto bitmapPhoto) {
+                            Click.setClickable(true);
+                            listMinorImage.add(Tools.savePhoto(requireActivity(), photoResult));
+                            CameraAlertDialog.dismiss();
+                            Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
+                            minorDamagedPhotoAdapter.notifyDataSetChanged();
+                            return Unit.INSTANCE;
+                        }
+                    });
+                }catch (Exception e){
+                    Click.setClickable(true);
+                    e.printStackTrace();
+                }
+            }else if(type.equals("damaged")){
+                try {
+                    photoResult.toBitmap().whenAvailable(new Function1<BitmapPhoto, Unit>() {
+                        @Override
+                        public Unit invoke(BitmapPhoto bitmapPhoto) {
+                            Click.setClickable(true);
+                            listDamagedImage.add(Tools.savePhoto(requireActivity(), photoResult));
+                            CameraAlertDialog.dismiss();
+                            Toast.makeText(getActivity(), "picture taken!", Toast.LENGTH_SHORT).show();
+                            damagedPhotoAdapter.notifyDataSetChanged();
+                            return Unit.INSTANCE;
+                        }
+                    });
+                }catch (Exception e){
+                    Click.setClickable(true);
+                    e.printStackTrace();
                 }
             }
         });
@@ -1314,12 +1294,9 @@ private RecyclerView rv_products;
             }
         }
 
-        add_fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                InnerEditMode = false;
-                GoodsBodyMainAlert(listMain,-1);
-            }
+        add_fab.setOnClickListener(v -> {
+            InnerEditMode = false;
+            GoodsBodyMainAlert(listMain,-1);
         });
 
         goodsReceiptBodyAdapter.setOnClickListener(new GoodsReceiptBodyAdapter.OnClickListener() {
@@ -1348,19 +1325,9 @@ private RecyclerView rv_products;
             }
         });
 
-        fab_close_all.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeMainSelection();
-            }
-        });
+        fab_close_all.setOnClickListener(view1 -> closeMainSelection());
 
-        fab_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DeleteAlert();
-            }
-        });
+        fab_delete.setOnClickListener(view12 -> DeleteAlert());
 
         return view;
     }

@@ -3,7 +3,6 @@ package com.sangsolutions.powerbear.Fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -50,7 +49,7 @@ import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.ScanDrawable;
 import com.sangsolutions.powerbear.Singleton.StockCountProductSingleton;
-import com.sangsolutions.powerbear.Singleton.StockCountSingleton;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,7 +69,7 @@ public class StockCountBodyFragment extends Fragment {
     private RelativeLayout rl_showProductInfo;
     private HashMap<String, String> map;
     private TextView product_name, product_code;
-    private RecyclerView rv_search;
+    private RecyclerView rv_search,rv_product_search;
     private AlertDialog dialog;
     private List<SearchProduct> SearchProductList;
     private SearchProductAdapter adapter;
@@ -81,12 +80,15 @@ public class StockCountBodyFragment extends Fragment {
     private int EditPosition = -1;
     private EditText et_barcode;
     private EditText et_remarks, et_qty;
+    private EditText et_product;
     private AlertDialog alertDialog;
     private FrameLayout frame_scan;
     int current_position = 0;
     private Spinner sp_unit;
     Animation move_down_anim, move_up_anim;
     private boolean selection_active = false;
+
+
 
     private static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
@@ -120,19 +122,11 @@ public class StockCountBodyFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle("Delete!")
                 .setMessage("Do you want to delete " + listProductAdapter.getSelectedItemCount() + " items?")
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        DeleteItems();
-                    }
+                .setPositiveButton("YES", (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                    DeleteItems();
                 })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                }).create()
+                .setNegativeButton("NO", (dialogInterface, i) -> dialogInterface.dismiss()).create()
                 .show();
     }
 
@@ -201,12 +195,9 @@ public class StockCountBodyFragment extends Fragment {
 
 
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                fab_delete.setVisibility(View.GONE);
-                fab_close_all.setVisibility(View.GONE);
-            }
+        handler.postDelayed(() -> {
+            fab_delete.setVisibility(View.GONE);
+            fab_close_all.setVisibility(View.GONE);
         }, 300);
 
 
@@ -223,17 +214,14 @@ public class StockCountBodyFragment extends Fragment {
         if (count == 1 && fab_delete.getVisibility() != View.VISIBLE) {
 
             final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    fab_controller.startAnimation(move_down_anim);
-                    fab_controller.setVisibility(View.GONE);
+            handler.postDelayed(() -> {
+                fab_controller.startAnimation(move_down_anim);
+                fab_controller.setVisibility(View.GONE);
 
-                    fab_delete.startAnimation(move_up_anim);
-                    fab_close_all.startAnimation(move_up_anim);
-                    fab_delete.setVisibility(View.VISIBLE);
-                    fab_close_all.setVisibility(View.VISIBLE);
-                }
+                fab_delete.startAnimation(move_up_anim);
+                fab_close_all.startAnimation(move_up_anim);
+                fab_delete.setVisibility(View.VISIBLE);
+                fab_close_all.setVisibility(View.VISIBLE);
             }, 300);
         }
 
@@ -266,6 +254,11 @@ public class StockCountBodyFragment extends Fragment {
         sp_unit = view.findViewById(R.id.unit);
         barcode = view.findViewById(R.id.img_barcode);
         close = view.findViewById(R.id.close_alert);
+        et_product = view.findViewById(R.id.et_product);
+        rv_product_search = view.findViewById(R.id.rv_product_edit);
+        rv_product_search.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        rv_product_search.setAdapter(adapter);
 
         AlertDialog.Builder builder= new AlertDialog.Builder(requireActivity(),android.R.style.Theme_Light_NoTitleBar_Fullscreen);
         builder.setView(view);
@@ -273,13 +266,12 @@ public class StockCountBodyFragment extends Fragment {
         alertDialog = builder.create();
         alertDialog.show();
 
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-                current_position = -1;
-                EditModeInner = false;
-            }
+        close.setOnClickListener(view1 -> {
+            alertDialog.dismiss();
+            current_position = -1;
+            EditModeInner = false;
+            SearchProductList.clear();
+            adapter.notifyDataSetChanged();
         });
 
         et_barcode.addTextChangedListener(new TextWatcher() {
@@ -298,98 +290,100 @@ public class StockCountBodyFragment extends Fragment {
                 GetProductInfoToMap(s.toString(),position);
             }
         });
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchAlert();
-            }
-        });
+        search.setOnClickListener(v -> searchAlert());
 
 
-        barcode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
+        barcode.setOnClickListener(v -> {
+            try {
 
-                    if (frame_scan.getVisibility() == View.VISIBLE) {
-                        if (cameraSource != null) {
-                            try {
-                                cameraSource.stop();
-                            } catch (NullPointerException e) {
-                                cameraSource = null;
-                            }
-
+                if (frame_scan.getVisibility() == View.VISIBLE) {
+                    if (cameraSource != null) {
+                        try {
+                            cameraSource.stop();
+                        } catch (NullPointerException e) {
+                            cameraSource = null;
                         }
-                        frame_scan.setVisibility(View.GONE);
+
+                    }
+                    frame_scan.setVisibility(View.GONE);
+                } else {
+
+                    if (!hasPermissions(getActivity(), PERMISSIONS)) {
+                        ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS, 100);
                     } else {
-
-                        if (!hasPermissions(getActivity(), PERMISSIONS)) {
-                            ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS, 100);
-                        } else {
-                            frame_scan.setVisibility(View.VISIBLE);
-                            frame_scan.setForeground(new ScanDrawable(requireActivity(), 15));
-                            InitialiseDetectorsAndSources();
-                        }
+                        frame_scan.setVisibility(View.VISIBLE);
+                        frame_scan.setForeground(new ScanDrawable(requireActivity(), 15));
+                        InitialiseDetectorsAndSources();
                     }
-                }catch (Exception e){
-                    e.printStackTrace();
                 }
+            }catch (Exception e){
+                e.printStackTrace();
             }
         });
 
-        add.setOnClickListener(new View.OnClickListener() {
+
+        add.setOnClickListener(v -> {
+            if (!map.isEmpty() && !et_qty.getText().toString().isEmpty()) {
+                map.put("Qty", et_qty.getText().toString());
+                map.put("sRemarks",et_remarks.getText().toString());
+                        setRecyclerView();
+            }else {
+                if (map.isEmpty()) {
+                    Toast.makeText(getActivity(), "No product", Toast.LENGTH_SHORT).show();
+                }
+                if (et_qty.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(), "Enter Quantity", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
+
+        btn_forward.setOnClickListener(view12 -> {
+            if (listProduct.size() > 1) {
+                if (current_position < listProduct.size()) {
+                    EditModeInner = true;
+                    EditPosition = current_position;
+                    et_barcode.setText(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct()));
+                    et_qty.setText(listProduct.get(current_position).getQty());
+                    et_remarks.setText(listProduct.get(current_position).getsRemarks());
+                    SetUnit(helper.GetProductUnit(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct())),current_position);
+                    current_position++;
+                }
+            }
+        });
+        btn_backward.setOnClickListener(view13 -> {
+            if (listProduct.size() > 1) {
+                if (current_position > 0) {
+                    current_position--;
+                    EditModeInner = true;
+                    EditPosition = current_position;
+                    et_barcode.setText(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct()));
+                    et_qty.setText(listProduct.get(current_position).getQty());
+                    SetUnit(helper.GetProductUnit(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct())),current_position);
+                    et_remarks.setText(listProduct.get(current_position).getsRemarks());
+
+                }
+
+            }
+        });
+
+        et_product.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                if (!map.isEmpty() && !et_qty.getText().toString().isEmpty()) {
-                    map.put("Qty", et_qty.getText().toString());
-                    map.put("sRemarks",et_remarks.getText().toString());
-                            setRecyclerView();
-                }else {
-                    if (map.isEmpty()) {
-                        Toast.makeText(getActivity(), "No product", Toast.LENGTH_SHORT).show();
-                    }
-                    if (et_qty.getText().toString().isEmpty()) {
-                        Toast.makeText(getActivity(), "Enter Quantity", Toast.LENGTH_SHORT).show();
-                    }
-                }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-        });
 
-        btn_forward.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if (listProduct.size() > 1) {
-                    if (current_position < listProduct.size()) {
-                        EditModeInner = true;
-                        EditPosition = current_position;
-                        et_barcode.setText(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct()));
-                        et_qty.setText(listProduct.get(current_position).getQty());
-                        et_remarks.setText(listProduct.get(current_position).getsRemarks());
-                        SetUnit(helper.GetProductUnit(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct())),current_position);
-                        current_position++;
-                    }
-                }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
             }
-        });
-        btn_backward.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View view) {
-                if (listProduct.size() > 1) {
-                    if (current_position > 0) {
-                        current_position--;
-                        EditModeInner = true;
-                        EditPosition = current_position;
-                        et_barcode.setText(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct()));
-                        et_qty.setText(listProduct.get(current_position).getQty());
-                        SetUnit(helper.GetProductUnit(helper.GetBarcodeFromIProduct(listProduct.get(current_position).getiProduct())),current_position);
-                        et_remarks.setText(listProduct.get(current_position).getsRemarks());
-
-                    }
-
-                }
+            public void afterTextChanged(Editable s) {
+            ProductSearch(s.toString(),"autoComplete");
             }
         });
+
     }
 
     private void setRecyclerView() {
@@ -409,6 +403,8 @@ if(!EditModeInner) {
         et_qty.setText("");
         et_barcode.setText("");
         et_remarks.setText("");
+        et_product.setText("");
+        et_product.requestFocus();
         SetUnit("",-1);
         map.clear();
         listProductAdapter.notifyDataSetChanged();
@@ -465,20 +461,12 @@ if(!EditModeInner) {
         AlertDialog.Builder builder= new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         builder.setTitle("Delete Product!")
                 .setMessage("Do you want to delete this product?")
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        listProduct.remove(pos);
-                        StockCountProductSingleton.getInstance().setList(listProduct);
-                        listProductAdapter.notifyDataSetChanged();
+                .setPositiveButton("YES", (dialog, which) -> {
+                    listProduct.remove(pos);
+                    StockCountProductSingleton.getInstance().setList(listProduct);
+                    listProductAdapter.notifyDataSetChanged();
 
-                    }
-                }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-           dialog.dismiss();
-            }
-        }).create().show();
+                }).setNegativeButton("NO", (dialog, which) -> dialog.dismiss()).create().show();
     }
 
     private void InitialiseDetectorsAndSources() {
@@ -529,54 +517,88 @@ if(!EditModeInner) {
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> barcode = detections.getDetectedItems();
                 if (barcode.size() > 0) {
-                    Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            et_barcode.setText(barcode.valueAt(0).displayValue);
-                            SetUnit(helper.GetProductUnit(barcode.valueAt(0).displayValue),-1);
+                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+                        et_barcode.setText(barcode.valueAt(0).displayValue);
+                        SetUnit(helper.GetProductUnit(barcode.valueAt(0).displayValue),-1);
 
-                        }
                     });
                 }
             }
         });
     }
 
-    private void ProductSearch(String keyword) {
+    private void ProductSearch(String keyword,String type) {
         SearchProductList.clear();
-        if (dialog.isShowing()) {
-            Cursor cursor = helper.SearchProduct(keyword);
-            if (cursor != null&&!keyword.equals("")) {
-                cursor.moveToFirst();
-                for (int i = 0; i < cursor.getCount(); i++) {
-                    String Name = cursor.getString(cursor.getColumnIndex("Name"));
-                    String Code = cursor.getString(cursor.getColumnIndex("Code"));
-                    String Barcode = cursor.getString(cursor.getColumnIndex("Barcode"));
-                    SearchProductList.add(new SearchProduct(Name, Code, Barcode));
-                    cursor.moveToNext();
+        Cursor cursor = helper.SearchProduct(keyword);
 
-                    if (i + 1 == cursor.getCount()) {
-                        rv_search.setAdapter(adapter);
+            if(type.equals("autoComplete")) {
+                if (cursor != null && !keyword.equals("")) {
+                    cursor.moveToFirst();
+                    for (int i = 0; i < cursor.getCount(); i++) {
+                        String Name = cursor.getString(cursor.getColumnIndex("Name"));
+                        String Code = cursor.getString(cursor.getColumnIndex("Code"));
+                        String Barcode = cursor.getString(cursor.getColumnIndex("Barcode"));
+
+                        SearchProductList.add(new SearchProduct(Name, Code, Barcode));
+
+                        cursor.moveToNext();
+
+                        if (i + 1 == cursor.getCount()) {
+                            rv_product_search.setAdapter(adapter);
+                        }
                     }
 
-                    adapter.setOnClickListener(new SearchProductAdapter.OnClickListener() {
-                        @Override
-                        public void onItemClick(SearchProduct search_item) {
-                            et_barcode.setText(search_item.getBarcode());
-                            SetUnit(helper.GetProductUnit(search_item.getBarcode()),-1);
-                            dialog.dismiss();
-                        }
+                    adapter.setOnClickListener(search_item -> {
+                        et_barcode.setText(search_item.getBarcode());
+                        et_product.setText(search_item.getName());
+                        SetUnit(helper.GetProductUnit(search_item.getBarcode()), -1);
+                        SearchProductList.clear();
+                        adapter.notifyDataSetChanged();
                     });
+
+
+                } else {
+                    SearchProductList.clear();
+                    SearchProductList.add(new SearchProduct("No Products available!", "", ""));
+                    rv_product_search.setAdapter(adapter);
                 }
 
-            } else {
-                SearchProductList.clear();
-                SearchProductList.add(new SearchProduct("No Products available!", "", ""));
-                rv_search.setAdapter(adapter);
+            }else {
 
+                if (dialog.isShowing()) {
+
+                    if (cursor != null && !keyword.equals("")) {
+                        cursor.moveToFirst();
+                        for (int i = 0; i < cursor.getCount(); i++) {
+                            String Name = cursor.getString(cursor.getColumnIndex("Name"));
+                            String Code = cursor.getString(cursor.getColumnIndex("Code"));
+                            String Barcode = cursor.getString(cursor.getColumnIndex("Barcode"));
+
+                            SearchProductList.add(new SearchProduct(Name, Code, Barcode));
+
+                            cursor.moveToNext();
+
+                            if (i + 1 == cursor.getCount()) {
+                                rv_search.setAdapter(adapter);
+                            }
+                        }
+
+                        adapter.setOnClickListener(search_item -> {
+                            et_barcode.setText(search_item.getBarcode());
+                            SetUnit(helper.GetProductUnit(search_item.getBarcode()), -1);
+                            dialog.dismiss();
+                        });
+
+
+                    } else {
+                        SearchProductList.clear();
+                        SearchProductList.add(new SearchProduct("No Products available!", "", ""));
+                        rv_search.setAdapter(adapter);
+                    }
+                }
             }
 
-        }
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -594,9 +616,24 @@ if(!EditModeInner) {
             map.put("iProduct",cursor.getString(cursor.getColumnIndex("MasterId")));
             product_name.setText("Name : "+map.get("Name"));
             product_code.setText(map.get("Code"));
-            SetUnit(helper.GetProductUnit(barcode),position);
-        }else {
+            et_product.setText(map.get("Name"));
 
+            SearchProductList.clear();
+            adapter.notifyDataSetChanged();
+
+            SetUnit(helper.GetProductUnit(barcode),position);
+            et_qty.requestFocus();
+            new Handler().postDelayed(() -> {
+                InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(et_qty,InputMethodManager.SHOW_FORCED);
+            },100);
+
+
+
+        }else {
+            et_product.setText("");
+            SearchProductList.clear();
+            adapter.notifyDataSetChanged();
             rl_showProductInfo.setVisibility(View.GONE);
 
         }
@@ -613,20 +650,12 @@ if(!EditModeInner) {
         dialog.show();
 
         if (dialog.isShowing()) {
-
-            et_search_input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    et_search_input.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            InputMethodManager inputMethodManager = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
-                            Objects.requireNonNull(inputMethodManager).showSoftInput(et_search_input, InputMethodManager.SHOW_IMPLICIT);
-                        }
-                    });
-                }
-            });
             et_search_input.requestFocus();
+            et_search_input.setOnFocusChangeListener((v, hasFocus) -> et_search_input.post(() -> {
+                InputMethodManager inputMethodManager = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
+                Objects.requireNonNull(inputMethodManager).showSoftInput(et_search_input, InputMethodManager.SHOW_IMPLICIT);
+            }));
+
             et_search_input.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -640,7 +669,7 @@ if(!EditModeInner) {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    ProductSearch(s.toString());
+                    ProductSearch(s.toString(),"alert");
                 }
             });
 
@@ -669,6 +698,8 @@ if(!EditModeInner) {
         SearchProductList = new ArrayList<>();
         adapter = new SearchProductAdapter(getActivity(), SearchProductList);
 
+
+
         if (getArguments() != null) {
             EditMode = getArguments().getString("EditMode");
 
@@ -682,8 +713,8 @@ if(!EditModeInner) {
         }
 
         listProductAdapter = new ListProductAdapter(getActivity(), listProduct, EditMode);
-
         rv_product.setAdapter(listProductAdapter);
+
 
         listProductAdapter.setOnClickListener(new ListProductAdapter.OnClickListener() {
             @Override
@@ -715,27 +746,12 @@ if(!EditModeInner) {
         });
 
 
-        fab_controller.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddNewAlert(-1);
-            }
-        });
+        fab_controller.setOnClickListener(view1 -> AddNewAlert(-1));
 
 
-        fab_close_all.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeSelection();
-            }
-        });
+        fab_close_all.setOnClickListener(view12 -> closeSelection());
 
-        fab_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteAlert();
-            }
-        });
+        fab_delete.setOnClickListener(view13 -> deleteAlert());
         return view;
     }
 
