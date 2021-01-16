@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.sangsolutions.powerbear.Fragment.ProductDetailAttachmentsFragment;
+import com.sangsolutions.powerbear.Fragment.ProductDetailPODetailsFragment;
+import com.sangsolutions.powerbear.Fragment.ProductDetailSODetailsFragment;
 import com.sangsolutions.powerbear.Fragment.ProductDetailSpareFragment;
 import com.sangsolutions.powerbear.Fragment.ProductDetailsMainFragment;
 import com.sangsolutions.powerbear.ProductDetails;
@@ -43,10 +45,20 @@ public class ProductDetailsViewPagerAdapter extends FragmentStatePagerAdapter {
                 return spareFragment;
 
             case 2:
-
                 ProductDetailAttachmentsFragment detailMainFragment = new ProductDetailAttachmentsFragment();
                 detailMainFragment.setArguments(bundle);
                 return detailMainFragment;
+
+            case 3:
+                ProductDetailPODetailsFragment poDetailsFragment = new ProductDetailPODetailsFragment();
+                poDetailsFragment.setArguments(bundle);
+                return poDetailsFragment;
+
+            case 4:
+                ProductDetailSODetailsFragment soDetailsFragment = new ProductDetailSODetailsFragment();
+                soDetailsFragment.setArguments(bundle);
+                return soDetailsFragment;
+
 
         }
 

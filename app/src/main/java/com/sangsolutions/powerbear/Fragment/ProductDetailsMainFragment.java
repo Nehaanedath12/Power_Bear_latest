@@ -34,7 +34,7 @@ import static android.view.View.VISIBLE;
 
 public class ProductDetailsMainFragment extends Fragment {
     String iProduct;
-    Button productName,brand,color,material,code,productType,addDesc,manufacture;
+    Button productName,brand,color,material,code,productType,addDesc,manufacture,balance_qty,total_SO,total_PO,unit;
     View view;
     FrameLayout emptyIcon;
     ImageView mProgressBar;
@@ -53,6 +53,11 @@ public class ProductDetailsMainFragment extends Fragment {
         productType=view.findViewById(R.id.product_type);
         addDesc=view.findViewById(R.id.desc);
         manufacture=view.findViewById(R.id.manufacture);
+        balance_qty=view.findViewById(R.id.balance_qty);
+        total_SO=view.findViewById(R.id.total_SO);
+        total_PO=view.findViewById(R.id.total_po);
+        unit=view.findViewById(R.id.unit);
+
         emptyIcon=view.findViewById(R.id.empty_frame);
         mProgressBar =view.findViewById(R.id.main_progress);
         card_details=view.findViewById(R.id.card_details);
@@ -113,6 +118,10 @@ public class ProductDetailsMainFragment extends Fragment {
                                 productType.setText(jsonObject.getString("ProductTypeYH"));
                                 addDesc.setText(jsonObject.getString("AddDescriptionYH"));
                                 manufacture.setText(jsonObject.getString("ManufacturerYH"));
+                                balance_qty.setText(String.valueOf(jsonObject.getDouble("BalQty")));
+                                total_PO.setText(String.valueOf(jsonObject.getDouble("Total_PO")));
+                                total_SO.setText(String.valueOf(jsonObject.getDouble("Total_SO")));
+                                unit.setText(jsonObject.getString("Unit"));
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -129,5 +138,5 @@ public class ProductDetailsMainFragment extends Fragment {
             mProgressBar.setVisibility(View.INVISIBLE);
             animationDrawable.stop();
         }
-}
+    }
 }

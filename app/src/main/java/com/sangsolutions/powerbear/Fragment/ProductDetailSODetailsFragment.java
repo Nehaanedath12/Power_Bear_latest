@@ -19,8 +19,8 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.sangsolutions.powerbear.Adapter.ProductDetailsSpareAdpater.SpareAdapter;
-import com.sangsolutions.powerbear.Adapter.ProductDetailsSpareAdpater.SpareClass;
+import com.sangsolutions.powerbear.Adapter.Report_SO_PO_Product_Details.SO_PO_Details;
+import com.sangsolutions.powerbear.Adapter.Report_SO_PO_Product_Details.SO_PO_DetailsAdapter;
 import com.sangsolutions.powerbear.R;
 import com.sangsolutions.powerbear.Tools;
 import com.sangsolutions.powerbear.URLs;
@@ -32,10 +32,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDetailSpareFragment extends Fragment {
-    List<SpareClass> spareClassList;
+public class ProductDetailSODetailsFragment extends Fragment {
+
+    List<SO_PO_Details> so_PO_detailsList;
     String iProduct;
-    SpareAdapter spareAdapter;
+    SO_PO_DetailsAdapter detailsAdapter;
     RecyclerView recyclerView;
     ImageView mProgressBar;
     private AnimationDrawable animationDrawable;
@@ -43,21 +44,20 @@ public class ProductDetailSpareFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=LayoutInflater.from(getContext()).inflate(R.layout.product_detail_spare_fragment,container,false);
+        View view=LayoutInflater.from(getContext()).inflate(R.layout.product_detail_so_details_fragment,container,false);
         mProgressBar=view.findViewById(R.id.main_progress);
         empty_frame=view.findViewById(R.id.empty_frame);
         mProgressBar.setBackgroundResource(R.drawable.loading);
         animationDrawable = (AnimationDrawable) mProgressBar.getBackground();
 
-        recyclerView=view.findViewById(R.id.rv_spare);
-        spareClassList=new ArrayList<>();
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        spareAdapter=new SpareAdapter(getContext(),spareClassList);
+        so_PO_detailsList =new ArrayList<>();
+        recyclerView=view.findViewById(R.id.rv_so_details);
         iProduct = getArguments().getString("iProduct");
+        detailsAdapter=new SO_PO_DetailsAdapter(requireActivity(), so_PO_detailsList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         mProgressBar.setVisibility(View.VISIBLE);
         animationDrawable.start();
-
 
         AndroidNetworking.get("http://"+new Tools().getIP(requireActivity())+ URLs.GetProductDetails)
                 .addQueryParameter("iProduct",iProduct)
@@ -67,8 +67,8 @@ public class ProductDetailSpareFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("response",response.toString());
-                        getSpareParts(response);
-                        recyclerView.setAdapter(spareAdapter);
+                        getSODetails(response);
+                        recyclerView.setAdapter(detailsAdapter);
                     }
 
                     @Override
@@ -80,25 +80,23 @@ public class ProductDetailSpareFragment extends Fragment {
                     }
                 });
         return view;
+
     }
 
-    private void getSpareParts(JSONObject response) {
+    private void getSODetails(JSONObject response) {
+
         mProgressBar.setVisibility(View.INVISIBLE);
         animationDrawable.stop();
         try {
-            JSONArray jsonArray = new JSONArray(response.getString("spares"));
+            JSONArray jsonArray = new JSONArray(response.getString("sodetails"));
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    SpareClass spareClass=new SpareClass(jsonObject.getString("Imagescount"),
-                            jsonObject.getString("Filescount"),
-                            jsonObject.getString("iId"),
-                            jsonObject.getString("iProduct"),
-                            jsonObject.getString("iPosition"),
-                            jsonObject.getString("iSpareParts"),
-                            jsonObject.getString("Name"),
-                            jsonObject.getString("Code2"));
-                    spareClassList.add(spareClass);
+                    SO_PO_Details so_PO_details =new SO_PO_Details(jsonObject.getString("Cusomer"),
+                            jsonObject.getString("VoucherNo"),
+                            jsonObject.getString("VoucherDate"),
+                            jsonObject.getDouble("Qty"));
+                    so_PO_detailsList.add(so_PO_details);
 
                 }
             }
@@ -110,6 +108,7 @@ public class ProductDetailSpareFragment extends Fragment {
             mProgressBar.setVisibility(View.INVISIBLE);
             animationDrawable.stop();
         }
-    }
 
+
+    }
 }

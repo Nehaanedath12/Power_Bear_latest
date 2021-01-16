@@ -30,6 +30,8 @@ public class ProductDetails extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Main"));
         tabLayout.addTab(tabLayout.newTab().setText("Spare Parts"));
         tabLayout.addTab(tabLayout.newTab().setText("Attachments"));
+        tabLayout.addTab(tabLayout.newTab().setText("PO Details"));
+        tabLayout.addTab(tabLayout.newTab().setText("SO Details"));
         tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF0000"));
         tabLayout.setTabTextColors(Color.parseColor("#e58989"), Color.parseColor("#ffffff"));
 
