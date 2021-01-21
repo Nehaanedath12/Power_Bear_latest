@@ -5,45 +5,73 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/linear"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:padding="5dp"
-        android:background="@color/theme_color_red"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="VoucherNo"
-            android:textColor="@color/color_white"
-            />
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="VoucherDate"
-            android:textColor="@color/color_white"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="Customer"
-            android:textColor="@color/color_white"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight=".8"
-            android:gravity="center"
-            android:text="Quantity"
-            android:textColor="@color/color_white"/>
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:gravity="center"
+                android:background="@color/theme_color_red"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/color_white"
+                    android:layout_height="wrap_content"
+                    android:text="VoucherNo"/>
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/color_white"
+                    android:layout_height="wrap_content"
+                    android:text="Voucher Date"/>
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/color_white"
+                    android:layout_height="wrap_content"
+                    android:text="Customer"/>
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/color_white"
+                    android:layout_height="wrap_content"
+                    android:text="Qty"/>
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/color_white"
+                    android:layout_height="wrap_content"
+                    android:text="Delivery Date"/>
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:textColor="@color/color_white"
+                    android:layout_height="wrap_content"
+                    android:text="KNNo"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_so_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <FrameLayout
         android:id="@+id/empty_frame"
@@ -72,13 +100,7 @@
                 android:textSize="25dp" />
         </RelativeLayout>
     </FrameLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@+id/linear"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="5dp"
-        android:id="@+id/rv_so_details"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+
     <ImageView
         android:id="@+id/main_progress"
         android:layout_width="80dp"

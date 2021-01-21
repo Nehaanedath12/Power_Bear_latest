@@ -52,6 +52,7 @@ public class ProductDetailSODetailsFragment extends Fragment {
 
         so_PO_detailsList =new ArrayList<>();
         recyclerView=view.findViewById(R.id.rv_so_details);
+        assert getArguments() != null;
         iProduct = getArguments().getString("iProduct");
         detailsAdapter=new SO_PO_DetailsAdapter(requireActivity(), so_PO_detailsList);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -95,7 +96,9 @@ public class ProductDetailSODetailsFragment extends Fragment {
                     SO_PO_Details so_PO_details =new SO_PO_Details(jsonObject.getString("Cusomer"),
                             jsonObject.getString("VoucherNo"),
                             jsonObject.getString("VoucherDate"),
-                            jsonObject.getDouble("Qty"));
+                            jsonObject.getDouble("Qty"),
+                            jsonObject.getString("DeliveryDate"),
+                            jsonObject.getString("KNNo"));
                     so_PO_detailsList.add(so_PO_details);
 
                 }

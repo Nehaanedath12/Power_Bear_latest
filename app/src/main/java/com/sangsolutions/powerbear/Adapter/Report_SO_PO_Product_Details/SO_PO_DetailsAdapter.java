@@ -36,6 +36,8 @@ public class SO_PO_DetailsAdapter extends RecyclerView.Adapter<SO_PO_DetailsAdap
         holder.voucherNo.setText(list.get(position).VoucherNo);
         holder.voucherDate.setText(list.get(position).VoucherDate);
         holder.qty.setText(String.valueOf(list.get(position).qty));
+        holder.delivery_date.setText(list.get(position).DeliveryDate);
+        holder.knno.setText(list.get(position).KNNo);
         if (position % 2 == 0) {
             holder.parent.setBackgroundColor(Color.rgb(234, 234, 234));
         } else {
@@ -50,7 +52,7 @@ public class SO_PO_DetailsAdapter extends RecyclerView.Adapter<SO_PO_DetailsAdap
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name,voucherNo,voucherDate,qty;
+        TextView name,voucherNo,voucherDate,qty,delivery_date,knno;
         LinearLayout parent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -59,6 +61,8 @@ public class SO_PO_DetailsAdapter extends RecyclerView.Adapter<SO_PO_DetailsAdap
             voucherNo=itemView.findViewById(R.id.voucher_no_PR);
             voucherDate=itemView.findViewById(R.id.voucher_date_PR);
             qty=itemView.findViewById(R.id.qty_PR);
+            delivery_date=itemView.findViewById(R.id.delivery_date);
+            knno=itemView.findViewById(R.id.knno);
         }
     }
 }
