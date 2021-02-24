@@ -27,7 +27,7 @@ DatabaseHelper helper;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
 ImageView settings;
-
+Tools tools = new Tools();
 /*    protected boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -90,6 +90,11 @@ public void syncData(){
     helper = new DatabaseHelper(this);
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
         editor = preferences.edit();
+
+        tools.setIP(MainActivity.this,"gdpb.dyndns.org:85");
+
+
+
         editor.putString("syncDate", "").apply();
 
         if (helper.GetLoginStatus()) {
@@ -103,7 +108,7 @@ public void syncData(){
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,SetIPActivity.class));
+                //startActivity(new Intent(MainActivity.this,SetIPActivity.class));
             }
         });
 
