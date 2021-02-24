@@ -91,7 +91,7 @@ public void syncData(){
         preferences = getSharedPreferences("sync",MODE_PRIVATE);
         editor = preferences.edit();
 
-        tools.setIP(MainActivity.this,"gdpb.dyndns.org:85");
+
 
 
 
@@ -108,7 +108,7 @@ public void syncData(){
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //startActivity(new Intent(MainActivity.this,SetIPActivity.class));
+                startActivity(new Intent(MainActivity.this,SetIPActivity.class));
             }
         });
 

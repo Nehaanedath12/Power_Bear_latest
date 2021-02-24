@@ -27,17 +27,13 @@ Tools tools;
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!Tools.isValidIP(et_ip_address.getText().toString())) {
-                    Toast.makeText(SetIPActivity.this, "Enter a valid IP address", Toast.LENGTH_SHORT).show();
-                }else {
                 if(tools.setIP(SetIPActivity.this,et_ip_address.getText().toString())){
                     Toast.makeText(SetIPActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
                     finishAffinity();
                      startActivity(new Intent(SetIPActivity.this,MainActivity.class));
+                }
+                }
 
-                }
-                }
-            }
         });
 
     }
