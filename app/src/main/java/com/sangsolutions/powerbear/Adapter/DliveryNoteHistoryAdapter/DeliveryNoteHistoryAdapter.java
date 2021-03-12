@@ -128,6 +128,13 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
             }
         });
 
+        holder.pdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onPDFClick(deliveryNoteHistory,position);
+            }
+        });
+
         holder.card.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -154,6 +161,8 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
 
         void onItemClick(DeliveryNoteHistory deliveryNoteHistory, int pos);
         void onItemLongClick(int pos);
+
+        void onPDFClick(DeliveryNoteHistory deliveryNoteHistory, int position);
     }
 
 
@@ -164,6 +173,7 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
         final ImageButton delete;
         final CardView card;
         final ImageView img_check;
+        final ImageView pdf;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             HeaderId = itemView.findViewById(R.id.DocNo);
@@ -172,6 +182,7 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
             delete = itemView.findViewById(R.id.delete);
             card = itemView.findViewById(R.id.card);
             img_check = itemView.findViewById(R.id.check);
+            pdf=itemView.findViewById(R.id.pdf);
         }
     }
 }
