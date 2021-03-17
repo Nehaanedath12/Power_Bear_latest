@@ -395,10 +395,11 @@ adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
 
         paint.setFakeBoldText(false);
         if(listMain.size()<20){
-            loadFirstPage(listMain.size(),startYPosition,canvas,paint,listMain,myPageinfo, pdfDocument, myPage);
+            loadFirstPage("one",listMain.size(),startYPosition,canvas,paint,listMain,myPageinfo, pdfDocument, myPage);
+
         }
         else if(listMain.size()>20) {
-            loadFirstPage(20, startYPosition, canvas, paint, listMain, myPageinfo, pdfDocument, myPage);
+            loadFirstPage("more", 20, startYPosition, canvas, paint, listMain, myPageinfo, pdfDocument, myPage);
             int page = (int) Math.ceil(listMain.size()/ 25.0);
             int start = 20;
             Log.d("pagee", page + "");
@@ -416,14 +417,29 @@ adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
                 }
                 startYPosition = 20;
                 for (int i = start; i < stop; i++) {
+
+                    if(listMain.get(i).getfQty().equals("")){
+                        listMain.get(i).setfQty("0");
+                    }
+                    if(listMain.get(i).getfDamagedQty().equals("")){
+                        listMain.get(i).setfDamagedQty("0");
+                    }
+                    if(listMain.get(i).getfMinorDamageQty().equals("")){
+                        listMain.get(i).setfMinorDamageQty("0");
+                    }
+                    int qty=Integer.parseInt(listMain.get(i).getfQty())+
+                            Integer.parseInt(listMain.get(i).getfMinorDamageQty()) +
+                            Integer.parseInt(listMain.get(i).getfDamagedQty());
                     int startXPosition = 20;
 
                     canvas1.drawText(String.valueOf(i + 1), startXPosition, startYPosition+=30, paint);
                     canvas1.drawText(listMain.get(i).getCode(), 60, startYPosition, paint);
                     canvas1.drawText(listMain.get(i).getUnit(), 200, startYPosition, paint);
-                    canvas1.drawText(listMain.get(i).getsRemarks(), 250, startYPosition, paint);
+                    canvas1.drawText(String.valueOf(qty), 250, startYPosition, paint);
                     canvas1.drawText(listMain.get(i).getTempQty(), myPageinfo.getPageWidth() - 70, startYPosition, paint);
                 }
+                canvas.drawText("Received By", 20,myPageinfo.getPageHeight()-30, paint);
+                canvas.drawText("Received Date", myPageinfo.getPageWidth()/2, myPageinfo.getPageHeight()-30, paint);
 
                 pdfDocument.finishPage(myPage1);
                 start += 25;
@@ -458,17 +474,35 @@ adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
 
     }
 
-    private void loadFirstPage(int length, int startYPosition, Canvas canvas, Paint paint, List<GoodsReceiptBody> listMain, PdfDocument.PageInfo myPageinfo, PdfDocument pdfDocument, PdfDocument.Page myPage) {
+    private void loadFirstPage(String s, int length, int startYPosition, Canvas canvas, Paint paint,
+                               List<GoodsReceiptBody> listMain, PdfDocument.PageInfo myPageinfo,
+                               PdfDocument pdfDocument, PdfDocument.Page myPage) {
         for (int i=0;i<length;i++){
             //size 20
+            if(listMain.get(i).getfQty().equals("")){
+                listMain.get(i).setfQty("0");
+            }
+            if(listMain.get(i).getfDamagedQty().equals("")){
+                listMain.get(i).setfDamagedQty("0");
+            }
+            if(listMain.get(i).getfMinorDamageQty().equals("")){
+                listMain.get(i).setfMinorDamageQty("0");
+            }
+            int qty=Integer.parseInt(listMain.get(i).getfQty())+
+                    Integer.parseInt(listMain.get(i).getfMinorDamageQty()) +
+                    Integer.parseInt(listMain.get(i).getfDamagedQty());
             int startXPosition = 20;
             startYPosition += 30;
             canvas.drawText(String.valueOf(i + 1), startXPosition, startYPosition, paint);
             canvas.drawText(listMain.get(i).getCode(), 60, startYPosition, paint);
             canvas.drawText(listMain.get(i).getUnit(), 200, startYPosition, paint);
             canvas.drawText(listMain.get(i).getsRemarks(), 250, startYPosition, paint);
-            canvas.drawText(listMain.get(i).getTempQty(), myPageinfo.getPageWidth()-70, startYPosition, paint);
+            canvas.drawText(String.valueOf(qty), myPageinfo.getPageWidth()-70, startYPosition, paint);
 //            canvas.drawLine(20, startYPosition + 3, endXPosition, startYPosition + 3, paint);
+        }
+        if(s.equals("one")){
+            canvas.drawText("Received By", 20,myPageinfo.getPageHeight()-20, paint);
+            canvas.drawText("Received Date", myPageinfo.getPageWidth()/2, myPageinfo.getPageHeight()-20, paint);
         }
         pdfDocument.finishPage(myPage);
     }
