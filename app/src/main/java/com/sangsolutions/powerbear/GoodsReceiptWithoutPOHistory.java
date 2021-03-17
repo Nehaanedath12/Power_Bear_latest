@@ -241,6 +241,11 @@ public class GoodsReceiptWithoutPOHistory extends AppCompatActivity {
                 enableActionMode(pos);
                 selection_active = true;
             }
+
+            @Override
+            public void onPDFclick(GoodsReceiptHistory goodsReceiptHistory, int position) {
+
+            }
         });
 
         delete.setOnClickListener(new View.OnClickListener() {

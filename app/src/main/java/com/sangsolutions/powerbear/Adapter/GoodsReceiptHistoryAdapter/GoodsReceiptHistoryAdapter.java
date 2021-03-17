@@ -105,7 +105,7 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
         holder.card_main.setActivated(selected_items.get(position,false));
         holder.DocNo.setText("DocNo :" + list.get(position).getDocNo());
         holder.Qty.setText("Total Qty :" + list.get(position).getQty());
-
+        holder.pdf.setVisibility(View.VISIBLE);
 
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +124,13 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
             @Override
             public void onClick(View v) {
                 onClickListener.onItemClick(goodsReceiptHistory,position);
+            }
+        });
+
+        holder.pdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onPDFclick(goodsReceiptHistory,position);
             }
         });
 
@@ -152,6 +159,7 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
         void onDeleteItemClick(GoodsReceiptHistory goodsReceiptHistory, int pos);
         void onItemClick(GoodsReceiptHistory goodsReceiptHistory, int pos);
         void onItemLongClick(int pos);
+        void onPDFclick(GoodsReceiptHistory goodsReceiptHistory, int position);
     }
 
 
@@ -162,6 +170,7 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
         final ImageButton delete;
         final ImageView img_check;
         final CardView card_main;
+        final ImageButton pdf;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             DocNo = itemView.findViewById(R.id.DocNo);
@@ -170,6 +179,7 @@ public class GoodsReceiptHistoryAdapter extends RecyclerView.Adapter<GoodsReceip
             delete = itemView.findViewById(R.id.delete);
             img_check = itemView.findViewById(R.id.check);
             card_main = itemView.findViewById(R.id.card);
+            pdf = itemView.findViewById(R.id.pdf);
         }
     }
 }

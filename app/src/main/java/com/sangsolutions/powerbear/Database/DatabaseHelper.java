@@ -1750,4 +1750,15 @@ public boolean DeleteStockCount(String voucherNo){
         }
         return null;
     }
+
+    public Cursor GetSupplierName(String iCustomer) {
+
+        this.db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from "+TABLE_PENDING_PO+" where "+I_CUSTOMER_ID+" = ? ",new String[]{iCustomer});
+        if(cursor!=null&&cursor.moveToFirst()){
+            return cursor;
+        }
+        return null;
+
+    }
 }

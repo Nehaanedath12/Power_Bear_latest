@@ -106,6 +106,7 @@ public class DeliveryNoteHistoryAdapter extends RecyclerView.Adapter<DeliveryNot
 
         holder.HeaderId.setText("DocNo :"+list.get(position).getiVoucherNo());
         holder.Qty.setText("Total Qty :"+list.get(position).getQty());
+        holder.pdf.setVisibility(View.VISIBLE);
 
    holder.edit.setOnClickListener(new View.OnClickListener() {
        @Override

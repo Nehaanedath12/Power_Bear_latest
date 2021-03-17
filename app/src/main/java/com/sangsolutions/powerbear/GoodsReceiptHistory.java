@@ -1,9 +1,19 @@
 package com.sangsolutions.powerbear;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,14 +24,19 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
+import com.sangsolutions.powerbear.Adapter.GoodsReceiptBodyAdapter.GoodsReceiptBody;
 import com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistoryAdapter;
 import com.sangsolutions.powerbear.Database.DatabaseHelper;
 import com.sangsolutions.powerbear.Singleton.GoodsReceiptHistorySingleton;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -244,6 +259,16 @@ adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
         enableActionMode(pos);
         selection_active = true;
     }
+
+    @Override
+    public void onPDFclick(com.sangsolutions.powerbear.Adapter.GoodsReceiptHistoryAdapter.GoodsReceiptHistory goodsReceiptHistory, int position) {
+        if (ActivityCompat.checkSelfPermission(GoodsReceiptHistory.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(GoodsReceiptHistory.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+        } else {
+            pdfLoading(goodsReceiptHistory.getDocNo());
+
+        }
+    }
 });
 
         delete.setOnClickListener(new View.OnClickListener() {
@@ -260,5 +285,191 @@ adapter.setOnClickListener(new GoodsReceiptHistoryAdapter.OnClickListener() {
             }
         });
 
+    }
+
+    private void pdfLoading(String docNo) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("pdf!")
+                .setMessage("Do you want to save pdf?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        pdfGeneration(docNo);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
+    }
+
+    private void pdfGeneration(String docNo) {
+        File file;
+        Bitmap bmp,scalebm;
+
+        bmp= BitmapFactory.decodeResource(getResources(),R.drawable.logo);
+        scalebm=Bitmap.createScaledBitmap(bmp,100,30,false);
+        List<GoodsReceiptBody> listMain = new ArrayList<>();
+        Cursor cursorHeader=helper.GetGoodsHeaderData(docNo);
+
+        String DocDate = cursorHeader.getString(cursorHeader.getColumnIndex("DocDate"));
+        String iVoucherNo = cursorHeader.getString(cursorHeader.getColumnIndex("DocNo"));
+        String PONos=cursorHeader.getString(cursorHeader.getColumnIndex("sPONo"));
+        String iCustomer=cursorHeader.getString(cursorHeader.getColumnIndex("iSupplier"));
+
+        Cursor cursorCustomer=helper.GetSupplierName(iCustomer);
+        String customer=cursorCustomer.getString(cursorCustomer.getColumnIndex("Cusomer"));
+
+        Cursor cursorBody=helper.GetGoodsBodyData(docNo);
+        if(cursorBody!=null&&cursorBody.moveToFirst()) {
+            for (int i = 0; i < cursorBody.getCount(); i++) {
+                listMain.add(new GoodsReceiptBody(
+                        cursorBody.getString(cursorBody.getColumnIndex("sPONo")),
+                        helper.GetProductName(cursorBody.getString(cursorBody.getColumnIndex("iProduct"))),
+                        helper.GetProductCode(cursorBody.getString(cursorBody.getColumnIndex("iProduct"))),
+                        cursorBody.getString(cursorBody.getColumnIndex("iProduct")),
+                        helper.GetWarehouse(cursorBody.getString(cursorBody.getColumnIndex("iWarehouse"))),
+                        cursorBody.getString(cursorBody.getColumnIndex("iWarehouse")),
+                        cursorBody.getString(cursorBody.getColumnIndex("Barcode")),
+                        cursorBody.getString(cursorBody.getColumnIndex("fPOQty")),
+                        cursorBody.getString(cursorBody.getColumnIndex("fQty")),
+                        helper.GetPendingPOTempQty(cursorBody.getString(cursorBody.getColumnIndex("sPONo")),cursorBody.getString(cursorBody.getColumnIndex("iProduct"))),
+                        cursorBody.getString(cursorBody.getColumnIndex("Unit")),
+                        cursorBody.getString(cursorBody.getColumnIndex("sRemarks")),
+                        cursorBody.getString(cursorBody.getColumnIndex("fMinorDamageQty")),
+                        cursorBody.getString(cursorBody.getColumnIndex("sMinorRemarks")),
+                        cursorBody.getString(cursorBody.getColumnIndex("sMinorAttachment")),
+                        cursorBody.getString(cursorBody.getColumnIndex("fDamagedQty")),
+                        cursorBody.getString(cursorBody.getColumnIndex("sDamagedRemarks")),
+                        cursorBody.getString(cursorBody.getColumnIndex("sDamagedAttachment")),
+                        cursorBody.getString(cursorBody.getColumnIndex("iMinorId")),
+                        cursorBody.getString(cursorBody.getColumnIndex("iDamagedId"))
+
+                ));
+                cursorBody.moveToNext();
+            }
+        }
+
+        PdfDocument pdfDocument = new PdfDocument();
+        Paint paint = new Paint();
+        PdfDocument.PageInfo myPageinfo = new PdfDocument
+                .PageInfo.Builder(595, 842, 1).create();
+
+        PdfDocument.Page myPage = pdfDocument.startPage(myPageinfo);
+        Canvas canvas = myPage.getCanvas();
+
+        int startYPosition = 20;
+
+        canvas.drawBitmap(scalebm,400,startYPosition,paint);
+        paint.setTextSize(25f);
+        paint.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText("GOODS RECEIPT ",20, startYPosition += 20, paint);
+
+        paint.setTextSize(15f);
+        paint.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText("Date", 20, startYPosition += 50, paint);
+        canvas.drawText(": "+DocDate, 120, startYPosition , paint);
+
+        paint.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText("Doc No ",20, startYPosition += 30, paint);
+        canvas.drawText(": "+iVoucherNo,120, startYPosition , paint);
+
+        paint.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText("Vendor Name", 20, startYPosition += 30, paint);
+        canvas.drawText(": "+customer, 120, startYPosition, paint);
+
+        int endXPosition = myPageinfo.getPageWidth() - 20;
+        paint.setTextSize(10);
+        paint.setFakeBoldText(true);
+        paint.setTextAlign(Paint.Align.LEFT);
+
+        canvas.drawText("S.no", 20, startYPosition += 50, paint);
+        canvas.drawText("Code", 60, startYPosition, paint);
+        canvas.drawText("Unit", 200, startYPosition, paint);
+        canvas.drawText("Description", 250, startYPosition, paint);
+        canvas.drawText("Quantity", myPageinfo.getPageWidth()-70, startYPosition, paint);
+        canvas.drawLine(20,startYPosition+3,endXPosition,startYPosition+3,paint);
+
+        paint.setFakeBoldText(false);
+        if(listMain.size()<20){
+            loadFirstPage(listMain.size(),startYPosition,canvas,paint,listMain,myPageinfo, pdfDocument, myPage);
+        }
+        else if(listMain.size()>20) {
+            loadFirstPage(20, startYPosition, canvas, paint, listMain, myPageinfo, pdfDocument, myPage);
+            int page = (int) Math.ceil(listMain.size()/ 25.0);
+            int start = 20;
+            Log.d("pagee", page + "");
+            for (int j = 1; j <= page; j++) {
+                PdfDocument.PageInfo myPageinfo1 = new PdfDocument
+                        .PageInfo.Builder(595, 842, 1).create();
+
+                PdfDocument.Page myPage1 = pdfDocument.startPage(myPageinfo1);
+                Canvas canvas1 = myPage1.getCanvas();
+
+                int stop = start + 25;
+                Log.d("pagee", page + " " + start + " " + stop);
+                if (stop > listMain.size()) {
+                    stop = listMain.size();
+                }
+                startYPosition = 20;
+                for (int i = start; i < stop; i++) {
+                    int startXPosition = 20;
+
+                    canvas1.drawText(String.valueOf(i + 1), startXPosition, startYPosition+=30, paint);
+                    canvas1.drawText(listMain.get(i).getCode(), 60, startYPosition, paint);
+                    canvas1.drawText(listMain.get(i).getUnit(), 200, startYPosition, paint);
+                    canvas1.drawText(listMain.get(i).getsRemarks(), 250, startYPosition, paint);
+                    canvas1.drawText(listMain.get(i).getTempQty(), myPageinfo.getPageWidth() - 70, startYPosition, paint);
+                }
+
+                pdfDocument.finishPage(myPage1);
+                start += 25;
+            }
+        }
+
+
+
+
+
+
+        file=new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"/GoodsReceiptPDF.pdf");
+        try {
+            pdfDocument.writeTo(new FileOutputStream(file));
+            Toast.makeText(this, "PDF Created", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "PDF Not Created", Toast.LENGTH_SHORT).show();
+
+        }
+        pdfDocument.close();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Uri apkURI = FileProvider.getUriForFile(this,getPackageName() + ".provider", file);
+            intent.setDataAndType(apkURI, "application/pdf");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+        }
+        startActivity(intent);
+
+    }
+
+    private void loadFirstPage(int length, int startYPosition, Canvas canvas, Paint paint, List<GoodsReceiptBody> listMain, PdfDocument.PageInfo myPageinfo, PdfDocument pdfDocument, PdfDocument.Page myPage) {
+        for (int i=0;i<length;i++){
+            //size 20
+            int startXPosition = 20;
+            startYPosition += 30;
+            canvas.drawText(String.valueOf(i + 1), startXPosition, startYPosition, paint);
+            canvas.drawText(listMain.get(i).getCode(), 60, startYPosition, paint);
+            canvas.drawText(listMain.get(i).getUnit(), 200, startYPosition, paint);
+            canvas.drawText(listMain.get(i).getsRemarks(), 250, startYPosition, paint);
+            canvas.drawText(listMain.get(i).getTempQty(), myPageinfo.getPageWidth()-70, startYPosition, paint);
+//            canvas.drawLine(20, startYPosition + 3, endXPosition, startYPosition + 3, paint);
+        }
+        pdfDocument.finishPage(myPage);
     }
 }
